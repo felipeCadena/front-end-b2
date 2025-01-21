@@ -20,7 +20,7 @@ export function MyDatePicker() {
           variant="date"
           borderRadius="squared"
           className={cn(
-            "w-full justify-start items-center gap-2 py-6",
+            "w-full justify-start items-center gap-2 py-6 border-gray-300",
           )}
         >
           <MyIcon name="date" />

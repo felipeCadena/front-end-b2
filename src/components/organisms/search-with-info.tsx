@@ -9,7 +9,7 @@ import { MyDatePicker } from "../molecules/my-date-picker";
 export default function SearchInfoActivity() {
   return (
     <div className="space-y-4 mt-20">
-      <div className="mx-auto space-y-2 p-4 border border-gray-200 rounded-lg">
+      <div className="mx-auto space-y-5 p-4 border border-gray-300 rounded-lg">
         <MyTextInput
         noHintText
           placeholder="Localização"
