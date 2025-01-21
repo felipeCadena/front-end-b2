@@ -2,20 +2,98 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --color-primary-100: #fff3eb;
+    --color-primary-200: #ffd1ad;
+    --color-primary-300: #ffae70;
+    --color-primary-400: #ff9747;
+    --color-primary-500: #ff7915;
+    --color-primary-600: #8DC63F;
+    --color-primary-700: #b7400a;
+    --color-primary-800: #932b06;
+    --color-primary-900: #7a1b04;
+
+    --color-neutral-000: #ffffff;
+    --color-neutral-100: #f5f6fa;
+    --color-neutral-200: #e8e8e8;
+    --color-neutral-300: #d2d2d2;
+    --color-neutral-400: #a4a4a4;
+    --color-neutral-500: #8e8e8e;
+    --color-neutral-600: #777777;
+    --color-neutral-700: #616161;
+    --color-neutral-800: #464646;
+    --color-neutral-900: #333333;
+    --color-neutral-1000: #1a1a1a;
+
+    --color-success-100: #eafdd9;
+    --color-success-500: #5cdd42;
+    --color-success-600: #3dbe30;
+    --color-success-700: #239f21;
+
+    --color-warning-100: #fff9cd;
+    --color-warning-500: #ffcd07;
+    --color-warning-700: #b78b03;
+    --color-warning-800: #936d02;
+    --color-warning-900: #7a5701;
+
+    --color-error-100: #ffe1d7;
+    --color-error-500: #ff384b;
+    --color-error-700: #b71c47;
+
+    --color-info-100: #d4e7ff;
+    --color-info-500: #2b6eff;
+    --color-info-700: #153eb7;
+
+    --color-gray-100: #f2f4f7;
+    --color-gray-500: #f2f4f7;
+    --color-gray-700: #344054;
+
+    --color-secondary-green-100: #eefcf4;
+    --color-secondary-green-200: #c4f8e1;
+    --color-secondary-green-300: #88e7b3;
+    --color-secondary-green-500: #28c870;
+    --color-secondary-green-600: #1e9956;
+    --color-secondary-green-700: #187743;
+    --color-secondary-green-800: #04402e;
+    --color-secondary-green-900: #072213;
+
+    --color-secondary-purple-500: #8800f9;
+  }
+
+  .ql-toolbar {
+    background-color: red !important;
+  }
+}
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .flex-center {
+    @apply flex items-center justify-center;
+  }
+
+  .popover-content-width-same-as-its-trigger {
+    width: var(--radix-popover-trigger-width);
+    max-height: var(--radix-popover-content-available-height);
   }
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+.hide-controls::-webkit-media-controls-panel {
+  display: none !important;
+  -webkit-appearance: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none; /* Para IE e Edge */
+  scrollbar-width: none;    /* Para Firefox */
 }
