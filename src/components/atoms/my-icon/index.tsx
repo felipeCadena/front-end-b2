@@ -36,6 +36,9 @@ import Messenger from "./elements/messenger";
 import Youtube from "./elements/youtube";
 import LocationRounded from "./elements/location-rounded";
 import MapPin from "./elements/map-pin";
+import X from "./elements/x";
+import ChevronDown from "./elements/down";
+import File from "./elements/file";
 
 export type IconsMapTypes = keyof typeof IconsMap;
 
@@ -81,7 +84,10 @@ const IconsMap = {
   messenger: <Messenger />,
   youtube: <Youtube />,
   facebookGray: <FacebookGray />,
-  pin: <MapPin />
+  pin: <MapPin />,
+  x: <X />,
+  "chevron-down": <ChevronDown />,
+  file: <File />
 };
 
 

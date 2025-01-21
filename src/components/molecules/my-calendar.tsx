@@ -64,13 +64,12 @@ function MyCalendar({
       }}
       components={{
         PreviousMonthButton: ({ className, ...props }) => (
-          <MyIcon name="left" className={cn("h-4 w-4", className)} {...props} />
+          <MyIcon name="left" className={cn("h-4 w-4", className)} />
         ),
         NextMonthButton: ({ className, ...props }) => (
           <MyIcon
             name="right"
             className={cn("h-4 w-4", className)}
-            {...props}
           />
         ),
       }}
