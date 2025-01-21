@@ -15,7 +15,7 @@ export default function PeopleSelector() {
     <div>
       {/* Botão para abrir o modal */}
       <button
-        className="border border-gray-300 rounded-md p-3 text-xs w-full flex gap-2 items-center cursor-pointer"
+        className="border border-gray-300 rounded-md p-3 text-xs w-full flex gap-2 items-center cursor-pointer mb-4"
         onClick={() => setIsModalOpen(true)}
       >
         <MyIcon name="pessoas" />

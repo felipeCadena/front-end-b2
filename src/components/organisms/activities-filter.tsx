@@ -20,7 +20,7 @@ export default function ActivitiesFilter({ withText = true }) {
     },
   ];
   return (
-    <section className="flex gap-2 mt-4">
+    <section className="flex justify-center gap-2 mt-4">
       {activities.map((item, index) => (
           <MyButton 
           key={index} 

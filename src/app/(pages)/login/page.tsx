@@ -34,11 +34,13 @@ export default function Login() {
       <div className="mt-6">
         <MyTextInput
           label="Email ou celular"
+          noHintText
           placeholder="b2adventure@gmail.com"
         />
       </div>
-      <div className="mt-1">
-        <MyTextInput label="Senha" placeholder="******" type="password" />
+      <div className="mt-6">
+          
+        <MyTextInput label="Senha" placeholder="******" type="password" noHintText/>
       </div>
       <div className="flex flex-col">
         <MyButton variant="text" className="mt-4">

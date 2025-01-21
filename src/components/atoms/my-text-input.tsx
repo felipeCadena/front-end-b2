@@ -47,7 +47,7 @@ const MyTextInput = React.forwardRef<HTMLInputElement, MyTextInputProps>(
         <input
           type={type}
           className={cn(
-            "flex h-12 w-full rounded-md border border-gray-300 bg-neutral-000 text-xs md:text-sm ring-offset-neutral-000 file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-neutral-500 focus-visible:outline-none  focus-visible:ring-primary-600 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
+            "flex h-12 pl-4 w-full rounded-md border border-gray-300 bg-neutral-000 text-xs md:text-sm ring-offset-neutral-000 file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-neutral-500 focus-visible:outline-none  focus-visible:ring-primary-600 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
             leftIcon && "pl-10",
             rightIcon && "pr-8",
             stateColor === "success" && "border-success-500 focus-visible:ring-success-500",

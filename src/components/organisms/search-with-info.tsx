@@ -10,12 +10,14 @@ export default function SearchInfoActivity() {
   return (
     <div className="space-y-4 mt-20">
       <div className="mx-auto space-y-5 p-4 border border-gray-300 rounded-lg">
-        <MyTextInput
-        noHintText
-          placeholder="Localização"
-          className="placeholder:text-black"
-          leftIcon={<MyIcon name="localizacao" className="ml-3" />}
-        />
+        <div className="mt-4">
+          <MyTextInput
+            noHintText
+            placeholder="Localização"
+            className="placeholder:text-black"
+            leftIcon={<MyIcon name="localizacao" className="ml-3" />}
+          />
+        </div>
 
         <MyDatePicker />
 
@@ -28,7 +30,6 @@ export default function SearchInfoActivity() {
         />
 
         <PeopleSelector />
-
       </div>
 
       <MyButton
