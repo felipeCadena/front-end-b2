@@ -26,7 +26,7 @@ export function MyDatePicker() {
           <MyIcon name="date" />
           {date 
           ? format(date, "dd 'de' MMMM 'de' yyyy", { locale: ptBR }) 
-          : <MyTypography variant="body" weight="regular">Data da Atividade</MyTypography>}
+          : <MyTypography variant="body" weight="regular" className="text-sm">Data da Atividade</MyTypography>}
         </MyButton>
       </PopoverTrigger>
       <PopoverContent className="w-full bg-white flex flex-col items-center" align="center">

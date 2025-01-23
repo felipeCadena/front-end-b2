@@ -26,7 +26,7 @@ export default function ActivitiesFilter({ withText = true }) {
           key={index} 
           variant="outline-muted" 
           size="md" 
-          className="flex flex-col gap-1 items-center rounded-md w-[6.625rem] h-[6.625rem]"
+          className="flex flex-col gap-1 items-center rounded-md w-[7.5rem] h-[7.5rem]"
           >
             <MyIcon name={item.icon as IconsMapTypes}/>
             <span className="px-4">{item.title}</span>

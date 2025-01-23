@@ -43,7 +43,7 @@ export default function Login() {
         <MyTextInput label="Senha" placeholder="******" type="password" noHintText/>
       </div>
       <div className="flex flex-col">
-        <MyButton variant="text" className="mt-4">
+        <MyButton variant="text" className="mt-4" onClick={() => router.push(PATHS["esqueci-minha-senha"])}>
           Esqueci minha senha
         </MyButton>
 

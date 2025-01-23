@@ -1,40 +1,57 @@
 "use client";
 
 import MyBadge from "@/components/atoms/my-badge";
+import MyIcon from "@/components/atoms/my-icon";
 import MyTypography from "@/components/atoms/my-typography";
 import StarRating from "@/components/molecules/my-stars";
+import { cn } from "@/utils/cn";
 import Image from "next/image";
-import { Carousel } from "react-responsive-carousel";
-import "react-responsive-carousel/lib/styles/carousel.min.css";
+import { useRef } from "react";
+import { useDraggable } from "react-use-draggable-scroll";
 
-export default function CarouselCustom({ activity, images }: any) {
+export default function CarouselCustom({ activities }: any) {
+  const ref =
+    useRef<HTMLDivElement>() as React.MutableRefObject<HTMLInputElement>;
+  const { events } = useDraggable(ref);
 
   return (
-    <div className="flex flex-col min-w-[60vw] lg:min-w-0">
-      <Carousel
-        showThumbs={false}
-        showStatus={false}
-        showArrows={false}
-        width="100%"
-        emulateTouch
-        infiniteLoop
-      >
-        {images?.map((image: any, index: number) => (
-        <div key={index} className="relative z-10 overflow-hidden h-[225px] w-full hover:cursor-pointer rounded-md">
-          <Image
-            alt="sample_file"
-            src={image ?? ""}
-            width={250}
-            height={300}
-            className="w-full h-[225px] object-cover"
-          />
+    <div
+      ref={ref}
+      className={cn(
+        "max-sm:overflow-x-scroll flex gap-4 overflow-x-hidden scrollbar-hide my-8"
+      )}
+      {...events}
+    >
+      {activities.map((activity: any, index: number) => (
+        <div key={index} className="min-w-[60%] flex flex-col gap-1">
+          <div className="relative z-10 overflow-hidden h-[225px] w-full hover:cursor-pointer rounded-md">
+            <Image
+              alt="sample_file"
+              src={activity.image ?? ""}
+              width={250}
+              height={300}
+              className="w-full h-[225px] object-cover"
+            />
+            {activity.favorite && (
+              <MyIcon
+                name="full-heart"
+                variant="circled"
+                className="absolute top-3 right-3"
+              />
+            )}
+          </div>
+          <span className="mt-2">
+            <MyBadge variant="outline">{activity.tag}</MyBadge>
+          </span>
+          <StarRating rating={activity.stars} />
+          <MyTypography variant="subtitle1" weight="bold" className="">
+            {activity.title}
+          </MyTypography>
+          <MyTypography variant="body-big" className="">
+            {activity.description.slice(0, 25).concat("...")}
+          </MyTypography>
         </div>
-        ))}
-      </Carousel>
-      <span className="mt-2"><MyBadge variant="outline">{activity.tag}</MyBadge></span>
-      <StarRating rating={activity.stars}/>
-      <MyTypography variant="subtitle1" weight="bold" className="">{activity.title}</MyTypography>
-      <MyTypography variant="body-big" className="">{activity.description.slice(0, 25).concat("...")}</MyTypography>
+      ))}
     </div>
   );
 }

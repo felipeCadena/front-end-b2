@@ -1,7 +1,7 @@
 const Search = () => (
     <svg
-    width='18'
-    height='16'
+    width='28'
+    height='22'
     viewBox='0 0 21 20'
     fill='none'
     stroke='#8DC63F'

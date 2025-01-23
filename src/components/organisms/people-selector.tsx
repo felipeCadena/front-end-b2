@@ -19,7 +19,7 @@ export default function PeopleSelector() {
         onClick={() => setIsModalOpen(true)}
       >
         <MyIcon name="pessoas" />
-        <span className="text-xs">Número de pessoas</span>
+        <span className="text-sm">Número de pessoas</span>
       </button>
 
       {/* Modal */}

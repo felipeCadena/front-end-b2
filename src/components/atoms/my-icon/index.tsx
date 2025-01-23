@@ -39,6 +39,8 @@ import MapPin from "./elements/map-pin";
 import X from "./elements/x";
 import ChevronDown from "./elements/down";
 import File from "./elements/file";
+import FullHeart from "./elements/full-heart";
+import ShoppingCard from "./elements/shopping-card";
 
 export type IconsMapTypes = keyof typeof IconsMap;
 
@@ -87,7 +89,9 @@ const IconsMap = {
   pin: <MapPin />,
   x: <X />,
   "chevron-down": <ChevronDown />,
-  file: <File />
+  file: <File />,
+  "full-heart": <FullHeart />,
+  "shopping-card": <ShoppingCard />
 };
 
 

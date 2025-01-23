@@ -6,6 +6,7 @@
 const ROOTS_INITIAL = "/";
 const ROOTS_LOGIN = "/login";
 const ROOTS_CADASTRO = "/cadastro";
+const ROOTS_SENHA = "/esqueci-minha-senha";
 const ROOTS_PARCEIRO = "/parceiros";
 
 // ==========================================
@@ -23,7 +24,8 @@ const PATHS = {
   initial: ROOTS_INITIAL,
   login: ROOTS_LOGIN,
   cadastro: ROOTS_CADASTRO,
-  parceiros: ROOTS_PARCEIRO
+  "esqueci-minha-senha": ROOTS_SENHA,
+  parceiros: ROOTS_PARCEIRO,
 };
 
 export default PATHS;

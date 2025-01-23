@@ -8,7 +8,7 @@ export default function SearchActivity() {
         <MyTextInput 
         placeholder="Procurar atividade"  
         noHintText
-        leftIcon={<MyIcon name="search" className='ml-3' />}
+        rightIcon={<MyIcon name="search" className='mr-2' />}
         />
     </section>
   )

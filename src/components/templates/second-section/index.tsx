@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import MyTypography from "@/components/atoms/my-typography";
 import ActivitiesFilter from "@/components/organisms/activities-filter";
@@ -6,30 +6,32 @@ import React from "react";
 import CarouselCustom from "./carousel-custom";
 
 export default function SecondSection() {
-    const activities = [
-      {
-      images: ["images/ar.png", "images/terra.png", "images/mar.png"],
+  const activities = [
+    {
+      image: "images/ar.png",
       tag: "Atividade Aérea",
       stars: 3,
       title: "Escalada Cristo - RJ",
-      description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",
+      description:
+        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",
     },
     {
-      images: ["images/ar.png", "images/terra.png", "images/mar.png"],
+      image: "images/terra.png",
       tag: "Atividade Terrestre",
       stars: 4,
       title: "Voo de Parapente",
-      description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",
+      description:
+        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",
     },
     {
-      images: ["images/ar.png", "images/terra.png", "images/mar.png"],
+      image: "images/mar.png",
       tag: "Atividade no Mar",
       stars: 5,
       title: "Passeio de barco",
-      description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",
-    }
-    ]
-
+      description:
+        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",
+    },
+  ];
 
   return (
     <section className="my-10">
@@ -49,18 +51,17 @@ export default function SecondSection() {
         Esses são os resultados da sua busca
       </MyTypography>
 
-      <div className="flex gap-4 mt-6 max-sm:overflow-x-scroll overflow-x-hidden scrollbar-hide">
-        {activities.map((activity: any | null | undefined) => (
-          <CarouselCustom activity={activity} images={activity.images} key={activity.title}/>
-          
-        ))}
-      </div>
-      <div className="flex gap-4 mt-10 max-sm:overflow-x-scroll overflow-x-hidden scrollbar-hide">
-        {activities.map((activity: any | null | undefined) => (
-          <CarouselCustom activity={activity} images={activity.images} key={activity.title}/>
-          
-        ))}
-      </div>
+      <CarouselCustom activities={activities} />
+
+
+      <MyTypography variant="heading3" weight="semibold" className="mt-8">
+        Sugestões para você
+      </MyTypography>
+      <MyTypography variant="body-big" weight="regular" className="">
+        Atividades mais buscadas
+      </MyTypography>
+
+      <CarouselCustom activities={activities} />
     </section>
   );
 }
