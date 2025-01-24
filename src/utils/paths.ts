@@ -9,6 +9,8 @@ const ROOTS_CADASTRO = "/cadastro";
 const ROOTS_SENHA = "/esqueci-minha-senha";
 const ROOTS_PARCEIRO = "/parceiros";
 const ROOTS_ATIVIDADES = "/atividades";
+// Agrupa Favoritos, Histórico e Agenda
+const ROOTS_INFOS = "/informacoes";
 
 // ==========================================
 // * Dimanic routes
@@ -27,6 +29,7 @@ const PATHS = {
   "esqueci-minha-senha": ROOTS_SENHA,
   parceiros: ROOTS_PARCEIRO,
   atividades: ROOTS_ATIVIDADES,
+  informacoes: ROOTS_INFOS,
   visualizarAtividade: VISUALIZAR_ATIVIDADE,
 };
 

@@ -8,7 +8,7 @@ import React from 'react'
 
 export default function Favoritos() {
   return (
-    <section className='mx-4 space-y-8'>
+    <section className='mx-4 mb-15 space-y-8'>
         <SearchActivity />
         <ActivitiesFilter />
         <ActivitiesDetails activities={activities}/>
