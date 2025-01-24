@@ -41,6 +41,17 @@ import ChevronDown from "./elements/down";
 import File from "./elements/file";
 import FullHeart from "./elements/full-heart";
 import ShoppingCard from "./elements/shopping-card";
+import BlackHeart from "./elements/black-heart";
+import VoltarBlack from "./elements/voltar-black";
+import Transporte from "./elements/transporte";
+import Fotografia from "./elements/fotografia";
+import Agua from "./elements/agua";
+import Combustivel from "./elements/combustivel";
+import Alimentacao from "./elements/alimentacao";
+import Guia from "./elements/guia";
+import Duracao from "./elements/duracao";
+import Compartilhar from "./elements/compartilhar";
+import SetaDireita from "./elements/seta-direita";
 
 export type IconsMapTypes = keyof typeof IconsMap;
 
@@ -91,7 +102,18 @@ const IconsMap = {
   "chevron-down": <ChevronDown />,
   file: <File />,
   "full-heart": <FullHeart />,
-  "shopping-card": <ShoppingCard />
+  "shopping-card": <ShoppingCard />,
+  "black-heart": <BlackHeart />,
+  "voltar-black": <VoltarBlack />,
+  transporte: <Transporte />,
+  fotografia: <Fotografia />,
+  agua: <Agua />,
+  combustivel: <Combustivel />,
+  alimentacao: <Alimentacao />,
+  guia: <Guia />,
+  duracao: <Duracao />,
+  compartilhar: <Compartilhar />,
+  "seta-direita": <SetaDireita />
 };
 
 

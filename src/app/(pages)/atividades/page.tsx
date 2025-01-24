@@ -1,6 +1,6 @@
 "use client"
 
-import MyIcon from "@/components/atoms/my-icon";
+import { activities } from "@/common/constants/mock";
 import MyTypography from "@/components/atoms/my-typography";
 import ShoppingCard from "@/components/molecules/shopping-card";
 import ActivitiesFilter from "@/components/organisms/activities-filter";
@@ -9,45 +9,8 @@ import CarouselCustom from "@/components/templates/second-section/carousel-custo
 import React from "react";
 
 export default function Atividades() {
-  const activities = [
-    {
-      image: "images/mar.png",
-      tag: "Atividade no Mar",
-      stars: 5,
-      title: "Passeio de barco",
-      description:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",
-      favorite: true,
-    },
-    {
-      image: "images/ar.png",
-      tag: "Atividade Aérea",
-      stars: 3,
-      title: "Escalada Cristo - RJ",
-      description:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",
-    },
-    {
-      image: "images/terra.png",
-      tag: "Atividade Terrestre",
-      stars: 4,
-      title: "Voo de Parapente",
-      description:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",
-      favorite: true,
-    },
-    {
-      image: "images/mar.png",
-      tag: "Atividade no Mar",
-      stars: 5,
-      title: "Passeio de barco",
-      description:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",
-    },
-  ];
-
   return (
-    <section>
+    <section className="mx-5">
       <SearchActivity />
 
       <div className="mt-8">
@@ -80,7 +43,7 @@ export default function Atividades() {
         </MyTypography>
         <CarouselCustom activities={activities} />
       </div>
-      <ShoppingCard items={"3"}/>
+      <ShoppingCard items={"4"}/>
     </section>
   );
 }

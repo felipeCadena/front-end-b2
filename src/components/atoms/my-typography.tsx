@@ -24,6 +24,7 @@ const typographyMap = cva("", {
       medium: "font-medium",
       bold: "font-bold",
       semibold: "font-semibold",
+      extrabold: "font-extrabold"
     },
     lightness: {
       white: "text-neutral-000",

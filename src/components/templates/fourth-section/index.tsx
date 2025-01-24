@@ -9,7 +9,7 @@ export default function FourthSection() {
             avatar: '/images/avatar1.png',
             name: 'Luciana Bianco',
             date: '12/12/2022',
-            description: 'Eu adorei participar das atividades da B2 Adventures, eles cuidaram de tudo pra mim e garantiram minha segurança e tive uma experiência inesquecível!'
+            description: 'Eu adorei participar das atividades da B2 Adventure, eles cuidaram de tudo pra mim e garantiram minha segurança e tive uma experiência inesquecível!'
         },
         {
             avatar: '/images/avatar2.png',
@@ -27,7 +27,7 @@ export default function FourthSection() {
     
   return (
     <section className='my-20'>
-        <MyTypography variant='heading2' weight='bold' className='text-center'>B2 Adventures</MyTypography>
+        <MyTypography variant='heading2' weight='bold' className='text-center'>B2 Adventure</MyTypography>
         <MyTypography variant='subtitle3' weight='regular' lightness={400} className='text-center'>O que estão falando da gente</MyTypography>
         <div className='flex gap-2 items-center justify-center my-2'>
             <StarRating rating={4} />

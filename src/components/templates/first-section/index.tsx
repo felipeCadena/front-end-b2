@@ -9,6 +9,9 @@ export default function FirstSection() {
     "/images/atividades/montanha.webp",
     "/images/atividades/paraquedas.webp",
     "/images/atividades/mergulho.webp",
+    "/images/atividades/moto.webp",
+    "/images/atividades/parapente.webp",
+    "/images/atividades/canoagem.webp",
   ]
   return (
     <section className="mt-10">

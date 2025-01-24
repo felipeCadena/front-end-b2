@@ -23,7 +23,7 @@ const MapPin = () => (
         width="62.6751"
         height="62.6751"
         filterUnits="userSpaceOnUse"
-        color-interpolation-filters="sRGB"
+        colorInterpolationFilters="sRGB"
       >
         <feFlood flood-opacity="0" result="BackgroundImageFix" />
         <feColorMatrix

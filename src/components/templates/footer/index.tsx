@@ -1,6 +1,5 @@
 "use client";
 
-import MyBadge from "@/components/atoms/my-badge";
 import MyIcon from "@/components/atoms/my-icon";
 import MyLogo from "@/components/atoms/my-logo";
 import MyTypography from "@/components/atoms/my-typography";
@@ -17,7 +16,7 @@ export default function Footer() {
         className="mx-auto py-8"
       />
       <MyTypography variant="subtitle2" weight="semibold">
-        B2 Adventures
+        B2 Adventure
       </MyTypography>
       <MyTypography variant="body-big" weight="regular" className="mt-2 pb-10">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Enim habitasse
@@ -25,7 +24,7 @@ export default function Footer() {
         faucibus sagittis tempor, non sit eu.
       </MyTypography>
 
-      <div className="flex justify-center py-1 gap-4 bg-[#97E16933] rounded-md">
+      <div className="flex justify-center py-1 gap-4 bg-primary-900 rounded-md">
         <MyIcon name="email" className="" />
         <MyTypography variant="body-big">
           contatob2adventure@gmail.com
@@ -37,11 +36,11 @@ export default function Footer() {
         novidades em nossas redes sociais:
       </MyTypography>
       <div className="flex justify-center gap-4 my-10">
-        <MyIcon name="linkedin" className="bg-[#97E16933] rounded-md" />
-        <MyIcon name="messenger" className="bg-[#97E16933] rounded-md" />
-        <MyIcon name="youtube" className="bg-[#97E16933] rounded-md" />
-        <MyIcon name="instagram" className="bg-[#97E16933] rounded-md" />
-        <MyIcon name="facebookGray" className="bg-[#97E16933] rounded-md" />
+        <MyIcon name="linkedin" className="bg-primary-900 rounded-md" />
+        <MyIcon name="messenger" className="bg-primary-900 rounded-md" />
+        <MyIcon name="youtube" className="bg-primary-900 rounded-md" />
+        <MyIcon name="instagram" className="bg-primary-900 rounded-md" />
+        <MyIcon name="facebookGray" className="bg-primary-900 rounded-md" />
       </div>
 
       <MyTypography

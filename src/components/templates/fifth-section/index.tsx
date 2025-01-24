@@ -25,7 +25,7 @@ const FifithSection = () => {
   return (
     <div className="flex flex-col items-center space-y-4">
       {/* Header */}
-      <div className="bg-[#97E16933] px-8 py-2 rounded-full mt-6 mb-2">
+      <div className="bg-primary-900 px-8 py-2 rounded-full mt-6 mb-2">
         <MyTypography variant="subtitle3" weight="bold" className="text-center">
           Temos atividades perto de você!
         </MyTypography>
@@ -38,10 +38,10 @@ const FifithSection = () => {
             key={index}
             className="flex items-center p-3 bg-[#F1F0F587] border border-primary-600/30 border-opacity-80 rounded-lg shadow-sm hover:bg-gray-100 relative"
           >
-            <div className="absolute inset-y-0 left-0 w-3 bg-[#97E16933] rounded-l-lg"></div>
+            <div className="absolute inset-y-0 left-0 w-3 bg-primary-900 rounded-l-lg"></div>
             <MyIcon
               name="localizacaoRedonda"
-              className="w-6 h-6 text-[#97E16933] ml-3"
+              className="w-6 h-6 text-primary-900 ml-3"
             />
             <div className="ml-3">
               <MyTypography

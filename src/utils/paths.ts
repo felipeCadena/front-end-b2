@@ -8,11 +8,11 @@ const ROOTS_LOGIN = "/login";
 const ROOTS_CADASTRO = "/cadastro";
 const ROOTS_SENHA = "/esqueci-minha-senha";
 const ROOTS_PARCEIRO = "/parceiros";
+const ROOTS_ATIVIDADES = "/atividades";
 
 // ==========================================
 // * Dimanic routes
-// const ECOMMERCE_PROJECT = (slug: number | string) => `/ecommerce/projeto/${slug}`;
-
+const VISUALIZAR_ATIVIDADE = (slug: number | string) => `/atividades/${slug}`;
 
 // ==========================================
 // * Dynamic encode routes
@@ -26,6 +26,8 @@ const PATHS = {
   cadastro: ROOTS_CADASTRO,
   "esqueci-minha-senha": ROOTS_SENHA,
   parceiros: ROOTS_PARCEIRO,
+  atividades: ROOTS_ATIVIDADES,
+  visualizarAtividade: VISUALIZAR_ATIVIDADE,
 };
 
 export default PATHS;

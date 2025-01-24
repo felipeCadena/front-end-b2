@@ -41,7 +41,7 @@ export default function Sidebar({ logout }: { logout?: () => void }) {
           <LanguageDropdown />
 
           <div className="-ml-4">
-          <SidebarMenu />
+          <SidebarMenu closeSidebar={closeSidebar}/>
           </div>
         </nav>
       </aside>

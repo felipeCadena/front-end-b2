@@ -3,8 +3,8 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { Suspense } from "react";
 import { ToastContainer } from "react-toastify";
-import Header from "@/components/organisms/header";
 import Footer from "@/components/templates/footer";
+import Layout from "@/components/organisms/layout";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -27,21 +27,21 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.className} antialiased mx-5`}>
+      <body className={`${inter.className} antialiased`}>
         <Suspense>
-          <Header />
-          {children}
-          <ToastContainer
-            theme="colored"
-            position="top-right"
-            autoClose={2500}
-            pauseOnHover={false}
-            hideProgressBar
-            style={{ width: "420px" }}
-          />
+          <div className="">
+            <Layout>{children}</Layout>
+            <ToastContainer
+              theme="colored"
+              position="top-right"
+              autoClose={2500}
+              pauseOnHover={false}
+              hideProgressBar
+              style={{ width: "420px" }}
+            />
+          </div>
         </Suspense>
       </body>
-      <Footer />
     </html>
   );
 }

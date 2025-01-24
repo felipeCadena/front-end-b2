@@ -9,7 +9,7 @@ import FifithSection from "@/components/templates/fifth-section";
 export default function Home() {
   return (
     <>
-      <div className="overflow-x-hidden">
+      <div className="overflow-x-hidden mx-5">
         <SearchActivity />
         <FirstSection />
         <SecondSection />

@@ -4,35 +4,9 @@ import MyTypography from "@/components/atoms/my-typography";
 import ActivitiesFilter from "@/components/organisms/activities-filter";
 import React from "react";
 import CarouselCustom from "./carousel-custom";
+import { activities } from "@/common/constants/mock";
 
 export default function SecondSection() {
-  const activities = [
-    {
-      image: "images/ar.png",
-      tag: "Atividade Aérea",
-      stars: 3,
-      title: "Escalada Cristo - RJ",
-      description:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",
-    },
-    {
-      image: "images/terra.png",
-      tag: "Atividade Terrestre",
-      stars: 4,
-      title: "Voo de Parapente",
-      description:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",
-    },
-    {
-      image: "images/mar.png",
-      tag: "Atividade no Mar",
-      stars: 5,
-      title: "Passeio de barco",
-      description:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",
-    },
-  ];
-
   return (
     <section className="my-10">
       <MyTypography variant="heading2" weight="semibold" className="">

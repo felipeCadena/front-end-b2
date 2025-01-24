@@ -5,7 +5,9 @@ import MyIcon from "@/components/atoms/my-icon";
 import MyTypography from "@/components/atoms/my-typography";
 import StarRating from "@/components/molecules/my-stars";
 import { cn } from "@/utils/cn";
+import PATHS from "@/utils/paths";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useRef } from "react";
 import { useDraggable } from "react-use-draggable-scroll";
 
@@ -13,6 +15,7 @@ export default function CarouselCustom({ activities }: any) {
   const ref =
     useRef<HTMLDivElement>() as React.MutableRefObject<HTMLInputElement>;
   const { events } = useDraggable(ref);
+  const router = useRouter()
 
   return (
     <div
@@ -23,7 +26,11 @@ export default function CarouselCustom({ activities }: any) {
       {...events}
     >
       {activities.map((activity: any, index: number) => (
-        <div key={index} className="min-w-[60%] flex flex-col gap-1">
+        <div 
+        key={index} 
+        className="min-w-[60%] flex flex-col gap-1 cursor-pointer"
+        onClick={() => router.push(PATHS.visualizarAtividade(activity.id))}
+        >
           <div className="relative z-10 overflow-hidden h-[225px] w-full hover:cursor-pointer rounded-md">
             <Image
               alt="sample_file"
