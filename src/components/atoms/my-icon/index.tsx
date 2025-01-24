@@ -52,6 +52,13 @@ import Guia from "./elements/guia";
 import Duracao from "./elements/duracao";
 import Compartilhar from "./elements/compartilhar";
 import SetaDireita from "./elements/seta-direita";
+import Perfil from "./elements/perfil";
+import Notificacoes from "./elements/notificacoes";
+import Chat from "./elements/chat";
+import Favoritos from "./elements/favoritos";
+import Reservas from "./elements/reservas";
+import Carrinho from "./elements/carrinhos";
+import Sair from "./elements/sair";
 
 export type IconsMapTypes = keyof typeof IconsMap;
 
@@ -113,7 +120,14 @@ const IconsMap = {
   guia: <Guia />,
   duracao: <Duracao />,
   compartilhar: <Compartilhar />,
-  "seta-direita": <SetaDireita />
+  "seta-direita": <SetaDireita />,
+  perfil: <Perfil />,
+  notificacoes: <Notificacoes />,
+  chat: <Chat />,
+  favoritos: <Favoritos />,
+  reservas: <Reservas />,
+  carrinho: <Carrinho />,
+  sair: <Sair />
 };
 
 

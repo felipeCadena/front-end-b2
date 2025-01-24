@@ -69,6 +69,16 @@ export default function Atividade() {
             </MyTypography>
           </div>
         </div>
+
+        <div className="m-6">
+          <MyTypography variant="subtitle3" weight="bold" className="">
+          Descrição da atividade:
+          </MyTypography>
+          <MyTypography variant="body-big" weight="regular" className="mt-1">
+            {activity?.description}
+          </MyTypography>
+
+        </div>
       </div>
 
       <div className="mx-6">
@@ -78,7 +88,7 @@ export default function Atividade() {
               name="transporte"
               className="p-2 bg-primary-900 rounded-md"
             />
-            <MyTypography variant="label" weight="bold" className="">
+            <MyTypography variant="body" weight="bold" className="">
               Transporte
             </MyTypography>
           </div>
@@ -88,7 +98,7 @@ export default function Atividade() {
               name="fotografia"
               className="p-2 bg-primary-900 rounded-md"
             />
-            <MyTypography variant="label" weight="bold" className="">
+            <MyTypography variant="body" weight="bold" className="">
               Fotografia
             </MyTypography>
           </div>
@@ -98,21 +108,21 @@ export default function Atividade() {
               name="alimentacao"
               className="p-2 bg-primary-900 rounded-md"
             />
-            <MyTypography variant="label" weight="bold" className="">
+            <MyTypography variant="body" weight="bold" className="">
               Alimentação
             </MyTypography>
           </div>
 
           <div className="flex items-center gap-2">
             <MyIcon name="agua" className="p-2 bg-primary-900 rounded-md" />
-            <MyTypography variant="label" weight="bold" className="">
+            <MyTypography variant="body" weight="bold" className="">
               Água
             </MyTypography>
           </div>
 
           <div className="flex items-center gap-2">
             <MyIcon name="guia" className="p-2 bg-primary-900 rounded-md" />
-            <MyTypography variant="label" weight="bold" className="">
+            <MyTypography variant="body" weight="bold" className="">
               Guia
             </MyTypography>
           </div>
@@ -122,7 +132,7 @@ export default function Atividade() {
               name="combustivel"
               className="p-2 bg-primary-900 rounded-md"
             />
-            <MyTypography variant="label" weight="bold" className="">
+            <MyTypography variant="body" weight="bold" className="">
               Combustível
             </MyTypography>
           </div>
@@ -131,7 +141,7 @@ export default function Atividade() {
         <div className="grid grid-cols-2 gap-4">
           <div className="bg-primary-900 py-2 rounded-md mb-2">
             <MyTypography
-              variant="subtitle3"
+              variant="body"
               weight="bold"
               className="text-center"
             >
@@ -141,7 +151,7 @@ export default function Atividade() {
 
           <div className="bg-primary-900 py-2 rounded-md mb-2">
             <MyTypography
-              variant="subtitle3"
+              variant="body"
               weight="bold"
               className="text-center"
             >
@@ -151,7 +161,7 @@ export default function Atividade() {
 
           <div className="bg-primary-900 py-2 rounded-md mb-2">
             <MyTypography
-              variant="subtitle3"
+              variant="body"
               weight="bold"
               className="text-center"
             >

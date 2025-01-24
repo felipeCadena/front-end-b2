@@ -1,7 +1,7 @@
 const Guia = () => (
   <svg
-    width="19"
-    height="27"
+    width="24"
+    height="19"
     viewBox="0 0 19 27"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"

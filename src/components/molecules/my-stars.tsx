@@ -7,7 +7,7 @@ const StarRating = ({ rating }: { rating: number }) => {
   const stars = Array.from({ length: maxRating }, (_, index) => index + 1); // [1, 2, 3, 4, 5]
 
   return (
-    <div className="flex items-center gap-1 my-2">
+    <div className="flex items-center my-2 w-[6.5rem]">
       {stars.map((star, index) => (
          <MyIcon key={star} name={star <= rating ? "star" : "emptyStar"} />
       ))}

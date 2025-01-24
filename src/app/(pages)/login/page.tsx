@@ -8,9 +8,18 @@ import MyTypography from "@/components/atoms/my-typography";
 import PATHS from "@/utils/paths";
 import { useRouter } from "next/navigation";
 import React from "react";
+import useLogin from "./login-store";
 
 export default function Login() {
   const router = useRouter()
+  const { email, setEmail } = useLogin();
+
+  const handleLogin = () => {
+    if (email === "cliente@gmail.com") {
+      router.push(PATHS.atividades);
+    }
+  }
+
   return (
     <section className="px-6">
       <div className="relative">
@@ -33,9 +42,11 @@ export default function Login() {
 
       <div className="mt-6">
         <MyTextInput
-          label="Email ou celular"
+          label="Email"
           noHintText
           placeholder="b2adventure@gmail.com"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
         />
       </div>
       <div className="mt-6">
@@ -52,6 +63,7 @@ export default function Login() {
           variant="default"
           borderRadius="squared"
           size="md"
+          onClick={handleLogin}
         >
           Login
         </MyButton>

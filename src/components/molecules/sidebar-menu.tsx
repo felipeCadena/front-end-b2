@@ -1,38 +1,27 @@
 "use client";
 
+import useLogin from "@/app/(pages)/login/login-store";
+import { sideBarClient, sideBarLp } from "@/common/constants/sideBar";
 import MyIcon from "@/components/atoms/my-icon";
 import {
   MyToggleGroup,
   ToggleGroupItem,
 } from "@/components/molecules/my-toggle-group";
 import Link from "next/link";
-import React, { useState } from "react";
-
-const items: any[] = [
-  {
-    label: "Atividades",
-    link: "/atividades",
-    icon: "atividades",
-  },
-  {
-    label: "Quem Somos",
-    link: "/quem-somos",
-    icon: "quemSomos",
-  },
-  {
-    label: "Área dos Parceiros",
-    link: "/parceiros",
-    icon: "parceiros",
-  },
-  {
-    label: "Logar-se",
-    link: "/login",
-    icon: "logar",
-  },
-];
+import { usePathname } from "next/navigation";
+import React, { useEffect, useState } from "react";
 
 export default function SidebarMenu({closeSidebar}: {closeSidebar: () => void}) {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [sideBar, setSideBar] = useState<any[]>(sideBarLp);
+  const pathname = usePathname();
+  const {email} = useLogin()
+
+  useEffect(() => {
+    if (pathname !== "/" && email.includes("cliente")) {
+      setSideBar(sideBarClient)
+    }
+  }, [])
+  
 
   const handleCloseSidebar = () => {
     closeSidebar()
@@ -44,7 +33,7 @@ export default function SidebarMenu({closeSidebar}: {closeSidebar: () => void}) 
         type="single"
         className="absolute flex w-full flex-col items-start gap-4"
       >
-        {items.map((item) => {
+        {sideBar.map((item) => {
           return (
             <React.Fragment key={item.label}>
               <ToggleGroupItem
