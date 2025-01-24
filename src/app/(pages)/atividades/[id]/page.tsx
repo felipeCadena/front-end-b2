@@ -22,7 +22,7 @@ export default function Atividade() {
       <div className="relative">
         <MyIcon
           name="voltar-black"
-          className="absolute z-50 top-8 left-8"
+          className="absolute z-20 top-8 left-8"
           onClick={() => router.back()}
         />
         <CarouselImages
