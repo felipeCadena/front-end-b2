@@ -17,7 +17,7 @@ export default function Sidebar({ logout }: { logout?: () => void }) {
       {/* Botão Hamburguer */}
       <button
         onClick={toggleSidebar}
-        className="z-50 rounded-md lg:hidden"
+        className="rounded-md lg:hidden"
       >
         <MyIcon name="open" className={isOpen ? "hidden" : ""} />
       </button>

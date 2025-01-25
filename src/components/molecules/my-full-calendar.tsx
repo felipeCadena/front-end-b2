@@ -8,7 +8,7 @@ import MyIcon from "../atoms/my-icon";
 
 export type CalendarProps = React.ComponentProps<typeof DayPicker>;
 
-function MyCalendar({
+function MyFullCalendar({
   className,
   classNames,
   showOutsideDays = true,
@@ -17,12 +17,12 @@ function MyCalendar({
   return (
     <DayPicker
       showOutsideDays={showOutsideDays}
-      className={cn("p-1", className)}
+      className={cn("", className)}
       ISOWeek={true}
       classNames={{
-        button_next: "absolute right-4 top-5",
-        button_previous: "absolute left-4 top-5",
-        months: "flex flex-col",
+        button_next: "absolute right-1 top-0 border rounded-lg p-2",
+        button_previous: "absolute left-1 top-0 border rounded-lg p-2",
+        months: "flex flex-col mt-1",
         month: "space-y-4 text-center",
         caption: "flex justify-center pt-1 relative items-center",
         caption_label: "font-semibold text-lg",
@@ -36,7 +36,7 @@ function MyCalendar({
         head_row: "flex",
         head_cell:
           "text-[#929292] rounded-md w-8 font-normal text-[0.8rem]",
-        row: "flex w-full mt-2",
+        row: "flex w-full",
         cell: cn(
           "relative p-0 text-center text-sm focus-within:relative focus-within:z-20 [&:has([aria-selected])]:bg-accent [&:has([aria-selected].day-outside)]:bg-accent/50 [&:has([aria-selected].day-range-end)]:rounded-r-md",
           props.mode === "range"
@@ -56,26 +56,16 @@ function MyCalendar({
           "aria-selected:bg-accent aria-selected:text-accent-foreground",
         day_hidden: "invisible",
         selected: "bg-primary-600 text-[#fff] rounded-md",
-        weekday: "font-normal text-[#929292] opacity-80",
+        weekday: "font-normal text-[#929292] opacity-80 pt-6",
         outside: "text-[#929292] opacity-50",
         disabled: "text-[#929292] opacity-50",
+        month_grid: "w-screen",
         ...classNames,
-      }}
-      components={{
-        PreviousMonthButton: ({ className, ...props }) => (
-          <MyIcon name="left" className={cn("h-4 w-4", className)} />
-        ),
-        NextMonthButton: ({ className, ...props }) => (
-          <MyIcon
-            name="right"
-            className={cn("h-4 w-4", className)}
-          />
-        ),
       }}
       {...props}
     />
   );
 }
-MyCalendar.displayName = "Calendar";
+MyFullCalendar.displayName = "Full Calendar";
 
-export { MyCalendar };
+export { MyFullCalendar };

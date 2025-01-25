@@ -11,8 +11,11 @@ export default function ActivitiesDetails({ activities }: any) {
   return (
     <section className="">
       {activities.map((activity: any, index: number) => (
-        <div key={index} className="flex justify-around gap-2 cursor-pointer my-4">
-          <div className="relative z-10 overflow-hidden min-w-[6.625rem] h-[6.625rem] hover:cursor-pointer rounded-md">
+        <div
+          key={index}
+          className="flex justify-around gap-2 cursor-pointer my-4"
+        >
+          <div className="relative z-10 overflow-hidden w-[6.625rem] h-[6.625rem] hover:cursor-pointer rounded-md">
             <Image
               alt="sample_file"
               src={activity.image ?? ""}
@@ -22,9 +25,10 @@ export default function ActivitiesDetails({ activities }: any) {
             />
           </div>
           <div>
-            <div className="flex gap-1 text-nowrap mb-2">
-              <MyBadge className="font-medium" variant="outline">{activity.tag}</MyBadge>
-              <span className="mt-2"></span>
+            <div className="flex justify-between mb-1 mr-4">
+              <MyBadge className="font-medium flex-shrink-0" variant="outline">
+                {activity.tag}
+              </MyBadge>
               <StarRating rating={activity.stars} />
             </div>
 

@@ -1,13 +1,27 @@
+"use client"
+
 import { MyTabs, TabsList, TabsTrigger } from "@/components/molecules/my-tabs";
 import { TabsContent } from "@radix-ui/react-tabs";
-import React from "react";
+import React, { useEffect } from "react";
 import Favoritos from "./favoritos";
+import useSearchQueryService from "@/services/use-search-query-service";
+import Historico from "./historico";
+import Agenda from "../reservas/page";
 
 export default function Informacoes() {
+  const [tab, setTab] = React.useState("");
+  const { params } = useSearchQueryService();
+
+  useEffect(() => {
+    if (params.tab) {
+      setTab(params.tab)
+    }
+  }, [params])
+
   return (
     <section>
-      <MyTabs defaultValue="favoritos">
-        <TabsList className="mb-4 grid w-full grid-cols-3">
+      {tab && <MyTabs defaultValue={tab ?? "favoritos"}>
+        <TabsList className="mb-8 grid w-full grid-cols-3">
           <TabsTrigger value="favoritos">Favoritos</TabsTrigger>
           <TabsTrigger value="historico">Histórico</TabsTrigger>
           <TabsTrigger value="agenda">Agenda</TabsTrigger>
@@ -15,9 +29,13 @@ export default function Informacoes() {
         <TabsContent value="favoritos">
             <Favoritos />
         </TabsContent>
-        <TabsContent value="historico">Histórico</TabsContent>
-        <TabsContent value="agenda">Agenda</TabsContent>
-      </MyTabs>
+        <TabsContent value="historico">
+          <Historico />
+        </TabsContent>
+        <TabsContent value="agenda">
+          <Agenda />
+        </TabsContent>
+      </MyTabs>}
     </section>
   );
 }

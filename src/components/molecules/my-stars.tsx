@@ -9,7 +9,7 @@ const StarRating = ({ rating }: { rating: number }) => {
   return (
     <div className="flex items-center my-2 w-[6.5rem]">
       {stars.map((star, index) => (
-         <MyIcon key={star} name={star <= rating ? "star" : "emptyStar"} />
+         <MyIcon key={star} name={star <= rating ? "star" : "emptyStar"} className="flex-1" />
       ))}
     </div>
   );

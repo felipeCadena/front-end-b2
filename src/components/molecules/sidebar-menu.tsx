@@ -14,7 +14,7 @@ import React, { useEffect, useState } from "react";
 export default function SidebarMenu({closeSidebar}: {closeSidebar: () => void}) {
   const [sideBar, setSideBar] = useState<any[]>(sideBarLp);
   const pathname = usePathname();
-  const {email} = useLogin()
+  const { email } = useLogin()
 
   useEffect(() => {
     if (pathname !== "/" && email.includes("cliente")) {
@@ -43,7 +43,7 @@ export default function SidebarMenu({closeSidebar}: {closeSidebar: () => void}) 
                 className="flex w-full items-center justify-start gap-2 rounded-md border-none bg-white p-4 text-start font-normal hover:bg-gray-600 data-[state=on]:bg-gray-500"
               >
                 <Link
-                  href={item.link}
+                  href={`${item.link}${item.tab ? `?tab=${item.tab}` : ""}`}
                   className="p-0"
                   onClick={handleCloseSidebar}
                 >

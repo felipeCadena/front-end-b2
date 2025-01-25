@@ -46,16 +46,19 @@ export const sideBarClient: any[] = [
     label: "Favoritos",
     link: "/informacoes",
     icon: "favoritos",
+    tab: "favoritos",
   },
   {
     label: "Histórico de Atividades",
     link: "/informacoes",
     icon: "duracao",
+    tab: "historico",
   },
   {
     label: "Reservas",
     link: "/reservas",
     icon: "reservas",
+    tab: "agenda",
   },
   {
     label: "Carinho",
