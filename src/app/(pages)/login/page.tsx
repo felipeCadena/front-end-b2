@@ -24,7 +24,7 @@ export default function Login() {
     <section className="px-6">
       <div className="relative">
         <MyLogo
-          variant="regular"
+          variant="mobile"
           width={200}
           height={200}
           className="mx-auto"

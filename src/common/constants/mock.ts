@@ -14,7 +14,7 @@ export const activities = [
       avatar: "/images/avatar2.png",
     },
     reserva: {
-      timestamp: "2025-01-12T08:00:00",
+      timestamp: "2025-03-12T08:00:00",
       pessoas: 2,
       total: 363.86
     }

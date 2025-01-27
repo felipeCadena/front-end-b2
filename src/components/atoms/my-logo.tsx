@@ -6,9 +6,8 @@ type MyLogoProps = {
 };
 
 const variantsMap = {
-  regular: "/logo.png",
-  admin: "",
-  white: "",
+  mobile: "/logo.png",
+  web: "/logo-web.png",
 };
 
 export default function MyLogo({ variant, height, width, className }: MyLogoProps) {

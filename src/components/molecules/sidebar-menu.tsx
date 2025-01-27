@@ -28,19 +28,19 @@ export default function SidebarMenu({closeSidebar}: {closeSidebar: () => void}) 
   };
 
   return (
-    <div className={`relative`}>
+    <div className={`relative mt-2`}>
       <MyToggleGroup
         type="single"
         className="absolute flex w-full flex-col items-start gap-4"
       >
         {sideBar.map((item) => {
           return (
-            <React.Fragment key={item.label}>
+            <React.Fragment key={item.label} >
               <ToggleGroupItem
                 asChild
                 key={item.label}
                 value={item.label}
-                className="flex w-full items-center justify-start gap-2 rounded-md border-none bg-white p-4 text-start font-normal hover:bg-gray-600 data-[state=on]:bg-gray-500"
+                className="flex w-full items-center justify-start gap-2 rounded-md border-none bg-white p-8 text-start font-normal hover:bg-gray-100 data-[state=on]:text-black data-[state=on]:bg-gray-100"
               >
                 <Link
                   href={`${item.link}${item.tab ? `?tab=${item.tab}` : ""}`}

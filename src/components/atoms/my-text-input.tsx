@@ -9,6 +9,7 @@ export interface MyTextInputProps extends React.InputHTMLAttributes<HTMLInputEle
   leftIcon?: React.ReactNode;
   stateColor?: "success" | "error" | "warning" | "default";
   noHintText?: boolean;
+  withButton?: boolean;
   containerClassName?: string;
 }
 
@@ -24,6 +25,7 @@ const MyTextInput = React.forwardRef<HTMLInputElement, MyTextInputProps>(
       leftIcon,
       stateColor,
       noHintText,
+      withButton,
       ...props
     },
     ref,
@@ -53,6 +55,7 @@ const MyTextInput = React.forwardRef<HTMLInputElement, MyTextInputProps>(
             stateColor === "success" && "border-success-500 focus-visible:ring-success-500",
             stateColor === "error" && "border-error-500 focus-visible:ring-error-500",
             stateColor === "warning" && "border-warning-500 focus-visible:ring-warning-500",
+            withButton && "h-14",
             className,
           )}
           ref={ref}

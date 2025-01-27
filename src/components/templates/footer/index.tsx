@@ -10,7 +10,7 @@ export default function Footer() {
   return (
     <footer className="bg-[#F1F0F5] text-center px-4 pb-8">
       <MyLogo
-        variant="regular"
+        variant="mobile"
         width={150}
         height={150}
         className="mx-auto py-8"

@@ -5,7 +5,7 @@ export default function SplashScreen() {
         <main className='flex h-screen flex-col items-center justify-center'>
             <MyLogo
                 className='animate-pulse'
-                variant='admin'
+                variant='mobile'
                 height={250}
                 width={250}
             />

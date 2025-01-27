@@ -20,6 +20,9 @@ const config: Config = {
           400: '#34D399',
         }
       },
+      fontFamily: {
+        "my-font": ["Montserrat"],
+      },
       colors: {
         primary: {
           "100": "var(--color-primary-100)",

@@ -3,7 +3,6 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { Suspense } from "react";
 import { ToastContainer } from "react-toastify";
-import Footer from "@/components/templates/footer";
 import Layout from "@/components/organisms/layout";
 
 const inter = Inter({
@@ -27,7 +26,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.className} antialiased`}>
+      <body className={`${inter.className} antialiased max-w-screen-xl mx-auto`}>
         <Suspense>
           <div className="">
             <Layout>{children}</Layout>

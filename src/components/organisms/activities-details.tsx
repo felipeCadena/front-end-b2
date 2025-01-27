@@ -6,16 +6,38 @@ import MyIcon from "../atoms/my-icon";
 import MyBadge from "../atoms/my-badge";
 import StarRating from "../molecules/my-stars";
 import MyTypography from "../atoms/my-typography";
+import { cn } from "@/utils/cn";
+import { getData, isDateInPast } from "@/utils/formatters";
 
-export default function ActivitiesDetails({ activities }: any) {
+export default function ActivitiesDetails({
+  activities,
+  withDate = false,
+}: {
+  activities: any;
+  withDate?: boolean;
+}) {
   return (
-    <section className="">
+    <section className={cn(withDate && "mx-6")}>
       {activities.map((activity: any, index: number) => (
         <div
           key={index}
-          className="flex justify-around gap-2 cursor-pointer my-4"
+          className={cn("flex justify-around gap-2 cursor-pointer my-4", withDate && "my-8 relative")}
         >
-          <div className="relative z-10 overflow-hidden w-[6.625rem] h-[6.625rem] hover:cursor-pointer rounded-md">
+          {withDate && (
+            <MyIcon name="options" className="absolute top-0 right-0 cursor-pointer" />
+          )}
+          <div className={cn("flex flex-col items-center justify-center", isDateInPast(activity.reserva.timestamp) && "opacity-70")}>
+            {isDateInPast(activity.reserva.timestamp) ? <MyIcon name="calendar-opacity" /> : <MyIcon name="calendar" />}
+            <MyTypography variant="body" weight="semibold" className={cn("text-primary-600", isDateInPast(activity.reserva.timestamp) && "text-[#c0c0c0]")}>
+            {getData(activity.reserva.timestamp)}
+            </MyTypography>
+          </div>
+          <div
+            className={cn(
+              "relative z-10 overflow-hidden w-[6.625rem] h-[6.625rem] hover:cursor-pointer rounded-md",
+              withDate && "flex-shrink-0"
+            )}
+          >
             <Image
               alt="sample_file"
               src={activity.image ?? ""}
@@ -29,10 +51,10 @@ export default function ActivitiesDetails({ activities }: any) {
               <MyBadge className="font-medium flex-shrink-0" variant="outline">
                 {activity.tag}
               </MyBadge>
-              <StarRating rating={activity.stars} />
+              {!withDate && <StarRating rating={activity.stars} />}
             </div>
 
-            <MyTypography variant="subtitle3" weight="bold" className="">
+            <MyTypography variant="subtitle3" weight="bold" className={cn(withDate && "mt-4")}>
               {activity.title}
             </MyTypography>
             <MyTypography variant="label" className="">

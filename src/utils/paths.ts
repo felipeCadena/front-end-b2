@@ -8,6 +8,7 @@ const ROOTS_LOGIN = "/login";
 const ROOTS_CADASTRO = "/cadastro";
 const ROOTS_SENHA = "/esqueci-minha-senha";
 const ROOTS_PARCEIRO = "/parceiros";
+const ROOTS_QUEMSOMOS = "/quem-somos";
 const ROOTS_ATIVIDADES = "/atividades";
 // Agrupa Favoritos, Histórico e Agenda
 const ROOTS_INFOS = "/informacoes";
@@ -31,6 +32,7 @@ const PATHS = {
   atividades: ROOTS_ATIVIDADES,
   informacoes: ROOTS_INFOS,
   visualizarAtividade: VISUALIZAR_ATIVIDADE,
+  quemSomos: ROOTS_QUEMSOMOS,
 };
 
 export default PATHS;

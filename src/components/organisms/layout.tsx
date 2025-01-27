@@ -22,6 +22,7 @@ const Layout = ({ children }: { children: JSX.Element | ReactNode }) => {
       pathname !== PATHS.login &&
       pathname !== PATHS["esqueci-minha-senha"] &&
       pathname !== PATHS.cadastro &&
+      pathname !== PATHS.quemSomos &&
       pathname !== PATHS.informacoes &&
       !pathname.includes("/atividades/")
     );

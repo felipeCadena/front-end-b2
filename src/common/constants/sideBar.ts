@@ -3,21 +3,25 @@ export const sideBarLp: any[] = [
     label: "Atividades",
     link: "/atividades",
     icon: "atividades",
+    web: true,
   },
   {
     label: "Quem Somos",
     link: "/quem-somos",
     icon: "quemSomos",
+    web: true,
   },
   {
-    label: "Área dos Parceiros",
+    label: "Seja um parceiro B2",
     link: "/parceiros",
     icon: "parceiros",
+    web: true,
   },
   {
     label: "Logar-se",
     link: "/login",
     icon: "logar",
+    web: false,
   },
 ];
 

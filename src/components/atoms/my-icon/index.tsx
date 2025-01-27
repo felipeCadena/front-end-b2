@@ -59,6 +59,11 @@ import Favoritos from "./elements/favoritos";
 import Reservas from "./elements/reservas";
 import Carrinho from "./elements/carrinhos";
 import Sair from "./elements/sair";
+import User from "./elements/user";
+import Calendar from "./elements/calendar";
+import Options from "./elements/options";
+import OptionsOpacity from "./elements/options-opacity";
+import OpacityCalendar from "./elements/options-opacity";
 
 export type IconsMapTypes = keyof typeof IconsMap;
 
@@ -127,7 +132,11 @@ const IconsMap = {
   favoritos: <Favoritos />,
   reservas: <Reservas />,
   carrinho: <Carrinho />,
-  sair: <Sair />
+  sair: <Sair />,
+  user: <User />,
+  calendar: <Calendar />,
+  options: <Options />,
+  "calendar-opacity": <OpacityCalendar />,
 };
 
 
