@@ -21,17 +21,41 @@ export default function ActivitiesDetails({
       {activities.map((activity: any, index: number) => (
         <div
           key={index}
-          className={cn("flex justify-around gap-2 cursor-pointer my-4", withDate && "my-8 relative")}
+          className={cn(
+            "flex justify-around gap-2 cursor-pointer my-6",
+            withDate && "my-8 relative"
+          )}
         >
           {withDate && (
-            <MyIcon name="options" className="absolute top-0 right-0 cursor-pointer" />
+            <MyIcon
+              name="options"
+              className="absolute top-0 right-0 cursor-pointer"
+            />
           )}
-          <div className={cn("flex flex-col items-center justify-center", isDateInPast(activity.reserva.timestamp) && "opacity-70")}>
-            {isDateInPast(activity.reserva.timestamp) ? <MyIcon name="calendar-opacity" /> : <MyIcon name="calendar" />}
-            <MyTypography variant="body" weight="semibold" className={cn("text-primary-600", isDateInPast(activity.reserva.timestamp) && "text-[#c0c0c0]")}>
-            {getData(activity.reserva.timestamp)}
-            </MyTypography>
-          </div>
+          {withDate && (
+            <div
+              className={cn(
+                "flex flex-col items-center justify-center",
+                isDateInPast(activity.reserva.timestamp) && "opacity-70"
+              )}
+            >
+              {isDateInPast(activity.reserva.timestamp) ? (
+                <MyIcon name="calendar-opacity" />
+              ) : (
+                <MyIcon name="calendar" />
+              )}
+              <MyTypography
+                variant="body"
+                weight="semibold"
+                className={cn(
+                  "text-primary-600",
+                  isDateInPast(activity.reserva.timestamp) && "text-[#c0c0c0]"
+                )}
+              >
+                {getData(activity.reserva.timestamp)}
+              </MyTypography>
+            </div>
+          )}
           <div
             className={cn(
               "relative z-10 overflow-hidden w-[6.625rem] h-[6.625rem] hover:cursor-pointer rounded-md",
@@ -54,7 +78,11 @@ export default function ActivitiesDetails({
               {!withDate && <StarRating rating={activity.stars} />}
             </div>
 
-            <MyTypography variant="subtitle3" weight="bold" className={cn(withDate && "mt-4")}>
+            <MyTypography
+              variant="subtitle3"
+              weight="bold"
+              className={cn(withDate && "mt-4")}
+            >
               {activity.title}
             </MyTypography>
             <MyTypography variant="label" className="">

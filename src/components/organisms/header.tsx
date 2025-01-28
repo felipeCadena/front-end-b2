@@ -16,9 +16,7 @@ export default function Header() {
       </div>
 
       {/* Sidebar - Alinhado à esquerda */}
-      <div className="flex-shrink-0">
         <Sidebar />
-      </div>
 
       {/* Logo - Centralizado */}
       <div className="absolute left-1/2 transform -translate-x-1/2 mt-10 md:hidden">

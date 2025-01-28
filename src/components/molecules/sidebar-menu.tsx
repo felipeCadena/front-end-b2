@@ -21,14 +21,14 @@ export default function SidebarMenu({closeSidebar}: {closeSidebar: () => void}) 
       setSideBar(sideBarClient)
     }
   }, [])
-  
 
-  const handleCloseSidebar = () => {
-    closeSidebar()
+  const handleCloseSidebar = (event: React.MouseEvent) => {
+    event.stopPropagation(); // Evita conflitos com outros eventos de clique
+    closeSidebar();
   };
 
   return (
-    <div className={`relative mt-2`}>
+    <div className={`relative`}>
       <MyToggleGroup
         type="single"
         className="absolute flex w-full flex-col items-start gap-4"

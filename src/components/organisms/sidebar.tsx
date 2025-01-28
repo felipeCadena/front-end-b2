@@ -23,21 +23,22 @@ export default function Sidebar({ logout }: { logout?: () => void }) {
       {/* Sidebar */}
       <aside
         className={`md:hidden fixed top-0 left-0 z-40 h-full w-9/12 transform bg-white shadow-lg transition-transform duration-300 ease-in-out lg:static lg:translate-x-0 ${
-          isOpen ? "translate-x-0" : "-translate-x-full"
+          isOpen ? "translate-x-0 overflow-y-auto" : "-translate-x-full"
         }`}
       >
-        <nav className="relative h-full flex flex-col justify-start gap-4">
-          
+        <nav className="relative h-full flex flex-col justify-start">
             {/* Botão de Fechar */}
             <button
               onClick={closeSidebar}
               className="absolute top-8 right-4 z-50 p-2 rounded-md md:hidden"
-            >
+              >
               <MyIcon name="close" />
             </button>
 
+        <div className="px-4 py-8">
             {/* Dropdown de Idiomas */}
             <LanguageDropdown />
+        </div>
           
 
           <div className="-ml-4">

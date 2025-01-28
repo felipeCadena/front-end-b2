@@ -37,13 +37,13 @@ export default function CarouselImages({ images, fullWidth }: any) {
         }}
       >
         {images.map((image: any, index: number) => (
-        <div key={index} className={cn("relative z-10 overflow-hidden w-full hover:cursor-pointer md:rounded-xl", fullWidth ? "h-[500px]" : "h-[300px] rounded-md")}>
+        <div key={index} className={cn("relative z-10 overflow-hidden w-full hover:cursor-pointer md:rounded-xl", fullWidth ? "h-[500px]" : "h-[350px] rounded-md")}>
           <Image
             alt="sample_file"
             src={image ?? ""}
             width={250}
             height={300}
-            className={cn("w-full object-cover", fullWidth ? "h-[500px]" : "h-[300px]")}
+            className={cn("w-full object-cover", fullWidth ? "h-[500px]" : "h-[350px]")}
           />
         </div>
         ))}
