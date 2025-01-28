@@ -12,15 +12,15 @@ export const buttonVariants = cva(
         default: "font-bold text-[1rem] bg-primary-600 text-neutral-000 hover:bg-primary-600 disabled:bg-primary-200",
         "secondary-green":
           "bg-secondary-green-500 text-neutral-000 hover:bg-secondary-green-600 disabled:bg-secondary-green-200",
-        outline: "text-primary-500 border bg-traparent hover:bg-primary-200 ",
+        outline: "text-primary-600 border bg-traparent hover:bg-primary-200 ",
         "outline-muted":
           "text-[0.875rem] text-wrap opacity-50 bg-[#F1F0F5] border border-transparent focus:border focus:border-black focus:bg-[#E5E4E9] focus:opacity-100",
         "outline-neutral":
-          "text-[0.875rem] text-wrap border border-gray-300 focus:border focus:border-black focus:bg-[#E5E4E9] focus:opacity-100",
-        link: "underline-offset-4 underline text-primary-500 hover:text-primary-600 disabled:text-primary-200",
+          "text-[0.875rem] text-wrap border border-gray-600 focus:border focus:border-black focus:bg-[#E5E4E9] focus:opacity-100",
+        link: "underline-offset-4 underline text-primary-600 hover:text-primary-600 disabled:text-gray-200",
         "link-muted":
           "underline-offset-4 underline text-neutral-800 hover:text-neutral-900 disabled:text-neutral-200",
-        text: "text-primary-600 text-[0.875rem] font-bold hover:text-primary-600 disabled:text-primary-200",
+        text: "text-primary-600 text-[0.875rem] font-bold hover:text-primary-600 disabled:text-gray-200",
         "text-muted": "text-neutral-800 hover:text-neutral-900 disabled:text-neutral-200",
         date: "border bg-traparent",
         black: "bg-black text-white text-[0.85rem] font-semibold",

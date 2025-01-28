@@ -12,8 +12,8 @@ const ShoppingCard = () => (
         cy="36"
         r="36"
         fill="#97E169"
-        fill-opacity="0.4"
-        shape-rendering="crispEdges"
+        fillOpacity="0.4"
+        shapeRendering="crispEdges"
       />
     </g>
     <circle cx="40" cy="36" r="31" fill="#8DC63F" />
@@ -31,7 +31,7 @@ const ShoppingCard = () => (
         filterUnits="userSpaceOnUse"
         colorInterpolationFilters="sRGB"
       >
-        <feFlood flood-opacity="0" result="BackgroundImageFix" />
+        <feFlood floodOpacity="0" result="BackgroundImageFix" />
         <feColorMatrix
           in="SourceAlpha"
           type="matrix"

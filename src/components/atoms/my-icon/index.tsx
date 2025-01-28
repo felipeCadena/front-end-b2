@@ -64,6 +64,8 @@ import Calendar from "./elements/calendar";
 import Options from "./elements/options";
 import OptionsOpacity from "./elements/options-opacity";
 import OpacityCalendar from "./elements/options-opacity";
+import BigStar from "./elements/big-star";
+import BigStarEmpty from "./elements/big-star-empty";
 
 export type IconsMapTypes = keyof typeof IconsMap;
 
@@ -137,6 +139,8 @@ const IconsMap = {
   calendar: <Calendar />,
   options: <Options />,
   "calendar-opacity": <OpacityCalendar />,
+  "big-star": <BigStar />,
+  "big-star-empty": <BigStarEmpty />
 };
 
 

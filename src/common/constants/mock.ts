@@ -1,7 +1,7 @@
 export const activities = [
   {
     id: "1",
-    image: "images/mar.png",
+    image: "/images/mar.png",
     tag: "Atividade no Mar",
     stars: 5,
     title: "Passeio de barco",
@@ -22,7 +22,7 @@ export const activities = [
   },
   {
     id: "2",
-    image: "images/ar.png",
+    image: "/images/ar.png",
     tag: "Atividade Aérea",
     stars: 3,
     title: "Escalada Cristo - RJ",
@@ -42,7 +42,7 @@ export const activities = [
   },
   {
     id: "3",
-    image: "images/terra.png",
+    image: "/images/terra.png",
     tag: "Atividade Terrestre",
     stars: 4,
     title: "Voo de Parapente",
@@ -62,7 +62,7 @@ export const activities = [
   },
   {
     id: "4",
-    image: "images/mar.png",
+    image: "/images/mar.png",
     tag: "Atividade no Mar",
     stars: 5,
     title: "Passeio de barco",

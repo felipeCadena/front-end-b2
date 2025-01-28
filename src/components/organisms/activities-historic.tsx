@@ -1,3 +1,5 @@
+"use client"
+
 import Image from "next/image";
 import React from "react";
 import MyBadge from "../atoms/my-badge";
@@ -6,13 +8,20 @@ import MyTypography from "../atoms/my-typography";
 import MyIcon from "../atoms/my-icon";
 import { getData, getHora } from "@/utils/formatters";
 import MyButton from "../atoms/my-button";
+import { useRouter } from "next/navigation";
+import PATHS from "@/utils/paths";
 
 export default function ActivitiesHistoric({ activities }: any) {
+  const router = useRouter();
+
   return (
     <section className="">
       {activities.map((activity: any, index: number) => (
         <div className="flex flex-col gap-4 my-8" key={index}>
-          <div className="flex justify-around gap-2 cursor-pointer">
+          <div 
+          className="flex justify-around gap-2 cursor-pointer"
+          onClick={() => router.push(PATHS.atividadeRealizada(activity.id))}
+          >
             <div className="relative z-10 overflow-hidden min-w-[6.625rem] min-h-[6.625rem] hover:cursor-pointer rounded-md">
               <Image
                 alt="sample_file"

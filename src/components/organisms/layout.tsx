@@ -24,7 +24,8 @@ const Layout = ({ children }: { children: JSX.Element | ReactNode }) => {
       pathname !== PATHS.cadastro &&
       pathname !== PATHS.quemSomos &&
       pathname !== PATHS.informacoes &&
-      !pathname.includes("/atividades/")
+      !pathname.includes("/atividades/") &&
+      !pathname.includes("/atividade-realizada/")
     );
   };
 

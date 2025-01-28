@@ -28,7 +28,7 @@ export default function GoogleMaps({ locations }: any) {
   </g>
   <defs>
     <filter id="filter0_d_445_788" x="0.162462" y="0.358307" width="62.6751" height="62.6751" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
-      <feFlood flood-opacity="0" result="BackgroundImageFix" />
+      <feFlood floodOpacity="0" result="BackgroundImageFix" />
       <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
       <feOffset dy="5.44585" />
       <feGaussianBlur stdDeviation="8.16877" />

@@ -15,7 +15,8 @@ const ROOTS_INFOS = "/informacoes";
 
 // ==========================================
 // * Dimanic routes
-const VISUALIZAR_ATIVIDADE = (slug: number | string) => `/atividades/${slug}`;
+const VISUALIZAR_ATIVIDADE = (slug: number | string) => `/atividades/atividade/${slug}`;
+const ATIVIDADE_REALIZADA = (slug: number | string) => `/informacoes/atividade-realizada/${slug}`;
 
 // ==========================================
 // * Dynamic encode routes
@@ -31,8 +32,9 @@ const PATHS = {
   parceiros: ROOTS_PARCEIRO,
   atividades: ROOTS_ATIVIDADES,
   informacoes: ROOTS_INFOS,
-  visualizarAtividade: VISUALIZAR_ATIVIDADE,
   quemSomos: ROOTS_QUEMSOMOS,
+  visualizarAtividade: VISUALIZAR_ATIVIDADE,
+  atividadeRealizada: ATIVIDADE_REALIZADA,
 };
 
 export default PATHS;

@@ -26,7 +26,6 @@ export default function Atividade() {
           onClick={() => router.back()}
         />
         <CarouselImages
-          fullWidth
           images={[
             "/images/atividades/montanha.webp",
             "/images/atividades/paraquedas.webp",
