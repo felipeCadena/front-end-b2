@@ -65,7 +65,7 @@ export const sideBarClient: any[] = [
     tab: "agenda",
   },
   {
-    label: "Carinho",
+    label: "Carrinho de Compras",
     link: "/carrinho",
     icon: "carrinho",
   },

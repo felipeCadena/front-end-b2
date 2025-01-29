@@ -7,20 +7,25 @@ import {
   MyToggleGroup,
   ToggleGroupItem,
 } from "@/components/molecules/my-toggle-group";
+import { cn } from "@/utils/cn";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
-export default function SidebarMenu({closeSidebar}: {closeSidebar: () => void}) {
+export default function SidebarMenu({
+  closeSidebar,
+}: {
+  closeSidebar: () => void;
+}) {
   const [sideBar, setSideBar] = useState<any[]>(sideBarLp);
   const pathname = usePathname();
-  const { email } = useLogin()
+  const { email } = useLogin();
 
   useEffect(() => {
     if (pathname !== "/" && email.includes("cliente")) {
-      setSideBar(sideBarClient)
+      setSideBar(sideBarClient);
     }
-  }, [])
+  }, []);
 
   const handleCloseSidebar = (event: React.MouseEvent) => {
     event.stopPropagation(); // Evita conflitos com outros eventos de clique
@@ -35,7 +40,7 @@ export default function SidebarMenu({closeSidebar}: {closeSidebar: () => void}) 
       >
         {sideBar.map((item) => {
           return (
-            <React.Fragment key={item.label} >
+            <React.Fragment key={item.label}>
               <ToggleGroupItem
                 asChild
                 key={item.label}
@@ -44,10 +49,19 @@ export default function SidebarMenu({closeSidebar}: {closeSidebar: () => void}) 
               >
                 <Link
                   href={`${item.link}${item.tab ? `?tab=${item.tab}` : ""}`}
-                  className="p-0"
+                  className={cn("flex justify-between")}
                   onClick={handleCloseSidebar}
                 >
-                  <MyIcon name={item.icon} /> {item.label}
+                  <div className="flex gap-1 items-center">
+                    <MyIcon name={item.icon} />
+                    {item.label}
+                  </div>
+
+                  {item.label == "Carrinho de Compras" && (
+                    <span className="flex items-center justify-center bg-primary-600 h-[1.1rem] w-[1.1rem] rounded-full text-white text-xs font-bold">
+                      1
+                    </span>
+                  )}
                 </Link>
               </ToggleGroupItem>
             </React.Fragment>

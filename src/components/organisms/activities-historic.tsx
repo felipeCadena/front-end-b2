@@ -128,7 +128,7 @@ export default function ActivitiesHistoric({ activities }: any) {
             </div>
           </div>
 
-          <MyButton variant="default" borderRadius="squared" size="lg" className="w-full mt-2">
+          <MyButton variant="outline-neutral" borderRadius="squared" size="lg" className="w-full mt-2">
             Refazer atividade
             </MyButton>
         </div>

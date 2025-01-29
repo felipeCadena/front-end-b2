@@ -43,7 +43,7 @@ export default function Atividades() {
         </MyTypography>
         <CarouselCustom activities={activities} />
       </div>
-      <ShoppingCard items={"4"}/>
+      <ShoppingCard items={"1"}/>
     </section>
   );
 }

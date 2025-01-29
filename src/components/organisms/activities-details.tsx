@@ -58,8 +58,7 @@ export default function ActivitiesDetails({
           )}
           <div
             className={cn(
-              "relative z-10 overflow-hidden w-[6.625rem] h-[6.625rem] hover:cursor-pointer rounded-md",
-              withDate && "flex-shrink-0"
+              "relative z-10 overflow-hidden w-[6.625rem] h-[6.625rem] hover:cursor-pointer rounded-md flex-shrink-0",
             )}
           >
             <Image

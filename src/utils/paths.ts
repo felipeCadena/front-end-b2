@@ -10,6 +10,8 @@ const ROOTS_SENHA = "/esqueci-minha-senha";
 const ROOTS_PARCEIRO = "/parceiros";
 const ROOTS_QUEMSOMOS = "/quem-somos";
 const ROOTS_ATIVIDADES = "/atividades";
+const ROOTS_CARRINHO = "/carrinho";
+const ROOTS_CFINALIZAR_COMPRA = "/finalizar-compra";
 // Agrupa Favoritos, Histórico e Agenda
 const ROOTS_INFOS = "/informacoes";
 
@@ -33,6 +35,8 @@ const PATHS = {
   atividades: ROOTS_ATIVIDADES,
   informacoes: ROOTS_INFOS,
   quemSomos: ROOTS_QUEMSOMOS,
+  carrinho: ROOTS_CARRINHO,
+  "finalizar-compra": ROOTS_CFINALIZAR_COMPRA,
   visualizarAtividade: VISUALIZAR_ATIVIDADE,
   atividadeRealizada: ATIVIDADE_REALIZADA,
 };

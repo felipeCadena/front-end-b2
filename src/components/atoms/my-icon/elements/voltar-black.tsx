@@ -1,5 +1,5 @@
 const VoltarBlack = () => (
-  <div className="h-[45px] w-[45px] bg-white rounded-full relative">
+  <div className="h-[45px] w-[45px] bg-white rounded-full relative z-10">
 
   <svg
     width="23"

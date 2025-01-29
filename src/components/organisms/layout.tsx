@@ -24,6 +24,8 @@ const Layout = ({ children }: { children: JSX.Element | ReactNode }) => {
       pathname !== PATHS.cadastro &&
       pathname !== PATHS.quemSomos &&
       pathname !== PATHS.informacoes &&
+      pathname !== PATHS.carrinho &&
+      pathname !== PATHS["finalizar-compra"] &&
       !pathname.includes("/atividades/") &&
       !pathname.includes("/atividade-realizada/")
     );
