@@ -11,7 +11,7 @@ export const buttonVariants = cva(
       variant: {
         default: "font-bold text-[1rem] bg-primary-600 text-neutral-000 hover:bg-primary-600 disabled:bg-primary-200",
         "secondary-green":
-          "bg-secondary-green-500 text-neutral-000 hover:bg-secondary-green-600 disabled:bg-secondary-green-200",
+          "bg-secondary-500 text-neutral-000 hover:bg-secondary-600 disabled:bg-secondary-200",
         outline: "text-primary-600 border bg-traparent hover:bg-primary-200 ",
         "outline-muted":
           "text-[0.875rem] text-wrap opacity-50 bg-[#F1F0F5] border border-transparent focus:border focus:border-black focus:bg-[#E5E4E9] focus:opacity-100",
@@ -24,6 +24,7 @@ export const buttonVariants = cva(
         "text-muted": "text-neutral-800 hover:text-neutral-900 disabled:text-neutral-200",
         date: "border bg-traparent",
         black: "bg-black text-white text-[0.85rem] font-semibold",
+        payment: "border border-[#1E1E1E] text-[#1E1E1E] opacity-30 text-[0.875rem] focus:border focus:border-primary-600 focus:bg-primary-900 focus:opacity-100",
       },
       size: {
         default: "h-10 px-4 py-2",

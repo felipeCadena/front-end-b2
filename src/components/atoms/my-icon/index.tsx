@@ -62,10 +62,13 @@ import Sair from "./elements/sair";
 import User from "./elements/user";
 import Calendar from "./elements/calendar";
 import Options from "./elements/options";
-import OptionsOpacity from "./elements/options-opacity";
 import OpacityCalendar from "./elements/options-opacity";
 import BigStar from "./elements/big-star";
 import BigStarEmpty from "./elements/big-star-empty";
+import Pix from "./elements/pix";
+import Card from "./elements/card";
+import Boleto from "./elements/boleto";
+import Master from "./elements/master";
 
 export type IconsMapTypes = keyof typeof IconsMap;
 
@@ -140,7 +143,11 @@ const IconsMap = {
   options: <Options />,
   "calendar-opacity": <OpacityCalendar />,
   "big-star": <BigStar />,
-  "big-star-empty": <BigStarEmpty />
+  "big-star-empty": <BigStarEmpty />,
+  pix: <Pix />,
+  card: <Card />,
+  boleto: <Boleto />,
+  master: <Master />
 };
 
 

@@ -13,7 +13,7 @@ const alertVariants = cva(
         default: "bg-neutral-100 text-neutral-900",
         warning: "bg-warning-100 text-warning-900",
         primary: "bg-primary-100 text-primary-900",
-        "secondary-green": "bg-secondary-green-100 text-secondary-green-900",
+        "secondary-green": "bg-secondary-100 text-secondary-900",
       },
     },
     defaultVariants: {

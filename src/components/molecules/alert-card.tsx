@@ -17,7 +17,7 @@ const AlertCard = ({ iconName, descrition, className, ...rest }: { iconName: Ico
       }
       {...rest}
     >
-      <div className='flex h-14 w-14 items-center justify-center rounded-full border border-primary-500 bg-primary-100 text-primary-500'>
+      <div className='flex h-14 w-14 items-center justify-center rounded-full border border-primary-600 bg-primary-100 text-primary-600'>
         <MyIcon
           name={iconName}
           variant='circled'

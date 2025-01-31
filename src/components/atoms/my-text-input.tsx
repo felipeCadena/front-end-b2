@@ -66,7 +66,6 @@ const MyTextInput = React.forwardRef<HTMLInputElement, MyTextInputProps>(
           <div
             className={cn(
               "absolute right-2 top-1/2 flex h-5 w-5 -translate-y-1/2 transform items-center justify-center text-neutral-500",
-              noHintText && "top-1/2",
             )}
           >
             {rightIcon}

@@ -14,7 +14,7 @@ type FileDisplayProps = {
 const FileDisplay = ({ file, onRemove }: FileDisplayProps) => {
   return (
     <div className='flex w-full justify-between items-center gap-2'>
-      <div className='flex gap-2 hover:cursor-pointer hover:text-primary-500'
+      <div className='flex gap-2 hover:cursor-pointer hover:text-primary-600'
         onClick={() => file.link && window.open(file.link, '_blank')}
       >
         <MyIcon

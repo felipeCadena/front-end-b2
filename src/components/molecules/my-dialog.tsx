@@ -45,7 +45,7 @@ const DialogContent = React.forwardRef<
       {children}
       <DialogPrimitive.Close
         onClick={onClose}
-        className='data-[state=open]:bg-accent absolute right-4 top-4 rounded-sm opacity-70 ring-offset-neutral-000 transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:text-neutral-300'>
+        className='data-[state=open]:bg-accent absolute right-4 top-4 rounded-sm opacity-70 ring-offset-neutral-000 transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-primary-600 focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:text-neutral-300'>
         {/* <MyIcon name='x' /> */}
         <span className='sr-only'>Close</span>
       </DialogPrimitive.Close>
