@@ -1,6 +1,7 @@
 "use client";
 
 import useLogin from "@/app/(pages)/login/login-store";
+import { notifications } from "@/common/constants/mock";
 import { sideBarClient, sideBarLp } from "@/common/constants/sideBar";
 import MyIcon from "@/components/atoms/my-icon";
 import {
@@ -56,6 +57,12 @@ export default function SidebarMenu({
                     <MyIcon name={item.icon} />
                     {item.label}
                   </div>
+
+                  {item.label == "Notificações" && (
+                    <span className="flex items-center justify-center bg-red-400 h-[1.1rem] w-[1.1rem] rounded-full text-white text-xs font-bold">
+                      {notifications?.length ?? 0}
+                    </span>
+                  )}
 
                   {item.label == "Carrinho de Compras" && (
                     <span className="flex items-center justify-center bg-primary-600 h-[1.1rem] w-[1.1rem] rounded-full text-white text-xs font-bold">

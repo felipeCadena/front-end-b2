@@ -69,6 +69,11 @@ import Pix from "./elements/pix";
 import Card from "./elements/card";
 import Boleto from "./elements/boleto";
 import Master from "./elements/master";
+import Now from "./elements/now";
+import Read from "./elements/read";
+import Unread from "./elements/unread";
+import LocalizacaoBranca from "./elements/localizacao-branca";
+import Seta from "./elements/seta";
 
 export type IconsMapTypes = keyof typeof IconsMap;
 
@@ -147,7 +152,12 @@ const IconsMap = {
   pix: <Pix />,
   card: <Card />,
   boleto: <Boleto />,
-  master: <Master />
+  master: <Master />,
+  now: <Now />,
+  read: <Read />,
+  unread: <Unread />,
+  "localizao-branca": <LocalizacaoBranca />,
+  seta: <Seta />
 };
 
 

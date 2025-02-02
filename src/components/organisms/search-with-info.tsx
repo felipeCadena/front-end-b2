@@ -8,9 +8,9 @@ import { MyDatePicker } from "../molecules/my-date-picker";
 
 export default function SearchInfoActivity() {
   return (
-    <div className="space-y-4 mt-20">
-      <div className="mx-auto space-y-5 p-4 border border-gray-300 rounded-lg">
-        <div className="mt-4">
+    <section className="space-y-4 max-sm:mt-14 md:space-y-8 md:bg-gray-500 md:h-full md:p-6 md:rounded-lg md:min-h-[410px]">
+      <div className="mx-auto space-y-5 p-4 max-sm:border max-sm:border-gray-300 rounded-lg">
+        <div className="max-sm:mt-4">
           <MyTextInput
             noHintText
             placeholder="Localização"
@@ -25,7 +25,7 @@ export default function SearchInfoActivity() {
           type="text"
           noHintText
           placeholder="Horário da Atividade"
-          className="placeholder:text-black"
+          className="placeholder:text-black bg-white"
           leftIcon={<MyIcon name="time" className="ml-3" />}
         />
 
@@ -40,6 +40,6 @@ export default function SearchInfoActivity() {
       >
         Procurar atividades
       </MyButton>
-    </div>
+    </section>
   );
 }

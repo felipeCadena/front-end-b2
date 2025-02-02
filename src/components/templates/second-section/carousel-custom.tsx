@@ -21,14 +21,14 @@ export default function CarouselCustom({ activities }: any) {
     <div
       ref={ref}
       className={cn(
-        "max-sm:overflow-x-scroll flex gap-4 overflow-x-hidden scrollbar-hide my-8"
+        "overflow-x-scroll flex gap-4 max-sm:no-scrollbar my-8 md:scrollbar-thin"
       )}
       {...events}
     >
       {activities.map((activity: any, index: number) => (
         <div 
         key={index} 
-        className="min-w-[60%] flex flex-col gap-1 cursor-pointer"
+        className="min-w-[70%] md:min-w-[30%] lg:min-w-[20%] flex flex-col gap-1 cursor-pointer md:mb-8"
         onClick={() => router.push(PATHS.visualizarAtividade(activity.id))}
         >
           <div className="relative z-10 overflow-hidden h-[225px] w-full hover:cursor-pointer rounded-md">

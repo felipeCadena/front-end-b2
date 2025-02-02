@@ -1,74 +1,35 @@
 "use client";
-
-import React from "react";
+import MyButton from "@/components/atoms/my-button";
 import MyTypography from "@/components/atoms/my-typography";
-import MyIcon from "@/components/atoms/my-icon";
-import GoogleMaps from "@/components/organisms/google-maps";
+import PATHS from "@/utils/paths";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import React from "react";
 
-const FifithSection = () => {
-  const locations = [
-    {
-      name: "Monte Cristo Redentor - Rio de Janeiro",
-      coords: { lat: -22.9519, lng: -43.2105 },
-    },
-    {
-      name: "Praia de Copacabana - Rio de Janeiro",
-      coords: { lat: -22.9711, lng: -43.1822 },
-    },
-    {
-      name: "Praia de Ipanema - Rio de Janeiro",
-      coords: { lat: -22.9839, lng: -43.2045 },
-    },
-  ];
+export default function FifithSection() {
+    const router = useRouter();
 
   return (
-    <div className="flex flex-col items-center space-y-4">
-      {/* Header */}
-      <div className="bg-primary-900 px-8 py-2 rounded-full mt-6 mb-2">
-        <MyTypography variant="subtitle3" weight="bold" className="text-center">
-          Temos atividades perto de você!
-        </MyTypography>
-      </div>
-
-      {/* List of Locations */}
-      <div className="w-full max-w-md space-y-3">
-        {locations.map((location, index) => (
-          <div
-            key={index}
-            className="flex items-center p-3 bg-[#F1F0F587] border border-primary-600/30 border-opacity-80 rounded-lg shadow-sm hover:bg-gray-100 relative"
-          >
-            <div className="absolute inset-y-0 left-0 w-3 bg-primary-900 rounded-l-lg"></div>
-            <MyIcon
-              name="localizacaoRedonda"
-              className="w-6 h-6 text-primary-900 ml-3"
-            />
-            <div className="ml-3">
-              <MyTypography
-                variant="body-big"
-                weight="regular"
-                className="text-center"
-              >
-                {location.name}
-              </MyTypography>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Map */}
-      <div className="w-full max-w-2xl">
-        <Image
-          src="/images/mapa-inicial.png"
-          alt="mapa"
-          width={400}
-          height={400}
-          className="border border-[#F1F0F587] rounded-xl mt-2"
+    <section className="my-20">
+      <MyTypography variant="subtitle2" weight="bold" className="">
+        Você é um Guia de Atividades?
+      </MyTypography>
+      <MyTypography variant="body-big" weight="regular" className="">
+        Venha ser um de nossos parceiros!
+      </MyTypography>
+    <Image
+        src="/images/thumb.png"
+        alt="image-lp"  
+        width={400}
+        height={400}
+        className="mt-6"
         />
-        {/* <GoogleMaps locations={locations} /> */}
-      </div>
-    </div>
+        <MyButton variant="black" borderRadius="squared" size="md" className="mt-5 w-full h-14" onClick={() => router.push(PATHS.parceiros)}>
+          Seja um de nossos parceiros
+        </MyButton>
+      {/* <div className="w-full">
+        <video src="/video.mp4" controls className="mt-4 w-full rounded-xl" />
+      </div> */}
+    </section>
   );
-};
-
-export default FifithSection;
+}

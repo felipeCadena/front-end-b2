@@ -60,7 +60,7 @@ export const sideBarClient: any[] = [
   },
   {
     label: "Reservas",
-    link: "/reservas",
+    link: "/informacoes",
     icon: "reservas",
     tab: "agenda",
   },

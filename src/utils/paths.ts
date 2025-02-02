@@ -19,6 +19,8 @@ const ROOTS_INFOS = "/informacoes";
 // * Dimanic routes
 const VISUALIZAR_ATIVIDADE = (slug: number | string) => `/atividades/atividade/${slug}`;
 const ATIVIDADE_REALIZADA = (slug: number | string) => `/informacoes/atividade-realizada/${slug}`;
+const VISUALIZAR_NOTIFICACAO = (slug: number | string) => `/notificacoes/notificacao/${slug}`;
+
 
 // ==========================================
 // * Dynamic encode routes
@@ -38,6 +40,7 @@ const PATHS = {
   carrinho: ROOTS_CARRINHO,
   "finalizar-compra": ROOTS_CFINALIZAR_COMPRA,
   visualizarAtividade: VISUALIZAR_ATIVIDADE,
+  visualizarNotificacao: VISUALIZAR_NOTIFICACAO,
   atividadeRealizada: ATIVIDADE_REALIZADA,
 };
 

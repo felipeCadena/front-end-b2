@@ -7,7 +7,7 @@ import React from "react";
 
 export default function QuemSomos() {
   return (
-    <section className="mx-4 space-y-6">
+    <section className="m-4 space-y-6">
       <div className="md:hidden">
         <SearchActivity />
       </div>

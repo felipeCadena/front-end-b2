@@ -6,7 +6,7 @@ import React, { useEffect } from "react";
 import Favoritos from "./favoritos";
 import useSearchQueryService from "@/services/use-search-query-service";
 import Historico from "./historico";
-import Agenda from "../reservas/page";
+import Agenda from "./agenda";
 
 export default function Informacoes() {
   const [tab, setTab] = React.useState("");

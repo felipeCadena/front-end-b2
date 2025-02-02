@@ -7,7 +7,7 @@
     --color-primary-100: #fff3eb;
     --color-primary-200: #ffd1ad;
     --color-primary-300: #ffae70;
-    --color-primary-400: #97E16933;
+    --color-primary-400: #97E169;
     --color-primary-500: #ff7915;
     --color-primary-600: #8DC63F;
     --color-primary-700: #b7400a;
@@ -46,7 +46,7 @@
     --color-info-700: #153eb7;
 
     --color-gray-100: #f2f4f7;
-    --color-gray-500: #f2f4f7;
+    --color-gray-500: #F1F0F580;
     --color-gray-700: #344054;
 
     --color-secondary-100: #eefcf4;
@@ -74,6 +74,21 @@
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
+
+  /* Para navegadores Webkit (Chrome, Edge, Safari) */
+.scrollbar-thin::-webkit-scrollbar {
+  width: 4px; /* Largura da scrollbar */
+  height: 4px; /* Altura da scrollbar para scroll horizontal */
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.3); /* Cor do "polegar" da scrollbar */
+  border-radius: 10px; /* Borda arredondada */
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent; /* Fundo transparente */
+}
 
   .flex-center {
     @apply flex items-center justify-center;

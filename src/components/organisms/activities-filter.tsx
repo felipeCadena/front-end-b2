@@ -22,14 +22,14 @@ export default function ActivitiesFilter({ withText = true }) {
     },
   ];
   return (
-    <section className={cn("flex justify-around gap-2 mt-4 mx-auto")}>
+    <section className={cn("flex justify-around gap-3 mt-4 mx-auto")}>
       {activities.map((item, index) => (
         <MyButton
           key={index}
           variant="outline-muted"
           size="md"
           className={cn(
-            "flex flex-col gap-1 items-center rounded-md w-[6.625rem] h-[6.625rem]",
+            "flex max-sm:flex-col gap-1 items-center rounded-md max-sm:w-[6.625rem] max-sm:h-[6.625rem] md:w-1/2 md:justify-start md:border-2 md:border-black",
             item.title === selected &&
               "border border-black bg-[#E5E4E9] opacity-100"
           )}

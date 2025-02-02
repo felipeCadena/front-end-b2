@@ -19,3 +19,32 @@ export function isDateInPast(timestamp: string) {
 
   return dateToCheck < today; // Verifica se a data é anterior a hoje
 }
+
+export function formatDate(timestamp: string): string {
+  if (!timestamp) return "";
+  
+  const date = new Date(timestamp);
+  const now = new Date();
+  const diffMs = now.getTime() - date.getTime();
+  const diffMinutes = Math.floor(diffMs / 60000);
+  
+  if (diffMinutes <= 20) {
+    return "Agora pouco";
+  }
+  
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const yesterday = new Date(today);
+  yesterday.setDate(today.getDate() - 1);
+  const dayBeforeYesterday = new Date(today);
+  dayBeforeYesterday.setDate(today.getDate() - 2);
+
+  if (date >= today) {
+    return "Hoje ";
+  } else if (date >= yesterday) {
+    return "Ontem ";
+  } else if (date >= dayBeforeYesterday) {
+    return "Anteontem ";
+  }
+
+  return date.toLocaleDateString();
+}
