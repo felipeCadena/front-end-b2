@@ -74,6 +74,9 @@ import Read from "./elements/read";
 import Unread from "./elements/unread";
 import LocalizacaoBranca from "./elements/localizacao-branca";
 import Seta from "./elements/seta";
+import ScrollMouse from "./elements/scroll-mouse";
+import Sucess from "./elements/sucess";
+import Cancel from "./elements/cancel";
 
 export type IconsMapTypes = keyof typeof IconsMap;
 
@@ -157,7 +160,10 @@ const IconsMap = {
   read: <Read />,
   unread: <Unread />,
   "localizao-branca": <LocalizacaoBranca />,
-  seta: <Seta />
+  seta: <Seta />,
+  "scroll-mouse": <ScrollMouse />,
+  sucess: <Sucess />,
+  cancel: <Cancel />
 };
 
 

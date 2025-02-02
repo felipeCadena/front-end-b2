@@ -1,6 +1,6 @@
 "use client";
 
-import useLogin from "@/app/(pages)/login/login-store";
+import useLogin from "@/app/(pages)/(acesso)/login/login-store";
 import { sideBarClient, sideBarLp } from "@/common/constants/sideBar";
 import Link from "next/link";
 import { usePathname } from "next/navigation";

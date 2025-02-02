@@ -4,15 +4,14 @@ import { DialogClose, DialogContent, DialogHeader, DialogTitle, DialogTrigger, M
 
 type ConfirmModalProps = {
   children: React.ReactNode;
-  isOcutar?: boolean;
-  isActive?: boolean;
+  cancel?: boolean;
   customTitle?: string;
   customDescription?: string;
   customConfirmMessage?: string;
   callbackFn: () => void
 };
 
-export default function ConfirmModal({ children, isOcutar, isActive, customTitle, customDescription, customConfirmMessage, callbackFn }: ConfirmModalProps) {
+export default function ConfirmModal({ children, cancel, customTitle, customDescription, customConfirmMessage, callbackFn }: ConfirmModalProps) {
   return (
     <MyDialog>
       <DialogTrigger>{children}</DialogTrigger>
@@ -25,9 +24,9 @@ export default function ConfirmModal({ children, isOcutar, isActive, customTitle
           >
             {customTitle ? customTitle
               : <>
-                {isOcutar
-                  ? (isActive ? "Tem certeza que deseja ocultar publicação?" : "Tem certeza que deseja publicar?")
-                  : "Tem certeza que deseja deletar?"}
+                {!cancel
+                  ? "Tem certeza que deseja publicar?"
+                  : "Cancelamento de Atividade"}
               </>}
           </MyTypography>
         </DialogTitle>
@@ -36,9 +35,9 @@ export default function ConfirmModal({ children, isOcutar, isActive, customTitle
           <MyTypography lightness={600}>
             {customDescription ? customDescription
               : <>
-                {isOcutar
-                  ? (isActive ? "Todos cupons da campanha serão desabilitados para uso." : "O cupom será publicado.")
-                  : "Todas as informações serão excluídas."}
+                {!cancel
+                  ? "Atividade agendada"
+                  : "Tem certeza que deseja cancelar essa atividade? Não será possível remarcar na mesma data ou reembolsar no valor pago."}
               </>}
           </MyTypography>
           <DialogClose asChild>
@@ -47,13 +46,13 @@ export default function ConfirmModal({ children, isOcutar, isActive, customTitle
             >
               {customConfirmMessage ? customConfirmMessage
                 : <>
-                  {isOcutar ? "Sim, ocultar" : "Sim, deletar"}
+                  {!cancel ? "Ver na agenda" : "Cancelar Atividade"}
                 </>}
             </MyButton>
           </DialogClose>
-          <DialogClose asChild>
-            <MyButton variant='outline'>Cancelar</MyButton>
-          </DialogClose>
+          {cancel && <DialogClose asChild>
+            <MyButton variant='outline'>Não quero mais cancelar</MyButton>
+          </DialogClose>}
         </div>
       </DialogContent>
     </MyDialog>

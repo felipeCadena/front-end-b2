@@ -28,51 +28,60 @@ export const sideBarLp: any[] = [
 export const sideBarClient: any[] = [
   {
     label: "Perfil",
-    link: "/Perfil",
+    link: "/perfil",
     icon: "perfil",
+    web: false,
   },
   {
     label: "Atividades",
     link: "/atividades",
     icon: "atividades",
+    web: true,
   },
   {
     label: "Notificações",
     link: "/notificacoes",
     icon: "notificacoes",
+    web: true,
   },
   {
     label: "Chat",
     link: "/chat",
     icon: "chat",
+    web: false,
   },
   {
     label: "Favoritos",
     link: "/informacoes",
     icon: "favoritos",
     tab: "favoritos",
+    web: false,
   },
   {
     label: "Histórico de Atividades",
     link: "/informacoes",
     icon: "duracao",
     tab: "historico",
+    web: false,
   },
   {
     label: "Reservas",
     link: "/informacoes",
     icon: "reservas",
     tab: "agenda",
+    web: false,
   },
   {
     label: "Carrinho de Compras",
     link: "/carrinho",
     icon: "carrinho",
+    web: true,
   },
 
   {
     label: "Sair",
     link: "/",
     icon: "sair",
+    web: false,
   },
 ];

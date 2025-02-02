@@ -23,7 +23,7 @@ export const buttonVariants = cva(
         text: "text-primary-600 text-[0.875rem] font-bold hover:text-primary-600 disabled:text-gray-200",
         "text-muted": "text-neutral-800 hover:text-neutral-900 disabled:text-neutral-200",
         date: "border bg-traparent",
-        black: "bg-black text-white text-[0.85rem] font-semibold",
+        black: "bg-black text-white text-[0.85rem] md:text-[1rem] font-semibold",
         payment: "border border-[#1E1E1E] text-[#1E1E1E] opacity-30 text-[0.875rem] focus:border focus:border-primary-600 focus:bg-primary-900 focus:opacity-100",
       },
       size: {
@@ -67,7 +67,8 @@ const MyButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
           leftIcon && "flex gap-2",
           rightIcon && "flex gap-2",
           isLoading && "flex-center",
-          buttonVariants({ variant, size, borderRadius, className }),
+          buttonVariants({ variant, size, borderRadius }),
+          className,
         )}
         ref={ref}
         disabled={disabled || isLoading}

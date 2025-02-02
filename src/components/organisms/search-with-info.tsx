@@ -8,7 +8,7 @@ import { MyDatePicker } from "../molecules/my-date-picker";
 
 export default function SearchInfoActivity() {
   return (
-    <section className="space-y-4 max-sm:mt-14 md:space-y-8 md:bg-gray-500 md:h-full md:p-6 md:rounded-lg md:min-h-[410px]">
+    <section className="space-y-4 max-sm:mt-14 md:space-y-12 md:bg-gray-500 md:h-full md:p-10 md:rounded-lg md:min-h-[410px]">
       <div className="mx-auto space-y-5 p-4 max-sm:border max-sm:border-gray-300 rounded-lg">
         <div className="max-sm:mt-4">
           <MyTextInput

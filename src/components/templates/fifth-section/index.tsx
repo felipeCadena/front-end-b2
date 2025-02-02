@@ -7,26 +7,34 @@ import { useRouter } from "next/navigation";
 import React from "react";
 
 export default function FifithSection() {
-    const router = useRouter();
+  const router = useRouter();
 
   return (
-    <section className="my-20">
+    <section className="max-sm:px-4 max-sm:my-16 md:mt-20 md:bg-primary-100 md:text-center py-16">
       <MyTypography variant="subtitle2" weight="bold" className="">
         Você é um Guia de Atividades?
       </MyTypography>
-      <MyTypography variant="body-big" weight="regular" className="">
+      <MyTypography variant="body-big" weight="regular" className="mt-1">
         Venha ser um de nossos parceiros!
       </MyTypography>
-    <Image
-        src="/images/thumb.png"
-        alt="image-lp"  
-        width={400}
-        height={400}
-        className="mt-6"
+      <div className="md:w-1/2 md:mx-auto">
+        <Image
+          src="/images/thumb.png"
+          alt="image-lp"
+          width={400}
+          height={400}
+          className="mt-6 w-full"
         />
-        <MyButton variant="black" borderRadius="squared" size="md" className="mt-5 w-full h-14" onClick={() => router.push(PATHS.parceiros)}>
-          Seja um de nossos parceiros
-        </MyButton>
+      </div>
+      <MyButton
+        variant="black"
+        borderRadius="squared"
+        size="md"
+        className="mt-5 w-full md:w-1/4 h-14"
+        onClick={() => router.push(PATHS.parceiros)}
+      >
+        Seja um de nossos parceiros
+      </MyButton>
       {/* <div className="w-full">
         <video src="/video.mp4" controls className="mt-4 w-full rounded-xl" />
       </div> */}

@@ -4,14 +4,14 @@
 
 @layer base {
   :root {
-    --color-primary-100: #fff3eb;
+    --color-primary-100: #97E1691A;
     --color-primary-200: #ffd1ad;
     --color-primary-300: #ffae70;
     --color-primary-400: #97E169;
     --color-primary-500: #ff7915;
     --color-primary-600: #8DC63F;
     --color-primary-700: #b7400a;
-    --color-primary-800: #932b06;
+    --color-primary-800: #97E1691A;
     --color-primary-900: #97E16933;
 
     --color-neutral-000: #ffffff;
@@ -74,7 +74,7 @@
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
-
+  
   /* Para navegadores Webkit (Chrome, Edge, Safari) */
 .scrollbar-thin::-webkit-scrollbar {
   width: 4px; /* Largura da scrollbar */
@@ -82,12 +82,13 @@
 }
 
 .scrollbar-thin::-webkit-scrollbar-thumb {
-  background-color: rgba(0, 0, 0, 0.3); /* Cor do "polegar" da scrollbar */
+  background-color: var(--color-neutral-300); /* Cor do "polegar" da scrollbar */
   border-radius: 10px; /* Borda arredondada */
 }
 
 .scrollbar-thin::-webkit-scrollbar-track {
   background: transparent; /* Fundo transparente */
+  scrollbar-width: thin;
 }
 
   .flex-center {
@@ -103,12 +104,4 @@
 .hide-controls::-webkit-media-controls-panel {
   display: none !important;
   -webkit-appearance: none;
-}
-
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;
-}
-.scrollbar-hide {
-  -ms-overflow-style: none; /* Para IE e Edge */
-  scrollbar-width: none;    /* Para Firefox */
 }

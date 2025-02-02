@@ -3,51 +3,70 @@
 import MyButton from "@/components/atoms/my-button";
 import MyCheckbox from "@/components/atoms/my-checkbox";
 import MyIcon from "@/components/atoms/my-icon";
-import MyLogo from "@/components/atoms/my-logo";
 import MyTextInput from "@/components/atoms/my-text-input";
 import MyTypography from "@/components/atoms/my-typography";
 import PATHS from "@/utils/paths";
 import { useRouter } from "next/navigation";
 import React from "react";
+import { toast } from "react-toastify";
 
 export default function Cadastro() {
   const router = useRouter();
+  const [password, setPassword] = React.useState("");
+  const [confirmPassword, setConfirmPassword] = React.useState("");
+  const [visibility, setVisibility] = React.useState(false);
+  
+  const handleCadastro = () => {
+    if (password === confirmPassword) {
+      router.push(PATHS.login);
+    } else {
+      toast.error("As senhas não coincidem");
+    }
+  };
+
   return (
-    <section className="px-6">
-      <div className="">
+    <section className="flex flex-col bg-white rounded-lg max-w-lg m-auto w-full py-16 px-6 md:px-12">
+
+      <div className="relative flex gap-4 items-center">
         <MyIcon
           name="voltar"
-          className="mt-8"
+          className=""
           onClick={() => router.push(PATHS.login)}
         />
-      </div>
-
       <MyTypography variant="heading2" weight="bold" className="mt-2">
         Cadastre-se
       </MyTypography>
+      </div>
+
 
       <div className="mt-6">
-        <MyTextInput label="Nome Completo" placeholder="Nome Completo" />
+        <MyTextInput label="Nome Completo" placeholder="Nome Completo" className="mt-2"/>
         <MyTextInput
           type="email"
           label="Email ou celular"
           placeholder="b2adventure@gmail.com"
+          className="mt-2"
         />
         <MyTextInput
           label="Telefone/Celular"
           placeholder="b2adventure@gmail.com"
+          className="mt-2"
         />
         <MyTextInput
           label="Senha"
           placeholder="******"
-          type="password"
-          rightIcon={<MyIcon name="eye" className="mr-4 mt-2" />}
+          type={visibility ? "text" : "password"}
+          rightIcon={<MyIcon name={visibility ? "hide" : "eye"} className="mr-4 mt-2 cursor-pointer" onClick={() => setVisibility(prev => !prev)} />}
+          className="mt-2"
+          onChange={(e) => setPassword(e.target.value)}
         />
         <MyTextInput
           label="Confirmar Senha"
           placeholder="******"
-          type="password"
-          rightIcon={<MyIcon name="hide" className="mr-4 mt-2" />}
+          type={visibility ? "text" : "password"}
+          rightIcon={<MyIcon name={visibility ? "hide" : "eye"} className="mr-4 mt-2 cursor-pointer" onClick={() => setVisibility(prev => !prev)}/>}
+          className="mt-2"
+          onChange={(e) => setConfirmPassword(e.target.value)}
         />
 
         <MyCheckbox label="Li e aceito os termos e condições" />

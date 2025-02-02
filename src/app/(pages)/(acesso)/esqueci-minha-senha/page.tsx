@@ -12,24 +12,23 @@ import React from "react";
 export default function EsqueciMinhaSenha() {
   const router = useRouter()
   return (
-    <section className="px-6">
-      <div className="relative">
-        <MyLogo
+    <section className="flex flex-col bg-white rounded-lg max-w-lg m-auto w-full py-16 px-12">
+      <div className="relative flex gap-4 items-center">
+        {/* <MyLogo
           variant="mobile"
           width={200}
           height={200}
           className="mx-auto"
-        />
+        /> */}
         <MyIcon 
         name="voltar" 
-        className="absolute top-10 " 
+        className="" 
         onClick={() => router.push(PATHS.login)}
         />
-      </div>
-
-      <MyTypography variant="heading2" weight="bold">
+        <MyTypography variant="heading2" weight="bold">
         Esqueci minha senha
       </MyTypography>
+      </div>
 
       <div className="mt-6">
         <MyTextInput

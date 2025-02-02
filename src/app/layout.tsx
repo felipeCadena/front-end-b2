@@ -26,9 +26,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.className} antialiased max-w-screen-xl mx-auto`}>
+      <body className={`${inter.className} antialiased`}>
         <Suspense>
-          <div className="">
             <Layout>{children}</Layout>
             <ToastContainer
               theme="colored"
@@ -38,7 +37,6 @@ export default function RootLayout({
               hideProgressBar
               style={{ width: "420px" }}
             />
-          </div>
         </Suspense>
       </body>
     </html>

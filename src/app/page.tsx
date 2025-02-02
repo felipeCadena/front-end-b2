@@ -4,11 +4,12 @@ import SecondSection from "../components/templates/second-section";
 import ThirdSection from "@/components/templates/third-section";
 import FourthSection from "@/components/templates/fourth-section";
 import FifithSection from "@/components/templates/fifth-section";
+import Review from "@/components/templates/third-section/review";
 
 export default function Home() {
   return (
     <>
-      <div className="overflow-x-hidden mx-5 md:max-w-screen-xl">
+      <div className="overflow-x-hidden max-w-screen-xl mx-auto px-4">
         <SearchActivity />
         <FirstSection />
         <SecondSection />
@@ -16,8 +17,11 @@ export default function Home() {
           <ThirdSection />
           <FourthSection />
         </div>
-        <FifithSection />
       </div>
+      <div className="max-sm:hidden">
+      <Review />
+      </div>
+      <FifithSection />
     </>
   );
 }

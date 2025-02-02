@@ -42,9 +42,9 @@ const FourthSection = () => {
         </div>
 
         {/* List of Locations */}
-        <div className="w-full max-sm:max-w-md space-y-3 md:bg-gray-500 md:flex md:gap-8 md:w-2/3 md:items-stretch md:rounded-lg md:h-full md:border md:border-primary-900">
+        <div className="w-full max-sm:max-w-md space-y-3 md:bg-gray-500 md:flex md:p-6 md:w-2/3 md:items-stretch md:rounded-lg md:h-full md:border md:border-primary-900">
           {/* Header */}
-          <div className="max-sm:space-y-4 md:w-1/2 md:flex md:flex-col md:p-5 md:justify-evenly md:space-y-6">
+          <div className="max-sm:space-y-4 md:w-2/3 md:flex md:flex-col md:p-4 md:justify-evenly md:space-y-6">
             <div className="max-sm:bg-primary-900 max-sm:px-8 max-sm:py-2 max-sm:rounded-full max-sm:mt-6 max-sm:mb-2">
               <MyTypography
                 variant="subtitle3"
@@ -57,7 +57,7 @@ const FourthSection = () => {
             {locations.map((location, index) => (
               <div
                 key={index}
-                className="flex items-center md:justify-between p-3 bg-[#F1F0F587] border border-primary-600/30 md:border-black border-opacity-80 rounded-lg shadow-sm hover:bg-gray-100 relative"
+                className="flex items-center md:gap-8 md:justify-between p-2 bg-[#F1F0F587] border border-primary-600/30 md:border-black border-opacity-80 rounded-lg shadow-sm hover:bg-gray-100 relative"
               >
                 <div className="absolute inset-y-0 left-0 w-3 md:w-16 bg-primary-900 rounded-l-lg">
                   <MyIcon
@@ -69,7 +69,7 @@ const FourthSection = () => {
                   name="localizacaoRedonda"
                   className="w-6 h-6 text-primary-900 ml-3 md:hidden"
                 />
-                <div className="ml-3 md:ml-16 max-sm:text-nowrap">
+                <div className="ml-3 md:ml-16 text-nowrap">
                   <MyTypography
                     variant="body-big"
                     weight="regular"
@@ -100,19 +100,19 @@ const FourthSection = () => {
             </MyButton>
           </div>
 
-          <div className="max-sm:hidden sm:w-full h-full md:max-h-[410px]">
+          <div className="max-sm:hidden w-full h-full md:min-h-[410px]">
             <Image
               src="/images/mapa-inicial.png"
               alt="mapa"
               width={400}
               height={400}
-              className="border border-gray rounded-xl md:max-h-[410px] "
+              className="border border-gray w-full rounded-xl md:min-h-[410px]"
             />
           </div>
         </div>
 
         {/* Map */}
-        <div className="w-full max:sm:max-w-2xl md:hidden">
+        <div className="w-full max-sm:mx-auto max-sm:w-fit md:hidden">
           <Image
             src="/images/mapa-inicial.png"
             alt="mapa"

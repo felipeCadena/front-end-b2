@@ -5,9 +5,9 @@ import Image from "next/image";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 
-export default function CarouselImages({ images, fullWidth }: any) {
+export default function CarouselImages({ images }: any) {
   return (
-    <div className="flex flex-col w-full lg:min-w-0">
+    <div className="flex flex-col w-full lg:min-w-0 rounded-lg md:rounded-xl overflow-hidden">
       <Carousel
         showThumbs={false}
         showStatus={false}
@@ -37,7 +37,7 @@ export default function CarouselImages({ images, fullWidth }: any) {
         }}
       >
         {images.map((image: any, index: number) => (
-        <div key={index} className={cn("relative z-10 overflow-hidden w-full hover:cursor-pointer rounded-lg md:rounded-xl h-[350px] md:h-[500px]")}>
+        <div key={index} className={cn("relative z-10 overflow-hidden w-full h-[350px] md:h-[500px]")}>
           <Image
             alt="sample_file"
             src={image ?? ""}

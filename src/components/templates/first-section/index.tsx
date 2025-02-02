@@ -21,7 +21,7 @@ export default function FirstSection() {
   ]
   return (
     <section className="mt-10 md:relative">
-      <CarouselImages fullWidth images={images}/>
+      <CarouselImages images={images}/>
       <div className="mt-4 px-4">
         <MyTypography variant="heading2" weight="bold" className={`md:font-my-font md:text-end md:absolute md:top-8 md:right-16 md:font-extrabold md:uppercase md:w-[23rem] md:text-[3rem] md:text-white`}>
           Qual será sua próxima aventura?
