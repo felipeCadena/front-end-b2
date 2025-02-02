@@ -12,8 +12,8 @@ import React from "react";
 export default function EsqueciMinhaSenha() {
   const router = useRouter()
   return (
-    <section className="flex flex-col bg-white rounded-lg max-w-lg m-auto w-full py-16 px-12">
-      <div className="relative flex gap-4 items-center">
+    <section className="flex flex-col bg-white rounded-lg max-w-lg m-auto w-full py-16 px-6 md:px-12">
+      <div className="relative flex max-sm:flex-col gap-4 md:items-center">
         {/* <MyLogo
           variant="mobile"
           width={200}

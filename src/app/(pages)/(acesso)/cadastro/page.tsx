@@ -27,7 +27,7 @@ export default function Cadastro() {
   return (
     <section className="flex flex-col bg-white rounded-lg max-w-lg m-auto w-full py-16 px-6 md:px-12">
 
-      <div className="relative flex gap-4 items-center">
+      <div className="relative flex max-sm:flex-col gap-4 md:items-center">
         <MyIcon
           name="voltar"
           className=""

@@ -22,7 +22,7 @@ export default function Login() {
 
   return (
     <section className="flex flex-col bg-white rounded-lg max-w-lg m-auto w-full">
-      <div className="md:px-12 md:py-6">
+      <div className="px-6 md:px-12 md:py-6">
         <div className="relative">
           <MyLogo
             variant="mobile"
