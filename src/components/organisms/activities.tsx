@@ -8,22 +8,13 @@ import { cn } from "@/utils/cn";
 import PATHS from "@/utils/paths";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useRef } from "react";
-import { useDraggable } from "react-use-draggable-scroll";
 
-export default function CarouselCustom({ activities }: any) {
-  const ref =
-    useRef<HTMLDivElement>() as React.MutableRefObject<HTMLInputElement>;
-  const { events } = useDraggable(ref);
+export default function Activities({ activities }: any) {
   const router = useRouter()
 
   return (
-    <div
-      ref={ref}
-      className={cn(
-        "overflow-x-scroll flex gap-4 max-sm:no-scrollbar my-8 md:my-4 md:last:mb-16 md:scrollbar-thin"
-      )}
-      {...events}
+    <section
+      className={cn("grid grid-cols-4 gap-6")}
     >
       {activities.map((activity: any, index: number) => (
         <div 
@@ -31,13 +22,13 @@ export default function CarouselCustom({ activities }: any) {
         className="min-w-[70%] md:min-w-[30%] lg:min-w-[20%] flex flex-col gap-1 cursor-pointer md:mb-8"
         onClick={() => router.push(PATHS.visualizarAtividade(activity.id))}
         >
-          <div className="relative z-10 overflow-hidden h-[225px] w-full hover:cursor-pointer rounded-md">
+          <div className="relative z-10 overflow-hidden h-[265px] w-full hover:cursor-pointer rounded-md">
             <Image
               alt="sample_file"
               src={activity.image ?? ""}
               width={250}
               height={300}
-              className="w-full h-[225px] object-cover"
+              className="w-full h-[265px] object-cover"
             />
             {activity.favorite && (
               <MyIcon
@@ -48,7 +39,7 @@ export default function CarouselCustom({ activities }: any) {
             )}
           </div>
           <span className="mt-2">
-            <MyBadge variant="outline">{activity.tag}</MyBadge>
+            <MyBadge variant="outline" className="p-2">{activity.tag}</MyBadge>
           </span>
           <StarRating rating={activity.stars} />
           <MyTypography variant="subtitle1" weight="bold" className="">
@@ -59,6 +50,6 @@ export default function CarouselCustom({ activities }: any) {
           </MyTypography>
         </div>
       ))}
-    </div>
+    </section>
   );
 }

@@ -24,6 +24,7 @@ import DateIcon from "./elements/date";
 import Localizacao from "./elements/localizacao";
 import ChevronLeft from "./elements/chevron-left";
 import ChevronRight from "./elements/chevron-right";
+import ChevronDown from "./elements/down";
 import Sum from "./elements/sum";
 import Decrease from "./elements/decrease";
 import DecreaseEmpty from "./elements/decrease-empty";
@@ -37,7 +38,6 @@ import Youtube from "./elements/youtube";
 import LocationRounded from "./elements/location-rounded";
 import MapPin from "./elements/map-pin";
 import X from "./elements/x";
-import ChevronDown from "./elements/down";
 import File from "./elements/file";
 import FullHeart from "./elements/full-heart";
 import ShoppingCard from "./elements/shopping-card";
@@ -77,6 +77,9 @@ import Seta from "./elements/seta";
 import ScrollMouse from "./elements/scroll-mouse";
 import Sucess from "./elements/sucess";
 import Cancel from "./elements/cancel";
+import ChatWeb from "./elements/chat-web";
+import Clock from "./elements/clock";
+import Message from "./elements/message";
 
 export type IconsMapTypes = keyof typeof IconsMap;
 
@@ -142,6 +145,7 @@ const IconsMap = {
   perfil: <Perfil />,
   notificacoes: <Notificacoes />,
   chat: <Chat />,
+  "chat-web": <ChatWeb />,
   favoritos: <Favoritos />,
   reservas: <Reservas />,
   carrinho: <Carrinho />,
@@ -163,7 +167,9 @@ const IconsMap = {
   seta: <Seta />,
   "scroll-mouse": <ScrollMouse />,
   sucess: <Sucess />,
-  cancel: <Cancel />
+  cancel: <Cancel />,
+  clock: <Clock />,
+  message: <Message />
 };
 
 

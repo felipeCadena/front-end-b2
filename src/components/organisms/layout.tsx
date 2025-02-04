@@ -20,7 +20,8 @@ const Layout = ({ children }: { children: JSX.Element | ReactNode }) => {
   const withFooter = () => {
     return (
       pathname == PATHS.initial ||
-      pathname == PATHS.atividades
+      pathname == PATHS.atividades ||
+      pathname == PATHS.informacoes
     );
   };
 

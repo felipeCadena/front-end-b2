@@ -30,14 +30,14 @@ export default function AtividadeRealizada() {
           Resumo da atividade feita
         </MyTypography>
       </div>
-      <div className="bg-gray-200 w-[342px] h-[392px] rounded-lg mt-4">
+      <div className="bg-gray-200 w-full h-[440px] rounded-lg mt-4">
         <Image
           src={activity?.image ?? ""}
           alt="Imagem da atividade"
           width={342}
           height={100}
           className={cn(
-            "w-[342px] h-[200px] object-cover rounded-t-lg",
+            "w-full h-[250px] object-cover rounded-t-lg",
             activity?.tag.includes("Terrestre") ? "object-top" : "object-bottom"
           )}
         />

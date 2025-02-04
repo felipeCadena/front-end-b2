@@ -18,6 +18,12 @@ export const sideBarLp: any[] = [
     web: true,
   },
   {
+    label: "Fale Conosco",
+    link: "/fale-conosco",
+    icon: "email",
+    web: true,
+  },
+  {
     label: "Logar-se",
     link: "/login",
     icon: "logar",
@@ -43,12 +49,6 @@ export const sideBarClient: any[] = [
     link: "/notificacoes",
     icon: "notificacoes",
     web: true,
-  },
-  {
-    label: "Chat",
-    link: "/chat",
-    icon: "chat",
-    web: false,
   },
   {
     label: "Favoritos",
@@ -77,7 +77,90 @@ export const sideBarClient: any[] = [
     icon: "carrinho",
     web: true,
   },
+  {
+    label: "Chat",
+    link: "/chat",
+    icon: "chat",
+    web: true,
+  },
+  {
+    label: "Fale Conosco",
+    link: "/fale-conosco",
+    icon: "email",
+    web: false,
+  },
+  {
+    label: "Sair",
+    link: "/",
+    icon: "sair",
+    web: false,
+  },
+];
 
+export const sideBarAdmin: any[] = [
+  {
+    label: "Perfil",
+    link: "/perfil",
+    icon: "perfil",
+    web: false,
+  },
+  {
+    label: "Home",
+    link: "/",
+    icon: "home",
+    web: true,
+  },
+  {
+    label: "Avaliações de Atividades",
+    link: "/avaliacoes",
+    icon: "star",
+    web: true,
+  },
+  {
+    label: "Pagamento de parceiros",
+    link: "/pagamento-parceiros",
+    icon: "pagamento",
+    web: false,
+  },
+  {
+    label: "Parceiros Cadastradaos",
+    link: "/parceiros-cadastrados",
+    icon: "parceiros",
+    tab: "parceiros",
+    web: false,
+  },
+  {
+    label: "Histórico de Atividades",
+    link: "/informacoes",
+    icon: "duracao",
+    tab: "historico",
+    web: false,
+  },
+  {
+    label: "Notificações",
+    link: "/notificacoes",
+    icon: "notificacoes",
+    tab: "notificacoes",
+    web: false,
+  },
+  {
+    label: "Financeiro",
+    link: "/financeiro",
+    icon: "financeiro",
+    web: true,
+  },
+  {
+    label: "Chat",
+    link: "/chat",
+    icon: "chat",
+    web: true,
+  },
+  {
+    label: "Configurações",
+    link: "/configuracoes",
+    icon: "configuracoes",
+    web: true,
+  },
   {
     label: "Sair",
     link: "/",

@@ -20,13 +20,15 @@ export default function SidebarMenu({
 }) {
   const [sideBar, setSideBar] = useState<any[]>(sideBarLp);
   const pathname = usePathname();
-  const { email } = useLogin();
+  const { email, setEmail } = useLogin();
 
   useEffect(() => {
     if (pathname !== "/" && email.includes("cliente")) {
       setSideBar(sideBarClient);
+    } else {
+      setSideBar(sideBarLp);
     }
-  }, []);
+  }, [email]);
 
   const handleCloseSidebar = (event: React.MouseEvent) => {
     event.stopPropagation(); // Evita conflitos com outros eventos de clique
@@ -51,7 +53,10 @@ export default function SidebarMenu({
                 <Link
                   href={`${item.link}${item.tab ? `?tab=${item.tab}` : ""}`}
                   className={cn("flex justify-between")}
-                  onClick={handleCloseSidebar}
+                  onClick={(e) => {
+                    handleCloseSidebar(e);
+                    item.label == "Sair" && setEmail("");
+                  }}
                 >
                   <div className="flex gap-1 items-center">
                     <MyIcon name={item.icon} />

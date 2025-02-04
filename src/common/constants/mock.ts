@@ -1,3 +1,9 @@
+export const profile = {
+  avatar: "/images/avatar1.png",
+  name: "Luciana Bianco",
+  email: ""
+}
+
 export const activities = [
   {
     id: "1",

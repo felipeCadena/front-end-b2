@@ -2,9 +2,8 @@
 
 import * as React from "react";
 import { DayPicker } from "react-day-picker";
-
 import { cn } from "@/utils/cn";
-import MyIcon from "../atoms/my-icon";
+import { ptBR } from "react-day-picker/locale";
 
 export type CalendarProps = React.ComponentProps<typeof DayPicker>;
 
@@ -14,14 +13,36 @@ function MyFullCalendar({
   showOutsideDays = true,
   ...props
 }: CalendarProps) {
+  const [isDesktop, setIsDesktop] = React.useState<boolean>(false);
+
+  React.useEffect(() => {
+    const checkScreenSize = () => {
+      setIsDesktop(window.innerWidth >= 768); // Define como "desktop" se for maior que 768px
+    };
+
+    checkScreenSize();
+    window.addEventListener("resize", checkScreenSize);
+    
+    return () => window.removeEventListener("resize", checkScreenSize);
+  }, []);
+
   return (
     <DayPicker
       showOutsideDays={showOutsideDays}
-      className={cn("", className)}
+      className={cn("md:flex md:justify-center", className)}
       ISOWeek={true}
+      locale={ptBR}
+      formatters={{
+        formatWeekdayName: (weekday) => {
+          const fullName = weekday.toLocaleDateString("pt-BR", { weekday: "long" });
+          return isDesktop
+            ? fullName.replace("-feira", "").split(" ")[0] // Exibe "Segunda", "Terça" no desktop
+            : fullName.substring(0, 3); // Exibe "Seg", "Ter" no mobile
+        },
+      }}
       classNames={{
-        button_next: "absolute right-1 top-0 border rounded-lg p-2",
-        button_previous: "absolute left-1 top-0 border rounded-lg p-2",
+        button_next: "absolute right-1 top-0 md:right-1/3 border rounded-lg p-2",
+        button_previous: "absolute left-1 top-0 md:left-1/3 border rounded-lg p-2",
         months: "flex flex-col mt-1",
         month: "space-y-4 text-center",
         caption: "flex justify-center pt-1 relative items-center",
@@ -44,7 +65,7 @@ function MyFullCalendar({
             : "[&:has([aria-selected])]:rounded-md"
         ),
         day: cn(
-          "h-8 w-8 p-3 font-regular text-[#4A4A4A] aria-selected:opacity-100"
+          "h-8 w-8 p-3 md:p-6 font-regular text-[#4A4A4A] aria-selected:opacity-100 "
         ),
         day_range_start: "day-range-start",
         day_range_end: "day-range-end",
@@ -55,8 +76,8 @@ function MyFullCalendar({
         day_range_middle:
           "aria-selected:bg-accent aria-selected:text-accent-foreground",
         day_hidden: "invisible",
-        selected: "bg-primary-600 text-[#fff] rounded-md",
-        weekday: "font-normal text-[#929292] opacity-80 pt-6",
+        selected: "bg-primary-600 rounded-md md:bg-primary-800 md:rounded-lg md:border md:border-primary-600 text-[#fff] md:text-primary-600",
+        weekday: "font-normal text-[#929292] md:text-primary-600 md:font-semibold opacity-80 pt-6",
         outside: "text-[#929292] opacity-50",
         disabled: "text-[#929292] opacity-50",
         month_grid: "w-screen",

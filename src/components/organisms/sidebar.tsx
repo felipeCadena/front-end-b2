@@ -22,7 +22,7 @@ export default function Sidebar({ logout }: { logout?: () => void }) {
 
       {/* Sidebar */}
       <aside
-        className={`md:hidden fixed top-0 left-0 z-40 h-full w-9/12 transform bg-white shadow-lg transition-transform duration-300 ease-in-out lg:static lg:translate-x-0 ${
+        className={`md:hidden fixed top-0 left-0 z-40 h-full max-sm:w-9/12 transform bg-white shadow-lg transition-transform duration-300 ease-in-out lg:static lg:translate-x-0 ${
           isOpen ? "translate-x-0 overflow-y-auto" : "-translate-x-full"
         }`}
       >
@@ -41,14 +41,14 @@ export default function Sidebar({ logout }: { logout?: () => void }) {
         </div>
           
 
-          <div className="-ml-4">
+          <div className="-ml-4 md:hidden">
             <SidebarMenu closeSidebar={closeSidebar} />
           </div>
         </nav>
       </aside>
 
-      <aside className="">
-        <nav className="">
+      <aside className="max-sm:hidden">
+        <nav>
           <SidebarMenuWeb />
         </nav>
       </aside>

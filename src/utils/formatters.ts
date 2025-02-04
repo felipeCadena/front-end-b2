@@ -1,8 +1,10 @@
-export function getData(timestamp: string) {
+export function getData(timestamp: string, year?: boolean) {
   const date = new Date(timestamp);
-  const dia = String(date.getDate()).padStart(2, "0"); // Dia com 2 dígitos
-  const mes = String(date.getMonth() + 1).padStart(2, "0"); // Mês com 2 dígitos
-  return `${dia}/${mes}`; // Formato DD/MM
+  const dia = String(date.getDate()).padStart(2, "0");
+  const mes = String(date.getMonth() + 1).padStart(2, "0");
+  const ano = String(date.getFullYear()); // Pegando os últimos dois dígitos do ano
+
+  return year ? `${dia}/${mes}/${ano}` : `${dia}/${mes}`;
 }
 
 export function getHora(timestamp: string) {

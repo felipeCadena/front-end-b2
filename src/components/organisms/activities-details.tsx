@@ -22,7 +22,7 @@ export default function ActivitiesDetails({
         <div
           key={index}
           className={cn(
-            "flex justify-around gap-2 cursor-pointer my-6",
+            "flex max-sm:justify-around gap-2 cursor-pointer my-6",
             withDate && "my-8 relative"
           )}
         >

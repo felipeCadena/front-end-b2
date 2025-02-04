@@ -9,7 +9,7 @@ const Layout = ({ children }: { children: JSX.Element | ReactNode }) => {
   const fullWidthPages = ["/login", "/cadastro", "/esqueci-minha-senha"];
 
   return (
-    <section className={cn(!fullWidthPages.includes(pathname) && "max-w-screen-xl mx-auto", )}>
+    <section className={cn(!fullWidthPages.includes(pathname) && "md:max-w-screen-xl md:mx-auto", )}>
         {children}
     </section>
   );

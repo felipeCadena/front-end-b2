@@ -13,7 +13,7 @@ export default function Atividades() {
     <section className="mx-5">
       <SearchActivity />
 
-      <div className="mt-8">
+      <div className="mt-8 md:hidden">
         <MyTypography variant="heading2" weight="semibold" className="">
           Qual sua próxima aventurar?
         </MyTypography>
@@ -24,21 +24,21 @@ export default function Atividades() {
 
       <ActivitiesFilter />
 
-      <div className="my-4">
-        <MyTypography variant="heading2" weight="semibold" className="">
+      <div className="my-8 md:my-16">
+        <MyTypography variant="heading2" weight="semibold" className="mb-4 md:text-lg">
           Sugestões para você
         </MyTypography>
-        <MyTypography variant="subtitle2" weight="semibold" className="mt-4">
+        <MyTypography variant="subtitle3" weight="regular" className="md:opacity-50">
           Atividades Aéreas
         </MyTypography>
         <CarouselCustom activities={activities} />
 
-        <MyTypography variant="subtitle2" weight="semibold" className="">
+        <MyTypography variant="subtitle3" weight="regular" className="md:opacity-50">
           Atividades Terrestres
         </MyTypography>
         <CarouselCustom activities={activities} />
 
-        <MyTypography variant="subtitle2" weight="semibold" className="">
+        <MyTypography variant="subtitle3" weight="regular" className="md:opacity-50">
           Atividades no Mar
         </MyTypography>
         <CarouselCustom activities={activities} />

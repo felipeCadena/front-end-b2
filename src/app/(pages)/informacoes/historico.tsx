@@ -9,16 +9,19 @@ import {
 import MyTypography from "@/components/atoms/my-typography";
 import ActivitiesFilter from "@/components/organisms/activities-filter";
 import ActivitiesHistoric from "@/components/organisms/activities-historic";
+import FullActivitiesHistoric from "@/components/organisms/full-activities-historic";
 import SearchActivity from "@/components/organisms/search-activity";
 import React from "react";
 
 export default function Historico() {
   return (
-    <section className="mx-auto mb-15 max-w-5xl">
+    <section className="mx-auto max-sm:max-w-5xl">
       <div className="mx-4 space-y-8">
-        <SearchActivity />
+        <div className="md:hidden">
+          <SearchActivity />
+        </div>
         <ActivitiesFilter />
-        <div className="w-full flex items-center justify-between space-x-12">
+        <div className="w-full flex items-center justify-between space-x-12 md:hidden">
           <MyTypography variant="subtitle1" weight="bold" className="text-nowrap">
             Histórico de atividades
           </MyTypography>
@@ -36,7 +39,12 @@ export default function Historico() {
             </SelectContent>
           </MySelect>
         </div>
-        <ActivitiesHistoric activities={activities} />
+        <div className="md:hidden">
+          <ActivitiesHistoric activities={activities} />
+        </div>
+        <div className="max-sm:hidden">
+        <FullActivitiesHistoric activities={activities} />
+        </div>
       </div>
     </section>
   );

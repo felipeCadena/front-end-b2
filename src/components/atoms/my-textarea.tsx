@@ -14,7 +14,7 @@ const MyTextarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
       <div className='flex w-full flex-col gap-2'>
         <MyTypography
           as='label'
-          className='text-base font-bold text-neutral-800'
+          className='text-sm font-semibold text-neutral-800'
         >
           {label}
         </MyTypography>
