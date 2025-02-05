@@ -8,6 +8,7 @@ import useSearchQueryService from "@/services/use-search-query-service";
 import Historico from "./historico";
 import Agenda from "./agenda";
 import SearchActivity from "@/components/organisms/search-activity";
+import GaleriaDeFotos from "./galeria-de-fotos";
 
 export default function Informacoes() {
   const [tab, setTab] = React.useState("");
@@ -47,7 +48,7 @@ export default function Informacoes() {
             <Agenda />
           </TabsContent>
           <TabsContent value="galeria" className="max-sm:hidden">
-            Galeria de Fotos
+            <GaleriaDeFotos />
           </TabsContent>
         </MyTabs>
       )}

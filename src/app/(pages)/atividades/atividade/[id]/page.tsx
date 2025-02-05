@@ -10,6 +10,7 @@ import MyBadge from "@/components/atoms/my-badge";
 import StarRating from "@/components/molecules/my-stars";
 import Image from "next/image";
 import MyButton from "@/components/atoms/my-button";
+import PATHS from "@/utils/paths";
 
 export default function Atividade() {
   const router = useRouter();
@@ -17,31 +18,76 @@ export default function Atividade() {
 
   const activity = activities.find((activity) => activity.id === id);
 
+  const album = [
+    "/images/atividades/mar/mar-1.jpeg",
+    "/images/atividades/mar/mar-2.jpeg",
+    "/images/atividades/mar/mar-3.jpeg",
+    "/images/atividades/mar/mar-4.jpeg",
+    "/images/atividades/mar/mar-5.jpeg",
+  ];
+
   return (
     <section className="my-10">
       <div className="relative">
         <MyIcon
           name="voltar-black"
-          className="absolute z-20 top-8 left-8"
+          className="absolute z-20 top-8 left-8 md:hidden"
           onClick={() => router.back()}
         />
-        <CarouselImages
-          images={[
-            "/images/atividades/montanha.webp",
-            "/images/atividades/paraquedas.webp",
-            "/images/atividades/mergulho.webp",
-            "/images/atividades/moto.webp",
-            "/images/atividades/parapente.webp",
-            "/images/atividades/canoagem.webp",
-          ]}
-        />
+
+        <div className="md:hidden">
+          <CarouselImages
+            images={[
+              "/images/atividades/montanha.webp",
+              "/images/atividades/paraquedas.webp",
+              "/images/atividades/mergulho.webp",
+              "/images/atividades/moto.webp",
+              "/images/atividades/parapente.webp",
+              "/images/atividades/canoagem.webp",
+            ]}
+          />
+        </div>
+        <div className="max-sm:hidden flex flex-col my-8">
+          <div className="flex items-start gap-8">
+            <div>
+              <MyTypography variant="heading2" weight="bold" className="">
+                {activity?.title}
+              </MyTypography>
+              <MyBadge variant="outline" className="p-1">
+                {activity?.tag}
+              </MyBadge>
+            </div>
+
+            <StarRating rating={activity?.stars ?? 5} />
+          </div>
+          <div className="mt-4">
+            <MyTypography variant="subtitle3" weight="bold" className="">
+              Descrição da atividade:
+            </MyTypography>
+            <MyTypography variant="body-big" weight="regular" className="mt-1">
+              {activity?.description}
+            </MyTypography>
+          </div>
+        </div>
+        <div className="max-sm:hidden grid grid-cols-4 grid-rows-2 gap-4">
+          {album.map((image, index) => (
+            <Image
+              key={index}
+              src={image}
+              alt="album"
+              width={300}
+              height={300}
+              className={`h-full w-full rounded-lg object-cover ${index === 0 ? "col-span-2 row-span-2 h-full" : ""}`}
+            />
+          ))}
+        </div>
         <MyIcon
           name="black-heart"
           className="absolute z-50 top-8 right-8"
           onClick={() => router.back()}
         />
 
-        <div className="mt-8 mb-12 mx-6">
+        <div className="mt-8 mb-12 mx-6 md:hidden">
           <MyTypography variant="heading2" weight="bold" className="">
             {activity?.title}
           </MyTypography>
@@ -51,7 +97,7 @@ export default function Atividade() {
           </div>
         </div>
 
-        <div className="mx-6 flex gap-4">
+        <div className="mx-6 flex gap-4 md:hidden">
           <Image
             alt="avatar"
             src={activity?.parceiro.avatar ?? ""}
@@ -69,14 +115,13 @@ export default function Atividade() {
           </div>
         </div>
 
-        <div className="m-6">
+        <div className="m-6 md:hidden">
           <MyTypography variant="subtitle3" weight="bold" className="">
-          Descrição da atividade:
+            Descrição da atividade:
           </MyTypography>
           <MyTypography variant="body-big" weight="regular" className="mt-1">
             {activity?.description}
           </MyTypography>
-
         </div>
       </div>
 
@@ -139,31 +184,19 @@ export default function Atividade() {
 
         <div className="grid grid-cols-2 gap-4">
           <div className="bg-primary-900 py-2 rounded-md mb-2">
-            <MyTypography
-              variant="body"
-              weight="bold"
-              className="text-center"
-            >
+            <MyTypography variant="body" weight="bold" className="text-center">
               Atividade individual
             </MyTypography>
           </div>
 
           <div className="bg-primary-900 py-2 rounded-md mb-2">
-            <MyTypography
-              variant="body"
-              weight="bold"
-              className="text-center"
-            >
+            <MyTypography variant="body" weight="bold" className="text-center">
               Permitido crianças
             </MyTypography>
           </div>
 
           <div className="bg-primary-900 py-2 rounded-md mb-2">
-            <MyTypography
-              variant="body"
-              weight="bold"
-              className="text-center"
-            >
+            <MyTypography variant="body" weight="bold" className="text-center">
               Grau de dificuldade: 1
             </MyTypography>
           </div>
@@ -221,8 +254,15 @@ export default function Atividade() {
               A partir de <span className="line-through">R$ 400,00</span> por
             </MyTypography>
 
-            <MyTypography variant="heading2" weight="extrabold" className="text-primary-600">
-              <span className="text-primary-600 text-base font-extrabold">R$</span> 360,00
+            <MyTypography
+              variant="heading2"
+              weight="extrabold"
+              className="text-primary-600"
+            >
+              <span className="text-primary-600 text-base font-extrabold">
+                R$
+              </span>{" "}
+              360,00
             </MyTypography>
           </div>
 
@@ -232,6 +272,7 @@ export default function Atividade() {
             size="lg"
             borderRadius="squared"
             rightIcon={<MyIcon name="seta-direita" className="ml-3" />}
+            onClick={() => router.push(PATHS.carrinho)}
           >
             Garantir sua vaga
           </MyButton>

@@ -21,7 +21,8 @@ const Layout = ({ children }: { children: JSX.Element | ReactNode }) => {
     return (
       pathname == PATHS.initial ||
       pathname == PATHS.atividades ||
-      pathname == PATHS.informacoes
+      pathname == PATHS.informacoes ||
+      pathname.includes("atividade-realizada")
     );
   };
 

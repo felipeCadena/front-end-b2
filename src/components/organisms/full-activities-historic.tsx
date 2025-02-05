@@ -26,6 +26,9 @@ export default function FullActivitiesHistoric({ activities, withDate }: any) {
               width={250}
               height={300}
               className="object-cover w-[265px] h-[265px]"
+              onClick={() =>
+                router.push(PATHS.atividadeRealizada(activity.id))
+              }
             />
           </div>
 

@@ -3,12 +3,16 @@
 import MyIcon from "@/components/atoms/my-icon";
 import MyLogo from "@/components/atoms/my-logo";
 import MyTypography from "@/components/atoms/my-typography";
+import { cn } from "@/utils/cn";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import React from "react";
 
 export default function Footer() {
+  const pathname = usePathname();
+
   return (
-    <footer className="bg-[#F1F0F5] text-center px-4 pb-8 max-sm:hidden">
+    <footer className={cn("bg-[#F1F0F5] text-center px-4 pb-8 hidden")}>
       <div className="md:w-4/5 md:mx-auto">
       <MyLogo
         variant="mobile"

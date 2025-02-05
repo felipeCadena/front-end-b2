@@ -80,6 +80,10 @@ import Cancel from "./elements/cancel";
 import ChatWeb from "./elements/chat-web";
 import Clock from "./elements/clock";
 import Message from "./elements/message";
+import Download from "./elements/download";
+import ChevronDownGreen from "./elements/chevron-down-green";
+import DownloadGreen from "./elements/download-green";
+import XRed from "./elements/x-red";
 
 export type IconsMapTypes = keyof typeof IconsMap;
 
@@ -169,7 +173,11 @@ const IconsMap = {
   sucess: <Sucess />,
   cancel: <Cancel />,
   clock: <Clock />,
-  message: <Message />
+  message: <Message />,
+  download: <Download />,
+  "chevron-down-green": <ChevronDownGreen />,
+  "download-green": <DownloadGreen />,
+  "x-red": <XRed />
 };
 
 
