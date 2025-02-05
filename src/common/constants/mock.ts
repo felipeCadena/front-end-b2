@@ -4,13 +4,447 @@ export const profile = {
   email: ""
 }
 
+export const activitiesOcean = [
+  {
+    id: "1",
+    image: "/images/atividades/mar/mar-1.jpeg",
+    tag: "Atividade no Mar",
+    stars: 5,
+    title: "Atividade 1",
+    localizacao: "Marina da Glória - RJ",
+    description:
+      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",
+    favorite: true,
+    parceiro: {
+      nome: "Ana Francisca Moraes",
+      avatar: "/images/avatar2.png",
+    },
+    reserva: {
+      timestamp: "2025-03-12T08:00:00",
+      pessoas: 2,
+      total: 363.86
+    }
+  },
+  {
+    id: "2",
+    image: "/images/atividades/mar/mar-2.jpeg",
+    tag: "Atividade no Mar",
+    stars: 5,
+    title: "Atividade 2",
+    localizacao: "Marina da Glória - RJ",
+    description:
+      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",
+    favorite: false,
+    parceiro: {
+      nome: "Ana Francisca Moraes",
+      avatar: "/images/avatar2.png",
+    },
+    reserva: {
+      timestamp: "2025-03-12T08:00:00",
+      pessoas: 2,
+      total: 363.86
+    }
+  },
+  {
+    id: "3",
+    image: "/images/atividades/mar/mar-3.jpeg",
+    tag: "Atividade no Mar",
+    stars: 5,
+    title: "Atividade 3",
+    localizacao: "Marina da Glória - RJ",
+    description:
+      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",
+    favorite: true,
+    parceiro: {
+      nome: "Ana Francisca Moraes",
+      avatar: "/images/avatar2.png",
+    },
+    reserva: {
+      timestamp: "2025-03-12T08:00:00",
+      pessoas: 2,
+      total: 363.86
+    }
+  },
+  {
+    id: "4",
+    image: "/images/atividades/mar/mar-4.jpeg",
+    tag: "Atividade no Mar",
+    stars: 5,
+    title: "Atividade 4",
+    localizacao: "Marina da Glória - RJ",
+    description:
+      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",
+    favorite: false,
+    parceiro: {
+      nome: "Ana Francisca Moraes",
+      avatar: "/images/avatar2.png",
+    },
+    reserva: {
+      timestamp: "2025-03-12T08:00:00",
+      pessoas: 2,
+      total: 363.86
+    }
+  },
+  {
+    id: "5",
+    image: "/images/atividades/mar/mar-5.jpeg",
+    tag: "Atividade no Mar",
+    stars: 5,
+    title: "Atividade 5",
+    localizacao: "Marina da Glória - RJ",
+    description:
+      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",
+    favorite: false,
+    parceiro: {
+      nome: "Ana Francisca Moraes",
+      avatar: "/images/avatar2.png",
+    },
+    reserva: {
+      timestamp: "2025-03-12T08:00:00",
+      pessoas: 2,
+      total: 363.86
+    }
+  },
+  {
+    id: "6",
+    image: "/images/atividades/mar/mar-6.jpeg",
+    tag: "Atividade no Mar",
+    stars: 5,
+    title: "Atividade 6",
+    localizacao: "Marina da Glória - RJ",
+    description:
+      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",
+    favorite: true,
+    parceiro: {
+      nome: "Ana Francisca Moraes",
+      avatar: "/images/avatar2.png",
+    },
+    reserva: {
+      timestamp: "2025-03-12T08:00:00",
+      pessoas: 2,
+      total: 363.86
+    }
+  },
+  {
+    id: "7",
+    image: "/images/atividades/mar/mar-7.jpeg",
+    tag: "Atividade no Mar",
+    stars: 5,
+    title: "Atividade 7",
+    localizacao: "Marina da Glória - RJ",
+    description:
+      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",
+    favorite: false,
+    parceiro: {
+      nome: "Ana Francisca Moraes",
+      avatar: "/images/avatar2.png",
+    },
+    reserva: {
+      timestamp: "2025-03-12T08:00:00",
+      pessoas: 2,
+      total: 363.86
+    }
+  },
+]
+
+export const activitiesLand = [
+  {
+    id: "1",
+    image: "/images/atividades/terra/terra-1.jpeg",
+    tag: "Atividade Terrestre",
+    stars: 4,
+    title: "Atividade 1",
+    localizacao: "São Conrado - RJ",
+    description:
+      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",
+    favorite: true,
+    parceiro: {
+      nome: "Ana Francisca Moraes",
+      avatar: "/images/avatar3.png",
+    },
+    reserva: {
+      timestamp: "2024-12-12T16:00:00",
+      pessoas: 4,
+      total: 763.50
+    }
+  },
+  {
+    id: "2",
+    image: "/images/atividades/terra/terra-2.jpeg",
+    tag: "Atividade Terrestre",
+    stars: 4,
+    title: "Atividade 2",
+    localizacao: "São Conrado - RJ",
+    description:
+      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",
+    favorite: false,
+    parceiro: {
+      nome: "Ana Francisca Moraes",
+      avatar: "/images/avatar3.png",
+    },
+    reserva: {
+      timestamp: "2024-12-12T16:00:00",
+      pessoas: 3,
+      total: 560.50
+    }
+  },
+  {
+    id: "3",
+    image: "/images/atividades/terra/terra-3.jpeg",
+    tag: "Atividade Terrestre",
+    stars: 4,
+    title: "Atividade 3",
+    localizacao: "São Conrado - RJ",
+    description:
+      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",
+    favorite: true,
+    parceiro: {
+      nome: "Ana Francisca Moraes",
+      avatar: "/images/avatar3.png",
+    },
+    reserva: {
+      timestamp: "2024-12-12T16:00:00",
+      pessoas: 4,
+      total: 763.50
+    }
+  },
+  {
+    id: "4",
+    image: "/images/atividades/terra/terra-4.jpeg",
+    tag: "Atividade Terrestre",
+    stars: 4,
+    title: "Atividade 4",
+    localizacao: "São Conrado - RJ",
+    description:
+      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",
+    favorite: false,
+    parceiro: {
+      nome: "Ana Francisca Moraes",
+      avatar: "/images/avatar3.png",
+    },
+    reserva: {
+      timestamp: "2024-12-12T16:00:00",
+      pessoas: 3,
+      total: 560.50
+    }
+  },
+  {
+    id: "5",
+    image: "/images/atividades/terra/terra-5.jpeg",
+    tag: "Atividade Terrestre",
+    stars: 4,
+    title: "Atividade 5",
+    localizacao: "São Conrado - RJ",
+    description:
+      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",
+    favorite: true,
+    parceiro: {
+      nome: "Ana Francisca Moraes",
+      avatar: "/images/avatar3.png",
+    },
+    reserva: {
+      timestamp: "2024-12-12T16:00:00",
+      pessoas: 4,
+      total: 763.50
+    }
+  },
+  {
+    id: "6",
+    image: "/images/atividades/terra/terra-6.jpeg",
+    tag: "Atividade Terrestre",
+    stars: 4,
+    title: "Atividade 6",
+    localizacao: "São Conrado - RJ",
+    description:
+      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",
+    favorite: false,
+    parceiro: {
+      nome: "Ana Francisca Moraes",
+      avatar: "/images/avatar3.png",
+    },
+    reserva: {
+      timestamp: "2024-12-12T16:00:00",
+      pessoas: 3,
+      total: 560.50
+    }
+  },
+  {
+    id: "7",
+    image: "/images/atividades/terra/terra-1.jpeg",
+    tag: "Atividade Terrestre",
+    stars: 4,
+    title: "Atividade 7",
+    localizacao: "São Conrado - RJ",
+    description:
+      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",
+    favorite: false,
+    parceiro: {
+      nome: "Ana Francisca Moraes",
+      avatar: "/images/avatar3.png",
+    },
+    reserva: {
+      timestamp: "2024-12-12T16:00:00",
+      pessoas: 3,
+      total: 560.50
+    }
+  },
+]
+
+export const activitiesAir = [
+  {
+    id: "1",
+    image: "/images/atividades/ar/ar-1.jpeg",
+    tag: "Atividade Aérea",
+    stars: 3,
+    title: "Atividade 1",
+    localizacao: "Cosme Velho - RJ",
+    description:
+      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",
+
+    parceiro: {
+      nome: "Ana Francisca Moraes",
+      avatar: "/images/avatar1.png",
+    },
+    reserva: {
+      timestamp: "2024-12-12T14:00:00",
+      pessoas: 3,
+      total: 496.50
+    }
+  },
+  {
+    id: "2",
+    image: "/images/atividades/ar/ar-2.jpeg",
+    tag: "Atividade Aérea",
+    stars: 3,
+    title: "Atividade 2",
+    localizacao: "Cosme Velho - RJ",
+    favorite: true,
+    description:
+      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",
+
+    parceiro: {
+      nome: "Ana Francisca Moraes",
+      avatar: "/images/avatar1.png",
+    },
+    reserva: {
+      timestamp: "2024-12-12T14:00:00",
+      pessoas: 3,
+      total: 496.50
+    }
+  },
+  {
+    id: "3",
+    image: "/images/atividades/ar/ar-3.jpeg",
+    tag: "Atividade Aérea",
+    stars: 3,
+    title: "Atividade 3",
+    localizacao: "Cosme Velho - RJ",
+    description:
+      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",
+
+    parceiro: {
+      nome: "Ana Francisca Moraes",
+      avatar: "/images/avatar1.png",
+    },
+    reserva: {
+      timestamp: "2024-12-12T14:00:00",
+      pessoas: 3,
+      total: 496.50
+    }
+  },
+  {
+    id: "4",
+    image: "/images/atividades/ar/ar-4.jpeg",
+    tag: "Atividade Aérea",
+    stars: 3,
+    title: "Atividade 4",
+    localizacao: "Cosme Velho - RJ",
+    favorite: true,
+    description:
+      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",
+
+    parceiro: {
+      nome: "Ana Francisca Moraes",
+      avatar: "/images/avatar1.png",
+    },
+    reserva: {
+      timestamp: "2024-12-12T14:00:00",
+      pessoas: 3,
+      total: 496.50
+    }
+  },
+  {
+    id: "5",
+    image: "/images/atividades/ar/ar-1.jpeg",
+    tag: "Atividade Aérea",
+    stars: 3,
+    title: "Atividade 5",
+    localizacao: "Cosme Velho - RJ",
+    description:
+      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",
+
+    parceiro: {
+      nome: "Ana Francisca Moraes",
+      avatar: "/images/avatar1.png",
+    },
+    reserva: {
+      timestamp: "2024-12-12T14:00:00",
+      pessoas: 3,
+      total: 496.50
+    }
+  },
+  {
+    id: "6",
+    image: "/images/atividades/ar/ar-2.jpeg",
+    tag: "Atividade Aérea",
+    stars: 3,
+    title: "Atividade 6",
+    localizacao: "Cosme Velho - RJ",
+    favorite: true,
+    description:
+      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",
+
+    parceiro: {
+      nome: "Ana Francisca Moraes",
+      avatar: "/images/avatar1.png",
+    },
+    reserva: {
+      timestamp: "2024-12-12T14:00:00",
+      pessoas: 3,
+      total: 496.50
+    }
+  },
+  {
+    id: "7",
+    image: "/images/atividades/ar/ar-3.jpeg",
+    tag: "Atividade Aérea",
+    stars: 3,
+    title: "Atividade 7",
+    localizacao: "Cosme Velho - RJ",
+    favorite: true,
+    description:
+      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",
+
+    parceiro: {
+      nome: "Ana Francisca Moraes",
+      avatar: "/images/avatar1.png",
+    },
+    reserva: {
+      timestamp: "2024-12-12T14:00:00",
+      pessoas: 3,
+      total: 496.50
+    }
+  },
+]
+
+
 export const activities = [
   {
     id: "1",
-    image: "/images/mar.png",
+    image: "/images/atividades/mar/mar-1.jpeg",
     tag: "Atividade no Mar",
     stars: 5,
-    title: "Passeio de barco",
+    title: "Atividade 1",
     localizacao: "Marina da Glória - RJ",
     description:
       "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",
@@ -28,10 +462,10 @@ export const activities = [
   },
   {
     id: "2",
-    image: "/images/ar.png",
+    image: "/images/atividades/ar/ar-1.jpeg",
     tag: "Atividade Aérea",
     stars: 3,
-    title: "Escalada Cristo - RJ",
+    title: "Atividade 2",
     localizacao: "Cosme Velho - RJ",
     description:
       "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",
@@ -48,10 +482,10 @@ export const activities = [
   },
   {
     id: "3",
-    image: "/images/terra.png",
+    image: "/images/atividades/terra/terra-1.jpeg",
     tag: "Atividade Terrestre",
     stars: 4,
-    title: "Voo de Parapente",
+    title: "Atividade 3",
     localizacao: "São Conrado - RJ",
     description:
       "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",
@@ -68,10 +502,10 @@ export const activities = [
   },
   {
     id: "4",
-    image: "/images/mar.png",
+    image: "/images/atividades/mar/mar-2.jpeg",
     tag: "Atividade no Mar",
     stars: 5,
-    title: "Passeio de barco",
+    title: "Atividade 4",
     localizacao: "Ilhas Tijuca - RJ",
     description:
       "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",
@@ -89,10 +523,10 @@ export const activities = [
   },
   {
     id: "5",
-    image: "/images/mar.png",
+    image: "/images/atividades/mar/mar-3.jpeg",
     tag: "Atividade no Mar",
     stars: 5,
-    title: "Passeio de barco",
+    title: "Atividade 5",
     localizacao: "Ilhas Tijuca - RJ",
     description:
       "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",
@@ -110,10 +544,10 @@ export const activities = [
   },
   {
     id: "6",
-    image: "/images/terra.png",
+    image: "/images/atividades/terra/terra-3.jpeg",
     tag: "Atividade Terrestre",
     stars: 4,
-    title: "Voo de Parapente",
+    title: "Atividade 6",
     localizacao: "São Conrado - RJ",
     description:
       "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",

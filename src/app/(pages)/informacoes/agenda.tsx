@@ -12,7 +12,7 @@ export default function Agenda() {
   const [date, setDate] = React.useState<Date>();
 
   return (
-    <section className="bg-white md:w-full flex flex-col max-sm:items-center relative">
+    <section className="bg-white w-full flex flex-col max-sm:items-center relative">
       <MyFullCalendar
         mode="single"
         selected={date}

@@ -56,18 +56,18 @@ export default function ShoppingDetails({ activityDetails }: any) {
       <div className="w-full flex items-center justify-between border-t-[1px] border-gray-400/30">
         <div className="flex flex-col p-6">
           <MyTypography variant="body-big" weight="regular" className="">
-            {activityDetails.reserva.pessoas} adultos x{" "}
+            {activityDetails?.reserva.pessoas} adultos x{" "}
             {new Intl.NumberFormat("pt-BR", {
               minimumFractionDigits: 2,
               maximumFractionDigits: 2,
             }).format(
-              activityDetails.reserva.total / activityDetails.reserva.pessoas
+              activityDetails?.reserva.total / activityDetails?.reserva.pessoas
             )}
           </MyTypography>
           <MyTypography variant="body-big" weight="regular" className="">
-            {getData(activityDetails.reserva.timestamp)} -{" "}
-            {getHora(activityDetails.reserva.timestamp)}{" "}
-            {+getHora(activityDetails.reserva.timestamp).split(":")[0] > 12
+            {getData(activityDetails?.reserva.timestamp)} -{" "}
+            {getHora(activityDetails?.reserva.timestamp)}{" "}
+            {+getHora(activityDetails?.reserva.timestamp).split(":")[0] > 12
               ? "tarde"
               : "manhã"}
           </MyTypography>
@@ -78,7 +78,7 @@ export default function ShoppingDetails({ activityDetails }: any) {
             Total:
           </MyTypography>
           <MyTypography variant="body-big" weight="bold" className="">
-            {activityDetails.reserva.total.toLocaleString("pt-BR", {
+            {activityDetails?.reserva.total.toLocaleString("pt-BR", {
               style: "currency",
               currency: "BRL",
             })}

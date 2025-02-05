@@ -1,6 +1,6 @@
 "use client"
 
-import { activities } from "@/common/constants/mock";
+import { activities, activitiesAir, activitiesLand, activitiesOcean } from "@/common/constants/mock";
 import MyTypography from "@/components/atoms/my-typography";
 import ShoppingCard from "@/components/molecules/shopping-card";
 import ActivitiesFilter from "@/components/organisms/activities-filter";
@@ -31,17 +31,17 @@ export default function Atividades() {
         <MyTypography variant="subtitle3" weight="regular" className="md:opacity-50">
           Atividades Aéreas
         </MyTypography>
-        <CarouselCustom activities={activities} />
+        <CarouselCustom activities={activitiesAir} />
 
         <MyTypography variant="subtitle3" weight="regular" className="md:opacity-50">
           Atividades Terrestres
         </MyTypography>
-        <CarouselCustom activities={activities} />
+        <CarouselCustom activities={activitiesLand} />
 
         <MyTypography variant="subtitle3" weight="regular" className="md:opacity-50">
           Atividades no Mar
         </MyTypography>
-        <CarouselCustom activities={activities} />
+        <CarouselCustom activities={activitiesOcean} />
       </div>
       <ShoppingCard items={"1"}/>
     </section>

@@ -23,7 +23,15 @@ export default function ActivitiesFilter({ withText = true }) {
     },
   ];
   return (
-    <section className={cn("flex flex-col justify-around gap-4 mt-4 mx-auto")}>
+    <section
+      className={cn("flex flex-col justify-around gap-4 mt-12 mx-auto md:my-20")}
+    >
+      <MyTypography variant="heading2" weight="semibold" className="md:hidden">
+        Como você quer se aventurar?
+      </MyTypography>
+      <MyTypography variant="body-big" weight="regular" className="md:hidden">
+        Escolha aqui seu tipo favorito de atividade
+      </MyTypography>
       <MyTypography
         variant="body-big"
         weight="regular"

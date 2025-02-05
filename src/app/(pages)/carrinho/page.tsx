@@ -17,11 +17,11 @@ export default function Reservas() {
   const router = useRouter();
 
   const activity = activities.filter((activity) =>
-    activity.title.includes("Cristo")
+    activity.title.includes("Atividade 2")
   );
 
   const activityDetails = activities.find((activity) =>
-    activity.title.includes("Cristo")
+    activity.title.includes("Atividade 1")
   );
 
   return (

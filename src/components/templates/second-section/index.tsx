@@ -8,14 +8,7 @@ import { activities } from "@/common/constants/mock";
 
 export default function SecondSection() {
   return (
-    <section className="my-10">
-      <MyTypography variant="heading2" weight="semibold" className="md:hidden">
-        Como você quer se aventurar?
-      </MyTypography>
-      <MyTypography variant="body-big" weight="regular" className="">
-        Escolha aqui seu tipo favorito de atividade
-      </MyTypography>
-
+    <section className="">
       <ActivitiesFilter />
 
       <MyTypography variant="heading3" weight="semibold" className="mt-8">
