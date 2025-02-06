@@ -12,7 +12,7 @@ const ROOTS_QUEMSOMOS = "/quem-somos";
 const ROOTS_ATIVIDADES = "/atividades";
 const ROOTS_CARRINHO = "/carrinho";
 const ROOTS_CFINALIZAR_COMPRA = "/finalizar-compra";
-// Agrupa Favoritos, Histórico e Agenda
+// Agrupa Favoritos, Histórico e Reservas
 const ROOTS_INFOS = "/informacoes";
 
 // ==========================================

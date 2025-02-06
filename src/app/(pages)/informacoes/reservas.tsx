@@ -5,10 +5,9 @@ import { ptBR } from "date-fns/locale/pt-BR";
 import { MyFullCalendar } from "@/components/molecules/my-full-calendar";
 import ActivitiesDetails from "@/components/organisms/activities-details";
 import { activities } from "@/common/constants/mock";
-import Activities from "@/components/organisms/activities";
 import FullActivitiesHistoric from "@/components/organisms/full-activities-historic";
 
-export default function Agenda() {
+export default function Reservas() {
   const [date, setDate] = React.useState<Date>();
 
   return (

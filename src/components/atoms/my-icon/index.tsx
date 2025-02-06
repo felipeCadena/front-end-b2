@@ -84,6 +84,7 @@ import Download from "./elements/download";
 import ChevronDownGreen from "./elements/chevron-down-green";
 import DownloadGreen from "./elements/download-green";
 import XRed from "./elements/x-red";
+import Add from "./elements/add";
 
 export type IconsMapTypes = keyof typeof IconsMap;
 
@@ -177,7 +178,8 @@ const IconsMap = {
   download: <Download />,
   "chevron-down-green": <ChevronDownGreen />,
   "download-green": <DownloadGreen />,
-  "x-red": <XRed />
+  "x-red": <XRed />,
+  add: <Add />
 };
 
 

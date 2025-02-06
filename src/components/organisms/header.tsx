@@ -9,10 +9,12 @@ import { useRouter } from "next/navigation";
 import PATHS from "@/utils/paths";
 import useLogin from "@/app/(pages)/(acesso)/login/login-store";
 import Image from "next/image";
+import SideBarModal from "../molecules/side-bar-modal";
 
 export default function Header() {
   const router = useRouter();
   const { email } = useLogin();
+
   return (
     <header className="top-0 z-50 h-[100px] w-full md:max-w-screen-xl md:mx-auto bg-white flex items-center justify-between md:justify-between max-sm:px-4 mb-4">
       <div
@@ -44,16 +46,18 @@ export default function Header() {
               <MyIcon name="user" />
             </button>
           ) : (
-            <div className="flex items-center gap-1">
-              <MyIcon name="chevron-down" className="" />
-              <Image
-                src="/images/avatar1.png"
-                alt="Avatar"
-                width={50}
-                height={50}
-                className="rounded-full"
-              />
-            </div>
+            <SideBarModal>
+              <div className="flex items-center gap-1 cursor-pointer">
+                <MyIcon name="chevron-down" />
+                <Image
+                  src="/images/avatar1.png"
+                  alt="Avatar"
+                  width={50}
+                  height={50}
+                  className="rounded-full"
+                />
+              </div>
+            </SideBarModal>
           )}
         </div>
       </div>

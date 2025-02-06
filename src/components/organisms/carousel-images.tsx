@@ -7,7 +7,7 @@ import "react-responsive-carousel/lib/styles/carousel.min.css";
 
 export default function CarouselImages({ images }: any) {
   return (
-    <div className="flex flex-col w-full lg:min-w-0 rounded-lg md:rounded-xl overflow-hidden">
+    <div className="flex flex-col w-full lg:min-w-0 md:rounded-xl overflow-hidden">
       <Carousel
         showThumbs={false}
         showStatus={false}

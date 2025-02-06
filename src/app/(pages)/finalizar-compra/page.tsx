@@ -12,13 +12,16 @@ import ActivitiesDetails from "@/components/organisms/activities-details";
 import { Card } from "@/components/organisms/card";
 import PeopleSelector from "@/components/organisms/people-selector";
 import ShoppingDetails from "@/components/organisms/shopping-details";
+import { cn } from "@/utils/cn";
 import PATHS from "@/utils/paths";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
 export default function FinalizarCompra() {
   const router = useRouter();
-  const [selectedPayment, setSelectedPayment] = useState<string | null>(null);
+  const [selectedPayment, setSelectedPayment] = useState<string>("Pix");
+
+  console.log(selectedPayment)
 
   const activity = activities.filter((activity) =>
     activity.title.includes("Atividade 2")
@@ -100,6 +103,7 @@ export default function FinalizarCompra() {
               borderRadius="squared"
               size="lg"
               className="w-full font-bold text-[1rem]"
+              leftIcon={<MyIcon name="add" />}
               onClick={() => router.push(PATHS.atividades)}
             >
               Adicionar mais atividades
@@ -128,19 +132,27 @@ export default function FinalizarCompra() {
       </div>
 
       <div className="md:my-16">
-        <MyTypography variant="subtitle2" weight="bold" className="mb-4">
+        <MyTypography variant="subtitle2" weight="bold" className="mb-4 hidden md:block">
           Método de pagamento
         </MyTypography>
 
-        <div className="md:grid md:grid-cols-3 md:gap-6 md:items-center">
+        <div
+          className={cn(
+            "md:grid md:items-center",
+            selectedPayment?.includes("Cartão")
+              ? "md:grid-cols-3 md:gap-6"
+              : "md:grid-cols-2 md:gap-8"
+          )}
+        >
           <div className="flex flex-col space-y-4 mt-4">
             {payments.map((payment) => (
               <MyButton
                 key={payment.name}
                 variant="payment"
                 borderRadius="squared"
-                className="flex justify-between"
+                className={cn("flex justify-between", selectedPayment === payment.name && "bg-primary-900 opacity-100 border border-primary-600")}
                 size="md"
+                value={selectedPayment}
                 rightIcon={<MyIcon name={payment.icon} />}
                 onClick={() => setSelectedPayment(payment.name)}
               >
@@ -149,11 +161,11 @@ export default function FinalizarCompra() {
             ))}
           </div>
 
-          {selectedPayment?.includes("Cartão") && (
+          {selectedPayment?.includes("Cartão") ? (
             <div className="max-sm:mt-8 md:flex md:flex-row-reverse md:items-center md:gap-8 md:col-span-2">
               <Card />
 
-              <div className="max-sm:mt-4 space-y-6 md:w-[90%]">
+              <div className="max-sm:mt-4 space-y-4 md:w-[90%]">
                 <MyTextInput
                   label="Nome impresso no cartão"
                   placeholder="Seu nome"
@@ -183,6 +195,37 @@ export default function FinalizarCompra() {
                     noHintText
                   />
                 </div>
+              </div>
+            </div>
+          ) : (
+            <div className="space-y-4 max-sm:my-10 md:w-full">
+                <MyTextInput
+                  label="Nome Completo"
+                  placeholder="Seu nome"
+                  className="mt-1"
+                  noHintText
+                />
+
+                <MyTextInput
+                  label="E-mail"
+                  placeholder="b2adventure@gmail.com"
+                  className="mt-1"
+                  noHintText
+                />
+              <div className="flex max-sm:flex-col gap-4 md:mt-4">
+                <MyTextInput
+                  label="Telefone"
+                  placeholder="(XX) XXXXX-XXXX"
+                  className="mt-1"
+                  noHintText
+                />
+
+                <MyTextInput
+                  label="CPF"
+                  placeholder="XXX.XXX.XXX-XX"
+                  className="mt-1"
+                  noHintText
+                />
               </div>
             </div>
           )}

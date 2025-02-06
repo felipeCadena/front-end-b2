@@ -22,7 +22,7 @@ export function isDateInPast(timestamp: string) {
   return dateToCheck < today; // Verifica se a data é anterior a hoje
 }
 
-export function formatDate(timestamp: string): string {
+export function formatDate(timestamp: string, year?: boolean): string {
   if (!timestamp) return "";
   
   const date = new Date(timestamp);
@@ -48,5 +48,9 @@ export function formatDate(timestamp: string): string {
     return "Anteontem ";
   }
 
-  return date.toLocaleDateString();
+  const dia = String(date.getDate()).padStart(2, "0");
+  const mes = String(date.getMonth() + 1).padStart(2, "0");
+  const ano = String(date.getFullYear()); // Pegando os últimos dois dígitos do ano
+
+  return year ? `${dia}/${mes}/${ano}` : `${dia}/${mes}`;
 }

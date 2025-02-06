@@ -4,6 +4,7 @@ import MyIcon from "@/components/atoms/my-icon";
 import MyLogo from "@/components/atoms/my-logo";
 import MyTypography from "@/components/atoms/my-typography";
 import { cn } from "@/utils/cn";
+import PATHS from "@/utils/paths";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
@@ -11,8 +12,15 @@ import React from "react";
 export default function Footer() {
   const pathname = usePathname();
 
+  const withFooter = () => {
+    return (
+      pathname == PATHS.initial ||
+      pathname == PATHS.atividades
+    );
+  };
+
   return (
-    <footer className={cn("bg-[#F1F0F5] text-center px-4 pb-8 max-sm:hidden")}>
+    <footer className={cn("bg-[#F1F0F5] text-center px-4 pb-8", !withFooter() && "max-sm:hidden")}>
       <div className="md:w-4/5 md:mx-auto">
       <MyLogo
         variant="mobile"
@@ -63,14 +71,14 @@ export default function Footer() {
       >
         © 2025 Todos os direitos reservados
       </MyTypography>
-      <Link href="/termos-e-condicoes">
+      <Link href="/termos-de-servico">
         <MyTypography
           variant="body"
           weight="regular"
           lightness={400}
           className="max-sm:mt-6 px-4"
         >
-          Termos de Uso
+          Termos de Serviço
         </MyTypography>
       </Link>
 
@@ -85,14 +93,14 @@ export default function Footer() {
         </MyTypography>
       </Link>
 
-      <Link href="/contato">
+      <Link href="/fale-conosco">
         <MyTypography
           variant="body"
           weight="regular"
           lightness={400}
           className="max-sm:mt-4 px-4"
         >
-          Contato
+          Fale Conosco
         </MyTypography>
       </Link>
 

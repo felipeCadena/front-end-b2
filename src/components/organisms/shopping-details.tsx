@@ -3,11 +3,10 @@ import MyTypography from "../atoms/my-typography";
 import MyBadge from "../atoms/my-badge";
 import MyIcon from "../atoms/my-icon";
 import { getData, getHora } from "@/utils/formatters";
-import MyButton from "../atoms/my-button";
 
 export default function ShoppingDetails({ activityDetails }: any) {
   return (
-    <section className="border border-gray-300 rounded-lg my-8 md:my-4">
+    <section className="border border-gray-300 md:border-gray-100 rounded-lg my-8 md:my-4">
       <div className="space-y-6">
         <div className="px-6 my-6">
           <MyBadge variant="outline" className="p-1">

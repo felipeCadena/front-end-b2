@@ -7,15 +7,15 @@ import React from "react";
 
 export default function QuemSomos() {
   return (
-    <section className="m-4 space-y-6">
+    <section className="mx-4 my-8 space-y-6">
       <div className="md:hidden">
         <SearchActivity />
       </div>
-      <div className="md:w-1/2 md:mx-auto text-center space-y-4">
+      <div className="md:w-1/2 md:mx-auto md:text-center space-y-4">
         <MyTypography variant="heading2" weight="bold" className="text-center">
           Quem Somos
         </MyTypography>
-        <MyTypography variant="label" className="text-center">
+        <MyTypography variant="label" className="">
           Nascida no Rio de Janeiro, a B2 Adventure é o resultado do espírito
           aventureiro e desportista de sua idealizadora, que sempre gostou de
           misturar adrenalina em meio a natureza. A B2 Adventure é uma
@@ -29,6 +29,32 @@ export default function QuemSomos() {
           importa se vc é um iniciante ou experiente, aqui tem espaço para você
           se divertir.
         </MyTypography>
+
+        <div className="flex flex-col gap-2 justify-center md:w-1/2 md:mx-auto">
+          <MyTypography variant="body-big" weight="bold" className="mt-4">
+            Missão:
+          </MyTypography>
+          <MyTypography variant="label" className="">
+            Facilitar a conexão entre clientes e parceiros para proporcionar
+            experiências de esportes de aventura inesquecíveis.
+          </MyTypography>
+
+          <MyTypography variant="body-big" weight="bold" className="mt-4">
+            Visão:
+          </MyTypography>
+          <MyTypography variant="label" className="">
+            Ser referência no mercado de intermediação de atividades de esportes
+            de aventura, promovendo aventuras seguras e emocionantes.
+          </MyTypography>
+
+          <MyTypography variant="body-big" weight="bold" className="mt-4">
+            Valores:
+          </MyTypography>
+          <MyTypography variant="label" className="">
+            Segurança, aventura, parceria, responsabilidade com o meio ambiente,
+            inovação e excelência no atendimento.
+          </MyTypography>
+        </div>
       </div>
 
       <Image

@@ -15,6 +15,7 @@ import PATHS from "@/utils/paths";
 export default function Atividade() {
   const router = useRouter();
   const { id } = useParams();
+  const [favorite, setFavorite] = React.useState(false);
 
   const activity = activities.find((activity) => activity.id === id);
 
@@ -48,6 +49,7 @@ export default function Atividade() {
           />
         </div>
         <div className="max-sm:hidden flex flex-col my-8">
+          
           <div className="flex items-start gap-8">
             <div>
               <MyTypography variant="heading2" weight="bold" className="">
@@ -60,6 +62,7 @@ export default function Atividade() {
 
             <StarRating rating={activity?.stars ?? 5} />
           </div>
+
           <div className="mt-4">
             <MyTypography variant="subtitle3" weight="bold" className="">
               Descrição da atividade:
@@ -81,13 +84,28 @@ export default function Atividade() {
             />
           ))}
         </div>
-        <MyIcon
-          name="black-heart"
-          className="absolute z-50 top-8 right-8"
-          onClick={() => router.back()}
-        />
 
-        <div className="mt-8 mb-12 mx-6 md:hidden">
+        {favorite && (
+          <MyTypography
+            variant="body-big"
+            weight="bold"
+            className="hidden md:block text-red-400 absolute z-50 top-11 right-24"
+          >
+            Favoritada!
+          </MyTypography>
+        )}
+
+        <div
+          className="cursor-pointer md:border  rounded-full md:w-12 md:h-12 absolute z-50 top-8 right-8 flex items-center justify-center"
+          onClick={() => setFavorite(!favorite)}
+        >
+          <MyIcon
+            name={favorite ? "full-heart" : "black-heart"}
+            className="z-999"
+          />
+        </div>
+
+        <div className="mt-6 mb-10 mx-6 md:hidden">
           <MyTypography variant="heading2" weight="bold" className="">
             {activity?.title}
           </MyTypography>
@@ -126,156 +144,217 @@ export default function Atividade() {
       </div>
 
       <div className="mx-6">
-        <div className="grid grid-cols-2 gap-x-8 gap-y-4 my-10">
-          <div className="flex items-center gap-2">
-            <MyIcon
-              name="transporte"
-              className="p-2 bg-primary-900 rounded-md"
-            />
-            <MyTypography variant="body" weight="bold" className="">
-              Transporte
-            </MyTypography>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <MyIcon
-              name="fotografia"
-              className="p-2 bg-primary-900 rounded-md"
-            />
-            <MyTypography variant="body" weight="bold" className="">
-              Fotografia
-            </MyTypography>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <MyIcon
-              name="alimentacao"
-              className="p-2 bg-primary-900 rounded-md"
-            />
-            <MyTypography variant="body" weight="bold" className="">
-              Alimentação
-            </MyTypography>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <MyIcon name="agua" className="p-2 bg-primary-900 rounded-md" />
-            <MyTypography variant="body" weight="bold" className="">
-              Água
-            </MyTypography>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <MyIcon name="guia" className="p-2 bg-primary-900 rounded-md" />
-            <MyTypography variant="body" weight="bold" className="">
-              Guia
-            </MyTypography>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <MyIcon
-              name="combustivel"
-              className="p-2 bg-primary-900 rounded-md"
-            />
-            <MyTypography variant="body" weight="bold" className="">
-              Combustível
-            </MyTypography>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-2 gap-4">
-          <div className="bg-primary-900 py-2 rounded-md mb-2">
-            <MyTypography variant="body" weight="bold" className="text-center">
-              Atividade individual
-            </MyTypography>
-          </div>
-
-          <div className="bg-primary-900 py-2 rounded-md mb-2">
-            <MyTypography variant="body" weight="bold" className="text-center">
-              Permitido crianças
-            </MyTypography>
-          </div>
-
-          <div className="bg-primary-900 py-2 rounded-md mb-2">
-            <MyTypography variant="body" weight="bold" className="text-center">
-              Grau de dificuldade: 1
-            </MyTypography>
-          </div>
-        </div>
-
-        <div className="my-10 flex items-center p-3 bg-[#F1F0F587] border border-primary-600/30 border-opacity-80 rounded-lg shadow-sm hover:bg-gray-100 relative">
-          <div className="absolute inset-y-0 left-0 w-3 bg-primary-900 rounded-l-lg"></div>
-          <MyIcon
-            name="localizacaoRedonda"
-            className="w-6 h-6 text-primary-900 ml-3"
-          />
-          <div className="ml-3">
-            <MyTypography
-              variant="body-big"
-              weight="regular"
-              className="text-center"
-            >
-              {activity?.localizacao}
-            </MyTypography>
-          </div>
-        </div>
-
-        <div className="flex justify-between my-10">
-          <div className="flex items-center gap-2">
-            <MyIcon name="duracao" />
-            <div>
-              <MyTypography variant="subtitle3" weight="bold" className="">
-                Duração da atividade
+        <div className="md:grid md:grid-cols-2 md:gap-8">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-x-8 gap-y-4 my-10">
+            <div className="flex items-center gap-2">
+              <MyIcon
+                name="transporte"
+                className="p-2 bg-primary-900 rounded-md"
+              />
+              <MyTypography variant="body" weight="bold" className="">
+                Transporte
               </MyTypography>
-              <MyTypography variant="body-big" weight="regular" className="">
-                4 horas
+            </div>
+
+            <div className="flex items-center gap-2">
+              <MyIcon
+                name="fotografia"
+                className="p-2 bg-primary-900 rounded-md"
+              />
+              <MyTypography variant="body" weight="bold" className="">
+                Fotografia
+              </MyTypography>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <MyIcon
+                name="alimentacao"
+                className="p-2 bg-primary-900 rounded-md"
+              />
+              <MyTypography variant="body" weight="bold" className="">
+                Alimentação
+              </MyTypography>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <MyIcon name="agua" className="p-2 bg-primary-900 rounded-md" />
+              <MyTypography variant="body" weight="bold" className="">
+                Água
+              </MyTypography>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <MyIcon name="guia" className="p-2 bg-primary-900 rounded-md" />
+              <MyTypography variant="body" weight="bold" className="">
+                Guia
+              </MyTypography>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <MyIcon
+                name="combustivel"
+                className="p-2 bg-primary-900 rounded-md"
+              />
+              <MyTypography variant="body" weight="bold" className="">
+                Combustível
               </MyTypography>
             </div>
           </div>
-          <MyIcon name="compartilhar" />
+
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:my-auto">
+            <div className="bg-primary-900 py-2 rounded-md mb-2 md:h-fit">
+              <MyTypography
+                variant="body"
+                weight="bold"
+                className="text-center"
+              >
+                Atividade individual
+              </MyTypography>
+            </div>
+
+            <div className="bg-primary-900 py-2 rounded-md mb-2 md:h-fit">
+              <MyTypography
+                variant="body"
+                weight="bold"
+                className="text-center"
+              >
+                Permitido crianças
+              </MyTypography>
+            </div>
+
+            <div className="bg-primary-900 py-2 rounded-md mb-2 md:h-fit">
+              <MyTypography
+                variant="body"
+                weight="bold"
+                className="text-center"
+              >
+                Grau de dificuldade: 1
+              </MyTypography>
+            </div>
+          </div>
         </div>
 
-        <div className="my-8">
-          <MyTypography variant="subtitle3" weight="bold" className="">
-            Política de cancelamento
-          </MyTypography>
-          <MyTypography variant="body-big" weight="regular" className="mt-1">
-            Este agendamento só será reembolsado se cancelado até 3 dias antes
-            da data confirmada.
-          </MyTypography>
-        </div>
+        <div className="md:grid md:grid-cols-2 gap-8">
+          <div className="md:w-2/3">
+            <div className="my-10 flex items-center p-3 bg-[#F1F0F587] border border-primary-600/30 border-opacity-80 rounded-lg shadow-sm hover:bg-gray-100 relative">
+              <div className="absolute inset-y-0 left-0 w-3 bg-primary-900 rounded-l-lg"></div>
+              <MyIcon
+                name="localizacaoRedonda"
+                className="w-6 h-6 text-primary-900 ml-3"
+              />
+              <div className="ml-3">
+                <MyTypography
+                  variant="body-big"
+                  weight="regular"
+                  className="text-center"
+                >
+                  {activity?.localizacao}
+                </MyTypography>
+              </div>
+            </div>
 
-        <div>
-          <MyTypography variant="subtitle3" weight="bold" className="">
-            Valor da atividade:
-          </MyTypography>
-
-          <div className="flex justify-between mt-1">
-            <MyTypography variant="subtitle3" weight="regular" className="mt-1">
-              A partir de <span className="line-through">R$ 400,00</span> por
+            <div className="flex justify-between my-10">
+              <div className="flex items-center gap-2">
+                <MyIcon name="duracao" />
+                <div>
+                  <MyTypography variant="subtitle3" weight="bold" className="">
+                    Duração da atividade
+                  </MyTypography>
+                  <MyTypography
+                    variant="body-big"
+                    weight="regular"
+                    className="md:text-[1rem]"
+                  >
+                    4 horas
+                  </MyTypography>
+                </div>
+              </div>
+              <MyIcon name="compartilhar" className="cursor-pointer" />
+            </div>
+            <div className="flex gap-4 max-sm:hidden">
+          <Image
+            alt="avatar"
+            src={activity?.parceiro.avatar ?? ""}
+            width={8}
+            height={8}
+            className="w-12 h-12 rounded-full object-contain"
+          />
+          <div>
+            <MyTypography variant="label" weight="semibold">
+              {activity?.parceiro.nome}
             </MyTypography>
-
-            <MyTypography
-              variant="heading2"
-              weight="extrabold"
-              className="text-primary-600"
-            >
-              <span className="text-primary-600 text-base font-extrabold">
-                R$
-              </span>{" "}
-              360,00
+            <MyTypography variant="label" weight="regular" lightness={400}>
+              Parceiro e Guia de atividades
             </MyTypography>
           </div>
+        </div>
+          </div>
 
-          <MyButton
-            variant="default"
-            className="mt-4 w-full"
-            size="lg"
-            borderRadius="squared"
-            rightIcon={<MyIcon name="seta-direita" className="ml-3" />}
-            onClick={() => router.push(PATHS.carrinho)}
-          >
-            Garantir sua vaga
-          </MyButton>
+          <div>
+            <div className="my-8">
+              <MyTypography variant="subtitle3" weight="bold" className="">
+                Política de cancelamento
+              </MyTypography>
+              <MyTypography
+                variant="body-big"
+                weight="regular"
+                className="mt-1"
+              >
+                Este agendamento só será reembolsado se cancelado até 3 dias
+                antes da data confirmada.
+              </MyTypography>
+            </div>
+
+            <div>
+              <MyTypography variant="subtitle3" weight="bold" className="">
+                Valor da atividade:
+              </MyTypography>
+
+              <div className="flex justify-between mt-1">
+                <MyTypography
+                  variant="subtitle3"
+                  weight="regular"
+                  className="mt-1"
+                >
+                  A partir de <span className="line-through">R$ 400,00</span>{" "}
+                  por
+                </MyTypography>
+
+                <MyTypography
+                  variant="heading2"
+                  weight="extrabold"
+                  className="text-primary-600"
+                >
+                  <span className="text-primary-600 text-base font-extrabold">
+                    R$
+                  </span>{" "}
+                  360,00
+                </MyTypography>
+              </div>
+
+              <MyButton
+                variant="default"
+                className="mt-4 w-full md:hidden"
+                size="lg"
+                borderRadius="squared"
+                rightIcon={<MyIcon name="seta-direita" className="ml-3" />}
+                onClick={() => router.push(PATHS.carrinho)}
+              >
+                Garantir sua vaga
+              </MyButton>
+
+              <MyButton
+                variant="default"
+                className="mt-4 w-full max-sm:hidden"
+                size="lg"
+                borderRadius="squared"
+                rightIcon={<MyIcon name="seta-direita" className="ml-3" />}
+                onClick={() => router.push(PATHS["finalizar-compra"])}
+              >
+                Garantir sua vaga
+              </MyButton>
+            </div>
+          </div>
         </div>
       </div>
     </section>
