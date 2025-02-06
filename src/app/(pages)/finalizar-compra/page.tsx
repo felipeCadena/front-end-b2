@@ -1,17 +1,32 @@
 "use client";
 
+import { activities } from "@/common/constants/mock";
 import MyButton from "@/components/atoms/my-button";
+import MyCheckbox from "@/components/atoms/my-checkbox";
 import MyIcon, { IconsMapTypes } from "@/components/atoms/my-icon";
 import Pix from "@/components/atoms/my-icon/elements/pix";
 import MyTextInput from "@/components/atoms/my-text-input";
 import MyTypography from "@/components/atoms/my-typography";
+import { MyDatePicker } from "@/components/molecules/my-date-picker";
+import ActivitiesDetails from "@/components/organisms/activities-details";
 import { Card } from "@/components/organisms/card";
+import PeopleSelector from "@/components/organisms/people-selector";
+import ShoppingDetails from "@/components/organisms/shopping-details";
+import PATHS from "@/utils/paths";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
 export default function FinalizarCompra() {
   const router = useRouter();
   const [selectedPayment, setSelectedPayment] = useState<string | null>(null);
+
+  const activity = activities.filter((activity) =>
+    activity.title.includes("Atividade 2")
+  );
+
+  const activityDetails = activities.find((activity) =>
+    activity.title.includes("Atividade 1")
+  );
 
   const payments: { name: string; icon: IconsMapTypes }[] = [
     {
@@ -34,7 +49,18 @@ export default function FinalizarCompra() {
 
   return (
     <section className="mx-6">
-      <div className="flex gap-4 items-center">
+      <div className="flex gap-4 items-center max-sm:hidden">
+        <MyIcon
+          name="voltar-black"
+          className="-ml-2"
+          onClick={() => router.back()}
+        />
+        <MyTypography variant="subtitle1" weight="bold" className="">
+          Finalizar Pedido
+        </MyTypography>
+      </div>
+
+      <div className="flex gap-4 items-center md:hidden">
         <MyIcon
           name="voltar-black"
           className=""
@@ -45,65 +71,141 @@ export default function FinalizarCompra() {
         </MyTypography>
       </div>
 
-      <div className="flex flex-col space-y-4 mt-4">
-        {payments.map((payment) => (
-          <MyButton
-            key={payment.name}
-            variant="payment"
-            borderRadius="squared"
-            className="flex justify-between"
-            size="md"
-            rightIcon={<MyIcon name={payment.icon} />}
-            onClick={() => setSelectedPayment(payment.name)}
-          >
-            {payment.name}
-          </MyButton>
-        ))}
-      </div>
-
-      {selectedPayment?.includes("Cartão") && (
-        <div className="mt-8">
-          <Card />
-
-          <div className="mt-4 space-y-6">
-            <MyTextInput
-              label="Nome impresso no cartão"
-              placeholder="Seu nome"
-              className="mt-1"
-              noHintText
-            />
-
-            <MyTextInput
-              label="Número do cartão"
-              placeholder="XXXX XXXX XXXX XXXX"
-              className="mt-1"
-              noHintText
-              rightIcon={<MyIcon name="master" className="-ml-4 mt-5"/>}
-            />
-            <div className="flex gap-4">
+      <div className="max-sm:hidden md:grid md:grid-cols-3 md:gap-2">
+        <div className="px-6 ">
+          <ActivitiesDetails activities={activity} />
+          <div className="max-sm:border-t-[1px] max-sm:border-gray-400/30 md:mt-16">
+            <MyTypography variant="subtitle3" weight="bold" className="my-4">
+              Escolha o dia e horário para realizar a atividade.
+            </MyTypography>
+            <div className="border space-y-6 border-gray-300 rounded-lg py-8 md:space-y-10 md:py-9 px-5 mt-8">
+              <MyDatePicker />
               <MyTextInput
-                label="Vencimento"
-                placeholder="XX/XXXX"
-                className="mt-1"
+                type="text"
                 noHintText
+                placeholder="Horário da Atividade"
+                className="placeholder:text-black"
+                leftIcon={<MyIcon name="time" className="ml-3" />}
               />
-
-              <MyTextInput label="Código" placeholder="XXX" className="mt-1" noHintText/>
+              <PeopleSelector />
             </div>
           </div>
         </div>
-      )}
-      {selectedPayment && (
-        <MyButton
-          variant="default"
-          borderRadius="squared"
-          size="lg"
-          className="my-4 w-full"
-          onClick={() => {}}
-        >
-          Finalizar compra
-        </MyButton>
-      )}
+
+        <div className="col-span-2">
+          <ShoppingDetails activityDetails={activityDetails} />
+          <div className="flex gap-4 items-center">
+            <MyButton
+              variant="outline-neutral"
+              borderRadius="squared"
+              size="lg"
+              className="w-full font-bold text-[1rem]"
+              onClick={() => router.push(PATHS.atividades)}
+            >
+              Adicionar mais atividades
+            </MyButton>
+            <MyButton
+              variant="default"
+              borderRadius="squared"
+              size="lg"
+              className="md:hidden w-full max-sm:mt-6"
+              onClick={() => router.push(PATHS["finalizar-compra"])}
+            >
+              Finalizar Pedido
+            </MyButton>
+
+            <MyButton
+              variant="default"
+              borderRadius="squared"
+              size="lg"
+              className="max-sm:hidden w-full max-sm:mt-6"
+              // onClick={() => router.push(PATHS["finalizar-compra"])}
+            >
+              Ir para o pagamento
+            </MyButton>
+          </div>
+        </div>
+      </div>
+
+      <div className="md:my-16">
+        <MyTypography variant="subtitle2" weight="bold" className="mb-4">
+          Método de pagamento
+        </MyTypography>
+
+        <div className="md:grid md:grid-cols-3 md:gap-6 md:items-center">
+          <div className="flex flex-col space-y-4 mt-4">
+            {payments.map((payment) => (
+              <MyButton
+                key={payment.name}
+                variant="payment"
+                borderRadius="squared"
+                className="flex justify-between"
+                size="md"
+                rightIcon={<MyIcon name={payment.icon} />}
+                onClick={() => setSelectedPayment(payment.name)}
+              >
+                {payment.name}
+              </MyButton>
+            ))}
+          </div>
+
+          {selectedPayment?.includes("Cartão") && (
+            <div className="max-sm:mt-8 md:flex md:flex-row-reverse md:items-center md:gap-8 md:col-span-2">
+              <Card />
+
+              <div className="max-sm:mt-4 space-y-6 md:w-[90%]">
+                <MyTextInput
+                  label="Nome impresso no cartão"
+                  placeholder="Seu nome"
+                  className="mt-1"
+                  noHintText
+                />
+
+                <MyTextInput
+                  label="Número do cartão"
+                  placeholder="XXXX XXXX XXXX XXXX"
+                  className="mt-1"
+                  noHintText
+                  rightIcon={<MyIcon name="master" className="-ml-4 mt-5" />}
+                />
+                <div className="flex gap-4">
+                  <MyTextInput
+                    label="Vencimento"
+                    placeholder="XX/XXXX"
+                    className="mt-1"
+                    noHintText
+                  />
+
+                  <MyTextInput
+                    label="Código"
+                    placeholder="XXX"
+                    className="mt-1"
+                    noHintText
+                  />
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {selectedPayment && (
+          <div className="md: mt-10">
+            <MyCheckbox
+              className=""
+              label="Salvar os dados para a próxima compra"
+            />
+            <MyButton
+              variant="default"
+              borderRadius="squared"
+              size="lg"
+              className="my-4 w-full"
+              onClick={() => {}}
+            >
+              Finalizar compra
+            </MyButton>
+          </div>
+        )}
+      </div>
     </section>
   );
 }

@@ -12,7 +12,7 @@ export default function Footer() {
   const pathname = usePathname();
 
   return (
-    <footer className={cn("bg-[#F1F0F5] text-center px-4 pb-8 hidden")}>
+    <footer className={cn("bg-[#F1F0F5] text-center px-4 pb-8 max-sm:hidden")}>
       <div className="md:w-4/5 md:mx-auto">
       <MyLogo
         variant="mobile"

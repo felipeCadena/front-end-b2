@@ -4,9 +4,11 @@ import MyButton from "../atoms/my-button";
 import MyIcon, { IconsMapTypes } from "../atoms/my-icon";
 import { cn } from "@/utils/cn";
 import MyTypography from "../atoms/my-typography";
+import { usePathname } from "next/navigation";
 
 export default function ActivitiesFilter({ withText = true }) {
   const [selected, setSelected] = React.useState("Atividades no Ar");
+  const pathname = usePathname();
 
   const activities = [
     {
@@ -24,14 +26,36 @@ export default function ActivitiesFilter({ withText = true }) {
   ];
   return (
     <section
-      className={cn("flex flex-col justify-around gap-4 mt-12 mx-auto md:my-20")}
+      className={cn(
+        "flex flex-col justify-around gap-4 mt-12 mx-auto md:my-20"
+      )}
     >
-      <MyTypography variant="heading2" weight="semibold" className="md:hidden">
-        Como você quer se aventurar?
-      </MyTypography>
-      <MyTypography variant="body-big" weight="regular" className="md:hidden">
-        Escolha aqui seu tipo favorito de atividade
-      </MyTypography>
+      {pathname == "/" ? (
+        <div className="mt-8 md:hidden">
+          <MyTypography
+            variant="heading2"
+            weight="semibold"
+          >
+            Como você quer se aventurar?
+          </MyTypography>
+          <MyTypography
+            variant="body-big"
+            weight="regular"
+          >
+            Escolha aqui seu tipo favorito de atividade
+          </MyTypography>
+        </div>
+      ): (
+    <div className="md:hidden">
+        <MyTypography variant="heading2" weight="semibold" className="">
+          Qual sua próxima aventurar?
+        </MyTypography>
+        <MyTypography variant="body-big" weight="regular" className="">
+          Como você quer se aventurar?
+        </MyTypography>
+      </div>
+      )}
+
       <MyTypography
         variant="body-big"
         weight="regular"

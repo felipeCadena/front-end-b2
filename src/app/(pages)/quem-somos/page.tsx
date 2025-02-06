@@ -16,9 +16,18 @@ export default function QuemSomos() {
           Quem Somos
         </MyTypography>
         <MyTypography variant="label" className="text-center">
-          Somos uma empresa que atua no mercado de turismo desde 2010, com o
-          objetivo de proporcionar experiências inesquecíveis para nossos
-          clientes.
+          Nascida no Rio de Janeiro, a B2 Adventure é o resultado do espírito
+          aventureiro e desportista de sua idealizadora, que sempre gostou de
+          misturar adrenalina em meio a natureza. A B2 Adventure é uma
+          plataforma que oferece uma variedade gigantesca de atividades
+          esportivas em meio à natureza, com os melhores profissionais do
+          assunto. Nosso foco é permitir que os clientes desfrutem o que a de
+          mais incrível em cada lugar desse mundão. Com entusiasmo e dedicação,
+          criamos essa empresa para inspirar, motivar e direcionar aqueles que
+          desejam explorar o desconhecido e viver intensamente cada momento da
+          sua vida. Junte-se a nós e descubra um mundo de possibilidades, não
+          importa se vc é um iniciante ou experiente, aqui tem espaço para você
+          se divertir.
         </MyTypography>
       </div>
 

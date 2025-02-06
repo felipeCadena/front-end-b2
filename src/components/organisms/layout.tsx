@@ -17,12 +17,11 @@ const Layout = ({ children }: { children: JSX.Element | ReactNode }) => {
     );
   };
 
-  const withFooter = () => {
+  const withoutFooter = () => {
     return (
-      pathname == PATHS.initial ||
-      pathname == PATHS.atividades ||
-      pathname == PATHS.informacoes ||
-      pathname.includes("atividade-realizada")
+      pathname != PATHS.cadastro &&
+      pathname != PATHS.login &&
+      pathname != PATHS["esqueci-minha-senha"]
     );
   };
 
@@ -31,7 +30,7 @@ const Layout = ({ children }: { children: JSX.Element | ReactNode }) => {
     <section>
       {withHeader() && <Header />}
         {children}
-      {withFooter() && <Footer />}
+      {withoutFooter() && <Footer />}
     </section>
   );
 };

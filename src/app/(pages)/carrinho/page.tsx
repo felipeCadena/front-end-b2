@@ -13,7 +13,7 @@ import PATHS from "@/utils/paths";
 import { useRouter } from "next/navigation";
 import React from "react";
 
-export default function Reservas() {
+export default function Carrinho() {
   const router = useRouter();
 
   const activity = activities.filter((activity) =>
@@ -25,7 +25,7 @@ export default function Reservas() {
   );
 
   return (
-    <section className="mx-4 my-4 -z-10">
+    <section className="mx-4 my-4 -z-10 md:hidden">
       <div className="flex gap-4 items-center">
         <MyIcon
           name="voltar-black"

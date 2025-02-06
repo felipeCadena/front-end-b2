@@ -13,15 +13,6 @@ export default function Atividades() {
     <section className="mx-5">
       <SearchActivity />
 
-      <div className="mt-8 md:hidden">
-        <MyTypography variant="heading2" weight="semibold" className="">
-          Qual sua próxima aventurar?
-        </MyTypography>
-        <MyTypography variant="body-big" weight="regular" className="">
-          Como você quer se aventurar?
-        </MyTypography>
-      </div>
-
       <ActivitiesFilter />
 
       <div className="my-8 md:my-16">

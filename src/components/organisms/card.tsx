@@ -19,8 +19,8 @@ export const Card = () => {
     }
 
     return (
-        <div className='w-full flex gap-2 justify-between'>
-             <div className="h-56 flex-1 p-8 rounded-xl text-white bg-[url('/images/pagamentos/card.png')] bg-cover bg-no-repeat flex flex-col justify-end">
+        <div className='w-full flex gap-2 justify-between md:mt-8'>
+             <div className="h-56 md:h-60 flex-1 p-8 rounded-xl text-white bg-[url('/images/pagamentos/card.png')] bg-cover bg-no-repeat flex flex-col justify-end">
                   <span>{number || "0000 0000 0000 0000"}</span>
                   <div className='flex justify-between tracking-widest'>
                       <span className="uppercase text-ellipsis overflow-hidden">{formatHolderName() || "Fulando de Tal"}</span>

@@ -30,7 +30,7 @@ export default function SidebarMenuWeb({}) {
           <React.Fragment key={item.label}>
             {item.web && (
               <Link
-                href={`${item.link}${item.tab ? `?tab=${item.tab}` : ""}`}
+                href={`${item.link == "/carrinho" ? "/finalizar-compra" : item.link}${item.tab ? `?tab=${item.tab}` : ""}`}
                 className={`${
                   isActive ? "border-b-2 border-black" : "hover:text-black"
                 } transition-all text-black relative`}
