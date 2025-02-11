@@ -39,7 +39,7 @@ export default function Cadastro() {
       </div>
 
 
-      <div className="mt-6">
+      <div className="my-6">
         <MyTextInput label="Nome Completo" placeholder="Nome Completo" className="mt-2"/>
         <MyTextInput
           type="email"
@@ -69,12 +69,12 @@ export default function Cadastro() {
           onChange={(e) => setConfirmPassword(e.target.value)}
         />
 
-        <MyCheckbox label="Li e aceito os termos e condições" />
+        <MyCheckbox label="Li e aceito os termos de uso" />
       </div>
 
       <div className="flex flex-col">
         <MyButton
-          className="mt-8"
+          className=""
           variant="default"
           borderRadius="squared"
           size="md"

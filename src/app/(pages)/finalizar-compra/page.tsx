@@ -5,6 +5,13 @@ import MyButton from "@/components/atoms/my-button";
 import MyCheckbox from "@/components/atoms/my-checkbox";
 import MyIcon, { IconsMapTypes } from "@/components/atoms/my-icon";
 import Pix from "@/components/atoms/my-icon/elements/pix";
+import {
+  MySelect,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/atoms/my-select";
 import MyTextInput from "@/components/atoms/my-text-input";
 import MyTypography from "@/components/atoms/my-typography";
 import { MyDatePicker } from "@/components/molecules/my-date-picker";
@@ -20,8 +27,7 @@ import React, { useState } from "react";
 export default function FinalizarCompra() {
   const router = useRouter();
   const [selectedPayment, setSelectedPayment] = useState<string>("Pix");
-
-  console.log(selectedPayment)
+  const [value, setValue] = React.useState<string>("");
 
   const activity = activities.filter((activity) =>
     activity.title.includes("Atividade 2")
@@ -132,7 +138,11 @@ export default function FinalizarCompra() {
       </div>
 
       <div className="md:my-16">
-        <MyTypography variant="subtitle2" weight="bold" className="mb-4 hidden md:block">
+        <MyTypography
+          variant="subtitle2"
+          weight="bold"
+          className="mb-4 hidden md:block"
+        >
           Método de pagamento
         </MyTypography>
 
@@ -144,13 +154,17 @@ export default function FinalizarCompra() {
               : "md:grid-cols-2 md:gap-8"
           )}
         >
-          <div className="flex flex-col space-y-4 mt-4">
+          <div className={cn("flex flex-col mt-4", selectedPayment.includes("Cartão") ? "space-y-8" : "space-y-4")}>
             {payments.map((payment) => (
               <MyButton
                 key={payment.name}
                 variant="payment"
                 borderRadius="squared"
-                className={cn("flex justify-between", selectedPayment === payment.name && "bg-primary-900 opacity-100 border border-primary-600")}
+                className={cn(
+                  "flex justify-between",
+                  selectedPayment === payment.name &&
+                    "bg-primary-900 opacity-100 border border-primary-600"
+                )}
                 size="md"
                 value={selectedPayment}
                 rightIcon={<MyIcon name={payment.icon} />}
@@ -180,6 +194,21 @@ export default function FinalizarCompra() {
                   noHintText
                   rightIcon={<MyIcon name="master" className="-ml-4 mt-5" />}
                 />
+
+                <MySelect 
+                value={value}
+                onValueChange={setValue}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selecione o número de parcelas" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {Array.from({ length: 4 }, (_, i) => (
+                      <SelectItem key={i} value={String(i + 1)}>{i + 1}x</SelectItem>
+                    ))}
+                  </SelectContent>
+                </MySelect>
+
                 <div className="flex gap-4">
                   <MyTextInput
                     label="Vencimento"
@@ -199,19 +228,19 @@ export default function FinalizarCompra() {
             </div>
           ) : (
             <div className="space-y-4 max-sm:my-10 md:w-full">
-                <MyTextInput
-                  label="Nome Completo"
-                  placeholder="Seu nome"
-                  className="mt-1"
-                  noHintText
-                />
+              <MyTextInput
+                label="Nome Completo"
+                placeholder="Seu nome"
+                className="mt-1"
+                noHintText
+              />
 
-                <MyTextInput
-                  label="E-mail"
-                  placeholder="b2adventure@gmail.com"
-                  className="mt-1"
-                  noHintText
-                />
+              <MyTextInput
+                label="E-mail"
+                placeholder="b2adventure@gmail.com"
+                className="mt-1"
+                noHintText
+              />
               <div className="flex max-sm:flex-col gap-4 md:mt-4">
                 <MyTextInput
                   label="Telefone"

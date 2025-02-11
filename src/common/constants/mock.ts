@@ -568,7 +568,7 @@ export const notifications = [
   {
     id: 1,
     title: "Atividade Monte Rio Cancelada",
-    timestamp: "2025-02-01T17:50:00",
+    timestamp: "2025-02-10T22:11:00",
     reason:
       "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",
     read: false,

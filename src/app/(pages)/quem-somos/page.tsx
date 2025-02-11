@@ -7,12 +7,12 @@ import React from "react";
 
 export default function QuemSomos() {
   return (
-    <section className="mx-4 my-8 space-y-6">
+    <section className="mx-4 my-8 space-y-6 text-center">
       <div className="md:hidden">
         <SearchActivity />
       </div>
-      <div className="md:w-1/2 md:mx-auto md:text-center space-y-4">
-        <MyTypography variant="heading2" weight="bold" className="text-center">
+      <div className="md:w-1/2 md:mx-auto space-y-4">
+        <MyTypography variant="heading2" weight="bold" className="">
           Quem Somos
         </MyTypography>
         <MyTypography variant="label" className="">

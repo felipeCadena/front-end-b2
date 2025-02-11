@@ -1,6 +1,7 @@
 "use client";
 
 import { notifications } from "@/common/constants/mock";
+import MyButton from "@/components/atoms/my-button";
 import MyIcon from "@/components/atoms/my-icon";
 import MyTypography from "@/components/atoms/my-typography";
 import { cn } from "@/utils/cn";
@@ -65,7 +66,7 @@ export default function Notificacoes() {
               variant="body-big"
               weight="semibold"
               lightness={500}
-              className=""
+              className="max-sm:hidden"
             >
               {month}
             </MyTypography>
@@ -93,6 +94,7 @@ export default function Notificacoes() {
                     )}
                   />
 
+                  <div className="flex items-center justify-between w-full">
                   <MyTypography
                     variant="notification"
                     weight="semibold"
@@ -105,6 +107,14 @@ export default function Notificacoes() {
                     {formatDate(notification.timestamp) != "Agora pouco" &&
                       ` - ${getHora(notification.timestamp)}`}
                   </MyTypography>
+                  {formatDate(notification.timestamp) == "Agora pouco" && <MyButton
+                    className="ml-1"
+                    borderRadius="squared"
+                    size="sm"
+                    variant="default"
+                  >Novo</MyButton>}
+                  </div>
+
                   <MyTypography
                     variant="label"
                     weight="semibold"

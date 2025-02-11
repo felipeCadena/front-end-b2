@@ -24,7 +24,7 @@ export default function SidebarMenuWeb({}) {
   return (
     <div className="flex items-center gap-10">
       {sideBar.map((item) => {
-        const isActive = pathname.startsWith(item.link);
+        const isActive = pathname.startsWith(item.link == "/carrinho" ? "/finalizar-compra" : (item.link == "/chat" ? "nao-incluir" : item.link));
 
         return (
           <React.Fragment key={item.label}>
