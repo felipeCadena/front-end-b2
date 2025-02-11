@@ -76,7 +76,7 @@ export default function Notificacoes() {
                 <div
                   key={notification.id}
                   className={cn(
-                    "w-full flex flex-col gap-2 px-3 py-2 bg-[#F1F0F5] rounded-lg shadow-sm hover:bg-gray-100 relative",
+                    "w-full flex flex-col gap-2 px-3 py-2 bg-[#F1F0F5] rounded-lg shadow-sm hover:bg-gray-100 relative cursor-pointer",
                     notification.status == "realizada" && "opacity-70"
                   )}
                   onClick={() =>

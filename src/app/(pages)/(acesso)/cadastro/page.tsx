@@ -69,7 +69,7 @@ export default function Cadastro() {
           onChange={(e) => setConfirmPassword(e.target.value)}
         />
 
-        <MyCheckbox label="Li e aceito os termos de uso" />
+        <MyCheckbox label="Li e aceito os" termsLink="termos de uso" />
       </div>
 
       <div className="flex flex-col">

@@ -36,8 +36,8 @@ const FourthSection = () => {
           Procure por passeios que fiquem onde você está
         </MyTypography>
       </div>
-      <div className="flex flex-col items-center max-sm:space-y-4 md:flex-row md:gap-4 md:justify-between">
-        <div className="max-sm:hidden w-1/3 h-full items-stretch border border-primary-900 rounded-lg">
+      <div className="flex flex-col max-sm:space-y-4 md:flex-row md:gap-4 md:justify-between items-stretch">
+        <div className="max-sm:hidden w-1/3 md:min-h-full md:bg-gray-500 border border-primary-900 rounded-lg">
           <SearchInfoActivity />
         </div>
 
@@ -57,7 +57,7 @@ const FourthSection = () => {
             {locations.map((location, index) => (
               <div
                 key={index}
-                className="flex items-center md:gap-8 md:justify-between p-2 bg-[#F1F0F587] border border-primary-600/30 md:border-black border-opacity-80 rounded-lg shadow-sm hover:bg-gray-100 relative"
+                className="flex items-center md:gap-8 md:justify-between p-2 bg-gray-500 border border-primary-600/30 md:border-black border-opacity-80 rounded-lg shadow-sm hover:bg-gray-100 relative"
               >
                 <div className="absolute inset-y-0 left-0 w-3 md:w-16 bg-primary-900 rounded-l-lg">
                   <MyIcon
@@ -86,15 +86,14 @@ const FourthSection = () => {
                     {location?.city}
                   </MyTypography>
                 </div>
-                <MyIcon name="seta" className="w-6 h-6 md:mr-3 max-sm:hidden" />
               </div>
             ))}
             <MyButton
-              variant="default"
+              variant="text"
               borderRadius="squared"
               size="lg"
-              className="w-full max-sm:hidden"
-              leftIcon={<MyIcon name="localizao-branca" className="" />}
+              className="w-full max-sm:hidden cursor-default"
+              leftIcon={<MyIcon name="localizacao" className="" />}
             >
               Onde quer se aventurar hoje?
             </MyButton>

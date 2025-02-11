@@ -20,7 +20,7 @@ export const buttonVariants = cva(
         link: "underline-offset-4 underline text-primary-600 hover:text-primary-600 disabled:text-gray-200",
         "link-muted":
           "underline-offset-4 underline text-neutral-800 hover:text-neutral-900 disabled:text-neutral-200",
-        text: "text-primary-600 text-[0.875rem] font-bold hover:text-primary-600 disabled:text-gray-200",
+        text: "text-primary-600 text-[0.875rem] font-semibold hover:text-primary-600 disabled:text-gray-200",
         "text-muted": "text-neutral-800 hover:text-neutral-900 disabled:text-neutral-200",
         date: "border bg-traparent",
         black: "bg-black text-white text-[0.85rem] md:text-[1rem] font-semibold",
