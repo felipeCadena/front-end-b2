@@ -43,7 +43,7 @@ export default function Login() {
 
         <div className="mt-6">
           <MyTextInput
-            label="Email"
+            label="E-mail"
             noHintText
             placeholder="b2adventure@gmail.com"
             value={email}

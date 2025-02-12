@@ -323,7 +323,7 @@ export const activitiesAir = [
       "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",
 
     parceiro: {
-      nome: "Ana Francisca Moraes",
+      nome: "Roberto Gil",
       avatar: "/images/avatar1.png",
     },
     reserva: {
@@ -343,7 +343,7 @@ export const activitiesAir = [
       "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",
 
     parceiro: {
-      nome: "Ana Francisca Moraes",
+      nome: "Vera Lúcia",
       avatar: "/images/avatar1.png",
     },
     reserva: {
@@ -364,7 +364,7 @@ export const activitiesAir = [
       "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",
 
     parceiro: {
-      nome: "Ana Francisca Moraes",
+      nome: "Talisson Silva",
       avatar: "/images/avatar1.png",
     },
     reserva: {
@@ -384,7 +384,7 @@ export const activitiesAir = [
       "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",
 
     parceiro: {
-      nome: "Ana Francisca Moraes",
+      nome: "Bruna Carvalho",
       avatar: "/images/avatar1.png",
     },
     reserva: {
@@ -405,7 +405,7 @@ export const activitiesAir = [
       "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",
 
     parceiro: {
-      nome: "Ana Francisca Moraes",
+      nome: "Felipe Almeida",
       avatar: "/images/avatar1.png",
     },
     reserva: {
@@ -426,7 +426,7 @@ export const activitiesAir = [
       "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",
 
     parceiro: {
-      nome: "Ana Francisca Moraes",
+      nome: "Ana Vasconcelos",
       avatar: "/images/avatar1.png",
     },
     reserva: {
@@ -450,7 +450,7 @@ export const activities = [
       "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",
     favorite: true,
     parceiro: {
-      nome: "Ana Francisca Moraes",
+      nome: "Thais Oliveira",
       avatar: "/images/avatar2.png",
     },
     reserva: {
@@ -471,7 +471,7 @@ export const activities = [
       "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",
 
     parceiro: {
-      nome: "Ana Francisca Moraes",
+      nome: "Bruno Moraes",
       avatar: "/images/avatar1.png",
     },
     reserva: {
@@ -491,7 +491,7 @@ export const activities = [
       "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",
     favorite: true,
     parceiro: {
-      nome: "Ana Francisca Moraes",
+      nome: "Francisca Nogueira",
       avatar: "/images/avatar3.png",
     },
     reserva: {
@@ -510,7 +510,7 @@ export const activities = [
     description:
       "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",
     parceiro: {
-      nome: "Ana Francisca Moraes",
+      nome: "Eduarda Enzo",
       avatar: "/images/avatar1.png",
     },
     data: "05/01",
@@ -531,7 +531,7 @@ export const activities = [
     description:
       "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",
     parceiro: {
-      nome: "Ana Francisca Moraes",
+      nome: "Sofia Moraes",
       avatar: "/images/avatar1.png",
     },
     data: "05/01",
@@ -553,7 +553,7 @@ export const activities = [
       "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",
     favorite: true,
     parceiro: {
-      nome: "Ana Francisca Moraes",
+      nome: "Jorge Moraes",
       avatar: "/images/avatar3.png",
     },
     reserva: {
@@ -567,7 +567,7 @@ export const activities = [
 export const notifications = [
   {
     id: 1,
-    title: "Atividade Monte Rio Cancelada",
+    title: "Atividade Monte Rio - Cancelada",
     timestamp: "2025-02-10T22:11:00",
     reason:
       "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",

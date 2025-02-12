@@ -10,10 +10,10 @@ const LanguageDropdown = () => {
   const languages = [
     "PT - BR",
     "ENGLISH",
-    "COREAN",
     "ESPAÑOL",
-    "中文",
+    "COREAN",
     "日本語",
+    "中文",
   ];
 
   const toggleMenu = () => setIsOpen((prev) => !prev);
@@ -35,7 +35,7 @@ const LanguageDropdown = () => {
 
       {isOpen && (
         <ul
-          className="absolute left-0 z-10 mt-2 min-w-[150px] rounded-md bg-white shadow-lg"
+          className="absolute -left-2 z-10 mt-2 min-w-[150px] rounded-md bg-white shadow-lg"
           onMouseLeave={closeMenu}
         >
           {languages.map((lang) => (

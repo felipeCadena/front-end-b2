@@ -55,7 +55,7 @@ export default function Atividade() {
               <MyTypography variant="heading2" weight="bold" className="">
                 {activity?.title}
               </MyTypography>
-              <MyBadge variant="outline" className="p-1">
+              <MyBadge variant="outline" className="p-0">
                 {activity?.tag}
               </MyBadge>
             </div>
@@ -105,35 +105,35 @@ export default function Atividade() {
           />
         </div>
 
-        <div className="mt-6 mb-10 mx-6 md:hidden">
+        <div className="m-4 mx-6 md:hidden">
           <MyTypography variant="heading2" weight="bold" className="">
             {activity?.title}
           </MyTypography>
-          <div className="flex justify-between my-2">
-            <MyBadge variant="outline">{activity?.tag}</MyBadge>
+          <div className="flex items-center justify-between">
+            <MyBadge variant="outline" className="p-1">{activity?.tag}</MyBadge>
             <StarRating rating={activity?.stars ?? 5} />
           </div>
         </div>
 
-        <div className="mx-6 flex gap-4 md:hidden">
+        <div className="mx-6 flex items-center gap-2 md:hidden">
           <Image
             alt="avatar"
             src={activity?.parceiro.avatar ?? ""}
-            width={8}
-            height={8}
-            className="w-12 h-12 rounded-full object-contain"
+            width={6}
+            height={6}
+            className="w-10 h-10 rounded-full object-contain"
           />
           <div>
-            <MyTypography variant="label" weight="semibold">
+            <MyTypography variant="notification" weight="semibold">
               {activity?.parceiro.nome}
             </MyTypography>
-            <MyTypography variant="label" weight="regular" lightness={400}>
+            <MyTypography variant="notification" weight="regular" lightness={400}>
               Parceiro e Guia de atividades
             </MyTypography>
           </div>
         </div>
 
-        <div className="m-6 md:hidden">
+        <div className="mx-6 mt-4 md:hidden">
           <MyTypography variant="subtitle3" weight="bold" className="">
             Descrição da atividade:
           </MyTypography>
@@ -306,20 +306,11 @@ export default function Atividade() {
             </div>
 
             <div>
+
+              <div className="flex justify-between items-center mt-1">
               <MyTypography variant="subtitle3" weight="bold" className="">
                 Valor da atividade:
               </MyTypography>
-
-              <div className="flex justify-between mt-1">
-                <MyTypography
-                  variant="subtitle3"
-                  weight="regular"
-                  className="mt-1"
-                >
-                  A partir de <span className="line-through">R$ 400,00</span>{" "}
-                  por
-                </MyTypography>
-
                 <MyTypography
                   variant="heading2"
                   weight="extrabold"

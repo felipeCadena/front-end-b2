@@ -37,17 +37,7 @@ export default function PeopleSelector() {
               <div>
                 <div className="flex gap-1">
                   <MyTypography variant="body-big" weight="semibold">
-                    Adultos
-                  </MyTypography>
-                  <MyTypography
-                    variant="body-big"
-                    weight="regular"
-                    className="line-through"
-                  >
-                    R$ 191,50
-                  </MyTypography>
-                  <MyTypography variant="body-big" weight="semibold">
-                    R$ 181,50
+                    Adultos - R$ 181,50
                   </MyTypography>
                 </div>
                 <MyTypography variant="body-big" weight="regular" className="">
@@ -67,17 +57,7 @@ export default function PeopleSelector() {
               <div>
                 <div className="flex gap-1">
                   <MyTypography variant="body-big" weight="semibold">
-                    Crianças
-                  </MyTypography>
-                  <MyTypography
-                    variant="body-big"
-                    weight="regular"
-                    className="line-through"
-                  >
-                    R$ 95,50
-                  </MyTypography>
-                  <MyTypography variant="body-big" weight="semibold">
-                    R$ 90,00
+                    Crianças - R$ 90,00
                   </MyTypography>
                 </div>
                 <MyTypography variant="body-big" weight="regular" className="">
@@ -98,15 +78,9 @@ export default function PeopleSelector() {
               <div>
                 <div className="flex gap-1">
                   <MyTypography variant="body-big" weight="semibold">
-                    Bebês
+                    Bebês - $ 0,00
                   </MyTypography>
-                  <MyTypography
-                    variant="body-big"
-                    weight="regular"
-                    className="line-through"
-                  >
-                    Grátis
-                  </MyTypography>
+                  
                 </div>
                 <MyTypography variant="body-big" weight="regular" className="">
                   Idade: Idade: 1 - 3
@@ -125,11 +99,11 @@ export default function PeopleSelector() {
               variant="default"
               size="lg"
               borderRadius="squared"
-              leftIcon={<MyIcon name="save" />}
+              // leftIcon={<MyIcon name="save" />}
               onClick={() => setIsModalOpen(false)}
               className="w-full"
             >
-              Salvar
+              Ok
             </MyButton>
           </div>
         </div>

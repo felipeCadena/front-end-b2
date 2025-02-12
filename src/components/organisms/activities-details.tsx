@@ -22,7 +22,7 @@ export default function ActivitiesDetails({
         <div
           key={index}
           className={cn(
-            "flex max-sm:justify-around gap-2 cursor-pointer my-6",
+            "flex max-sm:justify-around gap-2 cursor-pointer my-8",
             withDate && "my-8 relative"
           )}
         >
@@ -69,7 +69,7 @@ export default function ActivitiesDetails({
               className="w-[6.625rem] h-[6.625rem] object-cover"
             />
           </div>
-          <div>
+          <div className="relative">
             <div className="flex justify-between mb-1 mr-4">
               <MyBadge className="font-medium flex-shrink-0" variant="outline">
                 {activity.tag}
@@ -84,9 +84,10 @@ export default function ActivitiesDetails({
             >
               {activity.title}
             </MyTypography>
-            <MyTypography variant="label" className="">
-              {activity.description.slice(0, 40).concat("...")}
+            <MyTypography variant="label" className="max-sm:w-2/3">
+              {activity.description.slice(0, 30).concat("...")}
             </MyTypography>
+            <MyIcon name="shared-muted" className="absolute z-50 right-4 top-1/2 cursor-pointer" />
           </div>
         </div>
       ))}

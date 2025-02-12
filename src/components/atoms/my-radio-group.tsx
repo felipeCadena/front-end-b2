@@ -53,7 +53,7 @@ const RadioItem = React.forwardRef<
           </svg>
         </RadioGroupPrimitive.Indicator>
       </RadioGroupPrimitive.Item>
-      <div className='ml-4 flex flex-col'>
+      <div className='ml-2 flex flex-col'>
         <MyTypography
           as='label'
           variant='body'

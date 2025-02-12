@@ -59,7 +59,7 @@ export default function Perfil() {
         </MyTypography>
         <MyTextInput
           type="email"
-          label="Email"
+          label="E-mail"
           placeholder="b2adventure@gmail.com"
           className="mt-2"
           value={email ?? ""}

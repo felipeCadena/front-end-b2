@@ -49,7 +49,7 @@ export default function FaleConosco() {
         />
 
           <MyRadioGroup
-            className="flex flex-col gap-2 mt-2 mb-4"
+            className="flex gap-4 mt-2 mb-4"
             value={value}
             onValueChange={(value: string) => setValue(value)}
           >

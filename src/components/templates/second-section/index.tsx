@@ -20,9 +20,10 @@ export default function SecondSection() {
 
       <CarouselCustom activities={activities} />
 
+      <div className="border-2 border-gray-200 w-1/2 mx-auto rounded-md" />
 
       <MyTypography variant="heading3" weight="semibold" className="mt-8">
-        Sugestões para você
+        Sugestões para você!
       </MyTypography>
       <MyTypography variant="body-big" weight="regular" className="">
         Atividades mais buscadas

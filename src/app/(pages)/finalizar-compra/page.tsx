@@ -47,10 +47,6 @@ export default function FinalizarCompra() {
       icon: "boleto",
     },
     {
-      name: "Cartão de débito",
-      icon: "card",
-    },
-    {
       name: "Cartão de crédito",
       icon: "card",
     },

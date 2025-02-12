@@ -12,8 +12,8 @@ const montserrat = Montserrat({
 
 export default function FirstSection() {
   const images = [
-    "/images/atividades/montanha.webp",
     "/images/atividades/paraquedas.webp",
+    "/images/atividades/montanha.webp",
     "/images/atividades/mergulho.webp",
     "/images/atividades/moto.webp",
     "/images/atividades/parapente.webp",

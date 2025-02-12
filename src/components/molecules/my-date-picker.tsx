@@ -12,15 +12,16 @@ import MyTypography from "../atoms/my-typography"
 
 export function MyDatePicker() {
   const [date, setDate] = React.useState<Date>()
+  const [open, setOpen] = React.useState(false)
 
   return (
-    <Popover>
+    <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <MyButton
           variant="date"
           borderRadius="squared"
           className={cn(
-            "w-full justify-start items-center gap-2 py-6 border-gray-300 md:bg-white",
+            "w-full justify-start text-sm items-center gap-2 py-6 border-gray-300 md:bg-white",
           )}
         >
           <MyIcon name="date" />
@@ -42,13 +43,9 @@ export function MyDatePicker() {
           size="md"
           borderRadius="squared"
           className="my-2"
-          onClick={
-            () => {
-              setDate(new Date())
-            }
-          }
+          onClick={() => setOpen(false)}
         >
-          Para Hoje
+          Ok
         </MyButton>
       </PopoverContent>
     </Popover>

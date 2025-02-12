@@ -43,7 +43,7 @@ export default function Cadastro() {
         <MyTextInput label="Nome Completo" placeholder="Nome Completo" className="mt-2"/>
         <MyTextInput
           type="email"
-          label="Email ou celular"
+          label="E-mail ou celular"
           placeholder="b2adventure@gmail.com"
           className="mt-2"
         />

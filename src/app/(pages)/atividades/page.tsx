@@ -17,17 +17,22 @@ export default function Atividades() {
 
       <div className="my-8 md:my-16">
         <MyTypography variant="heading2" weight="semibold" className="mb-4 md:text-lg">
-          Sugestões para você
+          Sugestões para você!
         </MyTypography>
         <MyTypography variant="subtitle3" weight="regular" className="md:opacity-50">
           Atividades Aéreas
         </MyTypography>
         <CarouselCustom activities={activitiesAir} />
 
+      <div className="border-2 border-gray-200 w-1/2 mx-auto rounded-md mb-6" />
+
         <MyTypography variant="subtitle3" weight="regular" className="md:opacity-50">
           Atividades Terrestres
         </MyTypography>
         <CarouselCustom activities={activitiesLand} />
+
+      <div className="border-2 border-gray-200 w-1/2 mx-auto rounded-md mb-6" />
+
 
         <MyTypography variant="subtitle3" weight="regular" className="md:opacity-50">
           Atividades no Mar

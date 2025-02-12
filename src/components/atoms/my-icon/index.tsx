@@ -85,6 +85,8 @@ import ChevronDownGreen from "./elements/chevron-down-green";
 import DownloadGreen from "./elements/download-green";
 import XRed from "./elements/x-red";
 import Add from "./elements/add";
+import SharedMuted from "./elements/shared-muted";
+import Camera from "./elements/camera";
 
 export type IconsMapTypes = keyof typeof IconsMap;
 
@@ -179,7 +181,9 @@ const IconsMap = {
   "chevron-down-green": <ChevronDownGreen />,
   "download-green": <DownloadGreen />,
   "x-red": <XRed />,
-  add: <Add />
+  add: <Add />,
+  "shared-muted": <SharedMuted />,
+  camera: <Camera />
 };
 
 

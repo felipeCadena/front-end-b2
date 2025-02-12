@@ -30,7 +30,7 @@ export default function Historico() {
             //   value={}
             //   onValueChange={}
           >
-            <SelectTrigger className="rounded-full text-[#848A9C] text-xs">
+            <SelectTrigger className="rounded-2xl text-[#848A9C] text-xs">
               <SelectValue placeholder="Mensal" />
             </SelectTrigger>
             <SelectContent className="rounded-lg">

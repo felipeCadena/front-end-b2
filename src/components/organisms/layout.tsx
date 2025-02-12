@@ -27,7 +27,7 @@ const Layout = ({ children }: { children: JSX.Element | ReactNode }) => {
 
 
   return (
-    <section>
+    <section className="">
       {withHeader() && <Header />}
         {children}
       {withoutFooter() && <Footer />}

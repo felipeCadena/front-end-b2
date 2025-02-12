@@ -15,7 +15,7 @@ export default function CarouselCustom({ activities }: any) {
   const ref =
     useRef<HTMLDivElement>() as React.MutableRefObject<HTMLInputElement>;
   const { events } = useDraggable(ref);
-  const router = useRouter()
+  const router = useRouter();
 
   return (
     <div
@@ -26,10 +26,10 @@ export default function CarouselCustom({ activities }: any) {
       {...events}
     >
       {activities.map((activity: any, index: number) => (
-        <div 
-        key={index} 
-        className="min-w-[70%] md:min-w-[30%] lg:min-w-[20%] flex flex-col gap-1 cursor-pointer md:mb-8"
-        onClick={() => router.push(PATHS.visualizarAtividade(activity.id))}
+        <div
+          key={index}
+          className="min-w-[70%] md:min-w-[30%] lg:min-w-[20%] flex flex-col gap-1 cursor-pointer md:mb-8"
+          onClick={() => router.push(PATHS.visualizarAtividade(activity.id))}
         >
           <div className="relative z-10 overflow-hidden h-[225px] w-full hover:cursor-pointer rounded-md">
             <Image
@@ -39,24 +39,52 @@ export default function CarouselCustom({ activities }: any) {
               height={300}
               className="w-full h-[225px] object-cover"
             />
-            {activity.favorite && (
+            {activity.favorite ? (
               <MyIcon
                 name="full-heart"
                 variant="circled"
                 className="absolute top-3 right-3"
               />
+            ) : (
+              <MyIcon
+                name="black-heart"
+                variant="circled"
+                className="absolute top-3 right-3"
+              />
             )}
           </div>
-          <span className="mt-2">
-            <MyBadge variant="outline">{activity.tag}</MyBadge>
-          </span>
-          <StarRating rating={activity.stars} />
-          <MyTypography variant="subtitle1" weight="bold" className="">
+
+          
+
+          <div className="mt-1 flex gap-2 items-center">
+            <MyBadge variant="outline" className="p-1">{activity.tag}</MyBadge>
+            <StarRating rating={activity.stars} />
+          </div>
+
+          <div className="flex gap-2 items-center mt-1">
+            <Image
+              alt="foto parceiro"
+              src={activity.parceiro.avatar}
+              width={40}
+              height={40}
+              className="rounded-full"
+              />
+            <MyTypography variant="body" weight="medium" className="mt-1 text-nowrap">
+              {activity.parceiro.nome}
+            </MyTypography>
+          </div>
+
+          <MyTypography variant="subtitle1" weight="bold">
             {activity.title}
           </MyTypography>
-          <MyTypography variant="body-big" className="">
-            {activity.description.slice(0, 25).concat("...")}
-          </MyTypography>
+          <div className="flex gap-2">
+            <MyTypography variant="body-big">
+              {activity.description.slice(0, 18).concat("...")}
+            </MyTypography>
+            <MyTypography variant="body-big" weight="bold" lightness={500}>
+              Saiba Mais
+            </MyTypography>
+          </div>
         </div>
       ))}
     </div>

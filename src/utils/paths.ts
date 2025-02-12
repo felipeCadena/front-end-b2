@@ -14,6 +14,7 @@ const ROOTS_CARRINHO = "/carrinho";
 const ROOTS_CFINALIZAR_COMPRA = "/finalizar-compra";
 // Agrupa Favoritos, Histórico e Reservas
 const ROOTS_INFOS = "/informacoes";
+const ROOTS_TERMOS = "/termos-de-uso";
 
 // ==========================================
 // * Dimanic routes
@@ -39,6 +40,7 @@ const PATHS = {
   quemSomos: ROOTS_QUEMSOMOS,
   carrinho: ROOTS_CARRINHO,
   "finalizar-compra": ROOTS_CFINALIZAR_COMPRA,
+  termos: ROOTS_TERMOS,
   visualizarAtividade: VISUALIZAR_ATIVIDADE,
   visualizarNotificacao: VISUALIZAR_NOTIFICACAO,
   atividadeRealizada: ATIVIDADE_REALIZADA,

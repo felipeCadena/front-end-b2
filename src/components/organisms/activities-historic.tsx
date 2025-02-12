@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import Image from "next/image";
 import React from "react";
@@ -17,29 +17,46 @@ export default function ActivitiesHistoric({ activities }: any) {
   return (
     <section className="">
       {activities.map((activity: any, index: number) => (
-        <div className="flex flex-col gap-4 my-8" key={index}>
-          <div 
-          className="flex justify-around gap-2 cursor-pointer"
-          onClick={() => router.push(PATHS.atividadeRealizada(activity.id))}
+        <div className="flex flex-col gap-4 mt-8 mb-16" key={index}>
+          <div
+            className="flex justify-around gap-2 cursor-pointer"
+            onClick={() => router.push(PATHS.atividadeRealizada(activity.id))}
           >
-            <div className="relative z-10 overflow-hidden min-w-[6.625rem] min-h-[6.625rem] hover:cursor-pointer rounded-md">
+            <div className="relative z-10 overflow-hidden min-w-[8rem] min-h-full hover:cursor-pointer rounded-md">
               <Image
                 alt="sample_file"
                 src={activity.image ?? ""}
                 width={250}
                 height={300}
-                className="w-[6.625rem] h-[6.625rem] object-cover"
+                className="w-[8rem] h-full object-cover"
               />
             </div>
             <div>
-              <div className="flex justify-between gap-1 mb-1 mr-4">
+              <div className="flex items-center justify-between gap-1 mb-1 mr-4">
                 <MyBadge
-                  className="font-medium flex-shrink-0"
+                  className="font-medium text-nowrap p-1"
                   variant="outline"
                 >
                   {activity.tag}
                 </MyBadge>
                 <StarRating rating={activity.stars} />
+              </div>
+
+              <div className="flex gap-2 items-center my-1">
+                <Image
+                  alt="foto parceiro"
+                  src={activity.parceiro.avatar}
+                  width={40}
+                  height={40}
+                  className="rounded-full"
+                />
+                <MyTypography
+                  variant="body"
+                  weight="medium"
+                  className="mt-1 text-nowrap"
+                >
+                  {activity.parceiro.nome}
+                </MyTypography>
               </div>
 
               <MyTypography variant="subtitle3" weight="bold" className="">
@@ -115,22 +132,22 @@ export default function ActivitiesHistoric({ activities }: any) {
           <div className="p-3 mt-2 bg-[#F1F0F587] border border-primary-600/30 border-opacity-80 rounded-lg shadow-sm hover:bg-gray-100 relative">
             <div className="absolute inset-y-0 left-0 w-3 bg-primary-900 rounded-l-lg"></div>
 
-            <div className="flex items-center gap-1 ml-4">
-            <Image
-              alt="sample_file"
-              src="/icons/drive.png"
-              width={30}
-              height={30}
-            />
-            <MyTypography variant="subtitle3" weight="bold" className="ml-3">
-                Fotos dessa Atividade 
-            </MyTypography>
+            <div className="flex items-center gap-2 ml-4">
+              <MyIcon name="camera" />
+              <MyTypography variant="subtitle3" weight="bold" className="">
+                Fotos dessa Atividade
+              </MyTypography>
             </div>
           </div>
 
-          <MyButton variant="outline-neutral" borderRadius="squared" size="lg" className="w-full mt-2">
+          <MyButton
+            variant="outline-neutral"
+            borderRadius="squared"
+            size="lg"
+            className="w-full mt-2"
+          >
             Refazer atividade
-            </MyButton>
+          </MyButton>
         </div>
       ))}
     </section>

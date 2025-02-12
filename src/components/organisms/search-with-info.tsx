@@ -5,10 +5,21 @@ import MyIcon from "../atoms/my-icon";
 import MyButton from "../atoms/my-button";
 import PeopleSelector from "./people-selector";
 import { MyDatePicker } from "../molecules/my-date-picker";
+import MyTypography from "../atoms/my-typography";
+import TimePickerModal from "../molecules/time-picker";
 
 export default function SearchInfoActivity() {
   return (
-    <section className="space-y-4 max-sm:mt-14 md:space-y-10 md:bg-gray-500 md:p-10 md:rounded-lg">
+    <section className="space-y-4 max-sm:mt-4 md:space-y-10 md:bg-gray-500 md:p-10 md:rounded-lg">
+
+      <div>
+      <MyTypography variant="heading3" weight="semibold">
+        Sugestões de atividades perto de você!
+      </MyTypography>
+      <MyTypography variant="label" weight="regular" lightness={400} className="mt-1">
+        Procure por passeios que fiquem onde você está
+      </MyTypography>
+      </div>
       <div className="mx-auto space-y-5 p-4 max-sm:border max-sm:border-gray-300 rounded-lg">
         <div className="max-sm:mt-4">
           <MyTextInput
@@ -21,13 +32,7 @@ export default function SearchInfoActivity() {
 
         <MyDatePicker />
 
-        <MyTextInput
-          type="text"
-          noHintText
-          placeholder="Horário da Atividade"
-          className="placeholder:text-black bg-white"
-          leftIcon={<MyIcon name="time" className="ml-3" />}
-        />
+        <TimePickerModal />
 
         <PeopleSelector />
       </div>
