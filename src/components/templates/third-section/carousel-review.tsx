@@ -26,9 +26,11 @@ const CarouselReview = ({ reviews }: any) => {
   };
 
   const showLeftShadow = scrollPosition > 0;
+
   const showRightShadow =
-    ref.current &&
-    ref.current.scrollWidth > ref.current.clientWidth + scrollPosition;
+  ref.current &&
+  ref.current.scrollWidth > ref.current.clientWidth + scrollPosition + 1;
+
 
   return (
     <div className="relative my-8 md:ml-6">
@@ -41,29 +43,24 @@ const CarouselReview = ({ reviews }: any) => {
       )}
 
       {/* Arrows */}
-      <button
+
+      <MyIcon
+        name="chevron-down-green"
+        className="absolute -left-5 md:left-0 top-1/2 rotate-90 z-50 md:bg-white md:px-3 md:py-4 md:border md:border-primary-600"
         onClick={() => handleScroll("left")}
-        className="hidden md:flex absolute left-0 top-1/2 -translate-y-1/2 z-20 bg-white max-sm:opacity-90 px-2 py-3 md:px-5 md:py-6 rounded-md shadow-lg border border-black"
-      >
-        <MyIcon name="seta" className="rotate-180" />
-      </button>
-      <button
+      />
+
+      <MyIcon
+        name="chevron-down-green"
+        className="absolute -right-5 md:right-2 top-1/2 -rotate-90 z-50 md:bg-white md:px-3 md:py-4 md:border md:border-primary-600"
         onClick={() => handleScroll("right")}
-        className="hidden md:flex absolute right-0 md:right-4 top-1/2 -translate-y-1/2 z-20 bg-white max-sm:opacity-90 px-2 py-3 md:px-5 md:py-6 rounded-md shadow-lg border border-black"
-      >
-        <MyIcon name="seta"/>
-      </button>
-
-        <MyIcon name="chevron-down-green" className="absolute -left-5 top-1/2 rotate-90 md:hidden" onClick={() => handleScroll("left")}/>
-
-        <MyIcon name="chevron-down-green" className="absolute -right-5 md:right-4 top-1/2 -rotate-90 md:hidden" onClick={() => handleScroll("right")} />
-
+      />
 
       {/* Scrollable content */}
       <div
         ref={ref}
         className={twMerge(
-          "max-sm:overflow-x-scroll flex gap-4 overflow-x-hidden no-scrollbar px-2 md:px-24"
+          "max-sm:overflow-x-scroll flex gap-4 overflow-x-hidden no-scrollbar px-2 md:px-16"
         )}
         onScroll={() => setScrollPosition(ref.current?.scrollLeft || 0)}
         {...events}

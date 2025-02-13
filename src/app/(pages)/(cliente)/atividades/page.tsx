@@ -24,17 +24,17 @@ export default function Atividades() {
         </MyTypography>
         <CarouselCustom activities={activitiesAir} />
 
-      <div className="border-2 border-gray-200 w-1/2 mx-auto rounded-md mb-6" />
+      <div className="border-2 border-gray-200 w-1/2 mx-auto rounded-md mb-6 md:hidden" />
 
-        <MyTypography variant="subtitle3" weight="regular" className="md:opacity-50">
+        <MyTypography variant="subtitle3" weight="regular" className="md:opacity-50 md:mt-8">
           Atividades Terrestres
         </MyTypography>
         <CarouselCustom activities={activitiesLand} />
 
-      <div className="border-2 border-gray-200 w-1/2 mx-auto rounded-md mb-6" />
+      <div className="border-2 border-gray-200 w-1/2 mx-auto rounded-md mb-6 md:hidden" />
 
 
-        <MyTypography variant="subtitle3" weight="regular" className="md:opacity-50">
+        <MyTypography variant="subtitle3" weight="regular" className="md:opacity-50 md:mt-8">
           Atividades no Mar
         </MyTypography>
         <CarouselCustom activities={activitiesOcean} />

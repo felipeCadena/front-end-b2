@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import useLogin from "../(acesso)/login/login-store";
+import useLogin from "../(cliente)/(acesso)/login/login-store";
 import MyTypography from "@/components/atoms/my-typography";
 
 export default function TermosCondicoes() {

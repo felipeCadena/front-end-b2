@@ -70,7 +70,7 @@ export default function ActivitiesDetails({
             />
           </div>
           <div className="relative">
-            <div className="flex justify-between mb-1 mr-4">
+            <div className="flex gap-1 justify-between mb-1 mr-4">
               <MyBadge className="font-medium flex-shrink-0" variant="outline">
                 {activity.tag}
               </MyBadge>

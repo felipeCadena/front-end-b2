@@ -26,33 +26,54 @@ export default function FullActivitiesHistoric({ activities, withDate }: any) {
               width={250}
               height={300}
               className="object-cover w-[265px] h-[265px]"
-              onClick={() =>
-                router.push(PATHS.atividadeRealizada(activity.id))
-              }
+              onClick={() => router.push(PATHS.atividadeRealizada(activity.id))}
             />
           </div>
 
           <div className="w-full space-y-4 max-h-[265px]">
             <div className="flex justify-between mb-4">
+
               <div
                 className="flex flex-col gap-2 cursor-pointer"
                 onClick={() =>
                   router.push(PATHS.atividadeRealizada(activity.id))
                 }
               >
-                <div className="flex gap-2">
-                  <MyBadge className="font-medium" variant="outline">
+                <div className="flex items-center gap-2">
+                  <MyBadge className="font-medium p-1" variant="outline">
                     {activity.tag}
                   </MyBadge>
                   <StarRating rating={activity.stars} />
+
+                  <div className="flex gap-2 items-center">
+                <Image
+                  alt="foto parceiro"
+                  src={activity.parceiro.avatar}
+                  width={40}
+                  height={40}
+                  className="rounded-full"
+                />
+                <MyTypography
+                  variant="body"
+                  weight="medium"
+                  className="mt-1 text-nowrap"
+                >
+                  {activity.parceiro.nome}
+                </MyTypography>
+              </div>
+                  
                 </div>
                 <MyTypography variant="subtitle3" weight="bold" className="">
                   {activity.title}
                 </MyTypography>
+                
                 <MyTypography variant="label" className="">
                   {activity.description.slice(0, 40).concat("...")}
                 </MyTypography>
+                
               </div>
+
+              
 
               <div className="flex gap-4">
                 {withDate && (
@@ -146,16 +167,11 @@ export default function FullActivitiesHistoric({ activities, withDate }: any) {
               <div className="absolute inset-y-0 left-0 w-3 bg-primary-900 rounded-l-lg"></div>
 
               <div className="flex items-center gap-1 ml-4">
-                <Image
-                  alt="sample_file"
-                  src="/icons/drive.png"
-                  width={30}
-                  height={30}
-                />
+                <MyIcon name="camera" />
                 <MyTypography
                   variant="subtitle3"
                   weight="bold"
-                  className="ml-3"
+                  className=""
                 >
                   Fotos dessa Atividade
                 </MyTypography>

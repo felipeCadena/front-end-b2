@@ -9,11 +9,15 @@ import Footer from "../templates/footer";
 const Layout = ({ children }: { children: JSX.Element | ReactNode }) => {
   const pathname = usePathname();
 
-  const withHeader = () => {
+  const withoutHeader = () => {
     return (
       pathname !== PATHS.login &&
       pathname !== PATHS["esqueci-minha-senha"] &&
-      pathname !== PATHS.cadastro
+      pathname !== PATHS.cadastro &&
+      pathname !== PATHS["login-parceiro"] &&
+      pathname !== PATHS["esqueci-minha-senha"] &&
+      pathname !== PATHS["cadastro-parceiro"] &&
+      pathname !== PATHS["sobre-a-empresa"]
     );
   };
 
@@ -28,7 +32,7 @@ const Layout = ({ children }: { children: JSX.Element | ReactNode }) => {
 
   return (
     <section className="">
-      {withHeader() && <Header />}
+      {withoutHeader() && <Header />}
         {children}
       {withoutFooter() && <Footer />}
     </section>

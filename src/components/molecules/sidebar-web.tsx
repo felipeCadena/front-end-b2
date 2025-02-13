@@ -1,8 +1,8 @@
 "use client";
 
-import useLogin from "@/app/(pages)/(acesso)/login/login-store";
+import useLogin from "@/app/(pages)/(cliente)/(acesso)/login/login-store";
 import { notifications } from "@/common/constants/mock";
-import { sideBarClient, sideBarLp } from "@/common/constants/sideBar";
+import { sideBarClient, sideBarLp, sideBarPartnet } from "@/common/constants/sideBar";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -16,6 +16,10 @@ export default function SidebarMenuWeb({}) {
   useEffect(() => {
     if (pathname !== "/" && email.includes("cliente")) {
       setSideBar(sideBarClient);
+    }
+
+    if (pathname !== "/" && email.includes("parceiro")) {
+      setSideBar(sideBarPartnet);
     }
   }, []);
 

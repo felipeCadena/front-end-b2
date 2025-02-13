@@ -13,6 +13,7 @@ type MyCheckboxProps = {
   description?: React.ReactNode;
   containerClassName?: string;
   termsLink?: string; // Link para os termos de uso
+  labelStyle?: string // Estilo do label
 } & React.ComponentPropsWithoutRef<typeof CheckboxPrimitive.Root>;
 
 const MyCheckbox = React.forwardRef<
@@ -20,7 +21,7 @@ const MyCheckbox = React.forwardRef<
   MyCheckboxProps
 >(
   (
-    { className, containerClassName, label, description, termsLink, ...props },
+    { className, containerClassName, label, description, termsLink, labelStyle, ...props },
     ref
   ) => {
     const [isOpen, setIsOpen] = React.useState(false);
@@ -56,7 +57,7 @@ const MyCheckbox = React.forwardRef<
             as="label"
             weight="medium"
             lightness={900}
-            className="#9F9F9F"
+            className={cn("#9F9F9F", labelStyle)}
           >
             {label}{" "}
             {termsLink && (

@@ -20,9 +20,9 @@ const MySelect = ({ label, ...props }: MySelectProps) => {
       {label && (
         <MyTypography
           as='label'
-          variant='body'
+          variant='label'
           lightness={800}
-          className='ml-4'
+          className=''
         >
           {label}
         </MyTypography>

@@ -10,9 +10,9 @@ import TimePickerModal from "../molecules/time-picker";
 
 export default function SearchInfoActivity() {
   return (
-    <section className="space-y-4 max-sm:mt-4 md:space-y-10 md:bg-gray-500 md:p-10 md:rounded-lg">
+    <section className="space-y-4 max-sm:mt-4 md:space-y-6 md:bg-gray-500 md:p-10 md:rounded-lg">
 
-      <div>
+      <div className="md:hidden">
       <MyTypography variant="heading3" weight="semibold">
         Sugestões de atividades perto de você!
       </MyTypography>

@@ -39,7 +39,7 @@ export default function Footer() {
       <div className="flex justify-center py-1 gap-4 bg-primary-900 rounded-md md:w-1/3 md:mx-auto">
         <MyIcon name="email" />
         <MyTypography variant="body-big">
-          contatob2adventure@gmail.com
+          {process.env.NEXT_PUBLIC_EMAIL_B2 ?? "contato@b2adventure.com"}
         </MyTypography>
       </div>
       <div className="flex justify-center gap-4 my-10 relative">

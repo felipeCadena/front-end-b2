@@ -11,7 +11,7 @@ import { MyScrollArea } from "../atoms/my-scroll-area";
 export default function TimePickerModal() {
   const [open, setOpen] = useState(false);
   const [visible, setVisible] = useState(false);
-  const [selectedHour, setSelectedHour] = useState("12");
+  const [selectedHour, setSelectedHour] = useState("00");
   const [selectedMinute, setSelectedMinute] = useState("00");
 
   const hourRef = useRef<HTMLDivElement>(null);

@@ -7,7 +7,7 @@ import LanguageDropdown from "./language-dropdown";
 import MyIcon from "../atoms/my-icon";
 import { useRouter } from "next/navigation";
 import PATHS from "@/utils/paths";
-import useLogin from "@/app/(pages)/(acesso)/login/login-store";
+import useLogin from "@/app/(pages)/(cliente)/(acesso)/login/login-store";
 import Image from "next/image";
 import SideBarModal from "../molecules/side-bar-modal";
 

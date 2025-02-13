@@ -30,9 +30,15 @@ export default function Activities({ activities }: any) {
               height={300}
               className="w-full h-[265px] object-cover"
             />
-            {activity.favorite && (
+            {activity.favorite ? (
               <MyIcon
                 name="full-heart"
+                variant="circled"
+                className="absolute top-3 right-3"
+              />
+            ): (
+              <MyIcon
+                name="black-heart"
                 variant="circled"
                 className="absolute top-3 right-3"
               />
@@ -41,7 +47,11 @@ export default function Activities({ activities }: any) {
           <span className="mt-2">
             <MyBadge variant="outline" className="p-2">{activity.tag}</MyBadge>
           </span>
+          <div className="flex justify-between items-center">
           <StarRating rating={activity.stars} />
+          <MyIcon name="shared-muted" className="cursor-pointer mx-2" />
+
+          </div>
           <MyTypography variant="subtitle1" weight="bold" className="">
             {activity.title}
           </MyTypography>

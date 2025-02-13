@@ -20,7 +20,7 @@ export default function SecondSection() {
 
       <CarouselCustom activities={activities} />
 
-      <div className="border-2 border-gray-200 w-1/2 mx-auto rounded-md" />
+      <div className="border-2 border-gray-200 w-1/2 mx-auto rounded-md md:hidden" />
 
       <MyTypography variant="heading3" weight="semibold" className="mt-8">
         Sugestões para você!

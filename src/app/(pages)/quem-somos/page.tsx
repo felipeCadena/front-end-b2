@@ -15,16 +15,30 @@ export default function QuemSomos() {
         <MyTypography variant="label" className="">
           Nascida no Rio de Janeiro, a B2 Adventure é o resultado do espírito
           aventureiro e desportista de sua idealizadora, que sempre gostou de
-          misturar adrenalina em meio a natureza. A B2 Adventure é uma
-          plataforma que oferece uma variedade gigantesca de atividades
-          esportivas em meio à natureza, com os melhores profissionais do
-          assunto. Nosso foco é permitir que os clientes desfrutem o que a de
-          mais incrível em cada lugar desse mundão. Com entusiasmo e dedicação,
-          criamos essa empresa para inspirar, motivar e direcionar aqueles que
-          desejam explorar o desconhecido e viver intensamente cada momento da
-          sua vida. Junte-se a nós e descubra um mundo de possibilidades, não
-          importa se vc é um iniciante ou experiente, aqui tem espaço para você
-          se divertir.
+          misturar adrenalina em meio a natureza.
+        </MyTypography>
+
+        <MyTypography variant="label" className="">
+          A B2 Adventure é uma plataforma que oferece uma variedade gigantesca
+          de atividades esportivas em meio à natureza, com os melhores
+          profissionais do assunto.
+        </MyTypography>
+
+        <MyTypography variant="label" className="">
+          Nosso foco é permitir que os clientes desfrutem o que a de mais
+          incrível em cada lugar desse mundão.
+        </MyTypography>
+
+        <MyTypography variant="label" className="">
+          Com entusiasmo e dedicação, criamos essa empresa para inspirar,
+          motivar e direcionar aqueles que desejam explorar o desconhecido e
+          viver intensamente cada momento da sua vida.
+        </MyTypography>
+
+        <MyTypography variant="label" className="">
+          Junte-se a nós e descubra um mundo de possibilidades, não importa se
+          vc é um iniciante ou experiente, aqui tem espaço para você se
+          divertir.
         </MyTypography>
 
         <div className="flex flex-col gap-2 justify-center md:w-1/2 md:mx-auto">

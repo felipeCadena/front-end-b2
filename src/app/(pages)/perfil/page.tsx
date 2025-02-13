@@ -7,7 +7,7 @@ import MyTypography from "@/components/atoms/my-typography";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React from "react";
-import useLogin from "../(acesso)/login/login-store";
+import useLogin from "../(cliente)/(acesso)/login/login-store";
 
 export default function Perfil() {
   const router = useRouter();

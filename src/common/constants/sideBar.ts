@@ -72,9 +72,79 @@ export const sideBarClient: any[] = [
     web: false,
   },
   {
+    label: "Galeria de Fotos",
+    link: "/galeria-de-fotos",
+    icon: "camera",
+    web: false,
+  },
+  {
     label: "Carrinho de Compras",
     link: "/carrinho",
     icon: "carrinho",
+    web: true,
+  },
+  {
+    label: "Chat",
+    link: "/chat",
+    icon: "chat",
+    web: true,
+  },
+  {
+    label: "Fale Conosco",
+    link: "/fale-conosco",
+    icon: "email",
+    web: false,
+  },
+  {
+    label: "Sair",
+    link: "/",
+    icon: "sair",
+    web: false,
+  },
+];
+
+export const sideBarPartnet: any[] = [
+  {
+    label: "Perfil",
+    link: "/perfil",
+    icon: "perfil",
+    web: false,
+  },
+  {
+    label: "Atividades",
+    link: "/atividades-cadastradas",
+    icon: "atividades",
+    web: true,
+  },
+  {
+    label: "Fotos de passeios",
+    link: "/fotos-de-passeios",
+    icon: "camera",
+    web: false,
+  },
+  {
+    label: "Notificações",
+    link: "/notificacoes",
+    icon: "notificacoes",
+    web: true,
+  },
+  {
+    label: "Home",
+    link: "/minhas-atividades",
+    icon: "home",
+    web: false,
+  },
+  {
+    label: "Reservas",
+    link: "/informacoes",
+    icon: "reservas",
+    tab: "reservas",
+    web: false,
+  },
+  {
+    label: "Financeiro",
+    link: "/financeiro",
+    icon: "financeiro",
     web: true,
   },
   {

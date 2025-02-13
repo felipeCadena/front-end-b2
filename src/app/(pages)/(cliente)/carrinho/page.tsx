@@ -6,6 +6,7 @@ import MyIcon from "@/components/atoms/my-icon";
 import MyTextInput from "@/components/atoms/my-text-input";
 import MyTypography from "@/components/atoms/my-typography";
 import { MyDatePicker } from "@/components/molecules/my-date-picker";
+import TimePickerModal from "@/components/molecules/time-picker";
 import ActivitiesDetails from "@/components/organisms/activities-details";
 import PeopleSelector from "@/components/organisms/people-selector";
 import ShoppingDetails from "@/components/organisms/shopping-details";
@@ -46,13 +47,7 @@ export default function Carrinho() {
         <div className="border space-y-6 border-gray-300 rounded-lg py-8 px-5">
           <MyDatePicker />
 
-          <MyTextInput
-            type="text"
-            noHintText
-            placeholder="Horário da Atividade"
-            className="placeholder:text-black"
-            leftIcon={<MyIcon name="time" className="ml-3" />}
-          />
+          <TimePickerModal />
 
           <PeopleSelector />
         </div>

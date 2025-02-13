@@ -1,6 +1,6 @@
 "use client";
 
-import useLogin from "@/app/(pages)/(acesso)/login/login-store";
+import useLogin from "@/app/(pages)/(cliente)/(acesso)/login/login-store";
 import { notifications } from "@/common/constants/mock";
 import { sideBarClient, sideBarLp } from "@/common/constants/sideBar";
 import MyIcon from "@/components/atoms/my-icon";
