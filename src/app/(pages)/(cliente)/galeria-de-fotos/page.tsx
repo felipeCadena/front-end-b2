@@ -1,23 +1,17 @@
 "use client";
 
 import { activities } from "@/common/constants/mock";
-import MyBadge from "@/components/atoms/my-badge";
-import MyButton from "@/components/atoms/my-button";
 import MyIcon from "@/components/atoms/my-icon";
 import MyTypography from "@/components/atoms/my-typography";
-import StarRating from "@/components/molecules/my-stars";
 import { cn } from "@/utils/cn";
-import { getData, isDateInPast } from "@/utils/formatters";
+import { getData } from "@/utils/formatters";
+import PATHS from "@/utils/paths";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React from "react";
 
 export default function GaleriaDeFotos() {
-  const [open, setOpen] = React.useState(false);
-  const [selected, setSelected] = React.useState("");
   const router = useRouter();
-
-  const withDate = false;
 
   const album = [
     "/images/atividades/ar/ar-1.jpeg",
@@ -50,54 +44,72 @@ export default function GaleriaDeFotos() {
       </div>
 
       {activities.map((activity: any, index: number) => (
-        <div key={index} className={cn("flex gap-4 cursor-pointer")}>
-          <div className="flex flex-col items-start gap-1">
-            <MyTypography
-              variant="subtitle3"
+        <div 
+        key={index} 
+        className={cn("flex justify-between")}
+        onClick={() => router.push(PATHS.visualizarFotos(activity.id))}
+        >
+
+          <div className="flex flex-col gap-2 cursor-pointer w-1/2">
+          <MyTypography
+              variant="body-big"
               weight="bold"
-              className="text-nowrap"
             >
-              Álbum de Fotos
+              Data: {getData(activity.reserva.timestamp)}
             </MyTypography>
-            <MyBadge className="p-1" variant="outline">
-              {activity.tag}
-            </MyBadge>
-            <StarRating rating={activity.stars} />
-            <MyTypography variant="body-big" weight="semibold">
+            <MyTypography
+              variant="body-big"
+              weight="bold"
+            >
               {activity.title}
             </MyTypography>
-            <MyTypography variant="caption" weight="semibold">
+
+            <div className="flex gap-2 items-center">
+              <Image
+                alt="foto parceiro"
+                src={activity.parceiro.avatar}
+                width={40}
+                height={40}
+                className="rounded-full"
+              />
+              <MyTypography
+                variant="body"
+                weight="medium"
+                className=""
+              >
+                {activity.parceiro.nome}
+              </MyTypography>
+          </div>
+          <MyTypography
+              variant="body"
+              weight="semibold"
+              lightness={500}
+            >
               Clique para ver mais
             </MyTypography>
           </div>
 
-          <div className="flex">
+          <div className="flex w-2/3">
             {album.slice(0, 4).map((image, index) => (
               <div
                 key={index}
-                className="relative group transition-all duration-300"
+                className="relative transition-all duration-300"
                 style={{
                   marginLeft: index === 0 ? 0 : "-50px",
                   zIndex: album.length - index,
                 }}
               >
-                <div className="relative group-hover:z-50 transition-all duration-300">
+                <div className="relative transition-all duration-300">
                   <Image
                     src={image}
                     alt={activity.title}
                     width={300}
                     height={300}
-                    className="h-[130px] w-[130px] rounded-lg object-cover transition-all duration-300 group-hover:z-999 group-hover:w-full"
+                    className="h-[130px] w-[130px] rounded-lg object-cover transition-all duration-300"
                   />
-                  <p className="bg-white flex items-center justify-center h-5 w-5 rounded-full text-xs text-primary-600 font-bold absolute top-2 right-2 z-999">{index + 1}</p>
-                  {/* <MyIcon
-                    name="x-red"
-                    className="absolute top-2 left-2 bg-white p-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 cursor-pointer"
-                  />
-                  <MyIcon
-                    name="download-green"
-                    className="absolute top-2 right-2 bg-white p-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 cursor-pointer"
-                  /> */}
+                  <p className="bg-white flex items-center justify-center h-5 w-5 rounded-full text-xs text-primary-600 font-bold absolute top-2 right-2 z-999">
+                    {index + 1}
+                  </p>
                 </div>
               </div>
             ))}

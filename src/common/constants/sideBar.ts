@@ -37,6 +37,7 @@ export const sideBarClient: any[] = [
     link: "/perfil",
     icon: "perfil",
     web: false,
+    menu: true,
   },
   {
     label: "Atividades",
@@ -56,6 +57,7 @@ export const sideBarClient: any[] = [
     icon: "favoritos",
     tab: "favoritos",
     web: false,
+    menu: true,
   },
   {
     label: "Histórico de Atividades",
@@ -63,6 +65,7 @@ export const sideBarClient: any[] = [
     icon: "duracao",
     tab: "historico",
     web: false,
+    menu: true,
   },
   {
     label: "Reservas",
@@ -70,6 +73,7 @@ export const sideBarClient: any[] = [
     icon: "reservas",
     tab: "reservas",
     web: false,
+    menu: true,
   },
   {
     label: "Galeria de Fotos",
@@ -88,18 +92,21 @@ export const sideBarClient: any[] = [
     link: "/chat",
     icon: "chat",
     web: true,
+    menu: true,
   },
   {
     label: "Fale Conosco",
     link: "/fale-conosco",
     icon: "email",
     web: false,
+    menu: true,
   },
   {
     label: "Sair",
     link: "/",
     icon: "sair",
     web: false,
+    menu: true,
   },
 ];
 

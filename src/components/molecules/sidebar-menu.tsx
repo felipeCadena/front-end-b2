@@ -20,13 +20,13 @@ export default function SidebarMenu({
 }) {
   const [sideBar, setSideBar] = useState<any[]>(sideBarLp);
   const pathname = usePathname();
-  const { email, setEmail } = useLogin();
+  const { email, setEmail, sideBarActive, setSideBarActive } = useLogin();
 
   useEffect(() => {
     if (pathname !== "/" && email.includes("cliente")) {
-      setSideBar(sideBarClient);
+      setSideBarActive(sideBarClient);
     } else {
-      setSideBar(sideBarLp);
+      setSideBarActive(sideBarLp);
     }
   }, [email]);
 
@@ -41,7 +41,7 @@ export default function SidebarMenu({
         type="single"
         className="absolute flex w-full flex-col items-start gap-4"
       >
-        {sideBar.map((item) => {
+        {sideBarActive.map((item) => {
           return (
             <React.Fragment key={item.label}>
               <ToggleGroupItem

@@ -1,5 +1,7 @@
 // ==========================================
 
+import { vi } from "react-day-picker/locale";
+
 // import { encodeUrl } from "./url-util";
 
 // * Static routes
@@ -22,6 +24,7 @@ const ROOTS_SOBRE_A_EMPRESA = "/sobre-a-empresa";
 // ==========================================
 // * Dimanic routes
 const VISUALIZAR_ATIVIDADE = (slug: number | string) => `/atividades/atividade/${slug}`;
+const VISUALIZAR_FOTOS = (slug: number | string) => `/galeria-de-fotos/galeria/${slug}`;
 const ATIVIDADE_REALIZADA = (slug: number | string) => `/informacoes/atividade-realizada/${slug}`;
 const VISUALIZAR_NOTIFICACAO = (slug: number | string) => `/notificacoes/notificacao/${slug}`;
 
@@ -50,6 +53,7 @@ const PATHS = {
   visualizarAtividade: VISUALIZAR_ATIVIDADE,
   visualizarNotificacao: VISUALIZAR_NOTIFICACAO,
   atividadeRealizada: ATIVIDADE_REALIZADA,
+  visualizarFotos: VISUALIZAR_FOTOS,
 };
 
 export default PATHS;

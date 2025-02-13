@@ -8,6 +8,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React from "react";
 import useLogin from "../(cliente)/(acesso)/login/login-store";
+import MyButton from "@/components/atoms/my-button";
 
 export default function Perfil() {
   const router = useRouter();
@@ -53,7 +54,7 @@ export default function Perfil() {
         </div>
       </div>
 
-      <div className="my-6">
+      <div className="w-full my-6 md:max-w-2xl md:mx-auto flex flex-col gap-1 items-center">
         <MyTypography variant="subtitle1" weight="bold" className="mb-4">
           Dados cadastrais
         </MyTypography>
@@ -72,6 +73,15 @@ export default function Perfil() {
           rightIcon={<MyIcon name={visibility ? "hide" : "eye"} className="mr-4 mt-2 cursor-pointer" onClick={() => setVisibility(prev => !prev)} />}
           className="mt-2"
         />
+
+        <MyButton 
+          variant="default" 
+          borderRadius="squared"
+          size="lg"
+          className="mt-4 px-12"
+          onClick={() => router.push("/")}
+        >Atualizar 
+        </MyButton>
       </div>
     </section>
   );

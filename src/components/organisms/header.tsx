@@ -13,7 +13,7 @@ import SideBarModal from "../molecules/side-bar-modal";
 
 export default function Header() {
   const router = useRouter();
-  const { email } = useLogin();
+  const { email, sideBarActive } = useLogin();
 
   return (
     <header className="top-0 z-50 h-[100px] w-full md:max-w-screen-xl md:mx-auto bg-white flex items-center justify-between md:justify-between max-sm:px-4 mb-4">
@@ -46,7 +46,7 @@ export default function Header() {
               <MyIcon name="user" />
             </button>
           ) : (
-            <SideBarModal>
+            <SideBarModal sideBar={sideBarActive}>
               <div className="flex items-center gap-1 cursor-pointer">
                 <MyIcon name="chevron-down" />
                 <Image

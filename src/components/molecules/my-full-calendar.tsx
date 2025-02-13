@@ -92,12 +92,11 @@ function MyFullCalendar({
         
       }}
       modifiersClassNames={{
-        booked: "bg-primary-800 rounded-lg border border-primary-600 text-primary-600",
-
+        booked: "bg-primary-800 rounded-lg border border-primary-600 text-primary-600 relative after:content-[''] after:w-2 after:h-2 after:border-2 after:border-secondary-600 after:rounded-full after:absolute after:top-1/3 after:left-20",
       }}
       onDayClick={(date, modifiers) => {
         if (modifiers.booked) {
-          alert("This day is already booked.");
+          return date;
         }
       }}
       styles={{

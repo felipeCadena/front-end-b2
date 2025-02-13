@@ -681,3 +681,20 @@ export const reviews = [
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Enim habitasse eu eget ac morbi neque. Tempus, quam pellentesque massa quis.",
   },
 ];
+
+export const album = [
+  "/images/atividades/ar/ar-1.jpeg",
+  "/images/atividades/ar/ar-2.jpeg",
+  "/images/atividades/ar/ar-3.jpeg",
+  "/images/atividades/ar/ar-4.jpeg",
+  "/images/atividades/terra/terra-1.jpeg",
+  "/images/atividades/terra/terra-2.jpeg",
+  "/images/atividades/terra/terra-3.jpeg",
+  "/images/atividades/mar/mar-1.jpeg",
+  "/images/atividades/mar/mar-2.jpeg",
+  "/images/atividades/mar/mar-3.jpeg",
+  "/images/atividades/mar/mar-4.jpeg",
+  "/images/atividades/mar/mar-5.jpeg",
+  "/images/atividades/mar/mar-6.jpeg",
+  "/images/atividades/mar/mar-7.jpeg",
+];

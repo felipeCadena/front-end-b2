@@ -9,17 +9,16 @@ import React, { useEffect, useState } from "react";
 import MyIcon from "../atoms/my-icon";
 
 export default function SidebarMenuWeb({}) {
-  const [sideBar, setSideBar] = useState<any[]>(sideBarLp);
   const pathname = usePathname();
-  const { email } = useLogin();
+  const { email, setSideBarActive, sideBarActive } = useLogin();
 
   useEffect(() => {
     if (pathname !== "/" && email.includes("cliente")) {
-      setSideBar(sideBarClient);
+      setSideBarActive(sideBarClient);
     }
 
     if (pathname !== "/" && email.includes("parceiro")) {
-      setSideBar(sideBarPartnet);
+      setSideBarActive(sideBarPartnet);
     }
   }, []);
 
@@ -27,7 +26,7 @@ export default function SidebarMenuWeb({}) {
 
   return (
     <div className="flex items-center gap-10">
-      {sideBar.map((item) => {
+      {sideBarActive.map((item) => {
         const isActive = pathname.startsWith(item.link == "/carrinho" ? "/finalizar-compra" : (item.link == "/chat" ? "nao-incluir" : item.link));
 
         return (
