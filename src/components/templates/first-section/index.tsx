@@ -18,15 +18,24 @@ export default function FirstSection() {
     "/images/atividades/moto.webp",
     "/images/atividades/parapente.webp",
     "/images/atividades/canoagem.webp",
-  ]
+  ];
   return (
     <section className="mt-10 md:relative">
-      <CarouselImages images={images}/>
+      <CarouselImages images={images} />
       <div className="mt-4 px-4">
-        <MyTypography variant="heading2" weight="bold" className={`md:font-my-font md:text-end md:absolute md:top-8 md:right-16 md:font-extrabold md:uppercase md:w-[23rem] md:text-[3rem] md:text-white`}>
-          Qual será sua próxima aventura?
+        <MyTypography
+          variant="heading2"
+          weight="bold"
+          className={`md:font-my-font md:text-end md:absolute md:top-8 md:right-16 md:font-extrabold md:uppercase md:w-[23rem] md:text-[3rem] md:text-white`}
+        >
+          <span style={{ textShadow: "2px 2px 4px rgba(0, 0, 0, 0.6)" }}>Qual será sua próxima aventura?</span>
         </MyTypography>
-        <MyButton variant="default" size="md" borderRadius="squared" className="mt-4 md:absolute md:bottom-24 md:right-16">
+        <MyButton
+          variant="default"
+          size="md"
+          borderRadius="squared"
+          className="mt-4 md:absolute md:bottom-24 md:right-16"
+        >
           Descobrir agora
         </MyButton>
       </div>

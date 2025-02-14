@@ -95,7 +95,7 @@ const FourthSection = () => {
               className="w-full max-sm:hidden cursor-default"
               leftIcon={<MyIcon name="localizacao" className="" />}
             >
-              Onde quer se aventurar hoje?
+              Onde você quer se aventurar hoje?
             </MyButton>
           </div>
 

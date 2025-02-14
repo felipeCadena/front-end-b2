@@ -11,10 +11,10 @@ export default function SecondSection() {
     <section className="">
       <ActivitiesFilter />
 
-      <MyTypography variant="heading3" weight="semibold" className="mt-8">
+      <MyTypography variant="heading2" weight="semibold" className="mt-8">
         Conheça nossas atividades
       </MyTypography>
-      <MyTypography variant="body-big" weight="regular" className="">
+      <MyTypography variant="subtitle3" weight="regular" className="mt-1">
         Esses são os resultados da sua busca
       </MyTypography>
 
@@ -22,10 +22,10 @@ export default function SecondSection() {
 
       <div className="border-2 border-gray-200 w-1/2 mx-auto rounded-md md:hidden" />
 
-      <MyTypography variant="heading3" weight="semibold" className="mt-8">
+      <MyTypography variant="heading2" weight="semibold" className="mt-8">
         Sugestões para você!
       </MyTypography>
-      <MyTypography variant="body-big" weight="regular" className="">
+      <MyTypography variant="subtitle3" weight="regular" className="mt-1">
         Atividades mais buscadas
       </MyTypography>
 

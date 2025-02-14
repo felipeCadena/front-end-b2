@@ -4,110 +4,109 @@ import React, { useState } from "react";
 import MyIcon from "../atoms/my-icon";
 import MyButton from "../atoms/my-button";
 import MyTypography from "../atoms/my-typography";
+import { Popover, PopoverContent, PopoverTrigger } from "../atoms/my-popover";
 
 export default function PeopleSelector() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [adults, setAdults] = useState(2);
+  const [open, setOpen] = useState(false);
+  const [adults, setAdults] = useState(0);
   const [children, setChildren] = useState(0);
   const [babies, setBabies] = useState(0);
 
+  // Função para incrementar ou decrementar valores
+  const handleChange = (type: string, action: "increase" | "decrease") => {
+    if (type === "adult") {
+      setAdults((prev) => (action === "increase" ? prev + 1 : Math.max(0, prev - 1)));
+    } else if (type === "child") {
+      setChildren((prev) => (action === "increase" ? prev + 1 : Math.max(0, prev - 1)));
+    } else if (type === "baby") {
+      setBabies((prev) => (action === "increase" ? prev + 1 : Math.max(0, prev - 1)));
+    }
+  };
+
   return (
-    <div>
-      {/* Botão para abrir o modal */}
-      <button
-        className="border border-gray-300 rounded-md p-3 text-xs w-full flex gap-2 items-center cursor-pointer md:bg-white"
-        onClick={() => setIsModalOpen(true)}
-      >
-        <MyIcon name="pessoas" />
-        <span className="text-sm">Número de pessoas</span>
-      </button>
-
-      {/* Modal */}
-      {isModalOpen && (
-        <div
-          className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
-          onClick={() => setIsModalOpen(false)} // Fecha ao clicar fora do modal
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <MyButton
+          variant="date"
+          borderRadius="squared"
+          className="w-full justify-start text-sm items-center gap-2 py-6 border-gray-300 md:bg-white"
         >
-          <div
-            className="bg-white w-full max-w-md p-4 mx-2 rounded-lg shadow-lg"
-            onClick={(e) => e.stopPropagation()} // Impede que o clique dentro do modal feche-o
-          >
-            {/* Adultos */}
-            <div className="flex justify-between items-center py-5">
-              <div>
-                <div className="flex gap-1">
-                  <MyTypography variant="body-big" weight="semibold">
-                    Adultos - R$ 181,50
-                  </MyTypography>
-                </div>
-                <MyTypography variant="body-big" weight="regular" className="">
-                  Idade: 13 - 99
-                </MyTypography>
-              </div>
-              <div className="flex items-center">
-                <MyIcon name="subtracao" className="" />
+          <MyIcon name="pessoas" />
+          {adults || children || babies ? (
+            <MyTypography variant="label" weight="medium" > Adultos: {adults} {children != 0 && `+ Crianças: ${children}`} {babies != 0 && `+ Bebês: ${babies}`} </MyTypography>
+          ) : (
+            <MyTypography variant="body" weight="regular" className="text-sm">
+              Número de pessoas
+            </MyTypography>
+          )}
+        </MyButton>
+      </PopoverTrigger>
 
-                <span className="mx-4">{adults}</span>
-                <MyIcon name="soma" className="" />
-              </div>
+      <PopoverContent className="w-full bg-white flex flex-col items-center" align="center">
+        <div className="w-full space-y-8 p-2">
+          {/* Adultos */}
+          <div className="w-full flex justify-between gap-12 items-center">
+            <div>
+              <MyTypography variant="body-big" weight="semibold">Adultos - R$ 181,50</MyTypography>
+              <MyTypography variant="body-big" weight="regular">Idade: 13 - 99</MyTypography>
             </div>
-
-            {/* Crianças */}
-            <div className="flex justify-between items-center py-5">
-              <div>
-                <div className="flex gap-1">
-                  <MyTypography variant="body-big" weight="semibold">
-                    Crianças - R$ 90,00
-                  </MyTypography>
-                </div>
-                <MyTypography variant="body-big" weight="regular" className="">
-                  Idade: Idade: 4 - 10
-                </MyTypography>
-              </div>
-
-              <div className="flex items-center">
-                <MyIcon name="subtracaoDesativada" className="" />
-
-                <span className="mx-4">{children}</span>
-                <MyIcon name="soma" className="" />
-              </div>
+            <div className="flex items-center gap-4">
+              <button onClick={() => handleChange("adult", "decrease")} disabled={adults === 0}>
+                <MyIcon name={adults > 0 ? "subtracao" : "subtracaoDesativada"} />
+              </button>
+              <span>{adults}</span>
+              <button onClick={() => handleChange("adult", "increase")}>
+                <MyIcon name="soma" />
+              </button>
             </div>
-
-            {/* Bebês */}
-            <div className="flex justify-between items-center py-5">
-              <div>
-                <div className="flex gap-1">
-                  <MyTypography variant="body-big" weight="semibold">
-                    Bebês - $ 0,00
-                  </MyTypography>
-                  
-                </div>
-                <MyTypography variant="body-big" weight="regular" className="">
-                  Idade: Idade: 1 - 3
-                </MyTypography>
-              </div>
-              <div className="flex items-center">
-                <MyIcon name="subtracaoDesativada" className="" />
-
-                <span className="mx-4">{babies}</span>
-                <MyIcon name="soma" className="" />
-              </div>
-            </div>
-
-            {/* Botão Salvar */}
-            <MyButton
-              variant="default"
-              size="lg"
-              borderRadius="squared"
-              // leftIcon={<MyIcon name="save" />}
-              onClick={() => setIsModalOpen(false)}
-              className="w-full"
-            >
-              Ok
-            </MyButton>
           </div>
+
+          {/* Crianças */}
+          <div className="w-full flex justify-between gap-12 items-center">
+            <div>
+              <MyTypography variant="body-big" weight="semibold">Crianças - R$ 90,00</MyTypography>
+              <MyTypography variant="body-big" weight="regular">Idade: 4 - 10</MyTypography>
+            </div>
+            <div className="flex items-center gap-4">
+              <button onClick={() => handleChange("child", "decrease")} disabled={children === 0}>
+                <MyIcon name={children > 0 ? "subtracao" : "subtracaoDesativada"} />
+              </button>
+              <span>{children}</span>
+              <button onClick={() => handleChange("child", "increase")}>
+                <MyIcon name="soma" />
+              </button>
+            </div>
+          </div>
+
+          {/* Bebês */}
+          <div className="w-full flex justify-between gap-12 items-center">
+            <div>
+              <MyTypography variant="body-big" weight="semibold">Bebês - R$ 0,00</MyTypography>
+              <MyTypography variant="body-big" weight="regular">Idade: 1 - 3</MyTypography>
+            </div>
+            <div className="flex items-center gap-4">
+              <button onClick={() => handleChange("baby", "decrease")} disabled={babies === 0}>
+                <MyIcon name={babies > 0 ? "subtracao" : "subtracaoDesativada"} />
+              </button>
+              <span>{babies}</span>
+              <button onClick={() => handleChange("baby", "increase")}>
+                <MyIcon name="soma" />
+              </button>
+            </div>
+          </div>
+
+          {/* Botão Salvar */}
+          <MyButton
+            variant="default"
+            size="lg"
+            borderRadius="squared"
+            onClick={() => setOpen(false)}
+            className="w-full"
+          >
+            Ok
+          </MyButton>
         </div>
-      )}
-    </div>
+      </PopoverContent>
+    </Popover>
   );
 }

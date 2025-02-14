@@ -50,7 +50,8 @@ export default function Footer() {
         <MyIcon name="facebookGray" className="bg-primary-900 rounded-md" />
         <MyIcon 
         name="scroll-mouse" 
-        className="max-sm:hidden absolute bottom-1/2 right-6 cursor-pointer"
+        title="Voltar ao topo"
+        className="max-sm:hidden absolute -top-16 -right-4 cursor-pointer"
         onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
         />
       </div>

@@ -54,9 +54,9 @@ export default function ActivitiesFilter({ withText = true }) {
       )}
 
       <MyTypography
-        variant="body-big"
-        weight="regular"
-        className="max-sm:hidden"
+        variant="subtitle3"
+        weight="semibold"
+        className="max-sm:hidden mb-2"
       >
         Escolha seu tipo de aventura
       </MyTypography>
@@ -67,7 +67,7 @@ export default function ActivitiesFilter({ withText = true }) {
             variant="outline-muted"
             size="md"
             className={cn(
-              "flex max-sm:flex-col gap-1 items-center rounded-md max-sm:w-[6.625rem] max-sm:h-[6.625rem] md:py-8 md:w-1/2 md:justify-start md:border-2 md:border-black md:text-nowrap",
+              "flex max-sm:flex-col gap-1 items-center rounded-md max-sm:w-[6.625rem] max-sm:h-[6.625rem] md:py-8 md:w-1/2 md:border-2 md:border-black md:text-nowrap",
               item.title === selected &&
                 "border border-black bg-[#E5E4E9] opacity-100"
             )}

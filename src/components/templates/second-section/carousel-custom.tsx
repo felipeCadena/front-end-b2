@@ -21,7 +21,7 @@ export default function CarouselCustom({ activities }: any) {
     <div
       ref={ref}
       className={cn(
-        "overflow-x-scroll flex gap-4 max-sm:no-scrollbar my-8 md:my-4 md:last:mb-16 md:scrollbar-thin"
+        "overflow-x-scroll flex gap-6 max-sm:no-scrollbar my-8 md:my-4 md:last:mb-16 md:scrollbar-thin snap-x snap-mandatory"
       )}
       {...events}
     >
@@ -77,11 +77,11 @@ export default function CarouselCustom({ activities }: any) {
           <MyTypography variant="subtitle1" weight="bold">
             {activity.title}
           </MyTypography>
-          <div className="flex gap-2">
+          <div className="flex gap-2 items-end">
             <MyTypography variant="body-big">
-              {activity.description.slice(0, 18).concat("...")}
+              {activity.description.slice(0, 60).concat("...")}
             </MyTypography>
-            <MyTypography variant="body-big" weight="bold" lightness={500}>
+            <MyTypography variant="body-big" weight="bold" lightness={500} className="text-nowrap">
               Saiba Mais
             </MyTypography>
           </div>

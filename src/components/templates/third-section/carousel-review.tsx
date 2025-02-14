@@ -46,13 +46,13 @@ const CarouselReview = ({ reviews }: any) => {
 
       <MyIcon
         name="chevron-down-green"
-        className="absolute -left-5 md:left-0 top-1/2 rotate-90 z-50 md:bg-white md:px-3 md:py-4 md:border md:border-primary-600"
+        className="absolute -left-5 md:-left-6 top-1/2 rotate-90 z-50"
         onClick={() => handleScroll("left")}
       />
 
       <MyIcon
         name="chevron-down-green"
-        className="absolute -right-5 md:right-2 top-1/2 -rotate-90 z-50 md:bg-white md:px-3 md:py-4 md:border md:border-primary-600"
+        className="absolute -right-5 md:-right-6 top-1/2 -rotate-90 z-50"
         onClick={() => handleScroll("right")}
       />
 
@@ -60,7 +60,7 @@ const CarouselReview = ({ reviews }: any) => {
       <div
         ref={ref}
         className={twMerge(
-          "max-sm:overflow-x-scroll flex gap-4 overflow-x-hidden no-scrollbar px-2 md:px-16"
+          "max-sm:overflow-x-scroll flex gap-4 overflow-x-hidden no-scrollbar px-2 md:px-4"
         )}
         onScroll={() => setScrollPosition(ref.current?.scrollLeft || 0)}
         {...events}

@@ -17,7 +17,7 @@ const typographyMap = cva("", {
       label: "text-[0.875rem]",
       button: "text-[0.775rem] ",
       notification: "text-[0.75rem] ",
-      caption: "text-[0.625rem]",
+      caption: "text-[0.625rem]"
     },
     weight: {
       light: "font-light",

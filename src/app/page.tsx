@@ -17,9 +17,9 @@ export default function Home() {
           <ThirdSection />
           <FourthSection />
         </div>
-      </div>
       <div className="max-sm:hidden">
       <Review />
+      </div>
       </div>
       <FifithSection />
     </>

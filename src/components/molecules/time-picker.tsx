@@ -51,7 +51,7 @@ export default function TimePickerModal() {
       </PopoverTrigger>
       <PopoverContent className="w-full bg-white flex flex-col items-center" align="center">
         <div className="flex justify-center items-center w-full">
-          <MyScrollArea ref={hourRef} className="h-48 w-36 flex items-center justify-center rounded-lg overflow-hidden">
+          <MyScrollArea ref={hourRef} className="h-48 w-36 flex items-center justify-center rounded-lg overflow-hidden ">
             <div className="flex flex-col items-center w-full">
               {hours.map((hour) => (
                 <div

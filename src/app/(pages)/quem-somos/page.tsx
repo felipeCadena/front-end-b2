@@ -8,7 +8,7 @@ import React from "react";
 export default function QuemSomos() {
   return (
     <section className="mx-4 my-8 space-y-12 text-center">
-      <div className="md:w-1/2 md:mx-auto space-y-4">
+      <div className="md:w-2/3 md:mx-auto space-y-4">
         <MyTypography variant="heading2" weight="bold" className="">
           Quem Somos
         </MyTypography>
@@ -41,30 +41,34 @@ export default function QuemSomos() {
           divertir.
         </MyTypography>
 
-        <div className="flex flex-col gap-2 justify-center md:w-1/2 md:mx-auto">
-          <MyTypography variant="body-big" weight="bold" className="mt-4">
-            Missão:
-          </MyTypography>
-          <MyTypography variant="label" className="">
-            Facilitar a conexão entre clientes e parceiros para proporcionar
-            experiências de esportes de aventura inesquecíveis.
-          </MyTypography>
-
-          <MyTypography variant="body-big" weight="bold" className="mt-4">
-            Visão:
-          </MyTypography>
-          <MyTypography variant="label" className="">
-            Ser referência no mercado de intermediação de atividades de esportes
-            de aventura, promovendo aventuras seguras e emocionantes.
-          </MyTypography>
-
-          <MyTypography variant="body-big" weight="bold" className="mt-4">
-            Valores:
-          </MyTypography>
-          <MyTypography variant="label" className="">
-            Segurança, aventura, parceria, responsabilidade com o meio ambiente,
-            inovação e excelência no atendimento.
-          </MyTypography>
+        <div className="flex max-sm:flex-col gap-2 justify-center">
+          <div>
+            <MyTypography variant="body-big" weight="bold" className="mt-4">
+              Missão:
+            </MyTypography>
+            <MyTypography variant="label" className="">
+              Facilitar a conexão entre clientes e parceiros para proporcionar
+              experiências de esportes de aventura inesquecíveis.
+            </MyTypography>
+          </div>
+          <div>
+            <MyTypography variant="body-big" weight="bold" className="mt-4">
+              Visão:
+            </MyTypography>
+            <MyTypography variant="label" className="">
+              Ser referência no mercado de intermediação de atividades de
+              esportes de aventura, promovendo aventuras seguras e emocionantes.
+            </MyTypography>
+          </div>
+          <div>
+            <MyTypography variant="body-big" weight="bold" className="mt-4">
+              Valores:
+            </MyTypography>
+            <MyTypography variant="label" className="">
+              Segurança, aventura, parceria, responsabilidade com o meio
+              ambiente, inovação e excelência no atendimento.
+            </MyTypography>
+          </div>
         </div>
       </div>
 

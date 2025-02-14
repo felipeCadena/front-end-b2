@@ -17,7 +17,7 @@ export default function FifithSection() {
       <MyTypography variant="body-big" weight="regular" className="mt-1">
         Venha ser um de nossos parceiros!
       </MyTypography>
-      <div className="md:w-1/2 md:mx-auto">
+      <div className="md:w-[40%] md:mx-auto">
         <Image
           src="/images/thumb.png"
           alt="image-lp"

@@ -12,9 +12,11 @@ export default function CarouselImages({ images }: any) {
         showThumbs={false}
         showStatus={false}
         showArrows={false}
-        width="100%"
+        width="105%"
         emulateTouch
         infiniteLoop
+        centerMode
+        centerSlidePercentage={100}
         renderIndicator={(onClickHandler, isSelected, index) => {
           return (
             <li
@@ -39,7 +41,7 @@ export default function CarouselImages({ images }: any) {
         {images.map((image: any, index: number) => (
         <div key={index} className={cn("relative z-10 overflow-hidden w-full h-[350px] md:h-[500px]")}>
           <Image
-            alt="sample_file"
+            alt="Imagens de atividades"
             src={image ?? ""}
             width={250}
             height={300}

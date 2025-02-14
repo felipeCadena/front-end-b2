@@ -26,7 +26,7 @@ import React, { useState } from "react";
 
 export default function FinalizarCompra() {
   const router = useRouter();
-  const [selectedPayment, setSelectedPayment] = useState<string>("Pix");
+  const [selectedPayment, setSelectedPayment] = useState<string>("");
   const [value, setValue] = React.useState<string>("");
 
   const activity = activities.filter((activity) =>
@@ -150,7 +150,7 @@ export default function FinalizarCompra() {
               : "md:grid-cols-2 md:gap-8"
           )}
         >
-          <div className={cn("flex flex-col mt-4", selectedPayment.includes("Cartão") ? "space-y-8" : "space-y-4")}>
+          <div className={cn("flex flex-col space-y-8")}>
             {payments.map((payment) => (
               <MyButton
                 key={payment.name}
@@ -254,10 +254,8 @@ export default function FinalizarCompra() {
               </div>
             </div>
           )}
-        </div>
-
         {selectedPayment && (
-          <div className="md: mt-10">
+          <div className={cn("md:mt-4 col-start-2", selectedPayment === "Cartão de crédito" && "md:col-span-2 md:col-start-2")}>
             <MyCheckbox
               className=""
               label="Salvar os dados para a próxima compra"
@@ -273,6 +271,8 @@ export default function FinalizarCompra() {
             </MyButton>
           </div>
         )}
+        </div>
+
       </div>
     </section>
   );

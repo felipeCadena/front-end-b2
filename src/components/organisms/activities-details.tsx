@@ -59,14 +59,15 @@ export default function ActivitiesDetails({
           <div
             className={cn(
               "relative z-10 overflow-hidden w-[6.625rem] h-[6.625rem] hover:cursor-pointer rounded-md flex-shrink-0",
+              withDate ? "w-[7.5rem] h-[7.5rem]" : "w-[6.625rem] h-[6.625rem]"
             )}
           >
             <Image
-              alt="sample_file"
+              alt="imagem atividade"
               src={activity.image ?? ""}
               width={250}
               height={300}
-              className="w-[6.625rem] h-[6.625rem] object-cover"
+              className={cn("object-cover", withDate ? "w-[7.5rem] h-[7.5rem]" : "w-[6.625rem] h-[6.625rem]")}
             />
           </div>
           <div className="relative">
@@ -87,7 +88,7 @@ export default function ActivitiesDetails({
             <MyTypography variant="label" className="max-sm:w-2/3">
               {activity.description.slice(0, 30).concat("...")}
             </MyTypography>
-            <MyIcon name="shared-muted" className="absolute z-50 right-4 top-1/2 cursor-pointer" />
+            <MyIcon name="shared-muted" className={cn("absolute z-50 right-0 top-1/2 cursor-pointer", !withDate && "hidden")} />
           </div>
         </div>
       ))}
