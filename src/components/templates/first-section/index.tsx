@@ -26,9 +26,9 @@ export default function FirstSection() {
         <MyTypography
           variant="heading2"
           weight="bold"
-          className={`md:font-my-font md:text-end md:absolute md:top-8 md:right-16 md:font-extrabold md:uppercase md:w-[23rem] md:text-[3rem] md:text-white`}
+          className={`md:font-my-font md:text-end md:absolute md:top-8 md:right-16 md:font-extrabold md:uppercase md:w-[23rem] md:text-[3rem] md:text-white md:drop-shadow-sm`}
         >
-          <span style={{ textShadow: "2px 2px 4px rgba(0, 0, 0, 0.6)" }}>Qual será sua próxima aventura?</span>
+          Qual será sua próxima aventura?
         </MyTypography>
         <MyButton
           variant="default"

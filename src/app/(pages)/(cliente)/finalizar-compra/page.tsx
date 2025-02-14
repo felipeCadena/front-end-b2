@@ -150,7 +150,7 @@ export default function FinalizarCompra() {
               : "md:grid-cols-2 md:gap-8"
           )}
         >
-          <div className={cn("flex flex-col space-y-8")}>
+          <div className={cn("flex flex-col space-y-8 mt-4")}>
             {payments.map((payment) => (
               <MyButton
                 key={payment.name}
@@ -179,14 +179,14 @@ export default function FinalizarCompra() {
                 <MyTextInput
                   label="Nome impresso no cartão"
                   placeholder="Seu nome"
-                  className="mt-1"
+                  className="mt-2"
                   noHintText
                 />
 
                 <MyTextInput
                   label="Número do cartão"
                   placeholder="XXXX XXXX XXXX XXXX"
-                  className="mt-1"
+                  className="mt-2"
                   noHintText
                   rightIcon={<MyIcon name="master" className="-ml-4 mt-5" />}
                 />
@@ -195,7 +195,7 @@ export default function FinalizarCompra() {
                 value={value}
                 onValueChange={setValue}
                 >
-                  <SelectTrigger>
+                  <SelectTrigger className="py-6">
                     <SelectValue placeholder="Selecione o número de parcelas" />
                   </SelectTrigger>
                   <SelectContent>
@@ -222,40 +222,40 @@ export default function FinalizarCompra() {
                 </div>
               </div>
             </div>
-          ) : (
+          ) : selectedPayment && (
             <div className="space-y-4 max-sm:my-10 md:w-full">
               <MyTextInput
                 label="Nome Completo"
                 placeholder="Seu nome"
-                className="mt-1"
+                className="mt-2"
                 noHintText
               />
 
               <MyTextInput
                 label="E-mail"
                 placeholder="b2adventure@gmail.com"
-                className="mt-1"
+                className="mt-2"
                 noHintText
               />
               <div className="flex max-sm:flex-col gap-4 md:mt-4">
                 <MyTextInput
                   label="Telefone"
                   placeholder="(XX) XXXXX-XXXX"
-                  className="mt-1"
+                  className="mt-2"
                   noHintText
                 />
 
                 <MyTextInput
                   label="CPF"
                   placeholder="XXX.XXX.XXX-XX"
-                  className="mt-1"
+                  className="mt-2"
                   noHintText
                 />
               </div>
             </div>
           )}
         {selectedPayment && (
-          <div className={cn("md:mt-4 col-start-2", selectedPayment === "Cartão de crédito" && "md:col-span-2 md:col-start-2")}>
+          <div className={cn("mt-6 md:mt-4 col-start-2", selectedPayment === "Cartão de crédito" && "md:col-span-2 md:col-start-2")}>
             <MyCheckbox
               className=""
               label="Salvar os dados para a próxima compra"

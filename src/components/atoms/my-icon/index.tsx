@@ -87,6 +87,7 @@ import XRed from "./elements/x-red";
 import Add from "./elements/add";
 import SharedMuted from "./elements/shared-muted";
 import Camera from "./elements/camera";
+import WhiteEye from "./elements/eye-white";
 
 export type IconsMapTypes = keyof typeof IconsMap;
 
@@ -180,10 +181,11 @@ const IconsMap = {
   download: <Download />,
   "chevron-down-green": <ChevronDownGreen />,
   "download-green": <DownloadGreen />,
-  "x-red": <XRed />,
+  "x-red": <XRed />, 
   add: <Add />,
   "shared-muted": <SharedMuted />,
-  camera: <Camera />
+  camera: <Camera />,
+  "white-eye": <WhiteEye />,
 };
 
 

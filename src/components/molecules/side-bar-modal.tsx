@@ -22,7 +22,7 @@ export default function SideBarModal({children, sideBar}: {children: React.React
         {sideBar.filter((item) => item.menu).map((item) => (
            <Link
            key={item.label}
-           href={`${item.link}${item.tab ? `?tab=${item.tab}` : ""}`}
+           href={`${item.link == "/galeria-de-fotos" ? "/informacoes" : item.link}${item.tab ? `?tab=${item.tab}` : ""}`}
            passHref
          >
            <DropdownMenuItem

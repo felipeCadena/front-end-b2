@@ -8,6 +8,9 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      dropShadow: {
+        sm: '2px 2px 4px rgba(0, 0, 0, 0.6)',
+      },
       borderRadius: {
         "4xl": "1.75rem",
       },

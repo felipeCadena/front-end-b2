@@ -447,7 +447,7 @@ export const activities = [
     title: "Atividade 1",
     localizacao: "Marina da Glória - RJ",
     description:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",
+      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas. Lorem ipsum dolor sit amet consectetur. Lorem ipsum dolor sit amet consectetu. Lorem ipsum dolor sit amet consectetur",
     favorite: true,
     parceiro: {
       nome: "Thais Oliveira",
@@ -468,7 +468,7 @@ export const activities = [
     title: "Atividade 2",
     localizacao: "Cosme Velho - RJ",
     description:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",
+      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas. Lorem ipsum dolor sit amet consectetur",
 
     parceiro: {
       nome: "Bruno Moraes",
@@ -488,7 +488,7 @@ export const activities = [
     title: "Atividade 3",
     localizacao: "São Conrado - RJ",
     description:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",
+      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas. Lorem ipsum dolor sit amet consectetur",
     favorite: true,
     parceiro: {
       nome: "Francisca Nogueira",
@@ -508,7 +508,7 @@ export const activities = [
     title: "Atividade 4",
     localizacao: "Ilhas Tijuca - RJ",
     description:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",
+      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas. Lorem ipsum dolor sit amet consectetur",
     parceiro: {
       nome: "Eduarda Enzo",
       avatar: "/images/avatar1.png",
@@ -529,7 +529,7 @@ export const activities = [
     title: "Atividade 5",
     localizacao: "Ilhas Tijuca - RJ",
     description:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",
+      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas. Lorem ipsum dolor sit amet consectetur",
     parceiro: {
       nome: "Sofia Moraes",
       avatar: "/images/avatar1.png",
@@ -550,7 +550,7 @@ export const activities = [
     title: "Atividade 6",
     localizacao: "São Conrado - RJ",
     description:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",
+      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas. Lorem ipsum dolor sit amet consectetur",
     favorite: true,
     parceiro: {
       nome: "Jorge Moraes",

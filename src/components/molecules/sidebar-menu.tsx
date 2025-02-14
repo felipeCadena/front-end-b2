@@ -41,7 +41,7 @@ export default function SidebarMenu({
         type="single"
         className="absolute flex w-full flex-col items-start gap-4"
       >
-        {sideBarActive.map((item) => {
+        {sideBarActive.filter((item) => !item.mobile).map((item) => {
           return (
             <React.Fragment key={item.label}>
               <ToggleGroupItem

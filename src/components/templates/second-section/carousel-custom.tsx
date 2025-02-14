@@ -77,14 +77,12 @@ export default function CarouselCustom({ activities }: any) {
           <MyTypography variant="subtitle1" weight="bold">
             {activity.title}
           </MyTypography>
-          <div className="flex gap-2 items-end">
-            <MyTypography variant="body-big">
-              {activity.description.slice(0, 60).concat("...")}
-            </MyTypography>
-            <MyTypography variant="body-big" weight="bold" lightness={500} className="text-nowrap">
+            <MyTypography variant="body-big" className="">
+              {activity.description.slice(0, 105).concat("...")}{" "}
+            <MyTypography variant="body-big" weight="bold" lightness={500} className="inline cursor-pointer">
               Saiba Mais
             </MyTypography>
-          </div>
+            </MyTypography>
         </div>
       ))}
     </div>

@@ -79,7 +79,9 @@ export const sideBarClient: any[] = [
     label: "Galeria de Fotos",
     link: "/galeria-de-fotos",
     icon: "camera",
+    tab: "galeria",
     web: false,
+    menu: true,
   },
   {
     label: "Carrinho de Compras",

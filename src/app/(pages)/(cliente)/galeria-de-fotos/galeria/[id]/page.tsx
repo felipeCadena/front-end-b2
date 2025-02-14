@@ -24,7 +24,7 @@ export default function Galeria() {
           onClick={() => router.back()}
         />
         <MyTypography variant="heading3" weight="bold" className="">
-          Albúm da viagem
+          Albúm de fotos
         </MyTypography>
       </div>
 
@@ -70,7 +70,7 @@ export default function Galeria() {
               height={150}
               className="rounded-lg object-cover"
             />
-            <MyIcon name="download-green" className="absolute top-2 right-2 bg-white p-2 rounded-lg cursor-pointer" />
+            <MyIcon name="download-green" className="absolute top-2 right-3 bg-white p-2 rounded-lg cursor-pointer" />
             
           </div>
         ))}

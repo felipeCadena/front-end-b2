@@ -14,11 +14,11 @@ export default function FaleConosco() {
   const [value, setValue] = React.useState<string>("elogio");
 
   return (
-    <section className="my-6 px-4 space-y-4">
+    <section className="my-6 px-4 space-y-4 md:max-w-2xl">
       <div className="relative flex gap-4 items-center">
         <MyIcon
           name="seta"
-          className="rotate-180"
+          className="rotate-180 cursor-pointer"
           onClick={() => router.back()}
         />
         <MyTypography variant="heading3" weight="bold" className="">
@@ -35,7 +35,7 @@ export default function FaleConosco() {
         </MyTypography>
       </div>
 
-      <div>
+      <div className="md:max-w-2xl">
         <MyTextInput
           label="Nome Completo"
           placeholder="Digite seu nome"
@@ -67,7 +67,7 @@ export default function FaleConosco() {
           variant="default"
           size="lg"
           borderRadius="squared"
-          className="w-full"
+          className="px-16"
         >
           Enviar
         </MyButton>
