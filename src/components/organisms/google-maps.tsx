@@ -2,70 +2,34 @@
 
 import React from "react";
 import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
-import Script from "next/script";
-import MyIcon from "../atoms/my-icon";
+import MyTypography from "../atoms/my-typography";
 
-export default function GoogleMaps({ locations }: any) {
+export default function GoogleMaps({ location }: { location: { lat: number; lng: number } }) {
   const mapContainerStyle = {
     width: "100%",
-    height: "400px",
+    height: "250px",
   };
-
-  const mapCenter = { lat: -22.9519, lng: -43.2105 };
-
-  const customIcon = {
-    url: '/custom-pin.png', // Path to your custom pin image
-    scaledSize: { width: 40, height: 40 }, // Resize the image to fit the pin size
-  };
-
-  const svgString = `
-<svg xmlns="http://www.w3.org/2000/svg" width="63" height="64" viewBox="0 0 63 64" fill="none">
-  <g filter="url(#filter0_d_445_788)">
-    <circle cx="31.5" cy="26.25" r="15" fill="white" />
-  </g>
-  <g clip-path="url(#clip0_445_788)">
-    <path d="M30.1587 21.4375C30.1587 21.1532 30.2397 20.8753 30.3913 20.6389C30.5429 20.4025 30.7584 20.2182 31.0105 20.1094C31.2626 20.0006 31.5401 19.9722 31.8077 20.0276C32.0754 20.0831 32.3212 20.22 32.5142 20.421C32.7072 20.6221 32.8386 20.8782 32.8918 21.1571C32.9451 21.4359 32.9177 21.7249 32.8133 21.9876C32.7089 22.2503 32.532 22.4748 32.3051 22.6327C32.0782 22.7907 31.8114 22.875 31.5385 22.875C31.1726 22.875 30.8216 22.7235 30.5629 22.454C30.3041 22.1844 30.1587 21.8187 30.1587 21.4375ZM26.0193 21.4375C26.0193 19.9125 26.6008 18.45 27.6359 17.3716C28.6709 16.2933 30.0747 15.6875 31.5385 15.6875C33.0023 15.6875 34.4062 16.2933 35.4412 17.3716C36.4763 18.45 37.0578 19.9125 37.0578 21.4375C37.0578 26.8236 32.0922 29.8415 31.8835 29.9682C31.7792 30.0303 31.6612 30.0629 31.5411 30.0629C31.421 30.0629 31.303 30.0303 31.1988 29.9682C30.9849 29.8415 26.0193 26.8281 26.0193 21.4375ZM27.3991 21.4375C27.3991 25.2289 30.4899 27.7454 31.5385 28.4902C32.5863 27.7463 35.678 25.2289 35.678 21.4375C35.678 20.2938 35.2418 19.1969 34.4656 18.3881C33.6893 17.5794 32.6364 17.125 31.5385 17.125C30.4407 17.125 29.3878 17.5794 28.6115 18.3881C27.8352 19.1969 27.3991 20.2938 27.3991 21.4375ZM37.9866 27.5136C37.8168 27.4552 37.6318 27.4677 37.4707 27.5486C37.3096 27.6294 37.1849 27.7723 37.123 27.9471C37.061 28.1219 37.0666 28.3149 37.1386 28.4854C37.2106 28.6559 37.3433 28.7907 37.5088 28.8613C38.9326 29.4102 39.8174 30.1452 39.8174 30.7812C39.8174 31.9816 36.668 33.6562 31.5385 33.6562C26.4091 33.6562 23.2597 31.9816 23.2597 30.7812C23.2597 30.1452 24.1445 29.4102 25.5683 28.8622C25.7338 28.7916 25.8665 28.6568 25.9385 28.4863C26.0105 28.3158 26.0161 28.1228 25.9541 27.948C25.8922 27.7732 25.7675 27.6303 25.6064 27.5495C25.4453 27.4686 25.2603 27.4561 25.0905 27.5145C23.0199 28.3096 21.8799 29.4704 21.8799 30.7812C21.8799 33.5826 26.8567 35.0938 31.5385 35.0938C36.2204 35.0938 41.1972 33.5826 41.1972 30.7812C41.1972 29.4704 40.0571 28.3096 37.9866 27.5136Z" fill="#8DC63F" />
-  </g>
-  <defs>
-    <filter id="filter0_d_445_788" x="0.162462" y="0.358307" width="62.6751" height="62.6751" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
-      <feFlood floodOpacity="0" result="BackgroundImageFix" />
-      <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
-      <feOffset dy="5.44585" />
-      <feGaussianBlur stdDeviation="8.16877" />
-      <feComposite in2="hardAlpha" operator="out" />
-      <feColorMatrix type="matrix" values="0 0 0 0 0.85098 0 0 0 0 0.85098 0 0 0 0 0.85098 0 0 0 1 0" />
-      <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_445_788" />
-      <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_445_788" result="shape" />
-    </filter>
-    <clipPath id="clip0_445_788">
-      <rect width="21" height="23" fill="white" transform="translate(20.5 14.25)" />
-    </clipPath>
-  </defs>
-</svg>`;
-const svgUrl = `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svgString)}`;
-
-
 
   return (
-    <LoadScript googleMapsApiKey={`${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API}`} >
-      <GoogleMap
-        mapContainerStyle={mapContainerStyle}
-        center={mapCenter}
-        zoom={12}
-        
+    <LoadScript googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API!}>
+      <div className="rounded-xl overflow-hidden">
+      <MyTypography variant="subtitle3" weight="bold" className="my-2">
+        Mapa da Localização 
+      </MyTypography>
+      <GoogleMap 
+      mapContainerStyle={mapContainerStyle} 
+      center={location} 
+      zoom={17}
+      options={{
+        // mapTypeControl: false, // Desativa a opção "Mapa / Satélite"
+        // fullscreenControl: false, // (Opcional) Remove o botão de tela cheia
+        // streetViewControl: false, // (Opcional) Remove o boneco do Street View
+        disableDefaultUI: true, // (Opcional) Remove todos os controles padrão
+      }}
       >
-        {locations.map((location: any, index: number) => (
-          <Marker
-            key={index}
-            position={location.coords}
-        
-            icon={{
-                url: svgUrl,
-                scaledSize: new google.maps.Size(63, 63),
-              }}
-          />
-        ))}
+        {<Marker position={location} />}
       </GoogleMap>
+        </div>
     </LoadScript>
   );
 }

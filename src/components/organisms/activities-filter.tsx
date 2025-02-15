@@ -27,10 +27,10 @@ export default function ActivitiesFilter({ withText = true }) {
   return (
     <section
       className={cn(
-        "flex flex-col justify-around gap-2 mt-12 mx-auto md:my-20"
-      )}
+        "flex flex-col justify-around gap-2 mx-auto"
+      , withText ? "mt-12 md:my-20" : "my-6")}
     >
-      {pathname == "/" ? (
+      {withText && pathname == "/" ? (
         <div className="md:hidden">
           <MyTypography
             variant="heading2"
@@ -45,7 +45,7 @@ export default function ActivitiesFilter({ withText = true }) {
             Escolha aqui seu tipo favorito de atividade
           </MyTypography>
         </div>
-      ): (
+      ): withText && (
     <div className="md:hidden">
         <MyTypography variant="heading2" weight="semibold" className="">
           Qual sua próxima aventura?
@@ -53,13 +53,13 @@ export default function ActivitiesFilter({ withText = true }) {
       </div>
       )}
 
-      <MyTypography
+      {withText && <MyTypography
         variant="subtitle3"
         weight="semibold"
         className="max-sm:hidden mb-2"
       >
         Escolha seu tipo de aventura
-      </MyTypography>
+      </MyTypography>}
       <div className="flex justify-around gap-4">
         {activities.map((item, index) => (
           <MyButton

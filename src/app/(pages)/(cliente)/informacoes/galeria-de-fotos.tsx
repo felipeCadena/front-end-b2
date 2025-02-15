@@ -1,6 +1,6 @@
 "use client";
 
-import { activities } from "@/common/constants/mock";
+import { activities, album } from "@/common/constants/mock";
 import MyBadge from "@/components/atoms/my-badge";
 import MyButton from "@/components/atoms/my-button";
 import MyIcon from "@/components/atoms/my-icon";
@@ -13,23 +13,6 @@ import React from "react";
 export default function GaleriaDeFotos() {
   const [open, setOpen] = React.useState(false);
   const [selected, setSelected] = React.useState("");
-
-  const album = [
-    "/images/atividades/ar/ar-1.jpeg",
-    "/images/atividades/ar/ar-2.jpeg",
-    "/images/atividades/ar/ar-3.jpeg",
-    "/images/atividades/ar/ar-4.jpeg",
-    "/images/atividades/terra/terra-1.jpeg",
-    "/images/atividades/terra/terra-2.jpeg",
-    "/images/atividades/terra/terra-3.jpeg",
-    "/images/atividades/mar/mar-1.jpeg",
-    "/images/atividades/mar/mar-2.jpeg",
-    "/images/atividades/mar/mar-3.jpeg",
-    "/images/atividades/mar/mar-4.jpeg",
-    "/images/atividades/mar/mar-5.jpeg",
-    "/images/atividades/mar/mar-6.jpeg",
-    "/images/atividades/mar/mar-7.jpeg",
-  ];
 
   return (
     <section className="space-y-12 mb-10">

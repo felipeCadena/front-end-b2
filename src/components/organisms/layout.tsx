@@ -17,7 +17,8 @@ const Layout = ({ children }: { children: JSX.Element | ReactNode }) => {
       pathname !== PATHS["login-parceiro"] &&
       pathname !== PATHS["esqueci-minha-senha"] &&
       pathname !== PATHS["cadastro-parceiro"] &&
-      pathname !== PATHS["sobre-a-empresa"]
+      pathname !== PATHS["sobre-a-empresa"] &&
+      pathname !== PATHS["cadastro-atividade"]
     );
   };
 

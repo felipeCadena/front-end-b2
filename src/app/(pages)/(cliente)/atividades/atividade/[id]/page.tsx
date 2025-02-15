@@ -5,7 +5,7 @@ import MyTypography from "@/components/atoms/my-typography";
 import CarouselImages from "@/components/organisms/carousel-images";
 import { useParams, useRouter } from "next/navigation";
 import React from "react";
-import { activities } from "@/common/constants/mock";
+import { activities, album } from "@/common/constants/mock";
 import MyBadge from "@/components/atoms/my-badge";
 import StarRating from "@/components/molecules/my-stars";
 import Image from "next/image";
@@ -18,14 +18,6 @@ export default function Atividade() {
   const [favorite, setFavorite] = React.useState(false);
 
   const activity = activities.find((activity) => activity.id === id);
-
-  const album = [
-    "/images/atividades/mar/mar-1.jpeg",
-    "/images/atividades/mar/mar-2.jpeg",
-    "/images/atividades/mar/mar-3.jpeg",
-    "/images/atividades/mar/mar-4.jpeg",
-    "/images/atividades/mar/mar-5.jpeg",
-  ];
 
   return (
     <section className="my-10">
@@ -73,7 +65,7 @@ export default function Atividade() {
           </div>
         </div>
         <div className="max-sm:hidden grid grid-cols-4 grid-rows-2 gap-4">
-          {album.map((image, index) => (
+          {album.slice(0, 5).map((image, index) => (
             <Image
               key={index}
               src={image}

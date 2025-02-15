@@ -88,6 +88,7 @@ import Add from "./elements/add";
 import SharedMuted from "./elements/shared-muted";
 import Camera from "./elements/camera";
 import WhiteEye from "./elements/eye-white";
+import Check from "./elements/check";
 
 export type IconsMapTypes = keyof typeof IconsMap;
 
@@ -186,6 +187,7 @@ const IconsMap = {
   "shared-muted": <SharedMuted />,
   camera: <Camera />,
   "white-eye": <WhiteEye />,
+  check: <Check />
 };
 
 

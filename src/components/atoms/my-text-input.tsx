@@ -4,6 +4,7 @@ import MyTypography from "./my-typography";
 
 export interface MyTextInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: React.ReactNode;
+  classNameLabel?: string;
   hint?: string;
   rightIcon?: React.ReactNode;
   leftIcon?: React.ReactNode;
@@ -18,6 +19,7 @@ const MyTextInput = React.forwardRef<HTMLInputElement, MyTextInputProps>(
     {
       className,
       containerClassName,
+      classNameLabel,
       type,
       label,
       hint,
@@ -42,7 +44,7 @@ const MyTextInput = React.forwardRef<HTMLInputElement, MyTextInputProps>(
           as='label'
           variant='label'
           weight="bold"
-          className="text-[#4E4B59]"
+          className={cn("text-[#4E4B59]", classNameLabel)}
         >
           {label}
         </MyTypography>

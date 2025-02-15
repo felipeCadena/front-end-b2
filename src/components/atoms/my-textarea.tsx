@@ -6,15 +6,16 @@ export interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextArea
   stateColor?: "success" | "error" | "warning";
   hint?: string;
   label?: string;
+  classNameLabel?: string;
 }
 
 const MyTextarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
-  ({ className, label, stateColor, hint, ...props }, ref) => {
+  ({ className, label, stateColor, hint, classNameLabel, ...props }, ref) => {
     return (
       <div className='flex w-full flex-col gap-2'>
         <MyTypography
           as='label'
-          className='text-sm font-semibold text-neutral-800'
+          className={cn('text-sm font-semibold text-neutral-800', classNameLabel)}
         >
           {label}
         </MyTypography>

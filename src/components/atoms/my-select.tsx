@@ -8,21 +8,23 @@ import MyIcon from './my-icon';
 
 type MySelectProps = {
   label?: string;
+  className?: string;
 } & React.ComponentPropsWithoutRef<typeof SelectPrimitive.Root>;
 
 const SelectGroup = SelectPrimitive.Group;
 
 const SelectValue = SelectPrimitive.Value;
 
-const MySelect = ({ label, ...props }: MySelectProps) => {
+const MySelect = ({ label, className, ...props }: MySelectProps) => {
   return (
     <div className='relative flex w-full flex-col gap-1'>
       {label && (
         <MyTypography
           as='label'
           variant='label'
+          weight="bold"
           lightness={800}
-          className=''
+          className={className}
         >
           {label}
         </MyTypography>

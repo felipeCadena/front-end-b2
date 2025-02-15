@@ -19,6 +19,8 @@ const ROOTS_CFINALIZAR_COMPRA = "/finalizar-compra";
 const ROOTS_INFOS = "/informacoes";
 const ROOTS_TERMOS = "/termos-de-uso";
 const ROOTS_CADASTRO_PARCEIRO = "/cadastro-parceiro";
+const ROOTS_CADASTRO_ATIVIDADE = "/cadastro-atividade";
+const ROOTS_INFORMACOES_ATIVIDADES = "/informacoes-atividade";
 const ROOTS_SOBRE_A_EMPRESA = "/sobre-a-empresa";
 
 // ==========================================
@@ -50,6 +52,8 @@ const PATHS = {
   termos: ROOTS_TERMOS,
   "sobre-a-empresa": ROOTS_SOBRE_A_EMPRESA,
   "cadastro-parceiro": ROOTS_CADASTRO_PARCEIRO,
+  "cadastro-atividade": ROOTS_CADASTRO_ATIVIDADE,
+  "informacoes-atividades": ROOTS_INFORMACOES_ATIVIDADES,
   visualizarAtividade: VISUALIZAR_ATIVIDADE,
   visualizarNotificacao: VISUALIZAR_NOTIFICACAO,
   atividadeRealizada: ATIVIDADE_REALIZADA,

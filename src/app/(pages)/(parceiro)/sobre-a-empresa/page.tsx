@@ -1,12 +1,18 @@
+"use client"
+
 import MyButton from "@/components/atoms/my-button";
 import MyIcon from "@/components/atoms/my-icon";
 import MyLogo from "@/components/atoms/my-logo";
 import { MySelect, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/atoms/my-select";
 import MyTextInput from "@/components/atoms/my-text-input";
 import MyTypography from "@/components/atoms/my-typography";
+import PATHS from "@/utils/paths";
+import { useRouter } from "next/navigation";
 import React from "react";
 
 export default function SobreAEmpresa() {
+  const router = useRouter();
+
   return (
     <section className="m-6 space-y-4">
       <div className="relative">
@@ -65,7 +71,7 @@ export default function SobreAEmpresa() {
             //   onValueChange={}
             label="Data de Pagamento"
           >
-            <SelectTrigger className="">
+            <SelectTrigger className="py-6 mt-1 mb-4">
               <SelectValue placeholder="Selecione" />
             </SelectTrigger>
             <SelectContent className="">
@@ -80,7 +86,7 @@ export default function SobreAEmpresa() {
           variant="default"
           borderRadius="squared"
           size="lg"
-          // onClick={() => router.push(PATHS["sobre-a-empresa"])}
+          onClick={() => router.push(PATHS["cadastro-atividade"])}
         >
           Cadastrar Atividades
         </MyButton>

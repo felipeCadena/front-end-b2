@@ -10,7 +10,7 @@ import { MyCalendar } from "./my-calendar"
 import {ptBR} from "date-fns/locale/pt-BR";
 import MyTypography from "../atoms/my-typography"
 
-export function MyDatePicker() {
+export function MyDatePicker({withlabel}: {withlabel?: string}) {
   const [date, setDate] = React.useState<Date>()
   const [open, setOpen] = React.useState(false)
 
@@ -24,10 +24,15 @@ export function MyDatePicker() {
             "w-full justify-start text-sm items-center gap-2 py-6 border-gray-300 md:bg-white",
           )}
         >
-          <MyIcon name="date" />
-          {date 
-          ? format(date, "dd 'de' MMMM 'de' yyyy", { locale: ptBR }) 
-          : <MyTypography variant="body" weight="regular" className="text-sm">Data da Atividade</MyTypography>}
+          
+          {!withlabel && <MyIcon name="date" />}
+          {withlabel ?(
+            <MyTypography variant="body" weight="regular" lightness={400} className="text-sm ml-2">{withlabel}</MyTypography>
+          ) : (
+            date 
+            ? format(date, "dd 'de' MMMM 'de' yyyy", { locale: ptBR }) 
+            : <MyTypography variant="body" weight="regular" className="text-sm">Data da Atividade</MyTypography>
+          )}
         </MyButton>
       </PopoverTrigger>
       <PopoverContent className="w-full bg-white flex flex-col items-center" align="center">
