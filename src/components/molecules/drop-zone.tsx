@@ -34,7 +34,7 @@ export const Dropzone = React.forwardRef<HTMLInputElement, DropzoneProps>(
     return (
       <div
         className={cn(
-          "w-full rounded-lg border border-neutral-500 p-4",
+          "w-full rounded-lg border border-dashed border-neutral-400 p-4",
           {
             "rounded-md border-dashed border-primary-600": isDragging,
           },
@@ -48,6 +48,7 @@ export const Dropzone = React.forwardRef<HTMLInputElement, DropzoneProps>(
         <MyTextInput
           ref={ref}
           type='file'
+          noHintText
           className='hidden'
           onChange={handleChange}
           {...props}

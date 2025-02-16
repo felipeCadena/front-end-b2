@@ -35,7 +35,9 @@ const MyTextInput = React.forwardRef<HTMLInputElement, MyTextInputProps>(
     return (
       <div className={cn("relative flex w-full flex-col", containerClassName)}>
         {leftIcon && (
-          <div className='absolute left-2 top-1/2 flex h-5 w-5 -translate-y-1/2 transform items-center justify-center text-neutral-500'>
+          <div 
+          className='absolute left-2 top-1/2 flex h-5 w-5 -translate-y-1/2 transform items-center justify-center text-neutral-500'
+          >
             {leftIcon}
           </div>
         )}

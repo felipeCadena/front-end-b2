@@ -1,3 +1,6 @@
+import { days, daysOfWeek, hours } from "@/common/constants/constants";
+import MyButton from "@/components/atoms/my-button";
+import MyIcon from "@/components/atoms/my-icon";
 import {
   MySelect,
   SelectContent,
@@ -6,31 +9,23 @@ import {
   SelectValue,
 } from "@/components/atoms/my-select";
 import MyTypography from "@/components/atoms/my-typography";
+import MultiSelect from "@/components/molecules/combobox";
 import { MyDatePicker } from "@/components/molecules/my-date-picker";
-import React from "react";
+import React, { useState } from "react";
 
 export default function Step2() {
-  const days = [
-    "3 dias",
-    "5 dias",
-    "7 dias",
-    "10 dias",
-    "15 dias",
-    "20 dias",
-    "30 dias",
-  ];
+  const [selections, setSelections] = useState([{ id: Date.now() }]);
 
-  const daysBeforeCancel = [
-    "3 dias",
-    "5 dias",
-    "7 dias",
-    "10 dias",
-    "15 dias",
-    "20 dias",
-    "30 dias",
-  ];
+  const addSelection = () => {
+    setSelections([...selections, { id: Date.now() }]);
+  };
+
+  const removeSelection = (id: number) => {
+    setSelections(selections.filter((item) => item.id !== id));
+  };
+
   return (
-    <section className="space-y-6">
+    <section className="w-full space-y-6">
       <MySelect
         // value={value}
         // onValueChange={setValue}
@@ -59,7 +54,7 @@ export default function Step2() {
           <SelectValue placeholder="Selecione o número de dias" />
         </SelectTrigger>
         <SelectContent>
-          {daysBeforeCancel.map((day) => (
+          {days.map((day) => (
             <SelectItem key={day} value={day}>
               {day}
             </SelectItem>
@@ -69,9 +64,31 @@ export default function Step2() {
 
       <div>
         <MyTypography variant="subtitle3" weight="bold" className="mb-3">
-            Repetir a atividade 
+          Repetir a atividade
         </MyTypography>
-      <MyDatePicker withlabel="20 - 30 de todo mês" />
+
+        <div className="space-y-4">
+        {selections.map((item, index) => (
+        <div key={item.id} className="border px-6 first:py-4 py-8 rounded-lg space-y-4 relative">
+          <MultiSelect placeholder="Selecione dias da semana" options={daysOfWeek} />
+          <MyDatePicker withlabel="Selecione dias específicos" />
+          <MultiSelect placeholder="Selecione os horários" options={hours} />
+
+          {index > 0 && (
+            <MyIcon
+            name="subtracao"
+            title="Remover"
+              className="absolute -top-3 right-1"
+              onClick={() => removeSelection(item.id)}
+            />
+          )}
+        </div>
+      ))}
+
+      <MyButton variant="secondary" borderRadius="squared" size="lg" className="w-full" onClick={addSelection} leftIcon={<MyIcon name="soma" />}>
+        Adicionar outro conjunto
+      </MyButton>
+        </div>
       </div>
     </section>
   );

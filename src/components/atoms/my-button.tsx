@@ -21,10 +21,11 @@ export const buttonVariants = cva(
         "link-muted":
           "underline-offset-4 underline text-neutral-800 hover:text-neutral-900 disabled:text-neutral-200",
         text: "text-primary-600 text-[0.875rem] font-semibold hover:text-primary-600 disabled:text-gray-200",
-        "text-muted": "text-neutral-800 hover:text-neutral-900 disabled:text-neutral-200",
+        "text-muted": "text-neutral-400 text-[0.9rem]",
         date: "border bg-traparent",
         black: "bg-black text-white text-[0.85rem] md:text-[1rem] font-semibold",
         payment: "border border-[#1E1E1E] text-[#1E1E1E] opacity-30 text-[0.875rem] focus:border focus:border-primary-600 focus:bg-primary-900 focus:opacity-100",
+        "black-border": "border border-[#1E1E1E] text-[#1E1E1E] text-[0.875rem]",
         message: "bg-secondary-600 text-white font-semibold text-sm"
       },
       size: {
@@ -45,7 +46,6 @@ export const buttonVariants = cva(
     },
   },
 );
-
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
   VariantProps<typeof buttonVariants> {

@@ -4,6 +4,7 @@ import "./globals.css";
 import { Suspense } from "react";
 import { ToastContainer } from "react-toastify";
 import Layout from "@/components/organisms/layout";
+import "react-toastify/dist/ReactToastify.css";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -29,6 +30,7 @@ export default function RootLayout({
       <body className={`${inter.className} antialiased`}>
         <Suspense>
             <Layout>{children}</Layout>
+        </Suspense>
             <ToastContainer
               theme="colored"
               position="top-right"
@@ -37,7 +39,6 @@ export default function RootLayout({
               hideProgressBar
               style={{ width: "420px" }}
             />
-        </Suspense>
       </body>
     </html>
   );

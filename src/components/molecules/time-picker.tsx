@@ -7,6 +7,7 @@ import { cn } from "@/utils/cn";
 import MyIcon from "../atoms/my-icon";
 import MyTypography from "../atoms/my-typography";
 import { MyScrollArea } from "../atoms/my-scroll-area";
+import Time from "../atoms/my-icon/elements/time";
 
 export default function TimePickerModal() {
   const [open, setOpen] = useState(false);
@@ -39,11 +40,11 @@ export default function TimePickerModal() {
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <MyButton variant="date" borderRadius="squared" className="w-full justify-start text-sm items-center gap-2 py-6 border-gray-300 md:bg-white">
-          <MyIcon name="time" />
+          <Time fill="#000"/>
           {visible && selectedHour && selectedMinute ? (
             selectedHour + ":" + selectedMinute
           ) : (
-            <MyTypography variant="body" weight="regular" className="text-sm">
+            <MyTypography variant="body" weight="regular" lightness={500} className="text-sm">
               Horário da Atividade
             </MyTypography>
           )}

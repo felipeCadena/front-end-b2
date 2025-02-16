@@ -89,6 +89,14 @@ import SharedMuted from "./elements/shared-muted";
 import Camera from "./elements/camera";
 import WhiteEye from "./elements/eye-white";
 import Check from "./elements/check";
+import Upload from "./elements/upload";
+import NoBaby from "./elements/no-baby";
+import Baby from "./elements/baby";
+import Group from "./elements/group";
+import Person from "./elements/person";
+import Dollar from "./elements/dollar";
+import SmallGroup from "./elements/small-group";
+import Success from "./elements/success";
 
 export type IconsMapTypes = keyof typeof IconsMap;
 
@@ -187,7 +195,15 @@ const IconsMap = {
   "shared-muted": <SharedMuted />,
   camera: <Camera />,
   "white-eye": <WhiteEye />,
-  check: <Check />
+  check: <Check />,
+  upload: <Upload />,
+  "no-baby": <NoBaby />,
+  baby: <Baby />,
+  person: <Person />,
+  group: <Group />,
+  "small-group": <SmallGroup />,
+  dollar: <Dollar />,
+  success: <Success />,
 };
 
 

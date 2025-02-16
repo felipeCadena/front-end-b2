@@ -11,7 +11,7 @@ import {ptBR} from "date-fns/locale/pt-BR";
 import MyTypography from "../atoms/my-typography"
 
 export function MyDatePicker({withlabel}: {withlabel?: string}) {
-  const [date, setDate] = React.useState<Date>()
+  const [date, setDate] = React.useState<Date[]>()
   const [open, setOpen] = React.useState(false)
 
   return (
@@ -26,18 +26,20 @@ export function MyDatePicker({withlabel}: {withlabel?: string}) {
         >
           
           {!withlabel && <MyIcon name="date" />}
-          {withlabel ?(
-            <MyTypography variant="body" weight="regular" lightness={400} className="text-sm ml-2">{withlabel}</MyTypography>
+          {withlabel ? (
+            date 
+            ? <span className="text-neutral-400">{date.map((d) => format(d, "dd/MM", { locale: ptBR })).join(", ")}</span> 
+            : <MyTypography variant="body" weight="regular" lightness={400} className="text-sm ml-2">{withlabel}</MyTypography>
           ) : (
             date 
-            ? format(date, "dd 'de' MMMM 'de' yyyy", { locale: ptBR }) 
+            ? <span className="text-neutral-400">{date.map((d) => format(d, "dd/MM", { locale: ptBR })).join(", ")}</span>  
             : <MyTypography variant="body" weight="regular" className="text-sm">Data da Atividade</MyTypography>
           )}
         </MyButton>
       </PopoverTrigger>
       <PopoverContent className="w-full bg-white flex flex-col items-center" align="center">
         <MyCalendar
-          mode="single"
+          mode="multiple"
           selected={date}
           onSelect={setDate}
           locale={ptBR} 
