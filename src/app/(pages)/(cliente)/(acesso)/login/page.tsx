@@ -18,6 +18,10 @@ export default function Login() {
     if (email === "cliente@gmail.com") {
       router.push(PATHS.atividades);
     }
+
+    if (email === "parceiro@gmail.com") {
+      router.push(PATHS["atividades-cadastradas"]);
+    }
   };
 
   return (

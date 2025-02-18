@@ -17,7 +17,7 @@ interface ModalAlertProps {
 export default function ModalAlert({ open, onClose, title, descrition, iconName, button }: ModalAlertProps) {
   return (
     <MyDialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-sm rounded-2xl py-20 px-6 text-center ">
+      <DialogContent className="max-w-[90%] md:max-w-sm rounded-2xl py-20 px-6 text-center">
         <DialogHeader className="flex items-center gap-4">
           <MyIcon name={iconName} />
           <DialogTitle className="text-lg font-bold">{title}</DialogTitle>

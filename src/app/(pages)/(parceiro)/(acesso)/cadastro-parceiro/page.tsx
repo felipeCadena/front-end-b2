@@ -43,13 +43,13 @@ export default function CadastroParceiro() {
         <MyTextInput label="Nome Completo" placeholder="Nome Completo" className="mt-2"/>
         <MyTextInput
           type="email"
-          label="E-mail ou celular"
+          label="E-mail"
           placeholder="b2adventure@gmail.com"
           className="mt-2"
         />
         <MyTextInput
-          label="Telefone/Celular"
-          placeholder="b2adventure@gmail.com"
+          label="Celular"
+          placeholder="+XX (XX) XXXXX-XXXX"
           className="mt-2"
         />
         <MyTextInput

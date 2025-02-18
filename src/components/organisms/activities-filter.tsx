@@ -60,7 +60,7 @@ export default function ActivitiesFilter({ withText = true }) {
       >
         Escolha seu tipo de aventura
       </MyTypography>}
-      <div className="flex justify-around gap-4">
+      <div className="flex justify-center gap-2 max-sm:w-full">
         {activities.map((item, index) => (
           <MyButton
             key={index}

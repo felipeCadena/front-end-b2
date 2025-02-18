@@ -1,13 +1,19 @@
-import { MySelect, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/atoms/my-select';
-import MyTextInput from '@/components/atoms/my-text-input';
-import React from 'react'
+import { dificulties } from "@/common/constants/constants";
+import {
+  MySelect,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/atoms/my-select";
+import MyTypography from "@/components/atoms/my-typography";
+import TimePickerModal from "@/components/molecules/time-picker";
+import React from "react";
 
 export default function Step3() {
-    const dificulties = ["Grau 1", "Grau 2", "Grau 3", "Grau 4", "Grau 5"];
   return (
-    <section className='space-y-6'>
-
-        <MySelect
+    <section className="space-y-6">
+      <MySelect
         // value={value}
         // onValueChange={setValue}
         label="Grau de Dificuldade"
@@ -25,8 +31,12 @@ export default function Step3() {
         </SelectContent>
       </MySelect>
 
-      <MyTextInput classNameLabel="text-base text-black" label="Duração" placeholder="4 horas e 30 minutos" className="mt-2" />
-
+      <div>
+        <MyTypography variant="subtitle3" weight="bold" className="mb-1">
+          Duração da atividade
+        </MyTypography>
+        <TimePickerModal />
+      </div>
     </section>
-  )
+  );
 }

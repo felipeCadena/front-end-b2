@@ -10,7 +10,6 @@ const ROOTS_LOGIN = "/login";
 const ROOTS_LOGIN_PARCEIRO = "/login-parceiro";
 const ROOTS_CADASTRO = "/cadastro";
 const ROOTS_SENHA = "/esqueci-minha-senha";
-const ROOTS_PARCEIRO = "/parceiros";
 const ROOTS_QUEMSOMOS = "/quem-somos";
 const ROOTS_ATIVIDADES = "/atividades";
 const ROOTS_CARRINHO = "/carrinho";
@@ -23,6 +22,10 @@ const ROOTS_CADASTRO_ATIVIDADE = "/cadastro-atividade";
 const ROOTS_INFORMACOES_ATIVIDADES = "/informacoes-atividade";
 const ROOTS_SOBRE_A_EMPRESA = "/sobre-a-empresa";
 const ROOTS_SUAS_ATIVIDADES = "/suas-atividades";
+
+// Rotas Parceiros
+const ROOTS_PARCEIRO = "/parceiros";
+const ROOTS_ATIVIDADES_CADASTRADAS = "/parceiros/atividades-cadastradas";
 
 // ==========================================
 // * Dimanic routes
@@ -56,6 +59,7 @@ const PATHS = {
   "cadastro-atividade": ROOTS_CADASTRO_ATIVIDADE,
   "informacoes-atividades": ROOTS_INFORMACOES_ATIVIDADES,
   "suas-atividades": ROOTS_SUAS_ATIVIDADES,
+  "atividades-cadastradas": ROOTS_ATIVIDADES_CADASTRADAS,
   visualizarAtividade: VISUALIZAR_ATIVIDADE,
   visualizarNotificacao: VISUALIZAR_NOTIFICACAO,
   atividadeRealizada: ATIVIDADE_REALIZADA,

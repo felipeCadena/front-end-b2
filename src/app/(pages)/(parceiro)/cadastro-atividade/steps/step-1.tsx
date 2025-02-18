@@ -6,6 +6,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/atoms/my-select";
+import MyTextInput from "@/components/atoms/my-text-input";
 import MyTextarea from "@/components/atoms/my-textarea";
 import MyTypography from "@/components/atoms/my-typography";
 import ActivitiesFilter from "@/components/organisms/activities-filter";
@@ -23,23 +24,11 @@ export default function Step1() {
 
       <ActivitiesFilter withText={false} />
 
-      <MySelect
-      // value={value}
-      // onValueChange={setValue}
-      label="Nome da atividade"
-      className="text-base text-black"
-      >
-        <SelectTrigger className="py-6 my-1">
-          <SelectValue placeholder="Selecione o nome da atividade" />
-        </SelectTrigger>
-        <SelectContent>
-            {activities.map(({ title }) => (
-              <SelectItem key={title} value={title}>
-                {title}
-              </SelectItem>
-            ))}
-        </SelectContent>
-      </MySelect>
+      <MyTextInput
+        label="Nome da atividade"
+        placeholder="Nome da atividade"
+        className="mt-2"
+      />
 
       <MyTextarea 
         placeholder="Lorem ipsum dolor sit amet, consectetur di..." 

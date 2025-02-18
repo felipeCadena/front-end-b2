@@ -11,7 +11,7 @@ export const buttonVariants = cva(
       variant: {
         default: "font-bold text-[1rem] bg-primary-600 text-neutral-000 hover:bg-primary-600 disabled:bg-primary-200",
         "secondary":
-          "text-primary-600 hover:bg-secondary-600 border border-primary-600 bg-traparent text-sm font-semibold",
+          "text-primary-600 border border-primary-600 bg-traparent text-sm font-semibold",
         outline: "text-primary-600 border bg-traparent hover:bg-primary-200 ",
         "outline-muted":
           "text-[0.875rem] text-wrap opacity-50 bg-[#F1F0F5] border border-transparent focus:border focus:border-black focus:bg-[#E5E4E9] focus:opacity-100",

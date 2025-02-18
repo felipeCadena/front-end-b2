@@ -5,9 +5,14 @@ import Image from "next/image";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 
-export default function CarouselImages({ images }: any) {
+type CarouselImagesProps = {
+  images: string[];
+  rounded?: boolean;
+};
+
+export default function CarouselImages({ images, rounded = false }: CarouselImagesProps) {
   return (
-    <div className="flex flex-col w-full lg:min-w-0 rounded-lg md:rounded-xl overflow-hidden">
+    <div className={cn("flex flex-col w-full lg:min-w-0 md:rounded-xl overflow-hidden", rounded && "rounded-lg")}>
       <Carousel
         showThumbs={false}
         showStatus={false}

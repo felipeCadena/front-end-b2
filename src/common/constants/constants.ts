@@ -9,13 +9,15 @@ export const daysOfWeek = [
 ];
 
 export const days = [
-    "3 dias",
-    "5 dias",
-    "7 dias",
-    "10 dias",
-    "15 dias",
-    "20 dias",
-    "30 dias",
+    "30 min",
+    "1 hora",
+    "3 horas",
+    "5 horas",
+    "12 horas",
+    "24 horas",
+    "48 horas",
+    "72 horas",
+    "5 dias"
   ];
 
 export const hours = [
@@ -43,4 +45,25 @@ export const hours = [
   { label: "21:00", value: "21:00" },
   { label: "22:00", value: "22:00" },
   { label: "23:00", value: "23:00" },
+];
+
+export const dificulties = ["Grau 1 - Iniciante / Muito Leve", "Grau 2 - Leve", "Grau 3 - Moderado / Intenso", "Grau 4 - Avançado / Difícil", "Grau 5 - Extremo / Muito Difícil"];
+
+export const types = [
+  {
+    icon: "group",
+    title: "Em grupo",
+  },
+  {
+    icon: "person",
+    title: "Individual",
+  },
+  {
+    icon: "baby",
+    title: "Com crianças",
+  },
+  {
+    icon: "no-baby",
+    title: "Sem crianças",
+  },
 ];

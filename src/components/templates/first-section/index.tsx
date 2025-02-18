@@ -21,7 +21,7 @@ export default function FirstSection() {
   ];
   return (
     <section className="mt-10 md:relative">
-      <CarouselImages images={images} />
+      <CarouselImages rounded images={images} />
       <div className="mt-4 px-4">
         <MyTypography
           variant="heading2"

@@ -8,6 +8,7 @@ import StarRating from "../molecules/my-stars";
 import MyTypography from "../atoms/my-typography";
 import { cn } from "@/utils/cn";
 import { getData, isDateInPast } from "@/utils/formatters";
+import MyButton from "../atoms/my-button";
 
 export default function ActivitiesDetails({
   activities,
@@ -22,7 +23,7 @@ export default function ActivitiesDetails({
         <div
           key={index}
           className={cn(
-            "flex max-sm:justify-around gap-2 cursor-pointer my-8",
+            "flex max-sm:justify-around gap-2 cursor-pointer my-6",
             withDate && "my-8 relative"
           )}
         >
@@ -81,12 +82,12 @@ export default function ActivitiesDetails({
             <MyTypography
               variant="subtitle3"
               weight="bold"
-              className={cn(withDate && "mt-4")}
+              className={cn(withDate ? "mt-4" : "mt-2")}
             >
               {activity.title}
             </MyTypography>
-            <MyTypography variant="label" className="max-sm:w-2/3">
-              {activity.description.slice(0, 30).concat("...")}
+            <MyTypography variant="label" className="">
+              {withDate ? activity.description.slice(0, 30).concat("...") : activity.description.slice(0, 50).concat("...")}
             </MyTypography>
             <MyIcon name="shared-muted" className={cn("absolute z-50 right-0 top-1/2 cursor-pointer", !withDate && "hidden")} />
           </div>

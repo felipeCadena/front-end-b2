@@ -1,5 +1,6 @@
 "use client";
 
+import { types } from "@/common/constants/constants";
 import MyButton from "@/components/atoms/my-button";
 import MyIcon, { IconsMapTypes } from "@/components/atoms/my-icon";
 import MyLogo from "@/components/atoms/my-logo";
@@ -14,24 +15,7 @@ import React from "react";
 export default function InformacoesAtividade() {
   const router = useRouter();
   const [selected, setSelected] = React.useState("Em grupo");
-  const types = [
-    {
-      icon: "group",
-      title: "Em grupo",
-    },
-    {
-      icon: "person",
-      title: "Individual",
-    },
-    {
-      icon: "baby",
-      title: "Com crianças",
-    },
-    {
-      icon: "no-baby",
-      title: "Sem crianças",
-    },
-  ];
+  const params = "1"
 
   const handleNext = () => {
     router.push(`${PATHS["suas-atividades"]}?openModal=true`);
@@ -83,13 +67,6 @@ export default function InformacoesAtividade() {
           noHintText
           leftIcon={<MyIcon name="small-group" className="ml-5 mt-6" />}
         />
-
-        <div>
-          <MyTypography variant="label" weight="bold" className="mb-1">
-            Horário da atividade
-          </MyTypography>
-          <TimePickerModal />
-        </div>
 
         <MyTextInput
           label="Valor por adulto"
@@ -152,6 +129,7 @@ export default function InformacoesAtividade() {
           rightIcon={<MyIcon name="seta" className="ml-3"/>}
           className="w-full font-bold"
           size="lg"
+          onClick={() => router.push(PATHS.visualizarAtividade(params))}
         >
           Visualizar atividade
         </MyButton>

@@ -72,7 +72,7 @@ export default function Step2() {
         <div key={item.id} className="border px-6 first:py-4 py-8 rounded-lg space-y-4 relative">
           <MultiSelect placeholder="Selecione dias da semana" options={daysOfWeek} />
           <MyDatePicker withlabel="Selecione dias específicos" />
-          <MultiSelect placeholder="Selecione os horários" options={hours} />
+          <MultiSelect grid placeholder="Selecione os horários" options={hours} />
 
           {index > 0 && (
             <MyIcon
