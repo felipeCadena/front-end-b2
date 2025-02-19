@@ -97,6 +97,8 @@ import Person from "./elements/person";
 import Dollar from "./elements/dollar";
 import SmallGroup from "./elements/small-group";
 import Success from "./elements/success";
+import Pie from "./elements/pie";
+import Video from "./elements/video";
 
 export type IconsMapTypes = keyof typeof IconsMap;
 
@@ -204,6 +206,8 @@ const IconsMap = {
   "small-group": <SmallGroup />,
   dollar: <Dollar />,
   success: <Success />,
+  pie: <Pie />,
+  video: <Video />
 };
 
 

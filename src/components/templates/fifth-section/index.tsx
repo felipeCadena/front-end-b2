@@ -31,7 +31,7 @@ export default function FifithSection() {
         borderRadius="squared"
         size="md"
         className="mt-5 w-full md:w-1/4 h-14"
-        onClick={() => router.push(PATHS.parceiros)}
+        onClick={() => router.push(PATHS.parceiro)}
       >
         Seja um de nossos parceiros
       </MyButton>

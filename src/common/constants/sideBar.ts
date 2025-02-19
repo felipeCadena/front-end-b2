@@ -13,7 +13,7 @@ export const sideBarLp: any[] = [
   },
   {
     label: "Seja um parceiro B2",
-    link: "/parceiros",
+    link: "/parceiro",
     icon: "parceiros",
     web: true,
   },
@@ -121,13 +121,13 @@ export const sideBarPartnet: any[] = [
   },
   {
     label: "Atividades",
-    link: "/atividades-cadastradas",
+    link: "/parceiro/atividades-cadastradas",
     icon: "atividades",
     web: true,
   },
   {
     label: "Fotos de passeios",
-    link: "/fotos-de-passeios",
+    link: "/parceiro/fotos-de-passeios",
     icon: "camera",
     web: false,
   },
@@ -139,21 +139,20 @@ export const sideBarPartnet: any[] = [
   },
   {
     label: "Home",
-    link: "/minhas-atividades",
+    link: "/parceiro/minhas-atividades",
     icon: "home",
     web: false,
   },
   {
     label: "Reservas",
-    link: "/informacoes",
+    link: "/parceiro/reservas",
     icon: "reservas",
-    tab: "reservas",
     web: false,
   },
   {
     label: "Financeiro",
-    link: "/financeiro",
-    icon: "financeiro",
+    link: "/parceiro/financeiro",
+    icon: "pie",
     web: true,
   },
   {

@@ -16,7 +16,7 @@ export default function LoginParceiro() {
 
   const handleLogin = () => {
     if (email === "parceiro@gmail.com") {
-      router.push(PATHS.atividades);
+      router.push(PATHS["minhas-atividades"]);
     }
   };
 
@@ -33,7 +33,7 @@ export default function LoginParceiro() {
           <MyIcon
             name="voltar"
             className="absolute top-16 left-0 md:hidden"
-            onClick={() => router.push(PATHS.initial)}
+            onClick={() => router.push(PATHS["minhas-atividades"])}
           />
         </div>
 

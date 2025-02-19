@@ -18,7 +18,7 @@ export default function InformacoesAtividade() {
   const params = "1"
 
   const handleNext = () => {
-    router.push(`${PATHS["suas-atividades"]}?openModal=true`);
+    router.push(`${PATHS["minhas-atividades"]}?openModal=true`);
   };
 
   return (
