@@ -11,7 +11,7 @@ export default function AreaParceiros() {
   const router = useRouter();
   
   return (
-    <section className="px-4 my-6 space-y-6">
+    <section className="px-4 my-6 space-y-6 text-center">
       <MyTypography variant="heading2" weight="medium">
         Sua jornada como parceiro B2 começa aqui!
       </MyTypography>
@@ -61,7 +61,7 @@ export default function AreaParceiros() {
         borderRadius="squared"
         size="md"
         className="w-full md:w-1/4 h-14"
-        onClick={() => router.push(PATHS.termos)}
+        onClick={() => router.push(PATHS["termos-parceiro"])}
       >
         Começar agora
       </MyButton>

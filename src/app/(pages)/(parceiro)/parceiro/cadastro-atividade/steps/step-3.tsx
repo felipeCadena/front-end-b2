@@ -35,7 +35,7 @@ export default function Step3() {
         <MyTypography variant="subtitle3" weight="bold" className="mb-1">
           Duração da atividade
         </MyTypography>
-        <TimePickerModal />
+        <TimePickerModal iconColor={"black"} />
       </div>
     </section>
   );

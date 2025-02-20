@@ -14,6 +14,26 @@ export function getHora(timestamp: string) {
   return `${horas}:${minutos}`; // Formato HH:mm
 }
 
+export function getTimeInterval(timestamp: number, additionalHours: number): string {
+  // Cria a data a partir do timestamp
+  const startDate = new Date(timestamp);
+
+  // Função auxiliar para formatar números com dois dígitos
+  const pad = (n: number) => n.toString().padStart(2, "0");
+
+  // Obtém as horas e minutos iniciais
+  const startHours = pad(startDate.getHours());
+  const startMinutes = pad(startDate.getMinutes());
+
+  // Cria a data de término adicionando as horas extras
+  const endDate = new Date(startDate);
+  endDate.setHours(endDate.getHours() + additionalHours);
+  const endHours = pad(endDate.getHours());
+  const endMinutes = pad(endDate.getMinutes());
+
+  return `${startHours}:${startMinutes} - ${endHours}:${endMinutes}`;
+}
+
 export function isDateInPast(timestamp: string) {
   const today = new Date(); // Data atual
   today.setHours(0, 0, 0, 0); // Zerando as horas para considerar apenas a data

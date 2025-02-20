@@ -1,9 +1,9 @@
-const Hide = () => (
+const Hide = ({iconColor}: {iconColor?: string}) => (
   <svg
     width="24"
     height="16"
     viewBox="0 0 20 14"
-    stroke="#8DC63F"
+    stroke={iconColor ?? "#8DC63F"}
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >

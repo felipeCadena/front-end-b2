@@ -26,10 +26,10 @@ export default function MultiSelect({ options, placeholder, grid }: ComboxType) 
   return (
     <Popover  open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <MyButton variant="text-muted" borderRadius="squared" size="md" className="w-full justify-between border border-gray-300">
+        <MyButton variant="text-black" borderRadius="squared" size="md" className="w-full justify-between border border-gray-300">
           {selected.length > 0
             ? selected.map((val) => options.find((o) => o.value === val)?.label).join(", ").slice(0, 30).concat("...")
-            : placeholder ?? "Selecione"}
+            : <span className="text-neutral-400">{placeholder ?? "Selecione"}</span>}
           <MyIcon name="chevron-down" className="opacity-90" />
         </MyButton>
       </PopoverTrigger>
@@ -57,7 +57,7 @@ export default function MultiSelect({ options, placeholder, grid }: ComboxType) 
                 <CommandItem
                   key={option.value}
                   onSelect={() => toggleSelection(option.value)}
-                  className={cn("flex", selected.includes(option.value) && "bg-primary-600")}
+                  className={cn("flex justify-center", selected.includes(option.value) && "bg-primary-600 text-white")}
                 >
                   {option.label}
                 </CommandItem>

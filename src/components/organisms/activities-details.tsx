@@ -18,12 +18,12 @@ export default function ActivitiesDetails({
   withDate?: boolean;
 }) {
   return (
-    <section className={cn(withDate && "mx-6")}>
+    <section className={cn(withDate && "mx-4")}>
       {activities.map((activity: any, index: number) => (
         <div
           key={index}
           className={cn(
-            "flex max-sm:justify-around gap-2 cursor-pointer my-6",
+            "flex max-sm:max-h-[120px] max-sm:justify-around gap-2 cursor-pointer my-6",
             withDate && "my-8 relative"
           )}
         >
@@ -86,7 +86,7 @@ export default function ActivitiesDetails({
             >
               {activity.title}
             </MyTypography>
-            <MyTypography variant="label" className="">
+            <MyTypography variant="label" className={cn(withDate && "w-1/2")}>
               {withDate ? activity.description.slice(0, 30).concat("...") : activity.description.slice(0, 50).concat("...")}
             </MyTypography>
             <MyIcon name="shared-muted" className={cn("absolute z-50 right-0 top-1/2 cursor-pointer", !withDate && "hidden")} />

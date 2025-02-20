@@ -53,28 +53,36 @@ export default function Step6() {
           </div>
         </div>
       </Dropzone>
-      {files && (
-        <div className="flex items-center justify-center flex-wrap gap-3 my-6">
-          {files.map((file) => (
+      {/* Grid com 5 espaços para imagens */}
+      <div className="grid grid-cols-3 gap-3 my-6">
+        {Array.from({ length: 5 }).map((_, index) => {
+          const file = files && files[index];
+
+          return file ? (
             <div key={file.name} className="relative">
               <Image
                 width={100}
                 height={100}
                 src={URL.createObjectURL(file)}
                 alt={file.name}
-                className="min-w-[150px] min-h-[150px] rounded-md object-cover"
+                className="w-[120px] h-[100px] rounded-md object-cover"
               />
               <MyIcon
                 name="x-red"
-                className="absolute top-2 left-2 cursor-pointer bg-white rounded-md"
+                className="absolute top-1 right-1 cursor-pointer bg-white rounded-full"
                 onClick={() =>
-                  setFiles((prev) => prev ? prev.filter((item) => item.name !== file.name) : [])
+                  setFiles((prev) => (prev ? prev.filter((item) => item.name !== file.name) : []))
                 }
               />
             </div>
-          ))}
+          ) : (
+            <div
+              key={`placeholder-${index}`}
+              className="w-[100px] h-[100px] border border-dashed border-neutral-400 rounded-md"
+            />
+          );
+        })}
         </div>
-      )}
     </section>
   );
 }

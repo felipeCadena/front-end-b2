@@ -28,11 +28,11 @@ export function MyDatePicker({withlabel}: {withlabel?: string}) {
           {!withlabel && <MyIcon name="date" />}
           {withlabel ? (
             date 
-            ? <span className="text-neutral-400">{date.map((d) => format(d, "dd/MM", { locale: ptBR })).join(", ")}</span> 
+            ? <span className="text-black">{date.map((d) => format(d, "dd/MM", { locale: ptBR })).join(", ").slice(0, 33).concat("...")}</span> 
             : <MyTypography variant="body" weight="regular" lightness={400} className="text-sm ml-2">{withlabel}</MyTypography>
           ) : (
             date 
-            ? <span className="text-neutral-400">{date.map((d) => format(d, "dd/MM", { locale: ptBR })).join(", ")}</span>  
+            ? <span className="text-black">{date.map((d) => format(d, "dd/MM", { locale: ptBR })).join(", ").slice(0, 33).concat("...")}</span>  
             : <MyTypography variant="body" weight="regular" className="text-sm">Data da Atividade</MyTypography>
           )}
         </MyButton>

@@ -4,12 +4,11 @@ import React, { useEffect, useRef, useState } from "react";
 import MyButton from "../atoms/my-button";
 import { Popover, PopoverContent, PopoverTrigger } from "../atoms/my-popover";
 import { cn } from "@/utils/cn";
-import MyIcon from "../atoms/my-icon";
 import MyTypography from "../atoms/my-typography";
 import { MyScrollArea } from "../atoms/my-scroll-area";
 import Time from "../atoms/my-icon/elements/time";
 
-export default function TimePickerModal() {
+export default function TimePickerModal({iconColor}: {iconColor?: string}) {
   const [open, setOpen] = useState(false);
   const [visible, setVisible] = useState(false);
   const [selectedHour, setSelectedHour] = useState("00");
@@ -40,11 +39,11 @@ export default function TimePickerModal() {
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <MyButton variant="date" borderRadius="squared" className="w-full justify-start text-sm items-center gap-2 py-6 border-gray-300 md:bg-white">
-          <Time fill="#000"/>
+          <Time fill={iconColor ?? "#8DC63F"}/>
           {visible && selectedHour && selectedMinute ? (
             selectedHour + ":" + selectedMinute
           ) : (
-            <MyTypography variant="body" weight="regular" lightness={500} className="text-sm">
+            <MyTypography variant="body" weight="regular" lightness={500} className={cn("text-sm", iconColor ? `text-neutral-400` : "text-black")}>
               Horário da Atividade
             </MyTypography>
           )}

@@ -17,9 +17,7 @@ const ROOTS_CARRINHO = "/carrinho";
 const ROOTS_FINALIZAR_COMPRA = "/finalizar-compra";
 // Agrupa Favoritos, Histórico, Reservas e Fotos (Na Web)
 const ROOTS_INFOS = "/informacoes";
-const ROOTS_TERMOS = "/termos-de-uso";
 const ROOTS_INFORMACOES_ATIVIDADES = "/informacoes-atividade";
-const ROOTS_SOBRE_A_EMPRESA = "/sobre-a-empresa";
 
 // Rotas Parceiros
 const ROOTS_CADASTRO_PARCEIRO = "/cadastro-parceiro";
@@ -29,6 +27,9 @@ const ROOTS_ATIVIDADES_CADASTRADAS = "/parceiro/atividades-cadastradas";
 const ROOTS_SUAS_ATIVIDADES = "/parceiro/minhas-atividades";
 const ROOTS_CADASTRO_ATIVIDADE = "/parceiro/cadastro-atividade";
 const ROOTS_FOTOS_PASSEIOS = "/parceiro/fotos-de-passeios";
+const ROOTS_SOBRE_A_EMPRESA = "/parceiro/sobre-a-empresa";
+const ROOTS_TERMOS_PARCEIRO = "/parceiro/termos-de-uso";
+const ROOTS_ATIVIDADES_OCULTAS = "/parceiro/reservas/ocultas"
 
 // ==========================================
 // * Dimanic routes
@@ -57,7 +58,7 @@ const PATHS = {
   quemSomos: ROOTS_QUEMSOMOS,
   carrinho: ROOTS_CARRINHO,
   "finalizar-compra": ROOTS_FINALIZAR_COMPRA,
-  termos: ROOTS_TERMOS,
+  "termos-parceiro": ROOTS_TERMOS_PARCEIRO,
   parceiro: ROOTS_PARCEIRO,
   "sobre-a-empresa": ROOTS_SOBRE_A_EMPRESA,
   "cadastro-parceiro": ROOTS_CADASTRO_PARCEIRO,
@@ -66,6 +67,7 @@ const PATHS = {
   "minhas-atividades": ROOTS_SUAS_ATIVIDADES,
   "atividades-cadastradas": ROOTS_ATIVIDADES_CADASTRADAS,
   "fotos-de-passeios": ROOTS_FOTOS_PASSEIOS,
+  "atividades-ocultas": ROOTS_ATIVIDADES_OCULTAS,
   "enviar-fotos": ENVIAR_FOTOS,
   "enviar-videos": ENVIAR_VIDEOS,
   visualizarAtividade: VISUALIZAR_ATIVIDADE,
