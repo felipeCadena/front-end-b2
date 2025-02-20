@@ -44,13 +44,13 @@ export default function CarouselImages({ images, rounded = false }: CarouselImag
         }}
       >
         {images.map((image: any, index: number) => (
-        <div key={index} className={cn("relative z-10 overflow-hidden w-full h-[350px] md:min-h-[400px]")}>
+        <div key={index} className={cn("relative z-10 overflow-hidden w-full md:min-h-[500px]")}>
           <Image
             alt="Imagens de atividades"
             src={image ?? ""}
             width={250}
             height={300}
-            className={cn("w-full object-cover h-[350px] md:min-h-[400px]")}
+            className={cn("w-full object-cover h-[350px] md:min-h-[500px]")}
           />
         </div>
         ))}

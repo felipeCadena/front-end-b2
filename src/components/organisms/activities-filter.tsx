@@ -28,7 +28,7 @@ export default function ActivitiesFilter({ withText = true }) {
     <section
       className={cn(
         "flex flex-col justify-around gap-2 mx-auto"
-      , withText ? "mt-12 md:my-15" : "my-6")}
+      , withText ? "mt-12 md:my-20" : "my-6")}
     >
       {withText && pathname == "/" ? (
         <div className="md:hidden">
