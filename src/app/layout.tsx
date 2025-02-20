@@ -18,7 +18,6 @@ export const metadata: Metadata = {
   icons: {
     icon: "/logo.png",
   },
-  viewport: "width=device-width, initial-scale=1",
 };
 
 export default function RootLayout({
