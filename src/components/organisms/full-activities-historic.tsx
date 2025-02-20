@@ -16,7 +16,7 @@ export default function FullActivitiesHistoric({ activities, withDate }: any) {
   const router = useRouter();
 
   return (
-    <section className="md:max-w-screen-xl">
+    <section className="md:max-w-screen-custom">
       {activities.map((activity: any, index: number) => (
         <div className="flex gap-4 mt-20 mb-20" key={index}>
           <div className="relative z-10 flex-shrink-0 overflow-hidden w-[265px] h-[265px] hover:cursor-pointer rounded-md">

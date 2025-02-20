@@ -47,11 +47,11 @@ export default function GaleriaDeFotos() {
                 </div>
               </div>
 
-              <div>
+              <div className="flex gap-4">
                 <MyButton
                   variant="message"
                   borderRadius="squared"
-                  className="px-[4.5rem]"
+                  className="px-[4rem]"
                   size="lg"
                   rightIcon={<MyIcon name="white-eye" className="" />}
                   onClick={() => {
@@ -64,7 +64,7 @@ export default function GaleriaDeFotos() {
                 <MyButton
                   variant="secondary"
                   borderRadius="squared"
-                  className="mx-12 px-10"
+                  className="px-8"
                   size="lg"
                   rightIcon={<MyIcon name="download-green" className="" />}
                 >

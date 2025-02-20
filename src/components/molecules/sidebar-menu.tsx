@@ -2,7 +2,7 @@
 
 import useLogin from "@/app/(pages)/(cliente)/(acesso)/login/login-store";
 import { notifications } from "@/common/constants/mock";
-import { sideBarClient, sideBarLp } from "@/common/constants/sideBar";
+import { sideBarClient, sideBarLp, sideBarPartnet } from "@/common/constants/sideBar";
 import MyIcon from "@/components/atoms/my-icon";
 import {
   MyToggleGroup,
@@ -25,8 +25,10 @@ export default function SidebarMenu({
   useEffect(() => {
     if (pathname !== "/" && email.includes("cliente")) {
       setSideBarActive(sideBarClient);
+    } else if (pathname !== "/" && email.includes("parceiro")) {
+      setSideBarActive(sideBarPartnet);
     } else {
-      setSideBarActive(sideBarLp);
+        setSideBarActive(sideBarLp);
     }
   }, [email]);
 

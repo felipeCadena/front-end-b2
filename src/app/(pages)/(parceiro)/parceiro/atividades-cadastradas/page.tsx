@@ -14,7 +14,7 @@ export default function AtividadesCadastradas() {
     const router = useRouter();
 
   return (
-    <main className="m-6">
+    <main className="m-4">
       <SearchActivity />
 
       <div className="mt-6">

@@ -6,6 +6,7 @@ import MyIcon from "@/components/atoms/my-icon";
 import Image from "next/image";
 import SearchInfoActivity from "@/components/organisms/search-with-info";
 import MyButton from "@/components/atoms/my-button";
+import GoogleMapsMultiple from "@/components/organisms/google-maps-multiple";
 
 const FourthSection = () => {
   const locations = [
@@ -26,6 +27,8 @@ const FourthSection = () => {
     },
   ];
 
+  const coords = locations.map((location) => location.coords);
+
   return (
     <section>
       <div className="max-sm:hidden space-y-1 my-4">
@@ -44,7 +47,7 @@ const FourthSection = () => {
         {/* List of Locations */}
         <div className="w-full max-sm:max-w-md space-y-3 md:bg-gray-500 md:flex md:p-6 md:w-2/3 md:items-stretch md:rounded-lg md:h-full md:border md:border-primary-900">
           {/* Header */}
-          <div className="max-sm:space-y-4 md:w-2/3 md:flex md:flex-col md:p-4 md:justify-evenly md:space-y-6">
+          <div className="max-sm:space-y-4 md:w-1/2 md:flex md:flex-col md:p-4 md:justify-evenly md:space-y-6">
             <div className="max-sm:bg-primary-900 max-sm:px-8 max-sm:py-2 max-sm:rounded-full max-sm:mt-6 max-sm:mb-2">
               <MyTypography
                 variant="subtitle3"
@@ -100,25 +103,14 @@ const FourthSection = () => {
           </div>
 
           <div className="max-sm:hidden w-full h-full md:min-h-[410px]">
-            <Image
-              src="/images/mapa-inicial.png"
-              alt="mapa"
-              width={400}
-              height={400}
-              className="border border-gray w-full rounded-xl md:min-h-[410px]"
-            />
+          <GoogleMapsMultiple locations={coords} />
+
           </div>
         </div>
 
         {/* Map */}
         <div className="w-full max-sm:mx-auto max-sm:w-fit md:hidden">
-          <Image
-            src="/images/mapa-inicial.png"
-            alt="mapa"
-            width={400}
-            height={400}
-            className="border border-[#F1F0F587] rounded-xl mt-2"
-          />
+          <GoogleMapsMultiple locations={coords} />
         </div>
       </div>
     </section>

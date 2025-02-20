@@ -2,10 +2,10 @@
 
 import useLogin from "@/app/(pages)/(cliente)/(acesso)/login/login-store";
 import { notifications } from "@/common/constants/mock";
-import { sideBarClient, sideBarLp, sideBarPartnet } from "@/common/constants/sideBar";
+import { sideBarClient, sideBarPartnet } from "@/common/constants/sideBar";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import MyIcon from "../atoms/my-icon";
 
 export default function SidebarMenuWeb({}) {
@@ -25,7 +25,7 @@ export default function SidebarMenuWeb({}) {
   const iconInclude = ["Notificações", "Carrinho de Compras"];
 
   return (
-    <div className="flex items-center gap-10">
+    <div className="flex items-center gap-10 ">
       {sideBarActive.map((item) => {
         const isActive = pathname.startsWith(item.link == "/carrinho" ? "/finalizar-compra" : (item.link == "/chat" ? "nao-incluir" : item.link));
 
@@ -38,7 +38,7 @@ export default function SidebarMenuWeb({}) {
                   isActive ? "border-b-2 border-black" : "hover:text-black"
                 } transition-all text-black relative`}
               >
-                {item.label != "Chat" && <div className="flex gap-4">
+                {item.label != "Chat" && <div className="flex gap-4 text-sm">
                   {iconInclude.includes(item.label) && (
                     <MyIcon name={item.icon} className="w-4 h-4" />
                   )}

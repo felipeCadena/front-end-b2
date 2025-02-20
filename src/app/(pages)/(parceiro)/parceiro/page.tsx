@@ -11,11 +11,11 @@ export default function AreaParceiros() {
   const router = useRouter();
   
   return (
-    <section className="px-4 my-6 space-y-6 text-center">
-      <MyTypography variant="heading2" weight="medium">
+    <section className="px-4 my-6 space-y-5 text-center">
+      <MyTypography variant="heading2" weight="bold">
         Sua jornada como parceiro B2 começa aqui!
       </MyTypography>
-      <MyTypography variant="subtitle2" className="font-medium">
+      <MyTypography variant="label">
         Toda experiência fornecida na nossa plataforma precisa que o parceiro
         tenha total conhecimento e habilidades para oferecer aquela atividade.{" "}
       </MyTypography>
@@ -26,7 +26,7 @@ export default function AreaParceiros() {
         alt="Image de um passeio"
         className="w-full max-sm:h-[310px] object-cover rounded-lg"
       />
-      <MyTypography variant="subtitle2" className="font-medium">
+      <MyTypography variant="label">
         É importante que os nossos clientes sintam a paixão que o nosso parceiro
         tem pela atividade que está oferecendo.
       </MyTypography>
@@ -34,7 +34,7 @@ export default function AreaParceiros() {
         Venha fazer parte dessa parceria surreal!
       </MyTypography>
 
-      <MyTypography variant="subtitle2" className="font-medium">
+      <MyTypography variant="label">
         Enviei sua atividade para avaliarmos se ela atende nossos padrões e
         requisitos. A aprovação de uma experiência depende de vários fatores.
       </MyTypography>
@@ -48,11 +48,11 @@ export default function AreaParceiros() {
         />
       </div>
 
-      <MyTypography variant="subtitle2" className="font-medium">
+      <MyTypography variant="label">
         Torne a sua atividade uma experiência inesquecível e mostre que feita
         com você ela pode ser ainda mais especial.
       </MyTypography>
-      <MyTypography variant="subtitle2" className="font-medium">
+      <MyTypography variant="label">
         Vamos começar!
       </MyTypography>
 

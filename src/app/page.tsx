@@ -8,8 +8,8 @@ import Review from "@/components/templates/third-section/review";
 
 export default function Home() {
   return (
-    <>
-      <div className="overflow-x-hidden max-w-screen-xl mx-auto px-4">
+    <main className="md:mx-auto w-full md:max-w-screen-custom md:px-8">
+      <div className="overflow-x-hidden">
         <SearchActivity />
         <FirstSection />
         <SecondSection />
@@ -22,6 +22,6 @@ export default function Home() {
       </div>
       </div>
       <FifithSection />
-    </>
+    </main>
   );
 }

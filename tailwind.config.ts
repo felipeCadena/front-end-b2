@@ -14,6 +14,9 @@ const config: Config = {
       borderRadius: {
         "4xl": "1.75rem",
       },
+      screens: {
+        'custom': '1130px',
+      },
       backgroundColor: {
         emerald: {
           50: '#FDF5EC',

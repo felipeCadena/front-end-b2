@@ -47,7 +47,7 @@ export default function Atividade() {
               <MyTypography variant="heading2" weight="bold" className="">
                 {activity?.title}
               </MyTypography>
-              <MyBadge variant="outline" className="p-0">
+              <MyBadge variant="outline" className="p-1">
                 {activity?.tag}
               </MyBadge>
             </div>

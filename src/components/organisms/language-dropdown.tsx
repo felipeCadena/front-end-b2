@@ -24,10 +24,10 @@ const LanguageDropdown = () => {
   };
 
   return (
-    <div className="relative inline-block">
+    <div className="relative inline-block ">
       <button
         onClick={toggleMenu}
-        className="flex items-center font-semibold gap-1 px-2 py-1 text-[0.6rem] md:text-[0.9rem] bg-gray-200 rounded-full shadow-md hover:bg-gray-200"
+        className="flex items-center font-semibold gap-1 px-2 py-1 text-[0.6rem] md:text-sm bg-gray-200 rounded-full shadow-md hover:bg-gray-200"
       >
         {selectedLanguage}
         <MyIcon name="world"/>

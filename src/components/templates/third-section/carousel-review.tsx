@@ -52,7 +52,7 @@ const CarouselReview = ({ reviews }: any) => {
 
       <MyIcon
         name="chevron-down-green"
-        className="absolute -right-5 md:-right-6 top-1/2 -rotate-90 z-50"
+        className="absolute -right-5 md:-right-1 top-1/2 -rotate-90 z-50"
         onClick={() => handleScroll("right")}
       />
 
@@ -60,7 +60,7 @@ const CarouselReview = ({ reviews }: any) => {
       <div
         ref={ref}
         className={twMerge(
-          "max-sm:overflow-x-scroll flex gap-4 overflow-x-hidden no-scrollbar px-2 md:px-4"
+          "max-sm:overflow-x-scroll flex gap-4 overflow-x-hidden no-scrollbar px-2 md:px-6"
         )}
         onScroll={() => setScrollPosition(ref.current?.scrollLeft || 0)}
         {...events}

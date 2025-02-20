@@ -3,13 +3,21 @@
 import { cn } from "@/utils/cn";
 import { usePathname } from "next/navigation";
 import { ReactNode } from "react";
+import { Inter } from "next/font/google";
+import "../globals.css";
+
+const inter = Inter({
+  subsets: ["latin"],
+  display: "swap",
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+});
 
 const Layout = ({ children }: { children: JSX.Element | ReactNode }) => {
   const pathname = usePathname();
   const fullWidthPages = ["/login", "/cadastro", "/esqueci-minha-senha"];
 
   return (
-    <section className={cn(!fullWidthPages.includes(pathname) && "md:max-w-screen-xl md:mx-auto", )}>
+    <section className={cn(`${inter.className} antialiased`, !fullWidthPages.includes(pathname) && "md:mx-auto w-full md:max-w-screen-custom md:px-8")}>
         {children}
     </section>
   );

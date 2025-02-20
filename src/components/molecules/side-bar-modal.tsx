@@ -1,16 +1,23 @@
+"use client"
+
 import React from "react";
 import {
     DropdownMenuContent,
     DropdownMenuItem,
-    DropdownMenuSeparator,
     DropdownMenuTrigger,
     MyDropdownMenu,
   } from "../atoms/my-drop-menu";
 import Link from "next/link";
-import { cn } from "@/utils/cn";
 import MyIcon from "../atoms/my-icon";
+import useLogin from "@/app/(pages)/(cliente)/(acesso)/login/login-store";
 
 export default function SideBarModal({children, sideBar}: {children: React.ReactNode, sideBar: any[]}) {
+  const {setEmail} = useLogin();
+
+  const handleExit = (path: string) => {
+    path == "/" && setEmail("");
+  }
+
   return (
     <MyDropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -24,6 +31,7 @@ export default function SideBarModal({children, sideBar}: {children: React.React
            key={item.label}
            href={`${item.link == "/galeria-de-fotos" ? "/informacoes" : item.link}${item.tab ? `?tab=${item.tab}` : ""}`}
            passHref
+           onClick={() => handleExit(item.link)}
          >
            <DropdownMenuItem
              className="px-4 py-3 hover:text-black hover:bg-gray-100 cursor-pointer"

@@ -16,7 +16,7 @@ export default function Header() {
   const { email, sideBarActive } = useLogin();
 
   return (
-    <header className="top-0 z-50 h-[100px] w-full md:max-w-screen-xl md:mx-auto bg-white flex items-center justify-between md:justify-between max-sm:px-4 mb-4">
+    <header className="top-0 z-50 h-[100px] w-full md:max-w-screen-custom md:mx-auto bg-white flex items-center justify-between px-4 md:px-6 mb-4">
       <div
         className="max-sm:hidden cursor-pointer"
         onClick={() => router.push("/")}
@@ -33,14 +33,14 @@ export default function Header() {
       </div>
 
       {/* Language Dropdown - Alinhado à direita */}
-      <div className="flex-shrink-0 md:flex md:items-center md:gap-6">
+      <div className="flex-shrink-0 md:flex md:items-center md:gap-6 ">
         <LanguageDropdown />
 
         <div className="max-sm:hidden">
           {!email ? (
             <button
               onClick={() => router.push(PATHS.login)}
-              className="flex items-center font-semibold gap-1 px-2 md:px-4 py-1 text-[0.9rem] text-white bg-black rounded-full shadow-md"
+              className="text-sm flex items-center font-semibold gap-1 px-2 md:px-4 py-1 text-[0.9rem] text-white bg-black rounded-full shadow-md"
             >
               Logar-se
               <MyIcon name="user" />

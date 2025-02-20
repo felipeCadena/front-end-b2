@@ -10,7 +10,7 @@ export default function FifithSection() {
   const router = useRouter();
 
   return (
-    <section className="max-sm:px-4 max-sm:my-8 md:mt-20 md:bg-primary-100 md:text-center py-8">
+    <section className="max-sm:px-4 max-sm:my-8 my-4 md:mt-20 md:bg-primary-100 md:text-center py-8">
       <MyTypography variant="subtitle2" weight="bold" className="">
         Você é um Guia de Atividades?
       </MyTypography>
