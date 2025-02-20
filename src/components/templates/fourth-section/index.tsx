@@ -30,7 +30,7 @@ const FourthSection = () => {
   const coords = locations.map((location) => location.coords);
 
   return (
-    <section>
+    <section className="max-sm:px-4">
       <div className="max-sm:hidden space-y-1 my-4">
         <MyTypography variant="subtitle3" weight="bold">
           Sugestões de atividades perto de você!
@@ -104,12 +104,11 @@ const FourthSection = () => {
 
           <div className="max-sm:hidden w-full h-full md:min-h-[410px]">
           <GoogleMapsMultiple locations={coords} />
-
           </div>
         </div>
 
         {/* Map */}
-        <div className="w-full max-sm:mx-auto max-sm:w-fit md:hidden">
+        <div className="w-full md:hidden">
           <GoogleMapsMultiple locations={coords} />
         </div>
       </div>

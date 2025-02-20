@@ -11,6 +11,8 @@ export default function SecondSection() {
     <section className="">
       <ActivitiesFilter />
 
+    <div className="max-sm:pl-4">
+
       <MyTypography variant="heading2" weight="semibold" className="mt-8">
         Conheça nossas atividades
       </MyTypography>
@@ -30,6 +32,7 @@ export default function SecondSection() {
       </MyTypography>
 
       <CarouselCustom activities={activities} />
+    </div>
     </section>
   );
 }

@@ -33,7 +33,7 @@ const CarouselReview = ({ reviews }: any) => {
 
 
   return (
-    <div className="relative my-8 md:ml-6">
+    <div className="relative my-8 md:ml-6 max-sm:px-4">
       {/* Shadow effect */}
       {showLeftShadow && (
         <div className="max-sm:hidden absolute inset-y-0 left-0 w-40 bg-gradient-to-r from-gray-100 to-transparent z-10 pointer-events-none" />
@@ -46,13 +46,13 @@ const CarouselReview = ({ reviews }: any) => {
 
       <MyIcon
         name="chevron-down-green"
-        className="absolute -left-5 md:-left-6 top-1/2 rotate-90 z-50"
+        className="absolute left-0 md:-left-6 top-1/2 rotate-90 z-50"
         onClick={() => handleScroll("left")}
       />
 
       <MyIcon
         name="chevron-down-green"
-        className="absolute -right-5 md:-right-1 top-1/2 -rotate-90 z-50"
+        className="absolute right-0 md:-right-1 top-1/2 -rotate-90 z-50"
         onClick={() => handleScroll("right")}
       />
 

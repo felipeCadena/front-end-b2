@@ -20,7 +20,7 @@ export default function FirstSection() {
     "/images/atividades/canoagem.webp",
   ];
   return (
-    <section className="mt-10 md:relative">
+    <section className="mt-10 md:relative max-sm:px-4">
       <CarouselImages rounded images={images} />
       <div className="mt-4 px-4">
         <MyTypography

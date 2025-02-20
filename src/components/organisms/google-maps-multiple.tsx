@@ -15,7 +15,7 @@ export default function GoogleMapsMultiple({ locations }: { locations: { lat: nu
 
   return (
     <LoadScript googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API!}>
-      <div className="rounded-xl overflow-hidden">
+      <div className="rounded-xl overflow-hidden max-sm:mt-4">
         <GoogleMap 
           mapContainerStyle={mapContainerStyle} 
           center={center} 

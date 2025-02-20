@@ -10,7 +10,7 @@ export default function SearchActivity() {
   const [search, setSearch] = React.useState("");
 
   return (
-    <section className="mt-2 md:w-2/3 md:mx-auto">
+    <section className="mt-2 md:w-2/3 md:mx-auto max-sm:px-4">
       <MyTextInput
         placeholder="Procurar atividade"
         noHintText

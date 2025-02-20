@@ -27,7 +27,7 @@ export default function ActivitiesFilter({ withText = true }) {
   return (
     <section
       className={cn(
-        "flex flex-col justify-around gap-2 mx-auto"
+        "flex flex-col justify-around gap-2 mx-auto max-sm:px-4"
       , withText ? "mt-12 md:my-20" : "my-6")}
     >
       {withText && pathname == "/" ? (
@@ -67,7 +67,7 @@ export default function ActivitiesFilter({ withText = true }) {
             variant="outline-muted"
             size="md"
             className={cn(
-              "flex max-sm:flex-col gap-1 items-center rounded-md max-sm:w-[6.625rem] max-sm:h-[6.625rem] md:py-8 md:w-1/2 md:border-2 md:border-black md:text-nowrap",
+              "flex max-sm:flex-col gap-1 items-center rounded-md max-sm:w-[6.5rem] max-sm:h-[6.5rem] md:py-8 md:w-1/2 md:border-2 md:border-black md:text-nowrap",
               item.title === selected &&
                 "border border-black bg-[#E5E4E9] opacity-100"
             )}
