@@ -39,7 +39,7 @@ const ATIVIDADE_REALIZADA = (slug: number | string) => `/informacoes/atividade-r
 const VISUALIZAR_NOTIFICACAO = (slug: number | string) => `/notificacoes/notificacao/${slug}`;
 
 const ENVIAR_FOTOS = (slug: number | string) => `/parceiro/fotos-de-passeios/${slug}/enviar-fotos`;
-const ENVIAR_VIDEOS = (slug: number | string) => `/parceiro/fotos-de-passeios/${slug}/enviar-fotos`;
+const ENVIAR_VIDEOS = (slug: number | string) => `/parceiro/fotos-de-passeios/${slug}/enviar-videos`;
 
 // ==========================================
 // * Dynamic encode routes

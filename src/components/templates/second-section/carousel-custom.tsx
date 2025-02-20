@@ -28,7 +28,7 @@ export default function CarouselCustom({ activities }: any) {
       {activities.map((activity: any, index: number) => (
         <div
           key={index}
-          className="min-w-[70%] md:min-w-[40%] lg:min-w-[25%] flex flex-col gap-1 cursor-pointer md:mb-8"
+          className="min-w-[70%] md:min-w-[30%] lg:min-w-[25%] flex flex-col gap-1 cursor-pointer md:mb-8"
           onClick={() => router.push(PATHS.visualizarAtividade(activity.id))}
         >
           <div className="relative z-10 overflow-hidden h-[225px] w-full md:w-[250px] hover:cursor-pointer rounded-md">
