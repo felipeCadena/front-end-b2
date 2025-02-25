@@ -10,7 +10,7 @@ import React from "react";
 export default function TermosParceiro() {
   const router = useRouter();
   return (
-    <section className="m-6 space-y-4">
+    <section className="m-6 space-y-4 md:space-y-8 md:max-w-screen-md md:mx-auto md:mt-12 md:border-2 md:border-gray-200 md:rounded-xl md:p-16">
       <MyTypography variant="heading2" weight="extrabold">
         Termos de aceite e regras da plataforma.
       </MyTypography>

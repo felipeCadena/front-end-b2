@@ -5,18 +5,30 @@ import Sidebar from "./sidebar";
 import MyLogo from "../atoms/my-logo";
 import LanguageDropdown from "./language-dropdown";
 import MyIcon from "../atoms/my-icon";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import PATHS from "@/utils/paths";
 import useLogin from "@/app/(pages)/(cliente)/(acesso)/login/login-store";
 import Image from "next/image";
 import SideBarModal from "../molecules/side-bar-modal";
+import { cn } from "@/utils/cn";
 
 export default function Header() {
   const router = useRouter();
+  const pathname = usePathname();
+
+  const withoutHeaderMobile = () => {
+    return pathname === PATHS["sobre-a-empresa"];
+  };
+
   const { email, sideBarActive } = useLogin();
 
   return (
-    <header className="top-0 z-50 h-[100px] w-full md:max-w-screen-custom md:mx-auto bg-white flex items-center justify-between px-4 md:px-6 mb-4">
+    <header
+      className={cn(
+        "top-0 z-50 h-[100px] w-full md:max-w-screen-custom md:mx-auto bg-white flex items-center justify-between px-4 md:px-6 mb-4",
+        withoutHeaderMobile() && "max-sm:hidden"
+      )}
+    >
       <div
         className="max-sm:hidden cursor-pointer"
         onClick={() => router.push("/")}

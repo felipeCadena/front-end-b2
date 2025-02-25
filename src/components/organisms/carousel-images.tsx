@@ -10,14 +10,22 @@ type CarouselImagesProps = {
   rounded?: boolean;
 };
 
-export default function CarouselImages({ images, rounded = false }: CarouselImagesProps) {
+export default function CarouselImages({
+  images,
+  rounded = false,
+}: CarouselImagesProps) {
   return (
-    <div className={cn("flex flex-col w-full lg:min-w-0 md:rounded-xl overflow-hidden", rounded && "rounded-lg")}>
+    <div
+      className={cn(
+        "flex flex-col w-full lg:min-w-0 md:rounded-xl overflow-hidden",
+        rounded && "rounded-lg"
+      )}
+    >
       <Carousel
         showThumbs={false}
         showStatus={false}
         showArrows={false}
-        width="105%"
+        width="100%"
         emulateTouch
         infiniteLoop
         centerMode
@@ -44,15 +52,22 @@ export default function CarouselImages({ images, rounded = false }: CarouselImag
         }}
       >
         {images.map((image: any, index: number) => (
-        <div key={index} className={cn("relative z-10 overflow-hidden w-full md:min-h-[500px]")}>
-          <Image
-            alt="Imagens de atividades"
-            src={image ?? ""}
-            width={250}
-            height={300}
-            className={cn("w-full object-cover h-[350px] md:min-h-[500px]")}
-          />
-        </div>
+          <div
+            key={index}
+            className={cn(
+              "relative z-10 overflow-hidden w-full md:min-h-[25rem]"
+            )}
+          >
+            <Image
+              alt="Imagens de atividades"
+              src={image ?? ""}
+              width={250}
+              height={300}
+              className={cn(
+                "w-full object-cover h-[21.87rem] md:min-h-[25rem]"
+              )}
+            />
+          </div>
         ))}
       </Carousel>
     </div>

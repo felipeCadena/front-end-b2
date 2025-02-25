@@ -9,9 +9,16 @@ import React from "react";
 
 export default function AreaParceiros() {
   const router = useRouter();
-  
+
   return (
-    <section className="px-4 my-6 space-y-5 text-center">
+    <section className="m-6 space-y-5 text-center">
+      {/* <Image
+        src="/images/atividades/ar/ar-3.jpeg"
+        width={1200}
+        height={800}
+        alt="Image de um passeio"
+        className="w-full object-cover rounded-lg"
+      /> */}
       <MyTypography variant="heading2" weight="bold">
         Sua jornada como parceiro B2 começa aqui!
       </MyTypography>
@@ -52,9 +59,7 @@ export default function AreaParceiros() {
         Torne a sua atividade uma experiência inesquecível e mostre que feita
         com você ela pode ser ainda mais especial.
       </MyTypography>
-      <MyTypography variant="label">
-        Vamos começar!
-      </MyTypography>
+      <MyTypography variant="label">Vamos começar!</MyTypography>
 
       <MyButton
         variant="default"

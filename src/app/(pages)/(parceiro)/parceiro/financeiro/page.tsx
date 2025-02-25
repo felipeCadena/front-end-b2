@@ -27,13 +27,13 @@ import {
 } from "recharts";
 
 const activities = [
-  { name: "Atividade no Mar", icon: "mar", color: "#00C6FB", progress: 92 },
+  { name: "Atividade na Água", icon: "mar", color: "#00C6FB", progress: 92 },
   { name: "Atividade na Terra", icon: "terra", color: "#FFA500", progress: 68 },
   { name: "Atividade no Ar", icon: "ar", color: "#FF66B2", progress: 75 },
 ];
 
 const pieData = [
-  { name: "Atividade no Mar", value: 80, color: "#00C6FB" },
+  { name: "Atividade na Água", value: 80, color: "#00C6FB" },
   { name: "Atividade no Ar", value: 10, color: "#FF66B2" },
   { name: "Atividade na Terra", value: 10, color: "#FFA500" },
 ];
@@ -243,8 +243,11 @@ export default function Dashboard() {
             </MySelect>
           </div>
 
-          <ResponsiveContainer  width={380} height={200} className="min-w-full mt-4">
-
+          <ResponsiveContainer
+            width={380}
+            height={200}
+            className="min-w-full mt-4"
+          >
             <LineChart data={lineData}>
               <XAxis
                 fontSize={12}
@@ -252,7 +255,7 @@ export default function Dashboard() {
                 dataKey="name"
                 interval="preserveStartEnd"
                 padding={{ left: 10, right: 10 }}
-                />
+              />
               <YAxis fontSize={12} axisLine={false} />
               <Tooltip />
               <ReferenceLine x="Mai" stroke="orange" strokeWidth={2} />
@@ -262,17 +265,16 @@ export default function Dashboard() {
                 stroke="#00C6FB"
                 strokeWidth={2}
                 dot={{ r: 0 }}
-                />
+              />
               <Line
                 type="monotone"
                 dataKey="before"
                 strokeWidth={2}
                 stroke="rgb(201, 201, 201)"
                 dot={{ r: 0 }}
-                />
+              />
               <CartesianGrid strokeDasharray="2" vertical={false} />
             </LineChart>
-
           </ResponsiveContainer>
         </CardContent>
       </MyCard>

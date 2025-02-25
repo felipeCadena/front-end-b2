@@ -2,6 +2,7 @@
 
 import MyIcon from "@/components/atoms/my-icon";
 import MyTypography from "@/components/atoms/my-typography";
+import { cn } from "@/utils/cn";
 import Image from "next/image";
 import { useRef, useState } from "react";
 import { useDraggable } from "react-use-draggable-scroll";
@@ -28,9 +29,8 @@ const CarouselReview = ({ reviews }: any) => {
   const showLeftShadow = scrollPosition > 0;
 
   const showRightShadow =
-  ref.current &&
-  ref.current.scrollWidth > ref.current.clientWidth + scrollPosition + 1;
-
+    ref.current &&
+    ref.current.scrollWidth > ref.current.clientWidth + scrollPosition + 1;
 
   return (
     <div className="relative my-8 md:ml-6 max-sm:px-4">
@@ -59,7 +59,7 @@ const CarouselReview = ({ reviews }: any) => {
       {/* Scrollable content */}
       <div
         ref={ref}
-        className={twMerge(
+        className={cn(
           "max-sm:overflow-x-scroll flex gap-4 overflow-x-hidden no-scrollbar px-2 md:px-6"
         )}
         onScroll={() => setScrollPosition(ref.current?.scrollLeft || 0)}

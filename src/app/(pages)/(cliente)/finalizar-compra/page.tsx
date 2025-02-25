@@ -15,6 +15,7 @@ import {
 import MyTextInput from "@/components/atoms/my-text-input";
 import MyTypography from "@/components/atoms/my-typography";
 import { MyDatePicker } from "@/components/molecules/my-date-picker";
+import TimePickerModal from "@/components/molecules/time-picker";
 import ActivitiesDetails from "@/components/organisms/activities-details";
 import { Card } from "@/components/organisms/card";
 import PeopleSelector from "@/components/organisms/people-selector";
@@ -53,7 +54,7 @@ export default function FinalizarCompra() {
   ];
 
   return (
-    <section className="mx-6">
+    <section className="">
       <div className="flex gap-4 items-center max-sm:hidden">
         <MyIcon
           name="voltar-black"
@@ -85,21 +86,15 @@ export default function FinalizarCompra() {
             </MyTypography>
             <div className="border space-y-6 border-gray-300 rounded-lg py-8 md:space-y-10 md:py-9 px-5 mt-8">
               <MyDatePicker />
-              <MyTextInput
-                type="text"
-                noHintText
-                placeholder="Horário da Atividade"
-                className="placeholder:text-black"
-                leftIcon={<MyIcon name="time" className="ml-3" />}
-              />
+              <TimePickerModal />
               <PeopleSelector />
             </div>
           </div>
         </div>
 
-        <div className="col-span-2">
+        <div className="col-span-2 space-y-16">
           <ShoppingDetails activityDetails={activityDetails} />
-          <div className="flex gap-4 items-center">
+          <div className="flex gap-4 items-center end">
             <MyButton
               variant="outline-neutral"
               borderRadius="squared"
@@ -191,16 +186,15 @@ export default function FinalizarCompra() {
                   rightIcon={<MyIcon name="master" className="-ml-4 mt-5" />}
                 />
 
-                <MySelect 
-                value={value}
-                onValueChange={setValue}
-                >
+                <MySelect value={value} onValueChange={setValue}>
                   <SelectTrigger className="py-6">
                     <SelectValue placeholder="Selecione o número de parcelas" />
                   </SelectTrigger>
                   <SelectContent>
                     {Array.from({ length: 4 }, (_, i) => (
-                      <SelectItem key={i} value={String(i + 1)}>{i + 1}x</SelectItem>
+                      <SelectItem key={i} value={String(i + 1)}>
+                        {i + 1}x
+                      </SelectItem>
                     ))}
                   </SelectContent>
                 </MySelect>
@@ -222,57 +216,64 @@ export default function FinalizarCompra() {
                 </div>
               </div>
             </div>
-          ) : selectedPayment && (
-            <div className="space-y-4 max-sm:my-10 md:w-full">
-              <MyTextInput
-                label="Nome Completo"
-                placeholder="Seu nome"
-                className="mt-2"
-                noHintText
-              />
-
-              <MyTextInput
-                label="E-mail"
-                placeholder="b2adventure@gmail.com"
-                className="mt-2"
-                noHintText
-              />
-              <div className="flex max-sm:flex-col gap-4 md:mt-4">
+          ) : (
+            selectedPayment && (
+              <div className="space-y-4 max-sm:my-10 md:w-full">
                 <MyTextInput
-                  label="Telefone"
-                  placeholder="(XX) XXXXX-XXXX"
+                  label="Nome Completo"
+                  placeholder="Seu nome"
                   className="mt-2"
                   noHintText
                 />
 
                 <MyTextInput
-                  label="CPF"
-                  placeholder="XXX.XXX.XXX-XX"
+                  label="E-mail"
+                  placeholder="b2adventure@gmail.com"
                   className="mt-2"
                   noHintText
                 />
+                <div className="flex max-sm:flex-col gap-4 md:mt-4">
+                  <MyTextInput
+                    label="Telefone"
+                    placeholder="(XX) XXXXX-XXXX"
+                    className="mt-2"
+                    noHintText
+                  />
+
+                  <MyTextInput
+                    label="CPF"
+                    placeholder="XXX.XXX.XXX-XX"
+                    className="mt-2"
+                    noHintText
+                  />
+                </div>
               </div>
+            )
+          )}
+          {selectedPayment && (
+            <div
+              className={cn(
+                "mt-6 md:mt-4 col-start-2",
+                selectedPayment === "Cartão de crédito" &&
+                  "md:col-span-2 md:col-start-2"
+              )}
+            >
+              <MyCheckbox
+                className=""
+                label="Salvar os dados para a próxima compra"
+              />
+              <MyButton
+                variant="default"
+                borderRadius="squared"
+                size="lg"
+                className="my-4 w-full"
+                onClick={() => {}}
+              >
+                Finalizar compra
+              </MyButton>
             </div>
           )}
-        {selectedPayment && (
-          <div className={cn("mt-6 md:mt-4 col-start-2", selectedPayment === "Cartão de crédito" && "md:col-span-2 md:col-start-2")}>
-            <MyCheckbox
-              className=""
-              label="Salvar os dados para a próxima compra"
-            />
-            <MyButton
-              variant="default"
-              borderRadius="squared"
-              size="lg"
-              className="my-4 w-full"
-              onClick={() => {}}
-            >
-              Finalizar compra
-            </MyButton>
-          </div>
-        )}
         </div>
-
       </div>
     </section>
   );

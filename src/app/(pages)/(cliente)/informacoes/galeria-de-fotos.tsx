@@ -81,7 +81,7 @@ export default function GaleriaDeFotos() {
               )}
             >
               <MyIcon name="chevron-down-green" className="mt-2" />
-              <div className="flex flex-wrap gap-4">
+              <div className="grid grid-cols-6 gap-4">
                 {album.map((image, index) => (
                   <div className="relative group" key={index}>
                     <Image

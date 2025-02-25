@@ -14,11 +14,23 @@ const inter = Inter({
 
 const Layout = ({ children }: { children: JSX.Element | ReactNode }) => {
   const pathname = usePathname();
-  const fullWidthPages = ["/login", "/cadastro", "/esqueci-minha-senha"];
+  const fullWidthPages = [
+    "/login",
+    "/cadastro",
+    "/esqueci-minha-senha",
+    "/login-parceiro",
+    "/cadastro-parceiro",
+  ];
 
   return (
-    <section className={cn(`${inter.className} antialiased`, !fullWidthPages.includes(pathname) && "md:mx-auto w-full md:max-w-screen-custom md:px-8")}>
-        {children}
+    <section
+      className={cn(
+        `${inter.className} antialiased`,
+        !fullWidthPages.includes(pathname) &&
+          "md:mx-auto w-full md:max-w-screen-custom md:px-8"
+      )}
+    >
+      {children}
     </section>
   );
 };

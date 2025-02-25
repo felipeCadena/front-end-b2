@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import MyButton from "@/components/atoms/my-button";
 import MyIcon from "@/components/atoms/my-icon";
@@ -16,8 +16,9 @@ export default function CadastroParceiro() {
   const router = useRouter();
 
   return (
-    <section className="m-6 space-y-4">
-       <div className="relative">
+    <section className="flex flex-col bg-white rounded-lg max-w-lg m-auto w-full">
+      <div className="px-6 md:px-12 md:py-6 space-y-6">
+        <div className="relative">
           <MyLogo
             variant="mobile"
             width={100}
@@ -30,72 +31,89 @@ export default function CadastroParceiro() {
             onClick={() => router.push(PATHS.initial)}
           />
         </div>
-      <div className="space-y-2">
-        <MyTypography variant="heading2" weight="bold">
-          Quer ser um de nossos parceiros?
-        </MyTypography>
-        <MyTypography variant="subtitle3" weight="regular" lightness={400}>
-          Só precisa preencher alguns dados antes.
-        </MyTypography>
-      </div>
-
-      <div className="space-y-2">
-        <MyTextInput label="Nome Completo" placeholder="Nome Completo" className="mt-2"/>
-        <MyTextInput
-          type="email"
-          label="E-mail"
-          placeholder="b2adventure@gmail.com"
-          className="mt-2"
-        />
-        <MyTextInput
-          label="Celular"
-          placeholder="+XX (XX) XXXXX-XXXX"
-          className="mt-2"
-        />
-        <MyTextInput
-          label="Senha"
-          placeholder="******"
-          type={visibility ? "text" : "password"}
-          rightIcon={<MyIcon name={visibility ? "hide" : "eye"} className="mr-4 mt-2 cursor-pointer" onClick={() => setVisibility(prev => !prev)} />}
-          className="mt-2"
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <MyTextInput
-          label="Confirmar Senha"
-          placeholder="******"
-          type={visibility ? "text" : "password"}
-          rightIcon={<MyIcon name={visibility ? "hide" : "eye"} className="mr-4 mt-2 cursor-pointer" onClick={() => setVisibility(prev => !prev)}/>}
-          className="mt-2"
-          onChange={(e) => setConfirmPassword(e.target.value)}
-        />
-      </div>
-
-      <div className="flex flex-col">
-        <MyButton
-          className=""
-          variant="default"
-          borderRadius="squared"
-          size="md"
-          onClick={() => router.push(PATHS["sobre-a-empresa"])}
-        >
-          Cadastrar Conta
-        </MyButton>
-
-        <div className="text-center mt-8">
-          <MyTypography
-            variant="label"
-            weight="regular"
-            className="text-[#5F5C6B]"
-          >
-            Lembrou que tem uma conta?
+        <div className="space-y-2">
+          <MyTypography variant="heading2" weight="bold">
+            Quer ser um de nossos parceiros?
           </MyTypography>
+          <MyTypography variant="subtitle3" weight="regular" lightness={400}>
+            Só precisa preencher alguns dados antes.
+          </MyTypography>
+        </div>
+
+        <div className="space-y-2">
+          <MyTextInput
+            label="Nome Completo"
+            placeholder="Nome Completo"
+            className="mt-2"
+          />
+          <MyTextInput
+            type="email"
+            label="E-mail"
+            placeholder="b2adventure@gmail.com"
+            className="mt-2"
+          />
+          <MyTextInput
+            label="Celular"
+            placeholder="+XX (XX) XXXXX-XXXX"
+            className="mt-2"
+          />
+          <MyTextInput
+            label="Senha"
+            placeholder="******"
+            type={visibility ? "text" : "password"}
+            rightIcon={
+              <MyIcon
+                name={visibility ? "hide" : "eye"}
+                className="mr-4 mt-2 cursor-pointer"
+                onClick={() => setVisibility((prev) => !prev)}
+              />
+            }
+            className="mt-2"
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <MyTextInput
+            label="Confirmar Senha"
+            placeholder="******"
+            type={visibility ? "text" : "password"}
+            rightIcon={
+              <MyIcon
+                name={visibility ? "hide" : "eye"}
+                className="mr-4 mt-2 cursor-pointer"
+                onClick={() => setVisibility((prev) => !prev)}
+              />
+            }
+            className="mt-2"
+            onChange={(e) => setConfirmPassword(e.target.value)}
+          />
+        </div>
+
+        <div className="flex flex-col">
           <MyButton
-            onClick={() => router.push(PATHS["login-parceiro"])}
-            variant="text"
             className=""
+            variant="default"
+            borderRadius="squared"
+            size="md"
+            onClick={() => router.push(PATHS["sobre-a-empresa"])}
           >
-            Bora lá!
+            Cadastrar Conta
           </MyButton>
+
+          <div className="text-center mt-8">
+            <MyTypography
+              variant="label"
+              weight="regular"
+              className="text-[#5F5C6B]"
+            >
+              Lembrou que tem uma conta?
+            </MyTypography>
+            <MyButton
+              onClick={() => router.push(PATHS["login-parceiro"])}
+              variant="text"
+              className=""
+            >
+              Bora lá!
+            </MyButton>
+          </div>
         </div>
       </div>
     </section>

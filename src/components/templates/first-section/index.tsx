@@ -26,7 +26,7 @@ export default function FirstSection() {
         <MyTypography
           variant="heading2"
           weight="bold"
-          className={`md:font-my-font md:text-end md:absolute md:top-8 md:right-16 md:font-extrabold md:uppercase md:w-[23rem] md:text-[3rem] md:text-white md:drop-shadow-sm`}
+          className={`md:font-my-font md:text-end md:absolute md:top-8 md:right-12 md:font-extrabold md:uppercase md:w-[23rem] md:text-[3rem] md:text-white md:drop-shadow-sm`}
         >
           Qual será sua próxima aventura?
         </MyTypography>
@@ -34,7 +34,7 @@ export default function FirstSection() {
           variant="default"
           size="md"
           borderRadius="squared"
-          className="mt-4 md:absolute md:bottom-24 md:right-16"
+          className="mt-4 md:absolute md:bottom-24 md:right-12"
         >
           Descobrir agora
         </MyButton>

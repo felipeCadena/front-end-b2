@@ -1,14 +1,14 @@
 export const profile = {
   avatar: "/images/avatar1.png",
   name: "Luciana Bianco",
-  email: ""
-}
+  email: "",
+};
 
 export const activitiesOcean = [
   {
     id: "1",
     image: "/images/atividades/mar/mar-1.jpeg",
-    tag: "Atividade no Mar",
+    tag: "Atividade na Água",
     stars: 5,
     title: "Atividade 1",
     localizacao: "Marina da Glória - RJ",
@@ -22,13 +22,13 @@ export const activitiesOcean = [
     reserva: {
       timestamp: "2025-03-12T08:00:00",
       pessoas: 2,
-      total: 363.86
-    }
+      total: 363.86,
+    },
   },
   {
     id: "2",
     image: "/images/atividades/mar/mar-2.jpeg",
-    tag: "Atividade no Mar",
+    tag: "Atividade na Água",
     stars: 5,
     title: "Atividade 2",
     localizacao: "Marina da Glória - RJ",
@@ -42,13 +42,13 @@ export const activitiesOcean = [
     reserva: {
       timestamp: "2025-03-12T08:00:00",
       pessoas: 2,
-      total: 363.86
-    }
+      total: 363.86,
+    },
   },
   {
     id: "3",
     image: "/images/atividades/mar/mar-3.jpeg",
-    tag: "Atividade no Mar",
+    tag: "Atividade na Água",
     stars: 5,
     title: "Atividade 3",
     localizacao: "Marina da Glória - RJ",
@@ -62,13 +62,13 @@ export const activitiesOcean = [
     reserva: {
       timestamp: "2025-03-12T08:00:00",
       pessoas: 2,
-      total: 363.86
-    }
+      total: 363.86,
+    },
   },
   {
     id: "4",
     image: "/images/atividades/mar/mar-4.jpeg",
-    tag: "Atividade no Mar",
+    tag: "Atividade na Água",
     stars: 5,
     title: "Atividade 4",
     localizacao: "Marina da Glória - RJ",
@@ -82,13 +82,13 @@ export const activitiesOcean = [
     reserva: {
       timestamp: "2025-03-12T08:00:00",
       pessoas: 2,
-      total: 363.86
-    }
+      total: 363.86,
+    },
   },
   {
     id: "5",
     image: "/images/atividades/mar/mar-5.jpeg",
-    tag: "Atividade no Mar",
+    tag: "Atividade na Água",
     stars: 5,
     title: "Atividade 5",
     localizacao: "Marina da Glória - RJ",
@@ -102,13 +102,13 @@ export const activitiesOcean = [
     reserva: {
       timestamp: "2025-03-12T08:00:00",
       pessoas: 2,
-      total: 363.86
-    }
+      total: 363.86,
+    },
   },
   {
     id: "6",
     image: "/images/atividades/mar/mar-6.jpeg",
-    tag: "Atividade no Mar",
+    tag: "Atividade na Água",
     stars: 5,
     title: "Atividade 6",
     localizacao: "Marina da Glória - RJ",
@@ -122,13 +122,13 @@ export const activitiesOcean = [
     reserva: {
       timestamp: "2025-03-12T08:00:00",
       pessoas: 2,
-      total: 363.86
-    }
+      total: 363.86,
+    },
   },
   {
     id: "7",
     image: "/images/atividades/mar/mar-7.jpeg",
-    tag: "Atividade no Mar",
+    tag: "Atividade na Água",
     stars: 5,
     title: "Atividade 7",
     localizacao: "Marina da Glória - RJ",
@@ -142,10 +142,10 @@ export const activitiesOcean = [
     reserva: {
       timestamp: "2025-03-12T08:00:00",
       pessoas: 2,
-      total: 363.86
-    }
+      total: 363.86,
+    },
   },
-]
+];
 
 export const activitiesLand = [
   {
@@ -165,8 +165,8 @@ export const activitiesLand = [
     reserva: {
       timestamp: "2024-12-12T16:00:00",
       pessoas: 4,
-      total: 763.50
-    }
+      total: 763.5,
+    },
   },
   {
     id: "2",
@@ -185,8 +185,8 @@ export const activitiesLand = [
     reserva: {
       timestamp: "2024-12-12T16:00:00",
       pessoas: 3,
-      total: 560.50
-    }
+      total: 560.5,
+    },
   },
   {
     id: "3",
@@ -205,8 +205,8 @@ export const activitiesLand = [
     reserva: {
       timestamp: "2024-12-12T16:00:00",
       pessoas: 4,
-      total: 763.50
-    }
+      total: 763.5,
+    },
   },
   {
     id: "4",
@@ -225,8 +225,8 @@ export const activitiesLand = [
     reserva: {
       timestamp: "2024-12-12T16:00:00",
       pessoas: 3,
-      total: 560.50
-    }
+      total: 560.5,
+    },
   },
   {
     id: "5",
@@ -245,8 +245,8 @@ export const activitiesLand = [
     reserva: {
       timestamp: "2024-12-12T16:00:00",
       pessoas: 4,
-      total: 763.50
-    }
+      total: 763.5,
+    },
   },
   {
     id: "6",
@@ -265,8 +265,8 @@ export const activitiesLand = [
     reserva: {
       timestamp: "2024-12-12T16:00:00",
       pessoas: 3,
-      total: 560.50
-    }
+      total: 560.5,
+    },
   },
   {
     id: "7",
@@ -285,10 +285,10 @@ export const activitiesLand = [
     reserva: {
       timestamp: "2024-12-12T16:00:00",
       pessoas: 3,
-      total: 560.50
-    }
+      total: 560.5,
+    },
   },
-]
+];
 
 export const activitiesAir = [
   {
@@ -308,8 +308,8 @@ export const activitiesAir = [
     reserva: {
       timestamp: "2024-12-12T14:00:00",
       pessoas: 3,
-      total: 496.50
-    }
+      total: 496.5,
+    },
   },
   {
     id: "2",
@@ -329,8 +329,8 @@ export const activitiesAir = [
     reserva: {
       timestamp: "2024-12-12T14:00:00",
       pessoas: 3,
-      total: 496.50
-    }
+      total: 496.5,
+    },
   },
   {
     id: "3",
@@ -349,8 +349,8 @@ export const activitiesAir = [
     reserva: {
       timestamp: "2024-12-12T14:00:00",
       pessoas: 3,
-      total: 496.50
-    }
+      total: 496.5,
+    },
   },
   {
     id: "4",
@@ -370,8 +370,8 @@ export const activitiesAir = [
     reserva: {
       timestamp: "2024-12-12T14:00:00",
       pessoas: 3,
-      total: 496.50
-    }
+      total: 496.5,
+    },
   },
   {
     id: "5",
@@ -390,8 +390,8 @@ export const activitiesAir = [
     reserva: {
       timestamp: "2024-12-12T14:00:00",
       pessoas: 3,
-      total: 496.50
-    }
+      total: 496.5,
+    },
   },
   {
     id: "6",
@@ -411,8 +411,8 @@ export const activitiesAir = [
     reserva: {
       timestamp: "2024-12-12T14:00:00",
       pessoas: 3,
-      total: 496.50
-    }
+      total: 496.5,
+    },
   },
   {
     id: "7",
@@ -432,17 +432,16 @@ export const activitiesAir = [
     reserva: {
       timestamp: "2024-12-12T14:00:00",
       pessoas: 3,
-      total: 496.50
-    }
+      total: 496.5,
+    },
   },
-]
-
+];
 
 export const activities = [
   {
     id: "1",
     image: "/images/atividades/mar/mar-1.jpeg",
-    tag: "Atividade no Mar",
+    tag: "Atividade na Água",
     stars: 5,
     title: "Atividade 1",
     localizacao: "Marina da Glória - RJ",
@@ -456,9 +455,8 @@ export const activities = [
     reserva: {
       timestamp: "2025-03-12T08:00:00",
       pessoas: 2,
-      total: 363.86
-    }
-
+      total: 363.86,
+    },
   },
   {
     id: "2",
@@ -477,8 +475,8 @@ export const activities = [
     reserva: {
       timestamp: "2024-12-12T14:00:00",
       pessoas: 3,
-      total: 496.50
-    }
+      total: 496.5,
+    },
   },
   {
     id: "3",
@@ -497,13 +495,13 @@ export const activities = [
     reserva: {
       timestamp: "2024-12-12T16:00:00",
       pessoas: 4,
-      total: 763.50
-    }
+      total: 763.5,
+    },
   },
   {
     id: "4",
     image: "/images/atividades/mar/mar-2.jpeg",
-    tag: "Atividade no Mar",
+    tag: "Atividade na Água",
     stars: 5,
     title: "Atividade 4",
     localizacao: "Ilhas Tijuca - RJ",
@@ -518,13 +516,13 @@ export const activities = [
     reserva: {
       timestamp: "2025-01-05T11:00:00",
       pessoas: 1,
-      total: 247.30
-    }
+      total: 247.3,
+    },
   },
   {
     id: "5",
     image: "/images/atividades/mar/mar-3.jpeg",
-    tag: "Atividade no Mar",
+    tag: "Atividade na Água",
     stars: 5,
     title: "Atividade 5",
     localizacao: "Ilhas Tijuca - RJ",
@@ -539,8 +537,8 @@ export const activities = [
     reserva: {
       timestamp: "2025-01-05T11:00:00",
       pessoas: 1,
-      total: 247.30
-    }
+      total: 247.3,
+    },
   },
   {
     id: "6",
@@ -559,8 +557,8 @@ export const activities = [
     reserva: {
       timestamp: "2024-12-12T16:00:00",
       pessoas: 4,
-      total: 763.50
-    }
+      total: 763.5,
+    },
   },
 ];
 
@@ -578,8 +576,8 @@ export const notifications = [
     description: "Sua atividade foi cancelada por um dos nossos parceiros.",
     parceiro: {
       avatar: "/images/avatar1.png",
-      nome: "Bruna Delduca"
-    }
+      nome: "Bruna Delduca",
+    },
   },
   {
     id: 2,
@@ -591,11 +589,12 @@ export const notifications = [
       "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",
     read: true,
     status: "pendente",
-    description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",
+    description:
+      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",
     parceiro: {
       avatar: "/images/avatar1.png",
-      nome: "Felipe Almeida"
-    }
+      nome: "Felipe Almeida",
+    },
   },
   {
     id: 3,
@@ -607,11 +606,12 @@ export const notifications = [
       "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",
     read: true,
     status: "pendente",
-    description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",
+    description:
+      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",
     parceiro: {
       avatar: "/images/avatar1.png",
-      nome: "Talisson Silva"
-    }
+      nome: "Talisson Silva",
+    },
   },
   {
     id: 4,
@@ -623,11 +623,12 @@ export const notifications = [
       "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",
     read: true,
     status: "pendente",
-    description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",
+    description:
+      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",
     parceiro: {
       avatar: "/images/avatar1.png",
-      nome: "Michel Nicolay"
-    }
+      nome: "Michel Nicolay",
+    },
   },
   {
     id: 5,
@@ -639,11 +640,12 @@ export const notifications = [
       "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",
     read: false,
     status: "realizada",
-    description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",
+    description:
+      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",
     parceiro: {
       avatar: "/images/avatar1.png",
-      nome: "Bruna Delduca"
-    }
+      nome: "Bruna Delduca",
+    },
   },
 ];
 
@@ -661,8 +663,8 @@ export const notificationActivities = [
     description: "Sua atividade foi cancelada por um dos nossos parceiros.",
     parceiro: {
       avatar: "/images/avatar1.png",
-      nome: "Bruna Delduca"
-    }
+      nome: "Bruna Delduca",
+    },
   },
   {
     id: 2,
@@ -674,11 +676,12 @@ export const notificationActivities = [
       "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",
     read: true,
     status: "em andamento",
-    description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",
+    description:
+      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",
     parceiro: {
       avatar: "/images/avatar1.png",
-      nome: "Felipe Almeida"
-    }
+      nome: "Felipe Almeida",
+    },
   },
   {
     id: 3,
@@ -690,11 +693,12 @@ export const notificationActivities = [
       "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",
     read: true,
     status: "pendente",
-    description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",
+    description:
+      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",
     parceiro: {
       avatar: "/images/avatar1.png",
-      nome: "Talisson Silva"
-    }
+      nome: "Talisson Silva",
+    },
   },
   {
     id: 4,
@@ -706,11 +710,12 @@ export const notificationActivities = [
       "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",
     read: true,
     status: "pendente",
-    description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",
+    description:
+      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",
     parceiro: {
       avatar: "/images/avatar1.png",
-      nome: "Michel Nicolay"
-    }
+      nome: "Michel Nicolay",
+    },
   },
   {
     id: 5,
@@ -722,11 +727,12 @@ export const notificationActivities = [
       "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",
     read: false,
     status: "realizada",
-    description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",
+    description:
+      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",
     parceiro: {
       avatar: "/images/avatar1.png",
-      nome: "Bruna Delduca"
-    }
+      nome: "Bruna Delduca",
+    },
   },
 ];
 

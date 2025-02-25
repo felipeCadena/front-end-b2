@@ -7,7 +7,6 @@ import Header from "./header";
 import Footer from "../templates/footer";
 import { cn } from "@/utils/cn";
 
-
 const Layout = ({ children }: { children: JSX.Element | ReactNode }) => {
   const pathname = usePathname();
 
@@ -19,7 +18,6 @@ const Layout = ({ children }: { children: JSX.Element | ReactNode }) => {
       pathname !== PATHS["login-parceiro"] &&
       pathname !== PATHS["esqueci-minha-senha"] &&
       pathname !== PATHS["cadastro-parceiro"] &&
-      pathname !== PATHS["sobre-a-empresa"] &&
       pathname !== PATHS["cadastro-atividade"] &&
       pathname !== PATHS["informacoes-atividades"]
     );
@@ -29,15 +27,18 @@ const Layout = ({ children }: { children: JSX.Element | ReactNode }) => {
     return (
       pathname != PATHS.cadastro &&
       pathname != PATHS.login &&
-      pathname != PATHS["esqueci-minha-senha"]
+      pathname != PATHS["esqueci-minha-senha"] &&
+      pathname != PATHS["termos-parceiro"] &&
+      pathname != PATHS["cadastro-parceiro"] &&
+      pathname != PATHS["login-parceiro"] &&
+      pathname != PATHS["sobre-a-empresa"]
     );
   };
-
 
   return (
     <section>
       {withoutHeader() && <Header />}
-        {children}
+      {children}
       {withoutFooter() && <Footer />}
     </section>
   );

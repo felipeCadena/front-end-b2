@@ -21,45 +21,44 @@ export default function ActivitiesFilter({ withText = true }) {
     },
     {
       icon: "mar",
-      title: "Atividades no Mar",
+      title: "Atividade na Água",
     },
   ];
   return (
     <section
       className={cn(
-        "flex flex-col justify-around gap-2 mx-auto max-sm:px-4"
-      , withText ? "mt-12 md:my-20" : "my-6")}
+        "flex flex-col justify-around gap-2 mx-auto max-sm:px-4",
+        withText ? "mt-12 md:my-12" : "my-6"
+      )}
     >
       {withText && pathname == "/" ? (
         <div className="md:hidden">
-          <MyTypography
-            variant="heading2"
-            weight="semibold"
-          >
+          <MyTypography variant="heading2" weight="semibold">
             Como você quer se aventurar?
           </MyTypography>
-          <MyTypography
-            variant="body-big"
-            weight="regular"
-          >
+          <MyTypography variant="body-big" weight="regular">
             Escolha aqui seu tipo favorito de atividade
           </MyTypography>
         </div>
-      ): withText && (
-    <div className="md:hidden">
-        <MyTypography variant="heading2" weight="semibold" className="">
-          Qual sua próxima aventura?
-        </MyTypography>
-      </div>
+      ) : (
+        withText && (
+          <div className="md:hidden">
+            <MyTypography variant="heading2" weight="semibold" className="">
+              Qual sua próxima aventura?
+            </MyTypography>
+          </div>
+        )
       )}
 
-      {withText && <MyTypography
-        variant="subtitle3"
-        weight="semibold"
-        className="max-sm:hidden mb-2"
-      >
-        Escolha seu tipo de aventura
-      </MyTypography>}
+      {withText && (
+        <MyTypography
+          variant="subtitle3"
+          weight="semibold"
+          className="max-sm:hidden mb-2"
+        >
+          Escolha seu tipo de aventura
+        </MyTypography>
+      )}
       <div className="flex justify-center gap-2 max-sm:w-full">
         {activities.map((item, index) => (
           <MyButton
