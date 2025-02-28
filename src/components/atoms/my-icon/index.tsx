@@ -100,6 +100,11 @@ import Success from "./elements/success";
 import Pie from "./elements/pie";
 import Video from "./elements/video";
 import Plus from "./elements/plus";
+import Contract from "./elements/contract";
+import Connections from "./elements/connection";
+import LoudsSpeaker from "./elements/loudspeaker";
+import Hiking from "./elements/hiking";
+import Lock from "./elements/lock";
 
 export type IconsMapTypes = keyof typeof IconsMap;
 
@@ -193,7 +198,7 @@ const IconsMap = {
   download: <Download />,
   "chevron-down-green": <ChevronDownGreen />,
   "download-green": <DownloadGreen />,
-  "x-red": <XRed />, 
+  "x-red": <XRed />,
   add: <Add />,
   "shared-muted": <SharedMuted />,
   camera: <Camera />,
@@ -209,18 +214,27 @@ const IconsMap = {
   success: <Success />,
   pie: <Pie />,
   video: <Video />,
-  plus: <Plus />
+  plus: <Plus />,
+  contract: <Contract />,
+  connections: <Connections />,
+  speaker: <LoudsSpeaker />,
+  hiking: <Hiking />,
+  lock: <Lock />,
 };
 
-
-export default function MyIcon({ name, variant, className, ...props }: MyIconProps) {
+export default function MyIcon({
+  name,
+  variant,
+  className,
+  ...props
+}: MyIconProps) {
   return (
     <div
       {...props}
       className={cn(
         variant === "circled" &&
-        "flex h-9 w-9 items-center justify-center rounded-full",
-        className,
+          "flex h-9 w-9 items-center justify-center rounded-full",
+        className
       )}
     >
       {IconsMap[name]}
