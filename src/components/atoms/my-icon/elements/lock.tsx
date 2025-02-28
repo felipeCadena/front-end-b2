@@ -6,9 +6,9 @@ const Lock = () => (
     xmlns="http://www.w3.org/2000/svg"
     fill="none"
     stroke="black"
-    stroke-width="6"
-    stroke-linecap="round"
-    stroke-linejoin="round"
+    strokeWidth="6"
+    strokeLinecap="round"
+    strokeLinejoin="round"
   >
     <path
       d="M100 10 L30 40 V100 C30 150 70 180 100 190 C130 180 170 150 170 100 V40 L100 10 Z"
