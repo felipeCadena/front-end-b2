@@ -14,12 +14,12 @@ import React from "react";
 
 export default function AtividadesTemplate() {
   return (
-    <section className="mx-5">
+    <section className="">
       <SearchActivity />
 
       <ActivitiesFilter />
 
-      <div className="my-8 md:my-16">
+      <div className="ml-5 my-8 md:my-16">
         <MyTypography
           variant="heading2"
           weight="semibold"

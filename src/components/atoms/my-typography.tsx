@@ -17,7 +17,7 @@ const typographyMap = cva("", {
       label: "text-[0.875rem]",
       button: "text-[0.775rem] ",
       notification: "text-[0.75rem] ",
-      caption: "text-[0.625rem]"
+      caption: "text-[0.625rem]",
     },
     weight: {
       light: "font-light",
@@ -25,7 +25,7 @@ const typographyMap = cva("", {
       medium: "font-medium",
       bold: "font-bold",
       semibold: "font-semibold",
-      extrabold: "font-extrabold"
+      extrabold: "font-extrabold",
     },
     lightness: {
       white: "text-neutral-000",
@@ -62,7 +62,9 @@ export default function MyTypography({
   const Component = as || "div";
 
   return (
-    <Component className={cn(typographyMap({ variant, weight, lightness, className }))}>
+    <Component
+      className={cn(typographyMap({ variant, weight, lightness, className }))}
+    >
       {children}
     </Component>
   );

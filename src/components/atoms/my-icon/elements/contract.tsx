@@ -1,4 +1,10 @@
-const Contract = () => (
+const Contract = ({
+  className,
+  fill = "none",
+}: {
+  className?: string;
+  fill?: string;
+}) => (
   <svg
     fill="#fff"
     height="50px"
@@ -9,6 +15,7 @@ const Contract = () => (
     xmlnsXlink="http://www.w3.org/1999/xlink"
     viewBox="0 0 315.752 315.752"
     xmlSpace="preserve"
+    className={className}
   >
     <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
     <g id="SVGRepo_iconCarrier">

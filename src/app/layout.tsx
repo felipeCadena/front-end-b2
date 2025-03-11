@@ -29,16 +29,16 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${inter.className} antialiased md:min-h-screen`}>
         <Suspense>
-            <Layout>{children}</Layout>
+          <Layout>{children}</Layout>
         </Suspense>
-            <ToastContainer
-              theme="colored"
-              position="top-right"
-              autoClose={2500}
-              pauseOnHover={false}
-              hideProgressBar
-              style={{ width: "420px" }}
-            />
+        <ToastContainer
+          theme="colored"
+          position="top-right"
+          autoClose={2500}
+          pauseOnHover={false}
+          hideProgressBar
+          style={{ width: "420px" }}
+        />
       </body>
     </html>
   );

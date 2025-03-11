@@ -1,4 +1,10 @@
-const Lock = ({ className }: { className?: string }) => (
+const Lock = ({
+  className,
+  stroke = "#fff",
+}: {
+  className?: string;
+  stroke?: string;
+}) => (
   <svg
     height="50px"
     width="50px"
@@ -14,7 +20,7 @@ const Lock = ({ className }: { className?: string }) => (
     <path
       d="M100 10 L30 40 V100 C30 150 70 180 100 190 C130 180 170 150 170 100 V40 L100 10 Z"
       fill="none"
-      stroke="#fff"
+      stroke={stroke}
     />
 
     <rect
@@ -24,9 +30,9 @@ const Lock = ({ className }: { className?: string }) => (
       height="50"
       rx="8"
       fill="none"
-      stroke="#fff"
+      stroke={stroke}
     />
-    <path d="M85 90 V70 A15 15 0 0 1 115 70 V90" fill="none" stroke="#fff" />
+    <path d="M85 90 V70 A15 15 0 0 1 115 70 V90" fill="none" stroke={stroke} />
   </svg>
 );
 
