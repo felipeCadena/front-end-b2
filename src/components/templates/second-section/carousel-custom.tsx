@@ -54,10 +54,10 @@ export default function CarouselCustom({ activities }: any) {
             )}
           </div>
 
-          
-
           <div className="mt-1 flex gap-2 items-center">
-            <MyBadge variant="outline" className="p-1">{activity.tag}</MyBadge>
+            <MyBadge variant="outline" className="p-1">
+              {activity.tag}
+            </MyBadge>
             <StarRating rating={activity.stars} />
           </div>
 
@@ -68,8 +68,12 @@ export default function CarouselCustom({ activities }: any) {
               width={40}
               height={40}
               className="rounded-full"
-              />
-            <MyTypography variant="body" weight="medium" className="mt-1 text-nowrap">
+            />
+            <MyTypography
+              variant="body"
+              weight="medium"
+              className="mt-1 text-nowrap"
+            >
               {activity.parceiro.nome}
             </MyTypography>
           </div>
@@ -77,12 +81,17 @@ export default function CarouselCustom({ activities }: any) {
           <MyTypography variant="subtitle1" weight="bold">
             {activity.title}
           </MyTypography>
-            <MyTypography variant="body-big" className="">
-              {activity.description.slice(0, 105).concat("...")}{" "}
-            <MyTypography variant="body-big" weight="bold" lightness={500} className="inline cursor-pointer">
+          <MyTypography variant="body-big" className="md:w-[250px] ">
+            {activity.description.slice(0, 105).concat("...")}{" "}
+            <MyTypography
+              variant="body-big"
+              weight="bold"
+              lightness={500}
+              className="inline cursor-pointer"
+            >
               Saiba Mais
             </MyTypography>
-            </MyTypography>
+          </MyTypography>
         </div>
       ))}
     </div>

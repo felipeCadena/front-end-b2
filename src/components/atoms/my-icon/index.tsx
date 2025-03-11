@@ -105,6 +105,10 @@ import Connections from "./elements/connection";
 import LoudsSpeaker from "./elements/loudspeaker";
 import Hiking from "./elements/hiking";
 import Lock from "./elements/lock";
+import Trash from "./elements/trash";
+import Edit from "./elements/edit";
+import SmallCancel from "./elements/small-cancel";
+import Duplicate from "./elements/duplicate";
 
 export type IconsMapTypes = keyof typeof IconsMap;
 
@@ -220,6 +224,10 @@ const IconsMap = {
   speaker: <LoudsSpeaker />,
   hiking: <Hiking />,
   lock: <Lock />,
+  trash: <Trash />,
+  edit: <Edit />,
+  "small-cancel": <SmallCancel />,
+  duplicate: <Duplicate />,
 };
 
 export default function MyIcon({

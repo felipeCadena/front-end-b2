@@ -17,7 +17,7 @@ export default function ActivitiesFilter({ withText = true }) {
     },
     {
       icon: "terra",
-      title: "Atividades no Terra",
+      title: "Atividades na Terra",
     },
     {
       icon: "mar",

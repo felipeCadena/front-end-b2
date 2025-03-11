@@ -84,7 +84,7 @@ export default function PeopleSelector() {
                 Crianças - R$ 90,00
               </MyTypography>
               <MyTypography variant="body-big" weight="regular">
-                Idade: 4 - 10
+                Idade: 4 - 12
               </MyTypography>
             </div>
             <div className="flex items-center gap-4">

@@ -1,4 +1,4 @@
-const Hide = ({iconColor}: {iconColor?: string}) => (
+const Hide = ({ iconColor }: { iconColor?: string }) => (
   <svg
     width="24"
     height="16"

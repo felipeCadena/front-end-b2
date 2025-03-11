@@ -1,11 +1,15 @@
+"use client";
+
 import { cn } from "@/utils/cn";
-import React from "react";
+import React, { useState } from "react";
 import MyTypography from "../atoms/my-typography";
 import MyIcon from "../atoms/my-icon";
 import { formatDate, getTimeInterval } from "@/utils/formatters";
 import Now from "../atoms/my-icon/elements/now";
+import PopupActivity from "./popup-activity";
 
 export default function ActivitiesHidden({ notifications }: any) {
+  const [openModal, setOpenModal] = useState(false);
   return (
     <section>
       <div className="mt-6 mx-4">
@@ -39,7 +43,19 @@ export default function ActivitiesHidden({ notifications }: any) {
                 <MyIcon
                   name="options"
                   className="absolute top-3 right-3 cursor-pointer"
+                  onClick={() => setOpenModal(true)}
                 />
+                {openModal && (
+                  <PopupActivity
+                    visible={openModal}
+                    onClose={() => setOpenModal(false)}
+                    onDuplicar={() => {}}
+                    onCancelar={() => {}}
+                    onEditar={() => {}}
+                    onOcultar={() => {}}
+                    onExcluir={() => {}}
+                  />
+                )}
                 <div className="flex items-center justify-between w-full">
                   <MyTypography
                     variant="notification"
@@ -76,10 +92,13 @@ export default function ActivitiesHidden({ notifications }: any) {
                   {notification.status == "cancelada"
                     ? "Atividade cancelada"
                     : notification.status == "em andamento"
-                    ? notification.group + " clientes participando desta atividade"
-                    : notification.status == "realizada"
-                    ? notification.group + " clientes participaram desta atividade"
-                    : notification.group + " clientes vão participar desta atividade"}
+                      ? notification.group +
+                        " clientes participando desta atividade"
+                      : notification.status == "realizada"
+                        ? notification.group +
+                          " clientes participaram desta atividade"
+                        : notification.group +
+                          " clientes vão participar desta atividade"}
                 </MyTypography>
               </div>
             )

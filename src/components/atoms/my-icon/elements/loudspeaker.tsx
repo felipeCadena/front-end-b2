@@ -1,8 +1,8 @@
 const LoudsSpeaker = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    height="70px"
-    width="70px"
+    height="50px"
+    width="50px"
     viewBox="0 0 24 24"
     fill="none"
     stroke="#fff"

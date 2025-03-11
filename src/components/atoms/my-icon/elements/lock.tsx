@@ -1,7 +1,7 @@
-const Lock = () => (
+const Lock = ({ className }: { className?: string }) => (
   <svg
-    height="70px"
-    width="70px"
+    height="50px"
+    width="50px"
     viewBox="0 0 200 200"
     xmlns="http://www.w3.org/2000/svg"
     fill="none"
@@ -9,6 +9,7 @@ const Lock = () => (
     strokeWidth="6"
     strokeLinecap="round"
     strokeLinejoin="round"
+    className={className}
   >
     <path
       d="M100 10 L30 40 V100 C30 150 70 180 100 190 C130 180 170 150 170 100 V40 L100 10 Z"

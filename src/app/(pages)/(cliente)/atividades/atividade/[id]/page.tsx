@@ -41,7 +41,6 @@ export default function Atividade() {
           />
         </div>
         <div className="max-sm:hidden flex flex-col my-8">
-          
           <div className="flex items-start gap-8">
             <div>
               <MyTypography variant="heading2" weight="bold" className="">
@@ -52,7 +51,31 @@ export default function Atividade() {
               </MyBadge>
             </div>
 
-            <StarRating rating={activity?.stars ?? 5} />
+            <div className="space-y-4">
+              <StarRating rating={activity?.stars ?? 5} />
+
+              <div className="flex gap-4 max-sm:hidden">
+                <Image
+                  alt="avatar"
+                  src={activity?.parceiro.avatar ?? ""}
+                  width={8}
+                  height={8}
+                  className="w-12 h-12 rounded-full object-contain"
+                />
+                <div>
+                  <MyTypography variant="label" weight="semibold">
+                    {activity?.parceiro.nome}
+                  </MyTypography>
+                  <MyTypography
+                    variant="label"
+                    weight="regular"
+                    lightness={400}
+                  >
+                    Parceiro e Guia de atividades
+                  </MyTypography>
+                </div>
+              </div>
+            </div>
           </div>
 
           <div className="mt-4">
@@ -102,7 +125,9 @@ export default function Atividade() {
             {activity?.title}
           </MyTypography>
           <div className="flex items-center justify-between">
-            <MyBadge variant="outline" className="p-1">{activity?.tag}</MyBadge>
+            <MyBadge variant="outline" className="p-1">
+              {activity?.tag}
+            </MyBadge>
             <StarRating rating={activity?.stars ?? 5} />
           </div>
         </div>
@@ -119,7 +144,11 @@ export default function Atividade() {
             <MyTypography variant="notification" weight="semibold">
               {activity?.parceiro.nome}
             </MyTypography>
-            <MyTypography variant="notification" weight="regular" lightness={400}>
+            <MyTypography
+              variant="notification"
+              weight="regular"
+              lightness={400}
+            >
               Parceiro e Guia de atividades
             </MyTypography>
           </div>
@@ -263,23 +292,6 @@ export default function Atividade() {
               </div>
               <MyIcon name="compartilhar" className="cursor-pointer" />
             </div>
-            <div className="flex gap-4 max-sm:hidden">
-          <Image
-            alt="avatar"
-            src={activity?.parceiro.avatar ?? ""}
-            width={8}
-            height={8}
-            className="w-12 h-12 rounded-full object-contain"
-          />
-          <div>
-            <MyTypography variant="label" weight="semibold">
-              {activity?.parceiro.nome}
-            </MyTypography>
-            <MyTypography variant="label" weight="regular" lightness={400}>
-              Parceiro e Guia de atividades
-            </MyTypography>
-          </div>
-        </div>
           </div>
 
           <div>
@@ -298,11 +310,10 @@ export default function Atividade() {
             </div>
 
             <div>
-
               <div className="flex justify-between items-center mt-1">
-              <MyTypography variant="subtitle3" weight="bold" className="">
-                Valor da atividade:
-              </MyTypography>
+                <MyTypography variant="subtitle3" weight="bold" className="">
+                  Valor da atividade:
+                </MyTypography>
                 <MyTypography
                   variant="heading2"
                   weight="extrabold"

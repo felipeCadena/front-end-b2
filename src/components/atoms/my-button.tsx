@@ -2,18 +2,20 @@ import * as React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/utils/cn";
 import { Slot } from "@radix-ui/react-slot";
-import MySpinner from './my-spinner';
+import MySpinner from "./my-spinner";
 
 export const buttonVariants = cva(
   "inline-flex items-center justify-center whitespace-nowrap text-[0.725rem] font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none",
   {
     variants: {
       variant: {
-        default: "font-bold text-[1rem] bg-primary-600 text-neutral-000 hover:bg-primary-600 disabled:bg-primary-200",
-        "secondary":
+        default:
+          "font-bold text-[1rem] bg-primary-600 text-neutral-000 hover:bg-primary-600 disabled:bg-primary-200",
+        secondary:
           "text-primary-600 border border-primary-600 bg-traparent text-sm font-semibold",
         "secondary-muted":
           "text-primary-600 bg-primary-900 text-sm font-semibold",
+        "secondary-text": "text-primary-600 bg-traparent text-sm font-semibold",
         outline: "text-primary-600 border bg-traparent hover:bg-primary-200 ",
         "outline-muted":
           "text-[0.875rem] text-wrap opacity-50 bg-[#F1F0F5] border border-transparent focus:border focus:border-black focus:bg-[#E5E4E9] focus:opacity-100",
@@ -25,9 +27,12 @@ export const buttonVariants = cva(
         text: "text-primary-600 text-[0.875rem] font-semibold hover:text-primary-600 disabled:text-gray-200",
         "text-muted": "text-neutral-400 text-[0.9rem]",
         date: "border bg-traparent",
-        black: "bg-black text-white text-[0.85rem] md:text-[1rem] font-semibold",
-        payment: "border border-[#1E1E1E] text-[#1E1E1E] opacity-30 text-[0.875rem] focus:border focus:border-primary-600 focus:bg-primary-900 focus:opacity-100",
-        "black-border": "border border-[#1E1E1E] text-[#1E1E1E] text-[0.875rem]",
+        black:
+          "bg-black text-white text-[0.85rem] md:text-[1rem] font-semibold",
+        payment:
+          "border border-[#1E1E1E] text-[#1E1E1E] opacity-30 text-[0.875rem] focus:border focus:border-primary-600 focus:bg-primary-900 focus:opacity-100",
+        "black-border":
+          "border border-[#1E1E1E] text-[#1E1E1E] text-[0.875rem]",
         message: "bg-secondary-600 text-white font-semibold text-sm",
         "text-black": "text-black text-[0.9rem]",
         red: "bg-[#FF727233] text-[#FF7272] text-[0.9rem]",
@@ -48,11 +53,11 @@ export const buttonVariants = cva(
       size: "default",
       borderRadius: "default",
     },
-  },
+  }
 );
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
-  VariantProps<typeof buttonVariants> {
+    VariantProps<typeof buttonVariants> {
   asChild?: boolean;
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
@@ -61,8 +66,20 @@ export interface ButtonProps
 
 const MyButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
   (
-    { className, variant, size, children, leftIcon, rightIcon, borderRadius, asChild, isLoading, disabled, ...props },
-    ref,
+    {
+      className,
+      variant,
+      size,
+      children,
+      leftIcon,
+      rightIcon,
+      borderRadius,
+      asChild,
+      isLoading,
+      disabled,
+      ...props
+    },
+    ref
   ) => {
     const Comp = asChild ? Slot : "button";
 
@@ -73,24 +90,24 @@ const MyButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
           rightIcon && "flex gap-2",
           isLoading && "flex-center",
           buttonVariants({ variant, size, borderRadius }),
-          className,
+          className
         )}
         ref={ref}
         disabled={disabled || isLoading}
         {...props}
       >
-        {isLoading ? <MySpinner />
-          : <>
+        {isLoading ? (
+          <MySpinner />
+        ) : (
+          <>
             {leftIcon ?? leftIcon}
             {children}
             {rightIcon ?? rightIcon}
           </>
-
-        }
-
+        )}
       </Comp>
     );
-  },
+  }
 );
 
 export default MyButton;
