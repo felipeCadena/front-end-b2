@@ -19,27 +19,29 @@ export default function FullActivitiesHistoric({ activities, withDate }: any) {
   return (
     <section className="md:max-w-screen-custom">
       {activities.map((activity: any, index: number) => (
-        <div className="flex items-center gap-4 mt-20 mb-20" key={index}>
-          <MyButton
-            variant={withDate ? "secondary-text" : "default"}
-            borderRadius="squared"
-            size={withDate ? "md" : "lg"}
-            className={cn(
-              !withDate && "px-10",
-              "flex flex-col gap-1 text-base"
-            )}
-          >
-            {withDate ? (
-              <div>
-                <Calendar width={30} height={30} />
-              </div>
-            ) : (
-              <MyIcon name="clock" className="mr-2" />
-            )}
-            {withDate
-              ? getData(activity.reserva.timestamp)
-              : "Refazer atividade"}
-          </MyButton>
+        <div className="flex items-center gap-4 mt-20 mb-20 w-full" key={index}>
+          {withDate && (
+            <MyButton
+              variant={withDate ? "secondary-text" : "default"}
+              borderRadius="squared"
+              size={withDate ? "md" : "lg"}
+              className={cn(
+                !withDate && "px-10",
+                "flex flex-col gap-1 text-base"
+              )}
+            >
+              {withDate ? (
+                <div>
+                  <Calendar width={30} height={30} />
+                </div>
+              ) : (
+                <MyIcon name="clock" className="mr-2" />
+              )}
+              {withDate
+                ? getData(activity.reserva.timestamp)
+                : "Refazer atividade"}
+            </MyButton>
+          )}
 
           <div className="relative z-10 flex-shrink-0 overflow-hidden w-[265px] h-[265px] hover:cursor-pointer rounded-md">
             <Image
@@ -53,7 +55,7 @@ export default function FullActivitiesHistoric({ activities, withDate }: any) {
           </div>
 
           <div className="w-full space-y-4 max-h-[265px]">
-            <div className="flex justify-between mb-4">
+            <div className="w-full flex justify-between mb-4">
               <div
                 className="flex flex-col gap-2 cursor-pointer"
                 onClick={() =>
@@ -91,6 +93,18 @@ export default function FullActivitiesHistoric({ activities, withDate }: any) {
                   {activity.description.slice(0, 40).concat("...")}
                 </MyTypography>
               </div>
+
+              {!withDate && (
+                <MyButton
+                  variant="default"
+                  borderRadius="squared"
+                  size="lg"
+                  className="text-base ml-auto"
+                  leftIcon={<MyIcon name="clock" className="mr-2" />}
+                >
+                  Refazer atividade
+                </MyButton>
+              )}
 
               <div className="flex gap-4">
                 {withDate && (

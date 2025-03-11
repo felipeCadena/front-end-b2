@@ -19,7 +19,7 @@ export default function GaleriaDeFotos() {
   return (
     <section className="space-y-12 mb-10">
       {activities.map((activity) => (
-        <div key={activity.id} className="flex gap-4">
+        <div key={activity.id} className="flex md:flex-col gap-4">
           <div className="border border-gray-300 rounded-lg h-[220px] flex items-center gap-5 p-4 overflow-hidden cursor-pointer">
             <MyButton
               variant={"secondary-text"}
@@ -39,7 +39,7 @@ export default function GaleriaDeFotos() {
               height={300}
               className="h-[186px] w-[186px] rounded-lg object-cover"
             />
-            <div className="w-full flex justify-between items-center">
+            <div className="w-full flex justify-between items-center gap-4">
               <div className="flex flex-col gap-4">
                 <div className="flex flex-col gap-3">
                   <MyTypography variant="body-big" weight="bold">

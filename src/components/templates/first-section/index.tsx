@@ -13,11 +13,11 @@ const montserrat = Montserrat({
 export default function FirstSection() {
   const images = [
     "/images/atividades/paraquedas.webp",
-    "/images/atividades/montanha.webp",
-    "/images/atividades/mergulho.webp",
     "/images/atividades/moto.webp",
+    "/images/atividades/cachoeira.webp",
     "/images/atividades/parapente.webp",
-    "/images/atividades/canoagem.webp",
+    "/images/atividades/escalada.webp",
+    "/images/atividades/sup.webp",
   ];
   return (
     <section className="mt-10 md:relative max-sm:px-4">

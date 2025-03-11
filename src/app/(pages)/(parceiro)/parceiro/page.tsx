@@ -135,7 +135,7 @@ export default function AreaParceiros() {
           width={1200}
           height={800}
           alt="Image de um passeio"
-          className="w-full md:h-[600px]"
+          className="w-full md:h-[500px]"
         />
 
         <div className="absolute text-white top-4 left-12 z-50 w-1/3 dropShadow-sm">
@@ -174,13 +174,21 @@ export default function AreaParceiros() {
         Começar agora
       </MyButton>
 
-      <div className="grid grid-cols-2 gap-16 my-12">
+      <div className="grid grid-cols-2 gap-36 my-12 relative">
         <Image
           src="/images/atividades/mar/mar-92.jpeg"
           width={1200}
           height={800}
           alt="Image de um passeio"
-          className="w-full md:h-[500px] object-cover"
+          className="w-full md:h-[500px] object-cover "
+        />
+
+        <Image
+          src="/images/mobile.png"
+          width={1200}
+          height={800}
+          alt="Image de um passeio"
+          className="w-[380px] object-cover absolute z-50 left-[25%] -top-[10%]"
         />
 
         <div className="text-left">
@@ -211,7 +219,7 @@ export default function AreaParceiros() {
           width={1200}
           height={800}
           alt="Image de um passeio"
-          className="w-full md:h-[650px] object-cover"
+          className="w-full md:h-[600px] object-cover"
         />
 
         <div className="space-y-12 pl-12 pr-6 py-10 bg-white opacity-90 absolute top-16 right-[60%] w-[40%] text-left rounded-r-xl">
@@ -243,7 +251,7 @@ export default function AreaParceiros() {
           width={1200}
           height={800}
           alt="Image de um passeio"
-          className="w-full md:h-[650px] object-cover"
+          className="w-full md:h-[550px] object-cover"
         />
 
         <div className="absolute top-10 left-[25%] w-1/2 dropShadow-sm">
@@ -338,10 +346,10 @@ export default function AreaParceiros() {
         </div>
 
         <div className="text-left px-16">
-          <MyTypography variant="heading1" weight="bold" className="">
+          <MyTypography variant="heading3" weight="bold" className="">
             Quais atividades estão na B2?
           </MyTypography>
-          <MyTypography variant="heading2" weight="regular" className="mt-6">
+          <MyTypography variant="subtitle1" weight="regular" className="mt-6">
             Trilha, Escalada, Rapel, Surf, Stand Up Paddle, Mergulho, Ciclismo
             de montanha, Canoagem, Arvorismo, Cavalgada, Pesca, Passeio de
             veleiro, Wakeboard, Kite surf, Passeio de balão, Canoas havaianas,
@@ -360,7 +368,7 @@ export default function AreaParceiros() {
         />
 
         <div className="text-left space-y-6">
-          <MyTypography variant="heading2" weight="bold" className="">
+          <MyTypography variant="heading3" weight="bold" className="">
             Aproveite para incluir aquelas fotos mais bonitas e uma descrição
             clara, completa e precisa:
           </MyTypography>
@@ -368,31 +376,31 @@ export default function AreaParceiros() {
           <div className="px-6 space-y-4">
             <div className="flex items-center gap-2">
               <Check className="w-4 h-4 text-primary-600" />
-              <MyTypography variant="heading3" weight="regular" className="">
+              <MyTypography variant="subtitle1" weight="regular" className="">
                 Descreva o que os participantes vão fazer;
               </MyTypography>
             </div>
             <div className="flex items-center gap-2">
               <Check className="w-4 h-4 text-primary-600" />
-              <MyTypography variant="heading3" weight="regular" className="">
+              <MyTypography variant="subtitle1" weight="regular" className="">
                 Combine endereços e pontos de encontro;
               </MyTypography>
             </div>
             <div className="flex items-center gap-2">
               <Check className="w-4 h-4 text-primary-600" />
-              <MyTypography variant="heading3" weight="regular" className="">
+              <MyTypography variant="subtitle1" weight="regular" className="">
                 Detalhe o que está incluído no valor;
               </MyTypography>
             </div>
             <div className="flex items-center gap-2">
               <Check className="w-4 h-4 text-primary-600" />
-              <MyTypography variant="heading3" weight="regular" className="">
+              <MyTypography variant="subtitle1" weight="regular" className="">
                 Informe o que precisa ser levado;
               </MyTypography>
             </div>
             <div className="flex items-center gap-2">
               <Check className="w-4 h-4 text-primary-600" />
-              <MyTypography variant="heading3" weight="regular" className="">
+              <MyTypography variant="subtitle1" weight="regular" className="">
                 Especifique se fotos estão incluídas.
               </MyTypography>
             </div>
@@ -406,7 +414,7 @@ export default function AreaParceiros() {
           width={1200}
           height={800}
           alt="Image de um passeio"
-          className="w-full md:h-[600px] object-cover"
+          className="w-full md:h-[550px] object-cover "
         />
 
         <div className="absolute text-white top-1/3 left-[25%] z-50 w-1/2 dropShadow-sm">
@@ -439,24 +447,24 @@ export default function AreaParceiros() {
 
         <div className="text-left">
           <MyTypography
-            variant="heading1"
+            variant="heading3"
             weight="bold"
             className="flex gap-2 items-center"
           >
             E o pagamento?
-            <Dollar className="w-10 h-10 bg-primary-600 rounded-full p-1" />
+            <Dollar className="w-8 h-8 bg-primary-600 rounded-full p-1" />
           </MyTypography>
 
           <div className="mt-6 space-y-8">
-            <MyTypography variant="heading2" weight="regular" className="">
+            <MyTypography variant="subtitle1" weight="regular" className="">
               O parceiro que determina os valores, claro.
             </MyTypography>
-            <MyTypography variant="heading2" weight="regular" className="">
+            <MyTypography variant="subtitle1" weight="regular" className="">
               Você é quem mais entende o valor do seu trabalho! Por isso, cabe
               ao Parceiro o preço de cada atividade, que precisa estar divulgado
               na descrição e ser igual ao cobrado fora da plataforma.
             </MyTypography>
-            <MyTypography variant="heading2" weight="regular" className="">
+            <MyTypography variant="subtitle1" weight="regular" className="">
               Assim mantemos uma parceria justa diante dos benefícios que
               entregamos!
             </MyTypography>
@@ -464,7 +472,7 @@ export default function AreaParceiros() {
         </div>
       </div>
 
-      <div className="relative my-8">
+      <div className="relative mt-8">
         <Image
           src="/images/atividades/mar/mar-4.jpeg"
           width={1200}
@@ -496,27 +504,35 @@ export default function AreaParceiros() {
         </div>
       </div>
 
-      <div className="my-8 grid grid-cols-2 gap-8 items-center text-left">
+      <div className=" grid grid-cols-2 gap-36 items-center text-left relative">
         <Image
-          src="/images/atividades/mar/mar-1.jpeg"
+          src="/images/mobile-2.png"
           width={1200}
           height={800}
           alt="Image de um passeio"
-          className="w-full md:h-[600px] object-cover"
+          className="w-[380px] object-cover"
+        />
+
+        <Image
+          src="/images/mobile-3.png"
+          width={1200}
+          height={800}
+          alt="Image de um passeio"
+          className="w-[380px] object-cover absolute z-50 top-16 left-[25%]"
         />
 
         <div className="space-y-6">
-          <MyTypography variant="heading2" weight="regular" className="">
+          <MyTypography variant="heading3" weight="regular" className="">
             A nossa nova plataforma vai inaugurar em Maio de 2025!
           </MyTypography>
-          <MyTypography variant="heading2" weight="bold" className="">
+          <MyTypography variant="heading3" weight="bold" className="">
             Se você topar embarcar nessa desde antes do lançamento, vai ganhar
             de cara esses benefícios:
           </MyTypography>
 
           <div className="mt-4 px-4 space-y-2">
             <MyTypography
-              variant="heading2"
+              variant="subtitle1"
               weight="regular"
               className="flex gap-2"
             >
@@ -530,7 +546,7 @@ export default function AreaParceiros() {
             </MyTypography>
 
             <MyTypography
-              variant="heading2"
+              variant="subtitle1"
               weight="regular"
               className="flex gap-2 items-center"
             >
@@ -547,14 +563,14 @@ export default function AreaParceiros() {
           width={1200}
           height={800}
           alt="Image de um passeio"
-          className="w-full md:h-[600px] object-cover"
+          className="w-full md:h-[550px] object-cover"
         />
 
         <div className="absolute text-white top-[25%] left-[30%] z-50 w-1/2 dropShadow-sm">
-          <MyTypography variant="heading2" weight="bold" className="">
+          <MyTypography variant="heading3" weight="bold" className="">
             E aí, vamos nessa?
           </MyTypography>
-          <MyTypography variant="heading2" weight="regular" className="">
+          <MyTypography variant="heading3" weight="regular" className="">
             Vem com a gente viver essa aventura!
           </MyTypography>
         </div>
