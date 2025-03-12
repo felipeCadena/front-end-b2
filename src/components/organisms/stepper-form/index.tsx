@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import MyStepper from "@/components/molecules/my-stepper";
 import MyButton from "@/components/atoms/my-button";
 import MyIcon from "@/components/atoms/my-icon";
@@ -34,12 +35,24 @@ export default function StepperForm() {
   };
 
   const handleStepChange = (step: number) => {
-    // Opcional: permitir navegação direta clicando nos steps
     setCurrentStep(step);
   };
 
+  const steps = [
+    <TermosParceiro />,
+    <CadastroParceiro />,
+    <Sobre />,
+    <Informacoes />,
+    <Step5 />,
+    <Step6 />,
+    <Step7 />,
+    <Step8 />,
+    <Step9 />,
+    <Step10 />,
+  ];
+
   return (
-    <div className="w-full max-w-2xl mx-auto p-4">
+    <div className="w-full max-w-2xl mx-auto p-4 flex flex-col">
       <MyStepper
         steps={totalSteps}
         currentStep={currentStep}
@@ -47,22 +60,24 @@ export default function StepperForm() {
         stepsPerPage={3}
       />
 
-      {/* Conteúdo do step atual */}
-      <div className="my-8">
-        {currentStep === 0 && <TermosParceiro />}
-        {currentStep === 1 && <CadastroParceiro />}
-        {currentStep === 2 && <Sobre />}
-        {currentStep === 3 && <Informacoes />}
-        {currentStep === 4 && <Step5 />}
-        {currentStep === 5 && <Step6 />}
-        {currentStep === 6 && <Step7 />}
-        {currentStep === 7 && <Step8 />}
-        {currentStep === 8 && <Step9 />}
-        {currentStep === 9 && <Step10 />}
+      {/* Wrapper para manter altura fixa e evitar deslocamentos */}
+      <div className="relative my-8 min-h-[300px] flex items-center justify-center overflow-hidden">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={currentStep}
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -50 }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
+            className="w-full"
+          >
+            {steps[currentStep]}
+          </motion.div>
+        </AnimatePresence>
       </div>
 
-      {/* Botões de navegação */}
-      <div className="flex justify-between mx-4">
+      {/* Botões ficam fora da div animada */}
+      <div className="flex justify-between mx-4 mt-6">
         <MyButton
           variant="default"
           onClick={handleBack}
@@ -72,17 +87,15 @@ export default function StepperForm() {
           Voltar
         </MyButton>
 
-        {!(currentStep === totalSteps - 1) && (
+        {currentStep < totalSteps - 1 ? (
           <MyButton
             variant="default"
             onClick={handleNext}
-            disabled={currentStep === totalSteps - 1}
             rightIcon={<MyIcon name="seta-direita" />}
           >
             Próximo
           </MyButton>
-        )}
-        {currentStep === totalSteps - 1 && (
+        ) : (
           <MyButton
             variant="default"
             onClick={() => router.push("/parceiro/informacoes-atividade")}
