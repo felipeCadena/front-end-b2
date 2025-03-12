@@ -17,29 +17,36 @@ const ROOTS_CARRINHO = "/carrinho";
 const ROOTS_FINALIZAR_COMPRA = "/finalizar-compra";
 // Agrupa Favoritos, Histórico, Reservas e Fotos (Na Web)
 const ROOTS_INFOS = "/informacoes";
-const ROOTS_INFORMACOES_ATIVIDADES = "/informacoes-atividade";
 
 // Rotas Parceiros
-const ROOTS_CADASTRO_PARCEIRO = "/cadastro-parceiro";
-const ROOTS_LOGIN_PARCEIRO = "/login-parceiro";
 const ROOTS_PARCEIRO = "/parceiro";
+const ROOTS_CADASTRO_PARCEIRO = "/parceiro/cadastro";
+const ROOTS_LOGIN_PARCEIRO = "/parceiro/login";
+const ROOTS_SENHA_PARCEIRO = "/parceiro/esqueci-minha-senha";
 const ROOTS_ATIVIDADES_CADASTRADAS = "/parceiro/atividades-cadastradas";
 const ROOTS_SUAS_ATIVIDADES = "/parceiro/minhas-atividades";
 const ROOTS_CADASTRO_ATIVIDADE = "/parceiro/cadastro-atividade";
 const ROOTS_FOTOS_PASSEIOS = "/parceiro/fotos-de-passeios";
 const ROOTS_SOBRE_A_EMPRESA = "/parceiro/sobre-a-empresa";
 const ROOTS_TERMOS_PARCEIRO = "/parceiro/termos-de-uso";
-const ROOTS_ATIVIDADES_OCULTAS = "/parceiro/reservas/ocultas"
+const ROOTS_ATIVIDADES_OCULTAS = "/parceiro/reservas/ocultas";
+const ROOTS_INFORMACOES_ATIVIDADES = "/parceiro/informacoes-atividade";
 
 // ==========================================
 // * Dimanic routes
-const VISUALIZAR_ATIVIDADE = (slug: number | string) => `/atividades/atividade/${slug}`;
-const VISUALIZAR_FOTOS = (slug: number | string) => `/galeria-de-fotos/galeria/${slug}`;
-const ATIVIDADE_REALIZADA = (slug: number | string) => `/informacoes/atividade-realizada/${slug}`;
-const VISUALIZAR_NOTIFICACAO = (slug: number | string) => `/notificacoes/notificacao/${slug}`;
+const VISUALIZAR_ATIVIDADE = (slug: number | string) =>
+  `/atividades/atividade/${slug}`;
+const VISUALIZAR_FOTOS = (slug: number | string) =>
+  `/galeria-de-fotos/galeria/${slug}`;
+const ATIVIDADE_REALIZADA = (slug: number | string) =>
+  `/informacoes/atividade-realizada/${slug}`;
+const VISUALIZAR_NOTIFICACAO = (slug: number | string) =>
+  `/notificacoes/notificacao/${slug}`;
 
-const ENVIAR_FOTOS = (slug: number | string) => `/parceiro/fotos-de-passeios/${slug}/enviar-fotos`;
-const ENVIAR_VIDEOS = (slug: number | string) => `/parceiro/fotos-de-passeios/${slug}/enviar-videos`;
+const ENVIAR_FOTOS = (slug: number | string) =>
+  `/parceiro/fotos-de-passeios/${slug}/enviar-fotos`;
+const ENVIAR_VIDEOS = (slug: number | string) =>
+  `/parceiro/fotos-de-passeios/${slug}/enviar-videos`;
 
 // ==========================================
 // * Dynamic encode routes
@@ -51,6 +58,7 @@ const PATHS = {
   initial: ROOTS_INITIAL,
   login: ROOTS_LOGIN,
   "login-parceiro": ROOTS_LOGIN_PARCEIRO,
+  "senha-parceiro": ROOTS_SENHA_PARCEIRO,
   cadastro: ROOTS_CADASTRO,
   "esqueci-minha-senha": ROOTS_SENHA,
   atividades: ROOTS_ATIVIDADES,

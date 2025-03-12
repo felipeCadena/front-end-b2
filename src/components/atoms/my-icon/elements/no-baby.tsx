@@ -16,8 +16,8 @@ const NoBaby = () => (
       x2="1.10183"
       y2="23.0226"
       stroke="#000"
-      stroke-width="1.5"
-      stroke-linecap="round"
+      strokeWidth="1.5"
+      strokeLinecap="round"
     />
   </svg>
 );

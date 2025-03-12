@@ -66,7 +66,7 @@ export default function LoginParceiro() {
           <MyButton
             variant="text"
             className="mt-4"
-            onClick={() => router.push(PATHS["esqueci-minha-senha"])}
+            onClick={() => router.push(PATHS["senha-parceiro"])}
           >
             Esqueci minha senha
           </MyButton>
@@ -111,7 +111,16 @@ export default function LoginParceiro() {
             </MyTypography>
             <MyButton
               variant="text"
-              onClick={() => router.push(PATHS["cadastro-parceiro"])}
+              onClick={() => router.push("/parceiro/fluxo")}
+              className="max-sm:hidden"
+            >
+              Cadastre-se
+            </MyButton>
+
+            <MyButton
+              variant="text"
+              onClick={() => router.push(PATHS["termos-parceiro"])}
+              className="md:hidden"
             >
               Cadastre-se
             </MyButton>

@@ -114,10 +114,10 @@ export default function TermosParceiro() {
         <MyCheckbox
           label="Li e aceito os termos de serviço"
           labelStyle="text-sm opacity-60"
-          className="my-2"
+          className=""
         />
 
-        <MyButton
+        {/* <MyButton
           variant="default"
           borderRadius="squared"
           size="lg"
@@ -125,7 +125,7 @@ export default function TermosParceiro() {
           onClick={() => router.push(PATHS["cadastro-parceiro"])}
         >
           Cadastrar Empresa
-        </MyButton>
+        </MyButton> */}
       </div>
     </section>
   );

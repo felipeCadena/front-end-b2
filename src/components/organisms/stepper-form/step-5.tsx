@@ -6,9 +6,9 @@ import MyTypography from "@/components/atoms/my-typography";
 import ActivitiesFilter from "@/components/organisms/activities-filter";
 import React from "react";
 
-export default function Step1() {
+export default function Step5() {
   return (
-    <section className="">
+    <section className="md:border-2 md:border-gray-200 md:rounded-xl md:p-16">
       <MyTypography variant="heading2" weight="bold">
         Cadastre a sua atividade
       </MyTypography>
@@ -16,7 +16,7 @@ export default function Step1() {
         Preencha os dados da sua primeira atividade
       </MyTypography>
 
-      <ActivitiesFilter withText={false} />
+      <ActivitiesFilter withText={false} small={true} />
 
       <MyTextInput
         label="Nome da atividade"

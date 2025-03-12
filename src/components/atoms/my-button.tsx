@@ -10,7 +10,7 @@ export const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          "font-bold text-[1rem] bg-primary-600 text-neutral-000 hover:bg-primary-600 disabled:bg-primary-200",
+          "font-bold text-[1rem] bg-primary-600 text-neutral-000 hover:bg-primary-600 disabled:bg-gray-300",
         secondary:
           "text-primary-600 border border-primary-600 bg-traparent text-sm font-semibold",
         "secondary-muted":

@@ -7,10 +7,14 @@ import React from "react";
 
 export default function QuemSomos() {
   return (
-    <section className="my-8 space-y-16 text-center">
-      <div className="md:mx-auto space-y-12">
-        <div className="space-y-6">
-          <MyTypography variant="heading2" weight="bold" className="">
+    <section className="my-8 space-y-8 md:space-y-16 text-center md:w-full">
+      <div className="grid md:grid-cols-2 gap-8 md:gap-16 max-sm:mx-4">
+        <div className="space-y-6 text-left">
+          <MyTypography
+            variant="heading2"
+            weight="bold"
+            className="text-center"
+          >
             Quem Somos
           </MyTypography>
           <MyTypography variant="label" className="">
@@ -43,7 +47,7 @@ export default function QuemSomos() {
           </MyTypography>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+        <div className="flex flex-col justify-around ">
           <div>
             <MyTypography variant="body-big" weight="bold" className="mt-4">
               Missão:
@@ -74,19 +78,19 @@ export default function QuemSomos() {
         </div>
       </div>
 
-      <Image
-        src="/images/quem-somos-mobile.png"
+      {/* <Image
+        src="/images/quem-somos.webp"
         alt="Quem Somos"
         width={342}
         height={412}
         className="md:hidden"
-      />
+      /> */}
       <Image
-        src="/images/quem-somos.png"
+        src="/images/quem-somos.webp"
         alt="Quem Somos"
         width={342}
-        height={412}
-        className="max-sm:hidden md:w-full"
+        height={390}
+        className="w-full h-[280px] md:h-[500px] object-cover object-bottom md:rounded-xl"
       />
     </section>
   );

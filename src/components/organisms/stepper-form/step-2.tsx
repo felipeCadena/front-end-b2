@@ -16,9 +16,9 @@ export default function CadastroParceiro() {
   const router = useRouter();
 
   return (
-    <section className="flex flex-col bg-white rounded-lg max-w-lg m-auto w-full">
-      <div className="px-6 md:px-12 md:py-6 space-y-6">
-        <div className="relative">
+    <section className="flex flex-col bg-white md:my-12 rounded-lg max-w-3xl m-auto w-full">
+      <div className="w-full md:py-6 space-y-6 md:max-w-screen-2xl md:mx-auto md:border-2 md:border-gray-200 md:rounded-xl p-6 md:p-16">
+        <div className="relative md:hidden">
           <MyLogo
             variant="mobile"
             width={100}
@@ -88,7 +88,7 @@ export default function CadastroParceiro() {
         </div>
 
         <div className="flex flex-col">
-          <MyButton
+          {/* <MyButton
             className=""
             variant="default"
             borderRadius="squared"
@@ -96,9 +96,9 @@ export default function CadastroParceiro() {
             onClick={() => router.push(PATHS["sobre-a-empresa"])}
           >
             Cadastrar Conta
-          </MyButton>
+          </MyButton> */}
 
-          <div className="text-center mt-8">
+          <div className="text-center">
             <MyTypography
               variant="label"
               weight="regular"

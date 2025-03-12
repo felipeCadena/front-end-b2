@@ -22,8 +22,8 @@ export default function SuasAtividades() {
 
   const handleClose = () => {
     setIsModalOpen(false);
-    clear()
-  }
+    clear();
+  };
 
   return (
     <main>
@@ -38,7 +38,7 @@ export default function SuasAtividades() {
       <section className="px-4">
         <SearchActivity />
 
-        <div className="mt-6">
+        <div className="mt-12">
           <MyTypography variant="heading2" weight="semibold">
             Veja suas atividades
           </MyTypography>
@@ -61,7 +61,7 @@ export default function SuasAtividades() {
             weight="regular"
             className="md:opacity-50"
           >
-            Nossas atividades mais bem avaliadas!
+            Suas atividades mais bem avaliadas!
           </MyTypography>
           <CarouselCustom activities={activities} />
 
@@ -72,15 +72,14 @@ export default function SuasAtividades() {
             weight="semibold"
             className="mb-4 md:text-lg"
           >
-            Lorem Ipsum Dolor
+            Mais vendidas!
           </MyTypography>
           <MyTypography
             variant="subtitle3"
             weight="regular"
             className="md:opacity-50"
           >
-            Lorem, ipsum dolor sit amet consectetur adipisicing elit.
-            Dignissimos dolore eum aliquid facere quis.
+            Suas atividades mais vendidas!
           </MyTypography>
           <CarouselCustom activities={activities} />
         </div>

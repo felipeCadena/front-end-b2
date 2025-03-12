@@ -18,8 +18,8 @@ const Layout = ({ children }: { children: JSX.Element | ReactNode }) => {
     "/login",
     "/cadastro",
     "/esqueci-minha-senha",
-    "/login-parceiro",
-    "/cadastro-parceiro",
+    "/parceiro/login",
+    "/parceiro/esqueci-minha-senha",
   ];
 
   return (

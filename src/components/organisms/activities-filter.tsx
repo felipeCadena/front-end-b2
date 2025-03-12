@@ -6,7 +6,7 @@ import { cn } from "@/utils/cn";
 import MyTypography from "../atoms/my-typography";
 import { usePathname } from "next/navigation";
 
-export default function ActivitiesFilter({ withText = true }) {
+export default function ActivitiesFilter({ withText = true, small = false }) {
   const [selected, setSelected] = React.useState("Atividades no Ar");
   const pathname = usePathname();
 
@@ -59,7 +59,12 @@ export default function ActivitiesFilter({ withText = true }) {
           Escolha seu tipo de aventura
         </MyTypography>
       )}
-      <div className="flex justify-center gap-2 max-sm:w-full">
+      <div
+        className={cn(
+          "flex justify-center gap-2 max-sm:w-full",
+          small && "gap-4"
+        )}
+      >
         {activities.map((item, index) => (
           <MyButton
             key={index}
@@ -68,7 +73,8 @@ export default function ActivitiesFilter({ withText = true }) {
             className={cn(
               "flex max-sm:flex-col gap-1 items-center rounded-md max-sm:w-[6.5rem] max-sm:h-[6.5rem] md:py-8 md:w-1/2 md:border-2 md:border-black md:text-nowrap",
               item.title === selected &&
-                "border border-black bg-[#E5E4E9] opacity-100"
+                "border border-black bg-[#E5E4E9] opacity-100",
+              small && "md:flex-col md:w-[10rem] md:h-[5rem]"
             )}
             onClick={() => setSelected(item.title)}
           >

@@ -17,7 +17,11 @@ export default function Header() {
   const pathname = usePathname();
 
   const withoutHeaderMobile = () => {
-    return pathname === PATHS["sobre-a-empresa"];
+    return (
+      pathname === PATHS["sobre-a-empresa"] ||
+      pathname === PATHS["cadastro-parceiro"] ||
+      pathname === PATHS["informacoes-atividades"]
+    );
   };
 
   const { email, sideBarActive } = useLogin();

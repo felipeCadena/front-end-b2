@@ -15,7 +15,7 @@ import MultiSelect from "@/components/molecules/combobox";
 import { MyDatePicker } from "@/components/molecules/my-date-picker";
 import React, { useState } from "react";
 
-export default function Step2() {
+export default function Step6() {
   const [selections, setSelections] = useState([{ id: Date.now() }]);
 
   const addSelection = () => {
@@ -27,7 +27,7 @@ export default function Step2() {
   };
 
   return (
-    <section className="w-full space-y-6">
+    <section className="w-full space-y-6 md:border-2 md:border-gray-200 md:rounded-xl md:p-16">
       <MySelect
         // value={value}
         // onValueChange={setValue}

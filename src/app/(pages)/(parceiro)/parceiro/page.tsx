@@ -3,8 +3,12 @@
 import MyButton from "@/components/atoms/my-button";
 import MyIcon from "@/components/atoms/my-icon";
 import Check from "@/components/atoms/my-icon/elements/check";
+import Connections from "@/components/atoms/my-icon/elements/connection";
+import Contract from "@/components/atoms/my-icon/elements/contract";
 import Dollar from "@/components/atoms/my-icon/elements/dollar";
+import Hiking from "@/components/atoms/my-icon/elements/hiking";
 import Lock from "@/components/atoms/my-icon/elements/lock";
+import LoudsSpeaker from "@/components/atoms/my-icon/elements/loudspeaker";
 import MyTypography from "@/components/atoms/my-typography";
 import PATHS from "@/utils/paths";
 import Image from "next/image";
@@ -53,11 +57,11 @@ export default function AreaParceiros() {
         </div>
       </div>
 
-      <div className="mt-14 md:mt-20 mb-6 md:mb-10 px-10 md:px-20 flex gap-8 justify-center">
+      <div className="mt-14 md:mt-20 mb-6 md:mb-10 px-4 md:px-20 flex max-sm:flex-col gap-4 md:gap-8 md:justify-center">
         <MyTypography
           variant="heading3"
           weight="bold"
-          className="text-right w-1/2 text-[1rem] md:text-[1.3rem]"
+          className="text-left md:text-right md:w-1/2 text-[1rem] md:text-[1.3rem]"
         >
           A B2 ADVENTURE É A MAIOR REDE DE ATIVIDADES ESPORTIVAS NA NATUREZA DO
           MUNDO!
@@ -65,7 +69,7 @@ export default function AreaParceiros() {
         <MyTypography
           variant="heading3"
           weight="regular"
-          className="text-left w-1/2 text-[1rem] md:text-[1.3rem]"
+          className="text-left md:w-1/2 text-[1rem] md:text-[1.3rem]"
         >
           Somos uma plataforma digital que conecta{" "}
           <span className="font-bold">clientes aventureiros</span> a
@@ -84,7 +88,7 @@ export default function AreaParceiros() {
             A B2 É PARA QUALQUER AVENTUREIRO!
           </MyTypography>
         </div>
-        <div className="grid grid-cols-2 gap-4 mt-1 md:mt-28 mb-10">
+        <div className="md:grid md:grid-cols-2 md:gap-4 mt-1 md:mt-28 mb-10">
           <div>
             <Image
               src="/images/atividades/terra/terra-3.jpeg"
@@ -93,17 +97,18 @@ export default function AreaParceiros() {
               alt="Image de um passeio"
               className="w-full h-[200px] md:h-[400px] object-cover"
             />
+
             <MyTypography
               variant="heading2"
               weight="bold"
-              className="uppercase my-1 text-[1.1rem] md:text-[1.5rem]"
+              className="max-sm:text-left max-sm:px-4 uppercase my-4 text-[1.1rem] md:text-[1.5rem]"
             >
               CLIENTES
             </MyTypography>
             <MyTypography
               variant="subtitle3"
               weight="regular"
-              className="w-2/3 mx-auto text-[0.9rem] md:text-[1rem]"
+              className="max-sm:text-left max-sm:px-4 max-sm:mb-4 md:w-2/3 md:mx-auto text-[0.9rem] md:text-[1rem]"
             >
               Do turista que busca uma experiência única ao morador local que
               procura um exercício diferenciado no quintal de casa.
@@ -120,14 +125,14 @@ export default function AreaParceiros() {
             <MyTypography
               variant="heading2"
               weight="bold"
-              className="uppercase my-1 text-[1.1rem] md:text-[1.5rem]"
+              className="max-sm:text-left max-sm:px-4 uppercase my-4 text-[1.1rem] md:text-[1.5rem]"
             >
               PARCEIROS
             </MyTypography>
             <MyTypography
               variant="subtitle3"
               weight="regular"
-              className="w-2/3 mx-auto text-[0.9rem] md:text-[1rem]"
+              className="max-sm:text-left max-sm:px-4 md:w-2/3 md:mx-auto text-[0.9rem] md:text-[1rem]"
             >
               Apenas os melhores profissionais especializados em modalidades
               esportivas ao ar livre.
@@ -155,19 +160,19 @@ export default function AreaParceiros() {
           className="w-full h-[200px] md:h-[500px]"
         />
 
-        <div className="absolute text-white top-12 md:top-4 left-6 md:left-12 z-50 w-1/3 dropShadow-sm">
-          <span className="text-[1.8rem] md:text-[3rem] font-bold">☆ ☆ ☆</span>
+        <div className="absolute text-white top-2 md:top-4 left-4 md:left-12 z-50 w-1/3 dropShadow-sm">
+          <span className="text-[1.5rem] md:text-[3rem] font-bold">☆ ☆ ☆</span>
           <MyTypography
             variant="heading3"
             weight="regular"
-            className="text-white text-[1rem] md:text-[1.3rem]"
+            className="text-white text-[0.9rem] md:text-[1.3rem]"
           >
             POR AQUI, TEMOS SÓ
           </MyTypography>
           <MyTypography
             variant="heading3"
             weight="bold"
-            className="text-white mt-1 text-[1rem] md:text-[1.3rem]"
+            className="text-white mt-1 text-[0.9rem] md:text-[1.3rem]"
           >
             OS MELHORES.
           </MyTypography>
@@ -192,7 +197,17 @@ export default function AreaParceiros() {
         variant="default"
         borderRadius="squared"
         size="md"
-        className="w-1/2 md:w-1/4 h-14 my-2 md:my-10"
+        className="max-sm:hidden w-1/2 md:w-1/4 h-14 my-2 md:my-10"
+        onClick={() => router.push("/parceiro/fluxo")}
+      >
+        Começar agora
+      </MyButton>
+
+      <MyButton
+        variant="default"
+        borderRadius="squared"
+        size="md"
+        className="md:hidden w-1/2 md:w-1/4 h-14 md:my-10"
         onClick={() => router.push(PATHS["termos-parceiro"])}
       >
         Começar agora
@@ -204,7 +219,7 @@ export default function AreaParceiros() {
           width={1200}
           height={800}
           alt="Image de um passeio"
-          className="w-full h-[300px] md:h-[500px] object-cover "
+          className="w-full h-[300px] md:h-[400px] object-cover "
         />
 
         <Image
@@ -212,10 +227,10 @@ export default function AreaParceiros() {
           width={1200}
           height={800}
           alt="Image de um passeio"
-          className="w-[260px] md:w-[380px] object-cover absolute z-50 left-[45%] md:left-[25%] -top-8 md:-top-[10%]"
+          className="w-[260px] md:w-[320px] object-cover absolute z-50 left-[45%] md:left-[30%] -top-8 md:-top-[20%]"
         />
 
-        <div className="text-left mx-4">
+        <div className="text-left mx-4 flex flex-col justify-center">
           <MyTypography
             variant="heading3"
             weight="extrabold"
@@ -241,19 +256,10 @@ export default function AreaParceiros() {
             catálogo de serviços disponíveis, onde diretamente pesquisam,
             descobrem e contratam suas atividades preferidas!
           </MyTypography>
-          <MyTypography
-            variant="subtitle1"
-            weight="regular"
-            className="mt-5 text-[1rem] md:text-[1.125rem]"
-          >
-            Nesse momento, estamos convidando os primeiros Parceiros. Se você
-            está recebendo o nosso contato, pode se sentir honrado porque faz
-            parte de um seleto grupo escolhido por nós.
-          </MyTypography>
         </div>
       </div>
 
-      <div className="my-10 relative">
+      <div className="my-4 relative">
         <Image
           src="/images/atividades/mar/mar-3.jpeg"
           width={1200}
@@ -398,9 +404,9 @@ export default function AreaParceiros() {
         </div>
 
         <div className="md:hidden m-4">
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-3">
             <div className="flex items-center gap-2">
-              <MyIcon name="check" />
+              <Contract fill="#000" className="w-6 h-6" />
               <MyTypography
                 variant="subtitle1"
                 weight="regular"
@@ -410,7 +416,7 @@ export default function AreaParceiros() {
               </MyTypography>
             </div>
             <div className="flex items-center gap-2">
-              <MyIcon name="check" />
+              <Connections stroke="#000" className="w-6 h-6" />
               <MyTypography
                 variant="subtitle1"
                 weight="regular"
@@ -420,7 +426,7 @@ export default function AreaParceiros() {
               </MyTypography>
             </div>
             <div className="flex items-center gap-2">
-              <MyIcon name="check" />
+              <LoudsSpeaker stroke="#000" className="w-6 h-6" />
               <MyTypography
                 variant="subtitle1"
                 weight="regular"
@@ -430,7 +436,7 @@ export default function AreaParceiros() {
               </MyTypography>
             </div>
             <div className="flex items-center gap-2">
-              <MyIcon name="check" />
+              <Hiking stroke="#000" className="w-6 h-6" />
               <MyTypography
                 variant="subtitle1"
                 weight="regular"
@@ -440,7 +446,7 @@ export default function AreaParceiros() {
               </MyTypography>
             </div>
             <div className="flex items-center gap-2">
-              <MyIcon name="check" />
+              <Lock stroke="#000" className="w-6 h-6" />
               <MyTypography
                 variant="subtitle1"
                 weight="regular"
@@ -460,21 +466,21 @@ export default function AreaParceiros() {
             width={1200}
             height={800}
             alt="Image de um passeio"
-            className="w-full h-[180px] md:h-[250px] object-cover"
+            className="w-full h-[180px] md:h-[280px] object-cover"
           />
           <Image
             src="/images/atividades/mar/mar-1.jpeg"
             width={1200}
             height={800}
             alt="Image de um passeio"
-            className="w-full h-[180px] md:h-[250px] object-cover"
+            className="md:hidden w-full h-[180px] md:h-[250px] object-cover"
           />
           <Image
             src="/images/atividades/terra/terra-6.jpeg"
             width={1200}
             height={800}
             alt="Image de um passeio"
-            className="w-full h-[180px] md:h-[250px] object-cover"
+            className="md:hidden w-full h-[180px] md:h-[250px] object-cover"
           />
         </div>
 
@@ -505,7 +511,7 @@ export default function AreaParceiros() {
           width={1200}
           height={800}
           alt="Image de um passeio"
-          className="w-full h-[200px] md:h-[600px] object-cover"
+          className="w-full h-[200px] md:h-[300px] object-cover"
         />
 
         <div className="text-left space-y-6 max-sm:mx-4">
@@ -582,12 +588,12 @@ export default function AreaParceiros() {
           className="w-full h-[250px] md:h-[550px] object-cover "
         />
 
-        <div className="absolute text-white top-1/3 left-[25%] z-50 w-1/2 dropShadow-sm">
-          <span className="text-[1.8rem] md:text-[3rem] font-bold">☆ ☆ ☆</span>
+        <div className="absolute text-white top-2 md:top-8 left-[25%] z-50 w-1/2 dropShadow-sm">
+          <span className="text-[1.5rem] md:text-[3rem] font-bold">☆ ☆ ☆</span>
           <MyTypography
             variant="heading3"
             weight="bold"
-            className="text-white text-[1.05rem] md:text-[1.3rem]"
+            className="text-white text-[1rem] md:text-[1.3rem]"
           >
             O cliente quer saber exatamente o que esperar ao comprar a
             experiência com você!
@@ -599,7 +605,17 @@ export default function AreaParceiros() {
         variant="default"
         borderRadius="squared"
         size="md"
-        className="w-1/2 md:w-1/4 h-14 md:my-10"
+        className="max-sm:hidden w-1/2 md:w-1/4 h-14 md:my-10"
+        onClick={() => router.push("/parceiro/fluxo")}
+      >
+        Começar agora
+      </MyButton>
+
+      <MyButton
+        variant="default"
+        borderRadius="squared"
+        size="md"
+        className="md:hidden w-1/2 md:w-1/4 h-14 md:my-10"
         onClick={() => router.push(PATHS["termos-parceiro"])}
       >
         Começar agora
@@ -611,7 +627,7 @@ export default function AreaParceiros() {
           width={1200}
           height={800}
           alt="Image de um passeio"
-          className="w-full h-[200px] md:h-[600px] object-cover"
+          className="w-full h-[200px] md:h-[320px] object-cover"
         />
 
         <div className="text-left max-sm:mx-4">
@@ -621,7 +637,6 @@ export default function AreaParceiros() {
             className="flex gap-2 items-center text-[1.05rem] md:text-[1.3rem]"
           >
             E o pagamento?
-            <Dollar className="w-6 h-6 md:w-8 md:h-8 bg-primary-600 rounded-full p-1" />
           </MyTypography>
 
           <div className="mt-6 space-y-4 md:space-y-8">
@@ -680,7 +695,7 @@ export default function AreaParceiros() {
           >
             O repasse para o <span className="font-bold">Parceiro</span> é
             mensal, mas é só quando o Cliente paga que a B2 retém um percentual
-            de 30% do que foi cobrado. Ou seja, a gente sempre ganha junto!
+            do que foi cobrado. Ou seja, a gente sempre ganha junto!
           </MyTypography>
         </div>
 
@@ -702,7 +717,7 @@ export default function AreaParceiros() {
           >
             O repasse para o <span className="font-bold">Parceiro</span> é
             mensal, mas é só quando o Cliente paga que a B2 retém um percentual
-            de 30% do que foi cobrado. Ou seja, a gente sempre ganha junto!
+            do que foi cobrado. Ou seja, a gente sempre ganha junto!
           </MyTypography>
         </div>
       </div>
@@ -727,44 +742,20 @@ export default function AreaParceiros() {
         <div className="space-y-6 max-sm:m-4">
           <MyTypography
             variant="heading3"
-            weight="regular"
-            className="text-[1.05rem] md:text-[1.3rem]"
-          >
-            A nossa nova plataforma vai inaugurar em Maio de 2025!
-          </MyTypography>
-          <MyTypography
-            variant="heading3"
             weight="bold"
             className="text-[1.05rem] md:text-[1.3rem]"
           >
-            Se você topar embarcar nessa desde antes do lançamento, vai ganhar
-            de cara esses benefícios:
+            É importante que os nossos clientes sintam a paixão que o nosso
+            parceiro tem pela atividade que oferece.
           </MyTypography>
-
-          <div className="mt-4 px-4 space-y-2">
-            <MyTypography
-              variant="subtitle1"
-              weight="regular"
-              className="flex gap-2 text-[1rem] md:text-[1.125rem]"
-            >
-              <Check className="w-6 md:w-8 h-6 md:h-8 text-primary-600" />
-              <div>
-                2 meses de tarifas B2 gratuitas
-                <span className="block">
-                  (aqueles 30% que a nossa plataforma retém, sabe?)
-                </span>
-              </div>
-            </MyTypography>
-
-            <MyTypography
-              variant="subtitle1"
-              weight="regular"
-              className="flex gap-2 md:items-center text-[1rem] md:text-[1.125rem]"
-            >
-              <Check className="w-5 md:w-7 h-5 md:h-7 text-primary-600" />
-              Preferência na busca pela sua atividade
-            </MyTypography>
-          </div>
+          <MyTypography
+            variant="heading3"
+            weight="regular"
+            className="text-[1.05rem] md:text-[1.3rem]"
+          >
+            Torne a sua atividade uma experiência inesquecível e mostre que
+            feita com você ela pode ser ainda mais especial.
+          </MyTypography>
         </div>
       </div>
 
@@ -777,51 +768,20 @@ export default function AreaParceiros() {
           className="w-full h-[250px] md:h-[550px] object-cover"
         />
 
-        <div className="absolute text-white top-4 md:top-[25%] right-4 md:left-[30%] z-50 w-1/2 dropShadow-sm">
+        <div className="absolute top-4 md:top-[25%] right-4 md:left-[30%] z-50 w-1/2 dropShadow-sm">
           <MyTypography
             variant="heading3"
             weight="bold"
-            className="text-[1.05rem] md:text-[1.3rem]"
+            className="text-white md:text-black text-[1rem] md:text-[1.3rem]"
           >
             E aí, vamos nessa?
           </MyTypography>
           <MyTypography
             variant="heading3"
             weight="regular"
-            className="text-[1.05rem] md:text-[1.3rem]"
+            className="text-white md:text-black text-[1rem] md:text-[1.3rem]"
           >
             Vem com a gente viver essa aventura!
-          </MyTypography>
-        </div>
-
-        <div className="absolute text-left bottom-2 md:bottom-10 right-4 md:right-24 z-50 dropShadow-sm">
-          <MyTypography
-            variant="subtitle3"
-            weight="bold"
-            className="text-white text-[0.7rem] md:text-[1rem]"
-          >
-            @b2adventure
-          </MyTypography>
-          <MyTypography
-            variant="subtitle3"
-            weight="regular"
-            className="text-white text-[0.7rem] md:text-[1rem]"
-          >
-            contato@b2adventure.com
-          </MyTypography>
-          <MyTypography
-            variant="subtitle3"
-            weight="regular"
-            className="text-white text-[0.7rem] md:text-[1rem]"
-          >
-            www.b2adventure.com
-          </MyTypography>
-          <MyTypography
-            variant="subtitle3"
-            weight="regular"
-            className="text-white text-[0.7rem] md:text-[1rem]"
-          >
-            www.b2adventure.com.br
           </MyTypography>
         </div>
       </div>
@@ -830,7 +790,17 @@ export default function AreaParceiros() {
         variant="default"
         borderRadius="squared"
         size="md"
-        className="w-1/2 md:w-1/4 h-14"
+        className="max-sm:hidden w-1/2 md:w-1/4 h-14"
+        onClick={() => router.push("/parceiro/fluxo")}
+      >
+        Começar agora
+      </MyButton>
+
+      <MyButton
+        variant="default"
+        borderRadius="squared"
+        size="md"
+        className="md:hidden w-1/2 md:w-1/4 h-14 md:my-10"
         onClick={() => router.push(PATHS["termos-parceiro"])}
       >
         Começar agora

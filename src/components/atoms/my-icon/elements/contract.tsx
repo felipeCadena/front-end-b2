@@ -1,12 +1,12 @@
 const Contract = ({
   className,
-  fill = "none",
+  fill = "#fff",
 }: {
   className?: string;
   fill?: string;
 }) => (
   <svg
-    fill="#fff"
+    fill={fill}
     height="50px"
     width="50px"
     version="1.1"
@@ -17,7 +17,7 @@ const Contract = ({
     xmlSpace="preserve"
     className={className}
   >
-    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+    <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
     <g id="SVGRepo_iconCarrier">
       {" "}
       <g>

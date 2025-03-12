@@ -28,78 +28,88 @@ export default function StepperComponent() {
   const router = useRouter();
   const stepsPerPage = 3;
 
-  const startIndex = currentStep === steps.length - 1 
-  ? steps.length - 2 
-  : Math.max(0, currentStep - 1);
+  const startIndex =
+    currentStep === steps.length - 1
+      ? steps.length - 2
+      : Math.max(0, currentStep - 1);
 
   const visibleSteps = steps.slice(startIndex, startIndex + stepsPerPage);
 
   const handleNextTo = () => {
     if (currentStep < steps.length - 1) {
-        setCurrentStep((prev) => prev + 1);
-      } else {
-        router.push(PATHS["informacoes-atividades"]);
-      }
-  }
+      setCurrentStep((prev) => prev + 1);
+    } else {
+      router.push("/parceiro/informacoes-atividade");
+    }
+  };
 
   const handleBackToInitial = () => {
     switch (currentStep) {
-        case 0:
-            router.push(PATHS.initial);
-            break;
-        case 1:
-            setCurrentStep(0);
-            break;
-        case 2:
-            setCurrentStep(1);
-            break;
-        case 3:
-            setCurrentStep(2);
-            break;
-        case 4:
-            setCurrentStep(3);
-            break;
-        case 5:
-            setCurrentStep(4);
-            break;
-        }
-  }
+      case 0:
+        router.push(PATHS.initial);
+        break;
+      case 1:
+        setCurrentStep(0);
+        break;
+      case 2:
+        setCurrentStep(1);
+        break;
+      case 3:
+        setCurrentStep(2);
+        break;
+      case 4:
+        setCurrentStep(3);
+        break;
+      case 5:
+        setCurrentStep(4);
+        break;
+    }
+  };
 
   return (
     <main className="w-full max-w-md mx-auto p-4 flex flex-col gap-8">
-        <div className="relative">
-          <MyLogo
-            variant="mobile"
-            width={100}
-            height={100}
-            className="mx-auto"
-          />
-          <MyIcon
-            name="voltar"
-            className="absolute bottom-8 left-0 md:hidden"
-            onClick={handleBackToInitial}
-          />
-        </div>
+      <div className="relative">
+        <MyLogo variant="mobile" width={100} height={100} className="mx-auto" />
+        <MyIcon
+          name="voltar"
+          className="absolute bottom-8 left-0 md:hidden"
+          onClick={handleBackToInitial}
+        />
+      </div>
 
       {/* Stepper Visual */}
-      <div className={cn("flex items-center mb-4 w-full relative", currentStep < 5 ? "justify-between" : "gap-32")}>
+      <div
+        className={cn(
+          "flex items-center mb-4 w-full relative",
+          currentStep < 5 ? "justify-between" : "gap-32"
+        )}
+      >
         {visibleSteps.map((step, index) => {
           const stepNumber = startIndex + index + 1;
           return (
             <div key={index} className="flex flex-col items-center">
-              {currentStep >= 2 && <div className="absolute -left-4 top-[0.9rem] w-[3%] h-[0.01rem] bg-black" />}
+              {currentStep >= 2 && (
+                <div className="absolute -left-4 top-[0.9rem] w-[3%] h-[0.01rem] bg-black" />
+              )}
               <div className="absolute left-8 top-[0.9rem] w-[34%] h-[0.01rem] bg-black" />
-              {currentStep < 5 && <div className="absolute left-[56%] top-[0.9rem] w-[34%] h-[0.01rem] bg-black" />}
-              {currentStep < 4 && <div className="absolute -right-4 top-[0.9rem] w-[3%] h-[0.01rem] bg-black" />}
+              {currentStep < 5 && (
+                <div className="absolute left-[56%] top-[0.9rem] w-[34%] h-[0.01rem] bg-black" />
+              )}
+              {currentStep < 4 && (
+                <div className="absolute -right-4 top-[0.9rem] w-[3%] h-[0.01rem] bg-black" />
+              )}
 
               <div className="flex items-center relative flex-1">
                 <div
                   className={`w-7 h-7 flex items-center justify-center rounded-full border border-black z-50 ${
-                    currentStep === stepNumber - 1
-                      && "bg-black text-white"
+                    currentStep === stepNumber - 1 && "bg-black text-white"
                   }`}
                 >
-                  {currentStep >= stepNumber ? ( currentStep == 0 ? stepNumber : "✔") : stepNumber}
+                  {currentStep >= stepNumber
+                    ? currentStep == 0
+                      ? stepNumber
+                      : "✔"
+                    : stepNumber}
                 </div>
               </div>
               <span className="text-sm mt-1">{stepNumber}/6</span>
@@ -108,24 +118,23 @@ export default function StepperComponent() {
         })}
       </div>
 
-        {/* Stepper Content */}
-        {currentStep === 0 && <Step1 />}
-        {currentStep === 1 && <Step2 />}
-        {currentStep === 2 && <Step3 />}
-        {currentStep === 3 && <Step4 />}
-        {currentStep === 4 && <Step5 />}
-        {currentStep === 5 && <Step6 />}
+      {/* Stepper Content */}
+      {currentStep === 0 && <Step1 />}
+      {currentStep === 1 && <Step2 />}
+      {currentStep === 2 && <Step3 />}
+      {currentStep === 3 && <Step4 />}
+      {currentStep === 4 && <Step5 />}
+      {currentStep === 5 && <Step6 />}
 
-
-        <MyButton
-          onClick={handleNextTo}
-          size="lg"
-          borderRadius="squared"
-          className="w-full my-8"
-          rightIcon={<MyIcon name="seta-direita" />}
-        >
-          Próximo Passo
-        </MyButton>
+      <MyButton
+        onClick={handleNextTo}
+        size="lg"
+        borderRadius="squared"
+        className="w-full my-8"
+        rightIcon={<MyIcon name="seta-direita" />}
+      >
+        Próximo Passo
+      </MyButton>
     </main>
   );
 }

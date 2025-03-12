@@ -15,7 +15,7 @@ import React from "react";
 export default function InformacoesAtividade() {
   const router = useRouter();
   const [selected, setSelected] = React.useState("Em grupo");
-  const params = "1"
+  const params = "1";
 
   const handleNext = () => {
     router.push(`${PATHS["minhas-atividades"]}?openModal=true`);
@@ -23,11 +23,11 @@ export default function InformacoesAtividade() {
 
   return (
     <main className="w-full max-w-md mx-auto p-4">
-      <div className="relative">
+      <div className="relative md:hidden">
         <MyLogo variant="mobile" width={100} height={100} className="mx-auto" />
         <MyIcon
           name="voltar"
-          className="absolute bottom-8 left-0 md:hidden"
+          className="absolute bottom-8 left-0"
           onClick={() => router.back()}
         />
       </div>
@@ -113,10 +113,18 @@ export default function InformacoesAtividade() {
         </div>
 
         <div className="flex justify-between mt-1">
-          <MyTypography variant="label" weight="regular" className="text-primary-600">
+          <MyTypography
+            variant="label"
+            weight="regular"
+            className="text-primary-600"
+          >
             Valor total da Atividade
           </MyTypography>
-          <MyTypography variant="label" weight="bold" className="text-primary-600">
+          <MyTypography
+            variant="label"
+            weight="bold"
+            className="text-primary-600"
+          >
             R$ 350,00
           </MyTypography>
         </div>
@@ -126,7 +134,7 @@ export default function InformacoesAtividade() {
         <MyButton
           variant="black-border"
           borderRadius="squared"
-          rightIcon={<MyIcon name="seta" className="ml-3"/>}
+          rightIcon={<MyIcon name="seta" className="ml-3" />}
           className="w-full font-bold"
           size="lg"
           onClick={() => router.push(PATHS.visualizarAtividade(params))}
@@ -137,7 +145,7 @@ export default function InformacoesAtividade() {
         <MyButton
           variant="default"
           borderRadius="squared"
-          rightIcon={<MyIcon name="seta-direita" className="ml-3"/>}
+          rightIcon={<MyIcon name="seta-direita" className="ml-3" />}
           className="w-full"
           size="lg"
           onClick={handleNext}
