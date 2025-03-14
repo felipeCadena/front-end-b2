@@ -1,6 +1,6 @@
 import StepperForm from "@/components/organisms/stepper-form";
 import React from "react";
 
-export default function page() {
+export default function CadastroParceiro() {
   return <StepperForm />;
 }

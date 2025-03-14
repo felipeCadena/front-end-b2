@@ -9,7 +9,6 @@ import Now from "../atoms/my-icon/elements/now";
 import PopupActivity from "./popup-activity";
 
 export default function ActivitiesHidden({ notifications }: any) {
-  const [openModal, setOpenModal] = useState(false);
   return (
     <section>
       <div className="mt-6 mx-4">
@@ -38,24 +37,18 @@ export default function ActivitiesHidden({ notifications }: any) {
                       ? "border border-primary-600"
                       : ""
                 )}
-                onClick={() => {}}
               >
-                <MyIcon
-                  name="options"
-                  className="absolute top-3 right-3 cursor-pointer"
-                  onClick={() => setOpenModal(true)}
-                />
-                {openModal && (
+                <div className="absolute top-0 right-3 z-20">
                   <PopupActivity
-                    visible={openModal}
-                    onClose={() => setOpenModal(false)}
-                    onDuplicar={() => {}}
-                    onCancelar={() => {}}
-                    onEditar={() => {}}
-                    onOcultar={() => {}}
-                    onExcluir={() => {}}
+                    onDuplicar={() => console.log("Duplicar")}
+                    onCancelar={() => console.log("Cancelar")}
+                    onEditar={() => console.log("Editar")}
+                    onOcultar={() => console.log("Ocultar")}
+                    onExcluir={() => console.log("Excluir")}
+                    onCustomer={() => console.log("onCustomer")}
                   />
-                )}
+                </div>
+
                 <div className="flex items-center justify-between w-full">
                   <MyTypography
                     variant="notification"
@@ -70,7 +63,9 @@ export default function ActivitiesHidden({ notifications }: any) {
                             ? "#9F9F9F"
                             : notification.status == "cancelada"
                               ? "#FF7272"
-                              : "#2DADE4"
+                              : notification.status == "oculta"
+                                ? "#9F9F9F"
+                                : "#2DADE4"
                       }
                     />
                     {getTimeInterval(
@@ -97,8 +92,10 @@ export default function ActivitiesHidden({ notifications }: any) {
                       : notification.status == "realizada"
                         ? notification.group +
                           " clientes participaram desta atividade"
-                        : notification.group +
-                          " clientes vão participar desta atividade"}
+                        : notification.status == "oculta"
+                          ? "Atividade oculta"
+                          : notification.group +
+                            " clientes vão participar desta atividade"}
                 </MyTypography>
               </div>
             )

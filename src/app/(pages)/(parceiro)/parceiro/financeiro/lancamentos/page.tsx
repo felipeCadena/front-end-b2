@@ -110,7 +110,8 @@ export default function Lancamentos() {
             </SelectTrigger>
             <SelectContent className="rounded-lg">
               <SelectItem value="receber">A receber</SelectItem>
-              <SelectItem value="pagar">A pagar</SelectItem>
+              <SelectItem value="pagar">Recebido</SelectItem>
+              <SelectItem value="pagar">Cancelada</SelectItem>
             </SelectContent>
           </MySelect>
 
@@ -124,13 +125,36 @@ export default function Lancamentos() {
             </SelectContent>
           </MySelect>
 
-          <MySelect defaultValue="setembro">
+          <MySelect defaultValue="2025">
             <SelectTrigger className="rounded-2xl w-[150px] text-[#848A9C] text-xs">
               <SelectValue placeholder="Setembro" />
             </SelectTrigger>
             <SelectContent className="rounded-lg">
+              <SelectItem value="2024">2024</SelectItem>
+              <SelectItem value="2025">2025</SelectItem>
+              <SelectItem value="2026">2026</SelectItem>
+              <SelectItem value="2027">2027</SelectItem>
+              <SelectItem value="2028">2028</SelectItem>
+            </SelectContent>
+          </MySelect>
+
+          <MySelect defaultValue="setembro">
+            <SelectTrigger className="rounded-2xl w-[150px] text-[#848A9C] text-xs">
+              <SelectValue placeholder="Mês" />
+            </SelectTrigger>
+            <SelectContent className="rounded-lg">
+              <SelectItem value="janeiro">Janeiro</SelectItem>
+              <SelectItem value="fevereiro">Fevereiro</SelectItem>
+              <SelectItem value="março">Março</SelectItem>
+              <SelectItem value="abril">Abril</SelectItem>
+              <SelectItem value="maio">Maio</SelectItem>
+              <SelectItem value="junho">Junho</SelectItem>
+              <SelectItem value="julho">Julho</SelectItem>
+              <SelectItem value="agosto">Agosto</SelectItem>
               <SelectItem value="setembro">Setembro</SelectItem>
               <SelectItem value="outubro">Outubro</SelectItem>
+              <SelectItem value="novembro">Novembro</SelectItem>
+              <SelectItem value="dezembro">Dezembro</SelectItem>
             </SelectContent>
           </MySelect>
         </div>

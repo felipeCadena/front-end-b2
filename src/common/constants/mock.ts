@@ -736,6 +736,93 @@ export const notificationActivities = [
   },
 ];
 
+export const hiddenActivities = [
+  {
+    id: 1,
+    title: "Atividade Monte Rio",
+    timestamp: "2025-02-10T22:11:00",
+    duracao: 2,
+    group: 10,
+    reason:
+      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",
+    read: false,
+    status: "oculta",
+    description: "Sua atividade foi cancelada por um dos nossos parceiros.",
+    parceiro: {
+      avatar: "/images/avatar1.png",
+      nome: "Bruna Delduca",
+    },
+  },
+  {
+    id: 2,
+    title: "Atividade Cristo Redentor",
+    timestamp: "2025-01-31T11:00:00",
+    duracao: 4,
+    group: 8,
+    reason:
+      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",
+    read: true,
+    status: "oculta",
+    description:
+      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",
+    parceiro: {
+      avatar: "/images/avatar1.png",
+      nome: "Felipe Almeida",
+    },
+  },
+  {
+    id: 3,
+    title: "Atividade Cristo Redentor",
+    timestamp: "2025-01-30T08:30:00",
+    duracao: 1,
+    group: 5,
+    reason:
+      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",
+    read: true,
+    status: "oculta",
+    description:
+      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",
+    parceiro: {
+      avatar: "/images/avatar1.png",
+      nome: "Talisson Silva",
+    },
+  },
+  {
+    id: 4,
+    title: "Atividade Cristo Redentor",
+    timestamp: "2025-01-20T10:20:00",
+    duracao: 3,
+    group: 9,
+    reason:
+      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",
+    read: true,
+    status: "oculta",
+    description:
+      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",
+    parceiro: {
+      avatar: "/images/avatar1.png",
+      nome: "Michel Nicolay",
+    },
+  },
+  {
+    id: 5,
+    title: "Atividade Surfe",
+    timestamp: "2025-01-25T09:20:00",
+    duracao: 4,
+    group: 5,
+    reason:
+      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",
+    read: false,
+    status: "oculta",
+    description:
+      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",
+    parceiro: {
+      avatar: "/images/avatar1.png",
+      nome: "Bruna Delduca",
+    },
+  },
+];
+
 export const reviews = [
   {
     avatar: "/images/avatar1.png",

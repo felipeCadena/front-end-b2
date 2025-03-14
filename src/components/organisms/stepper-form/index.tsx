@@ -16,10 +16,11 @@ import Step8 from "./step-8";
 import Step9 from "./step-9";
 import Step10 from "./step-10";
 import { useRouter } from "next/navigation";
+import WebForm from "@/app/(pages)/(parceiro)/parceiro/cadastro-atividade/web-form";
 
 export default function StepperForm() {
   const [currentStep, setCurrentStep] = useState(0);
-  const totalSteps = 10;
+  const totalSteps = 5;
   const router = useRouter();
 
   const handleNext = () => {
@@ -43,16 +44,17 @@ export default function StepperForm() {
     <CadastroParceiro />,
     <Sobre />,
     <Informacoes />,
-    <Step5 />,
-    <Step6 />,
-    <Step7 />,
-    <Step8 />,
-    <Step9 />,
-    <Step10 />,
+    <WebForm />,
+    // <Step5 />,
+    // <Step6 />,
+    // <Step7 />,
+    // <Step8 />,
+    // <Step9 />,
+    // <Step10 />,
   ];
 
   return (
-    <div className="w-full max-w-2xl mx-auto p-4 flex flex-col">
+    <div className="w-full max-w-3xl mx-auto p-4 flex flex-col">
       <MyStepper
         steps={totalSteps}
         currentStep={currentStep}

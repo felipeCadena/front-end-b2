@@ -113,7 +113,7 @@ export default function CarouselCustom({ activities }: any) {
             <MyTypography variant="subtitle1" weight="bold">
               {activity.title}
             </MyTypography>
-            <MyTypography variant="body-big" className="md:w-[250px] ">
+            <MyTypography variant="body-big" className="md:pr-4">
               {activity.description.slice(0, 105).concat("...")}{" "}
               <MyTypography
                 variant="body-big"

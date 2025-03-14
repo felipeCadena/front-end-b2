@@ -8,13 +8,19 @@ import MyTypography from "../atoms/my-typography";
 import MyIcon from "../atoms/my-icon";
 import { getData, getHora } from "@/utils/formatters";
 import MyButton from "../atoms/my-button";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import PATHS from "@/utils/paths";
 import { cn } from "@/utils/cn";
 import Calendar from "../atoms/my-icon/elements/calendar";
+import PopupActivity from "./popup-activity";
 
-export default function FullActivitiesHistoric({ activities, withDate }: any) {
+export default function FullActivitiesHistoric({
+  activities,
+  withDate,
+  withOptions,
+}: any) {
   const router = useRouter();
+  const pathname = usePathname();
 
   return (
     <section className="md:max-w-screen-custom">
@@ -55,7 +61,7 @@ export default function FullActivitiesHistoric({ activities, withDate }: any) {
           </div>
 
           <div className="w-full space-y-4 max-h-[265px]">
-            <div className="w-full flex justify-between mb-4">
+            <div className="w-full flex justify-between mb-4 relative">
               <div
                 className="flex flex-col gap-2 cursor-pointer"
                 onClick={() =>
@@ -106,7 +112,25 @@ export default function FullActivitiesHistoric({ activities, withDate }: any) {
                 </MyButton>
               )}
 
-              <div className="flex gap-4">
+              {withOptions && (
+                <div className="absolute top-0 right-3 cursor-pointer z-20">
+                  <PopupActivity
+                    onDuplicar={() => console.log("Duplicar")}
+                    onCancelar={() => console.log("Cancelar")}
+                    onEditar={() => console.log("Editar")}
+                    onOcultar={() => console.log("Ocultar")}
+                    onExcluir={() => console.log("Excluir")}
+                    onCustomer={() => console.log("onCustomer")}
+                  />
+                </div>
+              )}
+
+              <div
+                className={cn(
+                  "flex gap-4",
+                  pathname.includes("parceiro") && "hidden"
+                )}
+              >
                 {withDate && (
                   <MyButton
                     variant="message"

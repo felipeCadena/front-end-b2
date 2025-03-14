@@ -107,3 +107,8 @@
   display: none !important;
   -webkit-appearance: none;
 }
+
+.text-justify-center {
+  text-align: justify;
+  text-align-last: center;
+}
