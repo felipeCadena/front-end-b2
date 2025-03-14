@@ -21,6 +21,7 @@ const ROOTS_INFOS = "/informacoes";
 // Rotas Parceiros
 const ROOTS_PARCEIRO = "/parceiro";
 const ROOTS_CADASTRO_PARCEIRO = "/parceiro/cadastro";
+const ROOTS_CADASTRO_FLUXO_PARCEIRO = "/parceiro/cadastro-parceiro";
 const ROOTS_LOGIN_PARCEIRO = "/parceiro/login";
 const ROOTS_SENHA_PARCEIRO = "/parceiro/esqueci-minha-senha";
 const ROOTS_ATIVIDADES_CADASTRADAS = "/parceiro/atividades-cadastradas";
@@ -70,6 +71,7 @@ const PATHS = {
   parceiro: ROOTS_PARCEIRO,
   "sobre-a-empresa": ROOTS_SOBRE_A_EMPRESA,
   "cadastro-parceiro": ROOTS_CADASTRO_PARCEIRO,
+  "fluxo-cadastro-parceiro": ROOTS_CADASTRO_FLUXO_PARCEIRO,
   "cadastro-atividade": ROOTS_CADASTRO_ATIVIDADE,
   "informacoes-atividades": ROOTS_INFORMACOES_ATIVIDADES,
   "minhas-atividades": ROOTS_SUAS_ATIVIDADES,

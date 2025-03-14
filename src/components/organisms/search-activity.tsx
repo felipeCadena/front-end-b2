@@ -4,13 +4,14 @@ import React from "react";
 import MyTextInput from "../atoms/my-text-input";
 import MyIcon from "../atoms/my-icon";
 import MyButton from "../atoms/my-button";
+import { cn } from "@/utils/cn";
 
-export default function SearchActivity() {
+export default function SearchActivity({ className }: { className?: string }) {
   const [chips, setChips] = React.useState<string[]>([]);
   const [search, setSearch] = React.useState("");
 
   return (
-    <section className="mt-2 md:w-2/3 md:mx-auto max-sm:px-4">
+    <section className={cn("mt-2 md:w-2/3 md:mx-auto max-sm:px-4", className)}>
       <MyTextInput
         placeholder="Procurar atividade"
         noHintText

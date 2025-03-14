@@ -118,10 +118,11 @@ export const sideBarPartnet: any[] = [
     link: "/perfil",
     icon: "perfil",
     web: false,
+    menu: true,
   },
   {
     label: "Atividades",
-    link: "/parceiro/atividades-cadastradas",
+    link: "/parceiro/minhas-atividades",
     icon: "atividades",
     web: true,
   },
@@ -130,6 +131,7 @@ export const sideBarPartnet: any[] = [
     link: "/parceiro/fotos-de-passeios",
     icon: "camera",
     web: false,
+    menu: true,
   },
   {
     label: "Notificações",
@@ -138,22 +140,25 @@ export const sideBarPartnet: any[] = [
     web: true,
   },
   {
-    label: "Home",
-    link: "/parceiro/minhas-atividades",
+    label: "Atividades Cadastradas",
+    link: "/parceiro/atividades-cadastradas",
     icon: "home",
     web: false,
+    menu: true,
   },
   {
     label: "Reservas",
     link: "/parceiro/reservas",
     icon: "reservas",
     web: false,
+    menu: true,
   },
   {
     label: "Financeiro",
     link: "/parceiro/financeiro",
     icon: "pie",
     web: true,
+    menu: true,
   },
   {
     label: "Chat",
@@ -166,12 +171,14 @@ export const sideBarPartnet: any[] = [
     link: "/fale-conosco",
     icon: "email",
     web: false,
+    menu: true,
   },
   {
     label: "Sair",
     link: "/",
     icon: "sair",
     web: false,
+    menu: true,
   },
 ];
 

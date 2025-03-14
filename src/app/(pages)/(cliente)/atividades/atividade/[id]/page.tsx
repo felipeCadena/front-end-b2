@@ -53,28 +53,23 @@ export default function Atividade() {
 
             <div className="space-y-4">
               <StarRating rating={activity?.stars ?? 5} />
-
-              <div className="flex gap-4 max-sm:hidden">
-                <Image
-                  alt="avatar"
-                  src={activity?.parceiro.avatar ?? ""}
-                  width={8}
-                  height={8}
-                  className="w-12 h-12 rounded-full object-contain"
-                />
-                <div>
-                  <MyTypography variant="label" weight="semibold">
-                    {activity?.parceiro.nome}
-                  </MyTypography>
-                  <MyTypography
-                    variant="label"
-                    weight="regular"
-                    lightness={400}
-                  >
-                    Parceiro e Guia de atividades
-                  </MyTypography>
-                </div>
-              </div>
+            </div>
+          </div>
+          <div className="flex gap-4 mt-4 max-sm:hidden">
+            <Image
+              alt="avatar"
+              src={activity?.parceiro.avatar ?? ""}
+              width={8}
+              height={8}
+              className="w-12 h-12 rounded-full object-contain"
+            />
+            <div>
+              <MyTypography variant="label" weight="semibold">
+                {activity?.parceiro.nome}
+              </MyTypography>
+              <MyTypography variant="label" weight="regular" lightness={400}>
+                Parceiro e Guia de atividades
+              </MyTypography>
             </div>
           </div>
 

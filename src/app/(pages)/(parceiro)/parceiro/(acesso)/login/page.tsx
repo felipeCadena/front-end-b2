@@ -111,7 +111,7 @@ export default function LoginParceiro() {
             </MyTypography>
             <MyButton
               variant="text"
-              onClick={() => router.push("/parceiro/fluxo")}
+              onClick={() => router.push("cadastro-parceiro")}
               className="max-sm:hidden"
             >
               Cadastre-se

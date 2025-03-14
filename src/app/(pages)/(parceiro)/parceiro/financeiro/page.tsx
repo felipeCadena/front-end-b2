@@ -25,6 +25,7 @@ import {
   ReferenceLine,
   CartesianGrid,
 } from "recharts";
+import Lancamentos from "./lancamentos/page";
 
 const activities = [
   { name: "Atividade na Água", icon: "mar", color: "#00C6FB", progress: 92 },
@@ -78,206 +79,214 @@ const renderCustomizedLabel = ({
 
 export default function Dashboard() {
   return (
-    <div className="space-y-6 mx-4 my-6">
-      <MyCard>
-        <CardContent className="space-y-4 p-3">
-          <h2 className="text-lg font-semibold">Atividades</h2>
-          {activities.map((activity, index) => (
-            <div key={index} className="flex flex-col gap-4">
-              <div className="flex items-center gap-4 relative">
-                <MyTypography
-                  variant="caption"
-                  className="text-sm font-semibold absolute top-[39%] left-[7%]"
-                >
-                  {activity.progress}%
-                </MyTypography>
-                <ResponsiveContainer width={70} height={70}>
-                  <PieChart>
-                    <Pie
-                      data={[
-                        { name: activity.name, value: activity.progress },
-                        { name: "Restante", value: 100 - activity.progress },
-                      ]}
-                      dataKey="value"
-                      innerRadius={28}
-                      outerRadius={35}
-                      startAngle={90}
-                      endAngle={450}
-                      isAnimationActive={false}
+    <main className="max-sm:space-y-6 max-sm:mx-4 my-6">
+      <div className="md:grid md:grid-cols-3 md:gap-6 md:items-center md:my-12">
+        <MyCard className="md:h-full">
+          <CardContent className="space-y-4">
+            <h2 className="text-lg font-semibold">Atividades</h2>
+            {activities.map((activity, index) => (
+              <div key={index} className="flex flex-col gap-4">
+                <div className="flex items-center gap-4 relative">
+                  <MyTypography
+                    variant="caption"
+                    className="text-sm font-semibold absolute top-[39%] left-[7%]"
+                  >
+                    {activity.progress}%
+                  </MyTypography>
+                  <ResponsiveContainer width={70} height={70}>
+                    <PieChart>
+                      <Pie
+                        data={[
+                          { name: activity.name, value: activity.progress },
+                          { name: "Restante", value: 100 - activity.progress },
+                        ]}
+                        dataKey="value"
+                        innerRadius={28}
+                        outerRadius={35}
+                        startAngle={90}
+                        endAngle={450}
+                        isAnimationActive={false}
+                      >
+                        <Cell fill={activity.color} />
+                        <Cell fill="#E5E7EB" />
+                      </Pie>
+                    </PieChart>
+                  </ResponsiveContainer>
+                  <div className="flex-1">
+                    <MyTypography
+                      variant="body-big"
+                      weight="semibold"
+                      className="flex items-center space-x-2"
                     >
-                      <Cell fill={activity.color} />
-                      <Cell fill="#E5E7EB" />
-                    </Pie>
-                  </PieChart>
-                </ResponsiveContainer>
-                <div className="flex-1">
-                  <MyTypography
-                    variant="body-big"
-                    weight="semibold"
-                    className="flex items-center space-x-2"
-                  >
-                    <MyIcon
-                      name={activity.icon as IconsMapTypes}
-                      className="text-gray-700"
-                    />
-                    <span>{activity.name}</span>
-                  </MyTypography>
-                  <MyTypography
-                    variant="body-big"
-                    lightness={500}
-                    className="mt-1"
-                  >
-                    Lorem ipsum dolor sit am
-                  </MyTypography>
+                      <MyIcon
+                        name={activity.icon as IconsMapTypes}
+                        className="text-gray-700"
+                      />
+                      <span>{activity.name}</span>
+                    </MyTypography>
+                    <MyTypography
+                      variant="body-big"
+                      lightness={500}
+                      className="mt-1"
+                    >
+                      Lorem ipsum dolor sit am
+                    </MyTypography>
+                  </div>
                 </div>
-              </div>
-              {index !== activities.length - 1 && (
-                <div className="w-full h-1 border-t border-dashed" />
-              )}
-            </div>
-          ))}
-        </CardContent>
-      </MyCard>
-
-      <MyCard className="pb-8">
-        <CardContent className="p-4 space-y-4 relative mx-auto">
-          <div className="w-full flex items-center justify-between space-x-16 md:hidden">
-            <MyTypography
-              variant="subtitle3"
-              weight="bold"
-              className="text-nowrap"
-            >
-              Seus Rendimentos
-            </MyTypography>
-
-            <MySelect
-            //   value={}
-            //   onValueChange={}
-            >
-              <SelectTrigger className="rounded-2xl text-[#848A9C] text-xs">
-                <SelectValue placeholder="Mensal" />
-              </SelectTrigger>
-              <SelectContent className="rounded-lg">
-                <SelectItem value="Mensal">Mensal</SelectItem>
-                <SelectItem value="Semanal">Semanal</SelectItem>
-              </SelectContent>
-            </MySelect>
-          </div>
-          <ResponsiveContainer width="100%" height={250}>
-            <PieChart>
-              <Pie
-                data={pieData}
-                dataKey="value"
-                nameKey="name"
-                cx="50%"
-                cy="50%"
-                outerRadius={110} // Aumentando o tamanho do gráfico
-                innerRadius={80} // Deixando mais fino
-                minAngle={20} // Define o ângulo mínimo para exibição
-                startAngle={-45} // Define que o maior segmento começa de cima
-                endAngle={320} // Garante a distribuição no sentido anti-horário
-                fill="#8884d8"
-                labelLine={false}
-                isAnimationActive={false}
-                label={renderCustomizedLabel}
-                stroke="none" // Remove contorno para melhor visualização
-              >
-                {pieData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={entry.color} />
-                ))}
-              </Pie>
-            </PieChart>
-          </ResponsiveContainer>
-          <div className="text-center absolute top-[35%] left-[35%] opacity-6">
-            <MyTypography variant="body-big" lightness={400} className="">
-              Total
-            </MyTypography>
-            <MyTypography variant="subtitle2" weight="bold" className="">
-              R$3.250,00
-            </MyTypography>
-          </div>
-
-          <div className="flex flex-col gap-2 w-1/2 mx-auto items-start">
-            {pieData.map((entry, index) => (
-              <div
-                key={index}
-                className="flex justify-center items-center gap-2"
-              >
-                <div
-                  className={cn(`h-3 w-3 rounded-full border-2 shrink-0`)}
-                  style={{
-                    borderColor: entry.color,
-                  }}
-                />
-                <MyTypography variant="body" lightness={400} className="flex-1">
-                  {entry.name}
-                </MyTypography>
+                {index !== activities.length - 1 && (
+                  <div className="w-full h-1 border-t border-dashed" />
+                )}
               </div>
             ))}
-          </div>
-        </CardContent>
-      </MyCard>
+          </CardContent>
+        </MyCard>
 
-      <MyCard>
-        <CardContent className="w-full flex flex-col justify-center items-center">
-          <div className="w-full flex items-center justify-between space-x-16 md:hidden">
-            <MyTypography
-              variant="subtitle3"
-              weight="bold"
-              className="text-nowrap"
+        <MyCard className="pb-8 md:h-full">
+          <CardContent className="p-4 space-y-4 relative mx-auto">
+            <div className="w-full flex items-center justify-between space-x-16">
+              <MyTypography
+                variant="subtitle3"
+                weight="bold"
+                className="text-nowrap"
+              >
+                Seus Rendimentos
+              </MyTypography>
+
+              <MySelect
+              //   value={}
+              //   onValueChange={}
+              >
+                <SelectTrigger className="rounded-2xl text-[#848A9C] text-xs">
+                  <SelectValue placeholder="Mensal" />
+                </SelectTrigger>
+                <SelectContent className="rounded-lg">
+                  <SelectItem value="Mensal">Mensal</SelectItem>
+                  <SelectItem value="Semanal">Semanal</SelectItem>
+                </SelectContent>
+              </MySelect>
+            </div>
+            <ResponsiveContainer width="100%" height={250}>
+              <PieChart>
+                <Pie
+                  data={pieData}
+                  dataKey="value"
+                  nameKey="name"
+                  cx="50%"
+                  cy="50%"
+                  outerRadius={110} // Aumentando o tamanho do gráfico
+                  innerRadius={80} // Deixando mais fino
+                  minAngle={20} // Define o ângulo mínimo para exibição
+                  startAngle={-45} // Define que o maior segmento começa de cima
+                  endAngle={320} // Garante a distribuição no sentido anti-horário
+                  fill="#8884d8"
+                  labelLine={false}
+                  isAnimationActive={false}
+                  label={renderCustomizedLabel}
+                  stroke="none" // Remove contorno para melhor visualização
+                >
+                  {pieData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  ))}
+                </Pie>
+              </PieChart>
+            </ResponsiveContainer>
+            <div className="text-center absolute top-[35%] left-[35%] opacity-6">
+              <MyTypography variant="body-big" lightness={400} className="">
+                Total
+              </MyTypography>
+              <MyTypography variant="subtitle2" weight="bold" className="">
+                R$3.250,00
+              </MyTypography>
+            </div>
+
+            <div className="flex flex-col gap-2 w-1/2 mx-auto items-start">
+              {pieData.map((entry, index) => (
+                <div
+                  key={index}
+                  className="flex justify-center items-center gap-2"
+                >
+                  <div
+                    className={cn(`h-3 w-3 rounded-full border-2 shrink-0`)}
+                    style={{
+                      borderColor: entry.color,
+                    }}
+                  />
+                  <MyTypography
+                    variant="body"
+                    lightness={400}
+                    className="flex-1"
+                  >
+                    {entry.name}
+                  </MyTypography>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </MyCard>
+
+        <MyCard className="md:h-full">
+          <CardContent className="w-full flex flex-col justify-center items-center">
+            <div className="w-full flex items-center justify-between space-x-16">
+              <MyTypography
+                variant="subtitle3"
+                weight="bold"
+                className="text-nowrap"
+              >
+                Passeios do mês
+              </MyTypography>
+
+              <MySelect
+              //   value={}
+              //   onValueChange={}
+              >
+                <SelectTrigger className="rounded-2xl text-[#848A9C] text-xs">
+                  <SelectValue placeholder="Mensal" />
+                </SelectTrigger>
+                <SelectContent className="rounded-lg">
+                  <SelectItem value="Mensal">Mensal</SelectItem>
+                  <SelectItem value="Semanal">Semanal</SelectItem>
+                </SelectContent>
+              </MySelect>
+            </div>
+
+            <ResponsiveContainer
+              width={380}
+              height={200}
+              className="min-w-full mt-4"
             >
-              Passeios do mês
-            </MyTypography>
+              <LineChart data={lineData}>
+                <XAxis
+                  fontSize={12}
+                  axisLine={false}
+                  dataKey="name"
+                  interval="preserveStartEnd"
+                  padding={{ left: 10, right: 10 }}
+                />
+                <YAxis fontSize={12} axisLine={false} />
+                <Tooltip />
+                <ReferenceLine x="Mai" stroke="orange" strokeWidth={2} />
+                <Line
+                  type="monotone"
+                  dataKey="value"
+                  stroke="#00C6FB"
+                  strokeWidth={2}
+                  dot={{ r: 0 }}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="before"
+                  strokeWidth={2}
+                  stroke="rgb(201, 201, 201)"
+                  dot={{ r: 0 }}
+                />
+                <CartesianGrid strokeDasharray="2" vertical={false} />
+              </LineChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </MyCard>
+      </div>
 
-            <MySelect
-            //   value={}
-            //   onValueChange={}
-            >
-              <SelectTrigger className="rounded-2xl text-[#848A9C] text-xs">
-                <SelectValue placeholder="Mensal" />
-              </SelectTrigger>
-              <SelectContent className="rounded-lg">
-                <SelectItem value="Mensal">Mensal</SelectItem>
-                <SelectItem value="Semanal">Semanal</SelectItem>
-              </SelectContent>
-            </MySelect>
-          </div>
-
-          <ResponsiveContainer
-            width={380}
-            height={200}
-            className="min-w-full mt-4"
-          >
-            <LineChart data={lineData}>
-              <XAxis
-                fontSize={12}
-                axisLine={false}
-                dataKey="name"
-                interval="preserveStartEnd"
-                padding={{ left: 10, right: 10 }}
-              />
-              <YAxis fontSize={12} axisLine={false} />
-              <Tooltip />
-              <ReferenceLine x="Mai" stroke="orange" strokeWidth={2} />
-              <Line
-                type="monotone"
-                dataKey="value"
-                stroke="#00C6FB"
-                strokeWidth={2}
-                dot={{ r: 0 }}
-              />
-              <Line
-                type="monotone"
-                dataKey="before"
-                strokeWidth={2}
-                stroke="rgb(201, 201, 201)"
-                dot={{ r: 0 }}
-              />
-              <CartesianGrid strokeDasharray="2" vertical={false} />
-            </LineChart>
-          </ResponsiveContainer>
-        </CardContent>
-      </MyCard>
-    </div>
+      <Lancamentos />
+    </main>
   );
 }

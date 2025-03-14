@@ -198,7 +198,7 @@ export default function AreaParceiros() {
         borderRadius="squared"
         size="md"
         className="max-sm:hidden w-1/2 md:w-1/4 h-14 my-2 md:my-10"
-        onClick={() => router.push("/parceiro/fluxo")}
+        onClick={() => router.push(PATHS["fluxo-cadastro-parceiro"])}
       >
         Começar agora
       </MyButton>
@@ -484,7 +484,7 @@ export default function AreaParceiros() {
           />
         </div>
 
-        <div className="text-left px-4 md:px-16">
+        <div className="text-left px-4 md:px-10">
           <MyTypography
             variant="heading3"
             weight="bold"
@@ -514,7 +514,7 @@ export default function AreaParceiros() {
           className="w-full h-[200px] md:h-[300px] object-cover"
         />
 
-        <div className="text-left space-y-6 max-sm:mx-4">
+        <div className="text-left space-y-6 max-sm:mx-4 md:px-10">
           <MyTypography
             variant="heading3"
             weight="bold"
@@ -588,12 +588,12 @@ export default function AreaParceiros() {
           className="w-full h-[250px] md:h-[550px] object-cover "
         />
 
-        <div className="absolute text-white top-2 md:top-8 left-[25%] z-50 w-1/2 dropShadow-sm">
+        <div className="absolute top-2 md:top-8 left-[25%] z-50 w-1/2 dropShadow-sm">
           <span className="text-[1.5rem] md:text-[3rem] font-bold">☆ ☆ ☆</span>
           <MyTypography
             variant="heading3"
             weight="bold"
-            className="text-white text-[1rem] md:text-[1.3rem]"
+            className="text-[1rem] md:text-[1.3rem]"
           >
             O cliente quer saber exatamente o que esperar ao comprar a
             experiência com você!
@@ -606,7 +606,7 @@ export default function AreaParceiros() {
         borderRadius="squared"
         size="md"
         className="max-sm:hidden w-1/2 md:w-1/4 h-14 md:my-10"
-        onClick={() => router.push("/parceiro/fluxo")}
+        onClick={() => router.push(PATHS["fluxo-cadastro-parceiro"])}
       >
         Começar agora
       </MyButton>
@@ -791,7 +791,7 @@ export default function AreaParceiros() {
         borderRadius="squared"
         size="md"
         className="max-sm:hidden w-1/2 md:w-1/4 h-14"
-        onClick={() => router.push("/parceiro/fluxo")}
+        onClick={() => router.push(PATHS["fluxo-cadastro-parceiro"])}
       >
         Começar agora
       </MyButton>

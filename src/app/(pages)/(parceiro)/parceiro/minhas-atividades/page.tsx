@@ -9,10 +9,14 @@ import ActivitiesFilter from "@/components/organisms/activities-filter";
 import MyTypography from "@/components/atoms/my-typography";
 import CarouselCustom from "@/components/templates/second-section/carousel-custom";
 import { activities } from "@/common/constants/mock";
+import MyIcon from "@/components/atoms/my-icon";
+import PATHS from "@/utils/paths";
+import { useRouter } from "next/navigation";
 
 export default function SuasAtividades() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { params, clear } = useSearchQueryService();
+  const router = useRouter();
 
   useEffect(() => {
     if (params.openModal === "true") {
@@ -26,7 +30,7 @@ export default function SuasAtividades() {
   };
 
   return (
-    <main>
+    <main className="max-w-screen-custom">
       <ModalAlert
         open={isModalOpen}
         onClose={handleClose}
@@ -36,7 +40,22 @@ export default function SuasAtividades() {
         button="Voltar ao início"
       />
       <section className="px-4">
-        <SearchActivity />
+        <div className="md:hidden ">
+          <SearchActivity />
+        </div>
+
+        <div className="hidden md:flex items-center w-full gap-40">
+          <SearchActivity className="w-full" />
+          <MyButton
+            variant="default"
+            borderRadius="squared"
+            className="p-[1.6rem] mt-2"
+            onClick={() => router.push(PATHS["cadastro-atividade"])}
+            leftIcon={<MyIcon name="plus" className="" />}
+          >
+            Cadastrar nova atividade
+          </MyButton>
+        </div>
 
         <div className="mt-12">
           <MyTypography variant="heading2" weight="semibold">

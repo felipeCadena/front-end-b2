@@ -20,7 +20,7 @@ export default function Login() {
     }
 
     if (email === "parceiro@gmail.com") {
-      router.push(PATHS["atividades-cadastradas"]);
+      router.push(PATHS["minhas-atividades"]);
     }
   };
 

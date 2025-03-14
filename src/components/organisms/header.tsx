@@ -20,7 +20,8 @@ export default function Header() {
     return (
       pathname === PATHS["sobre-a-empresa"] ||
       pathname === PATHS["cadastro-parceiro"] ||
-      pathname === PATHS["informacoes-atividades"]
+      pathname === PATHS["informacoes-atividades"] ||
+      pathname === PATHS["cadastro-atividade"]
     );
   };
 
