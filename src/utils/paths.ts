@@ -30,6 +30,7 @@ const ROOTS_CADASTRO_ATIVIDADE = "/parceiro/cadastro-atividade";
 const ROOTS_FOTOS_PASSEIOS = "/parceiro/fotos-de-passeios";
 const ROOTS_SOBRE_A_EMPRESA = "/parceiro/sobre-a-empresa";
 const ROOTS_TERMOS_PARCEIRO = "/parceiro/termos-de-uso";
+const ROOTS_RESERVAS_PARCEIRO = "/parceiro/reservas";
 const ROOTS_ATIVIDADES_OCULTAS = "/parceiro/reservas/ocultas";
 const ROOTS_INFORMACOES_ATIVIDADES = "/parceiro/informacoes-atividade";
 
@@ -48,6 +49,14 @@ const ENVIAR_FOTOS = (slug: number | string) =>
   `/parceiro/fotos-de-passeios/${slug}/enviar-fotos`;
 const ENVIAR_VIDEOS = (slug: number | string) =>
   `/parceiro/fotos-de-passeios/${slug}/enviar-videos`;
+
+const VISUALIZAR_ATIVIDADE_PARCEIRO = (slug: number | string) =>
+  `/parceiro/atividades-cadastradas/atividade/${slug}`;
+const EDITAR_ATIVIDADE_PARCEIRO = (slug: number | string) =>
+  `/parceiro/atividades-cadastradas/atividade/${slug}/editar`;
+
+const CANCELAR_ATIVIDADE_PARCEIRO = (slug: number | string) =>
+  `/parceiro/reservas/cancelar/${slug}`;
 
 // ==========================================
 // * Dynamic encode routes
@@ -78,12 +87,16 @@ const PATHS = {
   "atividades-cadastradas": ROOTS_ATIVIDADES_CADASTRADAS,
   "fotos-de-passeios": ROOTS_FOTOS_PASSEIOS,
   "atividades-ocultas": ROOTS_ATIVIDADES_OCULTAS,
+  "reservas-parceiro": ROOTS_RESERVAS_PARCEIRO,
   "enviar-fotos": ENVIAR_FOTOS,
   "enviar-videos": ENVIAR_VIDEOS,
   visualizarAtividade: VISUALIZAR_ATIVIDADE,
   visualizarNotificacao: VISUALIZAR_NOTIFICACAO,
   atividadeRealizada: ATIVIDADE_REALIZADA,
   visualizarFotos: VISUALIZAR_FOTOS,
+  visualizarAtividadeParceiro: VISUALIZAR_ATIVIDADE_PARCEIRO,
+  editarAtividadeParceiro: EDITAR_ATIVIDADE_PARCEIRO,
+  cancelarAtividade: CANCELAR_ATIVIDADE_PARCEIRO,
 };
 
 export default PATHS;

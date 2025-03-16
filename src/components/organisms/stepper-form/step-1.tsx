@@ -10,8 +10,8 @@ import React from "react";
 export default function TermosParceiro() {
   const router = useRouter();
   return (
-    <section className="m-6 space-y-12">
-      <div className=" md:max-w-screen-md md:mx-auto md:mt-12 md:border-2 md:border-gray-200 md:rounded-xl md:p-6">
+    <section className="md:mt-4 space-y-12">
+      <div className=" md:max-w-screen-md md:mx-auto  md:border-2 md:border-gray-200 md:rounded-xl md:p-6">
         <div className="h-[320px] md:h-[500px] overflow-y-auto p-4">
           <MyTypography variant="heading2" weight="extrabold">
             Termos de aceite e regras da plataforma.

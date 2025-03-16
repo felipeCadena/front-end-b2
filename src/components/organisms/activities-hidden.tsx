@@ -1,14 +1,25 @@
 "use client";
 
 import { cn } from "@/utils/cn";
-import React, { useState } from "react";
+import React from "react";
 import MyTypography from "../atoms/my-typography";
-import MyIcon from "../atoms/my-icon";
-import { formatDate, getTimeInterval } from "@/utils/formatters";
+import { getTimeInterval } from "@/utils/formatters";
 import Now from "../atoms/my-icon/elements/now";
 import PopupActivity from "./popup-activity";
+import { useRouter } from "next/navigation";
+import PATHS from "@/utils/paths";
 
 export default function ActivitiesHidden({ notifications }: any) {
+  const router = useRouter();
+
+  const handleCancel = (id: string | number) => {
+    router.push(PATHS.cancelarAtividade(id));
+  };
+
+  const handleEdit = (id: string) => {
+    router.push(PATHS.editarAtividadeParceiro(id));
+  };
+
   return (
     <section>
       <div className="mt-6 mx-4">
@@ -41,8 +52,8 @@ export default function ActivitiesHidden({ notifications }: any) {
                 <div className="absolute top-0 right-3 z-20">
                   <PopupActivity
                     onDuplicar={() => console.log("Duplicar")}
-                    onCancelar={() => console.log("Cancelar")}
-                    onEditar={() => console.log("Editar")}
+                    onCancelar={() => handleCancel(notification.id as string)}
+                    onEditar={() => handleEdit(notification.id as string)}
                     onOcultar={() => console.log("Ocultar")}
                     onExcluir={() => console.log("Excluir")}
                     onCustomer={() => console.log("onCustomer")}

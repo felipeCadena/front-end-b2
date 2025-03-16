@@ -79,8 +79,8 @@ const renderCustomizedLabel = ({
 
 export default function Dashboard() {
   return (
-    <main className="max-sm:space-y-6 max-sm:mx-4 my-6">
-      <div className="md:grid md:grid-cols-3 md:gap-6 md:items-center md:my-12">
+    <main className="max-sm:mx-4 my-6">
+      <div className="max-sm:space-y-6 md:grid md:grid-cols-3 md:gap-6 md:items-center md:my-12">
         <MyCard className="md:h-full">
           <CardContent className="space-y-4">
             <h2 className="text-lg font-semibold">Atividades</h2>
@@ -190,11 +190,15 @@ export default function Dashboard() {
                 </Pie>
               </PieChart>
             </ResponsiveContainer>
-            <div className="text-center absolute top-[35%] left-[35%] opacity-6">
+            <div className="text-center absolute top-[35%] left-[35%] md:left-[33%] opacity-6">
               <MyTypography variant="body-big" lightness={400} className="">
                 Total
               </MyTypography>
-              <MyTypography variant="subtitle2" weight="bold" className="">
+              <MyTypography
+                variant="subtitle2"
+                weight="bold"
+                className="text-[1.125rem] md:text-[1.3rem]"
+              >
                 R$3.250,00
               </MyTypography>
             </div>
@@ -225,7 +229,7 @@ export default function Dashboard() {
         </MyCard>
 
         <MyCard className="md:h-full">
-          <CardContent className="w-full flex flex-col justify-center items-center">
+          <CardContent className="w-full h-full flex flex-col gap-24 items-center p-3">
             <div className="w-full flex items-center justify-between space-x-16">
               <MyTypography
                 variant="subtitle3"
@@ -249,44 +253,52 @@ export default function Dashboard() {
               </MySelect>
             </div>
 
-            <ResponsiveContainer
-              width={380}
-              height={200}
-              className="min-w-full mt-4"
-            >
-              <LineChart data={lineData}>
-                <XAxis
-                  fontSize={12}
-                  axisLine={false}
-                  dataKey="name"
-                  interval="preserveStartEnd"
-                  padding={{ left: 10, right: 10 }}
-                />
-                <YAxis fontSize={12} axisLine={false} />
-                <Tooltip />
-                <ReferenceLine x="Mai" stroke="orange" strokeWidth={2} />
-                <Line
-                  type="monotone"
-                  dataKey="value"
-                  stroke="#00C6FB"
-                  strokeWidth={2}
-                  dot={{ r: 0 }}
-                />
-                <Line
-                  type="monotone"
-                  dataKey="before"
-                  strokeWidth={2}
-                  stroke="rgb(201, 201, 201)"
-                  dot={{ r: 0 }}
-                />
-                <CartesianGrid strokeDasharray="2" vertical={false} />
-              </LineChart>
-            </ResponsiveContainer>
+            <div className="h-[250px] w-full mt-4">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart
+                  data={lineData}
+                  margin={{
+                    top: 10,
+                    right: 10,
+                    left: -20,
+                    bottom: 5,
+                  }}
+                >
+                  <XAxis
+                    fontSize={12}
+                    axisLine={false}
+                    dataKey="name"
+                    interval="preserveStartEnd"
+                    padding={{ left: 10, right: 10 }}
+                  />
+                  <YAxis fontSize={12} axisLine={false} />
+                  <Tooltip />
+                  <ReferenceLine x="Mai" stroke="orange" strokeWidth={2} />
+                  <Line
+                    type="monotone"
+                    dataKey="value"
+                    stroke="#00C6FB"
+                    strokeWidth={2}
+                    dot={{ r: 0 }}
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="before"
+                    strokeWidth={2}
+                    stroke="rgb(201, 201, 201)"
+                    dot={{ r: 0 }}
+                  />
+                  <CartesianGrid strokeDasharray="2" vertical={false} />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
           </CardContent>
         </MyCard>
       </div>
 
-      <Lancamentos />
+      <div className="max-sm:hidden">
+        <Lancamentos />
+      </div>
     </main>
   );
 }

@@ -9,18 +9,15 @@ import TermosParceiro from "./step-1";
 import CadastroParceiro from "./step-2";
 import Sobre from "./step-3";
 import Informacoes from "./step-4";
-import Step5 from "./step-5";
-import Step6 from "./step-6";
-import Step7 from "./step-7";
-import Step8 from "./step-8";
-import Step9 from "./step-9";
-import Step10 from "./step-10";
 import { useRouter } from "next/navigation";
 import WebForm from "@/app/(pages)/(parceiro)/parceiro/cadastro-atividade/web-form";
+import { cn } from "@/utils/cn";
+import InformacoesAtividade from "@/components/templates/informacoes-atividade";
+import PATHS from "@/utils/paths";
 
 export default function StepperForm() {
   const [currentStep, setCurrentStep] = useState(0);
-  const totalSteps = 5;
+  const totalSteps = 6;
   const router = useRouter();
 
   const handleNext = () => {
@@ -44,7 +41,8 @@ export default function StepperForm() {
     <CadastroParceiro />,
     <Sobre />,
     <Informacoes />,
-    <WebForm />,
+    <WebForm type="cadastro" />,
+    <InformacoesAtividade step />,
     // <Step5 />,
     // <Step6 />,
     // <Step7 />,
@@ -62,8 +60,46 @@ export default function StepperForm() {
         stepsPerPage={3}
       />
 
+      {/* Botões ficam fora da div animada */}
+      {/* <div
+        className={cn(
+          "flex justify-between my-4",
+          currentStep >= 4 && "hidden"
+        )}
+      >
+        <MyButton
+          variant="default"
+          borderRadius="squared"
+          onClick={handleBack}
+          disabled={currentStep === 0}
+          leftIcon={<MyIcon name="seta-direita" className="rotate-180" />}
+        >
+          Voltar
+        </MyButton>
+
+        {currentStep < totalSteps - 1 ? (
+          <MyButton
+            variant="default"
+            borderRadius="squared"
+            onClick={handleNext}
+            rightIcon={<MyIcon name="seta-direita" />}
+          >
+            Próximo
+          </MyButton>
+        ) : (
+          <MyButton
+            variant="default"
+            borderRadius="squared"
+            onClick={() => router.push("/parceiro/informacoes-atividade")}
+            rightIcon={<MyIcon name="seta-direita" />}
+          >
+            Concluir
+          </MyButton>
+        )}
+      </div> */}
+
       {/* Wrapper para manter altura fixa e evitar deslocamentos */}
-      <div className="relative my-8 min-h-[300px] flex items-center justify-center overflow-hidden">
+      <div className="relative  min-h-[300px] flex items-center justify-center overflow-hidden">
         <AnimatePresence mode="wait">
           <motion.div
             key={currentStep}
@@ -79,9 +115,10 @@ export default function StepperForm() {
       </div>
 
       {/* Botões ficam fora da div animada */}
-      <div className="flex justify-between mx-4 mt-6">
+      <div className={cn("flex justify-between my-4")}>
         <MyButton
           variant="default"
+          borderRadius="squared"
           onClick={handleBack}
           disabled={currentStep === 0}
           leftIcon={<MyIcon name="seta-direita" className="rotate-180" />}
@@ -92,6 +129,7 @@ export default function StepperForm() {
         {currentStep < totalSteps - 1 ? (
           <MyButton
             variant="default"
+            borderRadius="squared"
             onClick={handleNext}
             rightIcon={<MyIcon name="seta-direita" />}
           >
@@ -100,7 +138,10 @@ export default function StepperForm() {
         ) : (
           <MyButton
             variant="default"
-            onClick={() => router.push("/parceiro/informacoes-atividade")}
+            borderRadius="squared"
+            onClick={() =>
+              router.push(`${PATHS["minhas-atividades"]}?openModal=true`)
+            }
             rightIcon={<MyIcon name="seta-direita" />}
           >
             Concluir

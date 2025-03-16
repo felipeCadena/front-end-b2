@@ -5,7 +5,7 @@ import WebForm from "./web-form";
 
 export default function CadastroAtividade() {
   return (
-    <section>
+    <section className="md:mx-8">
       <div className="md:hidden">
         <StepperComponent />
       </div>

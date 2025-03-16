@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { Suspense } from "react";
-import { ToastContainer } from "react-toastify";
+// import { ToastContainer } from "react-toastify";
 import Layout from "@/components/organisms/layout";
-import "react-toastify/dist/ReactToastify.css";
+// import "react-toastify/dist/ReactToastify.css";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -31,14 +31,14 @@ export default function RootLayout({
         <Suspense>
           <Layout>{children}</Layout>
         </Suspense>
-        <ToastContainer
+        {/* <ToastContainer
           theme="colored"
           position="top-right"
           autoClose={2500}
           pauseOnHover={false}
           hideProgressBar
           style={{ width: "420px" }}
-        />
+        /> */}
       </body>
     </html>
   );

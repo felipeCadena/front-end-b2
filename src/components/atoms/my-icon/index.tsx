@@ -109,6 +109,8 @@ import Trash from "./elements/trash";
 import Edit from "./elements/edit";
 import SmallCancel from "./elements/small-cancel";
 import Duplicate from "./elements/duplicate";
+import DobleCheck from "./elements/doble-check";
+import Warning from "./elements/warning";
 
 export type IconsMapTypes = keyof typeof IconsMap;
 
@@ -228,6 +230,8 @@ const IconsMap = {
   edit: <Edit />,
   "small-cancel": <SmallCancel />,
   duplicate: <Duplicate />,
+  "doble-check": <DobleCheck />,
+  warning: <Warning />,
 };
 
 export default function MyIcon({

@@ -9,19 +9,34 @@ import MyTypography from "../atoms/my-typography";
 import { cn } from "@/utils/cn";
 import { getData, isDateInPast } from "@/utils/formatters";
 import MyButton from "../atoms/my-button";
+import { useRouter } from "next/navigation";
+import PATHS from "@/utils/paths";
 
 export default function ActivitiesDetails({
   activities,
   withDate = false,
+  type,
 }: {
   activities: any;
   withDate?: boolean;
+  type?: string;
 }) {
+  const router = useRouter();
+
+  const handleActivity = (id: string) => {
+    if (type === "parceiro") {
+      return router.push(PATHS.visualizarAtividadeParceiro(id));
+    } else {
+      router.push(PATHS.visualizarAtividade(id));
+    }
+  };
+
   return (
     <section className={cn(withDate && "mx-4")}>
       {activities.map((activity: any, index: number) => (
         <div
           key={index}
+          onClick={() => handleActivity(activity.id)}
           className={cn(
             "flex max-sm:max-h-[120px] max-sm:justify-around gap-2 cursor-pointer my-6",
             withDate && "my-8 relative"
@@ -68,7 +83,10 @@ export default function ActivitiesDetails({
               src={activity.image ?? ""}
               width={250}
               height={300}
-              className={cn("object-cover", withDate ? "w-[7.5rem] h-[7.5rem]" : "w-[6.625rem] h-[6.625rem]")}
+              className={cn(
+                "object-cover",
+                withDate ? "w-[7.5rem] h-[7.5rem]" : "w-[6.625rem] h-[6.625rem]"
+              )}
             />
           </div>
           <div className="relative">
@@ -87,9 +105,17 @@ export default function ActivitiesDetails({
               {activity.title}
             </MyTypography>
             <MyTypography variant="label" className={cn(withDate && "w-1/2")}>
-              {withDate ? activity.description.slice(0, 30).concat("...") : activity.description.slice(0, 50).concat("...")}
+              {withDate
+                ? activity.description.slice(0, 30).concat("...")
+                : activity.description.slice(0, 50).concat("...")}
             </MyTypography>
-            <MyIcon name="shared-muted" className={cn("absolute z-50 right-0 top-1/2 cursor-pointer", !withDate && "hidden")} />
+            <MyIcon
+              name="shared-muted"
+              className={cn(
+                "absolute z-50 right-0 top-1/2 cursor-pointer",
+                !withDate && "hidden"
+              )}
+            />
           </div>
         </div>
       ))}

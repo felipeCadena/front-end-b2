@@ -115,7 +115,7 @@ export default function Lancamentos() {
             </SelectContent>
           </MySelect>
 
-          <MySelect defaultValue="data">
+          {/* <MySelect defaultValue="data">
             <SelectTrigger className="rounded-2xl w-[180px] text-[#848A9C] text-xs">
               <SelectValue placeholder="Data da atividade" />
             </SelectTrigger>
@@ -123,7 +123,7 @@ export default function Lancamentos() {
               <SelectItem value="data">Data da atividade</SelectItem>
               <SelectItem value="nome">Nome da atividade</SelectItem>
             </SelectContent>
-          </MySelect>
+          </MySelect> */}
 
           <MySelect defaultValue="2025">
             <SelectTrigger className="rounded-2xl w-[150px] text-[#848A9C] text-xs">

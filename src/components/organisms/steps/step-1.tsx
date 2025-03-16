@@ -6,14 +6,22 @@ import MyTypography from "@/components/atoms/my-typography";
 import ActivitiesFilter from "@/components/organisms/activities-filter";
 import React from "react";
 
-export default function Step1() {
+export default function Step1({
+  edit,
+  initialData,
+}: {
+  edit?: boolean;
+  initialData?: any;
+}) {
   return (
     <section className="">
       <MyTypography variant="heading2" weight="bold">
-        Cadastre a sua atividade
+        {edit ? "Edite sua atividade" : "Cadastre a sua atividade"}
       </MyTypography>
       <MyTypography variant="subtitle3" weight="medium" lightness={400}>
-        Preencha os dados da sua primeira atividade
+        {edit
+          ? "Atualize as informações da sua atividade"
+          : "Preencha os dados da sua primeira atividade"}
       </MyTypography>
 
       <ActivitiesFilter withText={false} />

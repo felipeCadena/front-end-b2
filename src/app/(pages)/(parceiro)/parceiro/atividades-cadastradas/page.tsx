@@ -1,8 +1,9 @@
-"use client"
+"use client";
 
 import { activities } from "@/common/constants/mock";
 import MyButton from "@/components/atoms/my-button";
 import MyTypography from "@/components/atoms/my-typography";
+import Activities from "@/components/organisms/activities";
 import ActivitiesDetails from "@/components/organisms/activities-details";
 import ActivitiesFilter from "@/components/organisms/activities-filter";
 import SearchActivity from "@/components/organisms/search-activity";
@@ -11,13 +12,13 @@ import { useRouter } from "next/navigation";
 import React from "react";
 
 export default function AtividadesCadastradas() {
-    const router = useRouter();
+  const router = useRouter();
 
   return (
-    <main className="m-4">
+    <main className="mx-6 my-8 w-full space-y-12">
       <SearchActivity />
 
-      <div className="mt-6">
+      <div className="">
         <MyTypography variant="heading2" weight="semibold">
           Atividades cadastradas
         </MyTypography>
@@ -27,13 +28,24 @@ export default function AtividadesCadastradas() {
         <ActivitiesFilter withText={false} />
       </div>
 
-      <ActivitiesDetails activities={activities} />
+      <div className="md:hidden">
+        <ActivitiesDetails activities={activities} type="parceiro" />
+      </div>
+
+      <div className="max-sm:hidden">
+        <Activities
+          activities={activities}
+          type="parceiro"
+          withoutHeart
+          withoutShared
+        />
+      </div>
 
       <MyButton
         variant="default"
         size="lg"
         borderRadius="squared"
-        className="w-full"
+        className="max-sm:w-full mx-auto flex"
         onClick={() => router.push(PATHS["cadastro-atividade"])}
       >
         Cadastrar nova atividade

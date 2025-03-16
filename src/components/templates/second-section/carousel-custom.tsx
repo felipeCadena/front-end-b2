@@ -11,7 +11,13 @@ import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import { useDraggable } from "react-use-draggable-scroll";
 
-export default function CarouselCustom({ activities }: any) {
+export default function CarouselCustom({
+  activities,
+  type,
+}: {
+  activities: any;
+  type?: string;
+}) {
   const ref =
     useRef<HTMLDivElement>() as React.MutableRefObject<HTMLInputElement>;
   const { events } = useDraggable(ref);
@@ -35,6 +41,14 @@ export default function CarouselCustom({ activities }: any) {
   const showRightShadow =
     ref.current &&
     ref.current.scrollWidth > ref.current.clientWidth + scrollPosition + 1;
+
+  const handleActivity = (id: string) => {
+    if (type === "parceiro") {
+      return router.push(PATHS.visualizarAtividadeParceiro(id));
+    } else {
+      router.push(PATHS.visualizarAtividade(id));
+    }
+  };
 
   return (
     <section className="relative">
@@ -61,7 +75,7 @@ export default function CarouselCustom({ activities }: any) {
           <div
             key={index}
             className="min-w-[70%] md:min-w-[30%] lg:min-w-[25%] flex flex-col gap-1 cursor-pointer md:mb-8"
-            onClick={() => router.push(PATHS.visualizarAtividade(activity.id))}
+            onClick={() => handleActivity(activity.id)}
           >
             <div className="relative z-10 overflow-hidden h-[225px] w-full md:w-[250px] hover:cursor-pointer rounded-md">
               <Image
@@ -71,18 +85,20 @@ export default function CarouselCustom({ activities }: any) {
                 height={300}
                 className="w-full md:w-[250px] h-[225px] object-cover"
               />
-              {activity.favorite ? (
+              {type !== "parceiro" && activity.favorite ? (
                 <MyIcon
                   name="full-heart"
                   variant="circled"
                   className="absolute top-3 right-3"
                 />
               ) : (
-                <MyIcon
-                  name="black-heart"
-                  variant="circled"
-                  className="absolute top-3 right-3"
-                />
+                type !== "parceiro" && (
+                  <MyIcon
+                    name="black-heart"
+                    variant="circled"
+                    className="absolute top-3 right-3"
+                  />
+                )
               )}
             </div>
 

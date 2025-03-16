@@ -12,22 +12,11 @@ import { activities } from "@/common/constants/mock";
 import MyIcon from "@/components/atoms/my-icon";
 import PATHS from "@/utils/paths";
 import { useRouter } from "next/navigation";
+import { useAlert } from "@/hooks/useAlert";
 
 export default function SuasAtividades() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const { params, clear } = useSearchQueryService();
   const router = useRouter();
-
-  useEffect(() => {
-    if (params.openModal === "true") {
-      setIsModalOpen(true);
-    }
-  }, [params]);
-
-  const handleClose = () => {
-    setIsModalOpen(false);
-    clear();
-  };
+  const { handleClose, isModalOpen } = useAlert();
 
   return (
     <main className="max-w-screen-custom">
@@ -82,7 +71,7 @@ export default function SuasAtividades() {
           >
             Suas atividades mais bem avaliadas!
           </MyTypography>
-          <CarouselCustom activities={activities} />
+          <CarouselCustom activities={activities} type="parceiro" />
 
           <div className="border-2 border-gray-200 w-1/2 mx-auto rounded-md mb-6 md:hidden" />
 
@@ -100,7 +89,7 @@ export default function SuasAtividades() {
           >
             Suas atividades mais vendidas!
           </MyTypography>
-          <CarouselCustom activities={activities} />
+          <CarouselCustom activities={activities} type="parceiro" />
         </div>
       </section>
     </main>

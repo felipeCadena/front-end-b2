@@ -17,7 +17,7 @@ export default function Informacoes() {
   return (
     <div
       className={cn(
-        "md:space-y-8 md:border-2 md:border-gray-200 md:rounded-xl md:p-16"
+        "md:space-y-8 md:border-2 md:border-gray-200 md:rounded-xl md:p-12 md:my-4"
       )}
     >
       <div className="hidden md:block space-y-2">

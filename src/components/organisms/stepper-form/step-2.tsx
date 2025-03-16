@@ -16,7 +16,7 @@ export default function CadastroParceiro() {
   const router = useRouter();
 
   return (
-    <section className="flex flex-col bg-white md:my-12 rounded-lg max-w-3xl m-auto w-full">
+    <section className="flex flex-col bg-white md:my-4 rounded-lg max-w-3xl m-auto w-full">
       <div className="w-full md:py-6 space-y-6 md:max-w-screen-2xl md:mx-auto md:border-2 md:border-gray-200 md:rounded-xl p-6 md:p-16">
         <div className="relative md:hidden">
           <MyLogo

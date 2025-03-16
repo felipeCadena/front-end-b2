@@ -4,7 +4,7 @@ import MyButton from "@/components/atoms/my-button";
 import { useState } from "react";
 import MyLogo from "@/components/atoms/my-logo";
 import MyIcon from "@/components/atoms/my-icon";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import PATHS from "@/utils/paths";
 import { cn } from "@/utils/cn";
 import Step1 from "@/components/organisms/steps/step-1";
@@ -22,13 +22,13 @@ const steps = [
   { label: "4" },
   { label: "5" },
   { label: "6" },
-  { label: "7" },
 ];
 
-export default function StepperComponent() {
+export default function StepperEdit() {
   const [currentStep, setCurrentStep] = useState(0);
   const router = useRouter();
   const stepsPerPage = 3;
+  const { id } = useParams();
 
   const startIndex =
     currentStep === steps.length - 1
@@ -38,10 +38,10 @@ export default function StepperComponent() {
   const visibleSteps = steps.slice(startIndex, startIndex + stepsPerPage);
 
   const handleNextTo = () => {
-    if (currentStep < steps.length - 1) {
+    if (currentStep < 7) {
       setCurrentStep((prev) => prev + 1);
     } else {
-      router.push(`${PATHS["minhas-atividades"]}?openModal=true`);
+      router.push(PATHS.visualizarAtividadeParceiro(id as string));
     }
   };
 
@@ -69,7 +69,7 @@ export default function StepperComponent() {
   };
 
   return (
-    <main className="w-full max-w-md mx-auto p-4 flex flex-col gap-4 md:gap-8">
+    <main className="w-full max-w-md mx-auto p-4 flex flex-col gap-8">
       <div className="relative">
         <MyLogo variant="mobile" width={100} height={100} className="mx-auto" />
         <MyIcon
@@ -83,7 +83,8 @@ export default function StepperComponent() {
       <div
         className={cn(
           "flex items-center mb-4 w-full relative",
-          currentStep < 6 ? "justify-between" : "gap-32"
+          currentStep < 5 ? "justify-between" : "gap-32",
+          currentStep > 5 && "hidden"
         )}
       >
         {visibleSteps.map((step, index) => {
@@ -94,18 +95,19 @@ export default function StepperComponent() {
                 <div className="absolute -left-4 top-[0.9rem] w-[3%] h-[0.01rem] bg-black" />
               )}
               <div className="absolute left-8 top-[0.9rem] w-[34%] h-[0.01rem] bg-black" />
-              {currentStep < 6 && (
+              {currentStep < 5 && (
                 <div className="absolute left-[56%] top-[0.9rem] w-[34%] h-[0.01rem] bg-black" />
               )}
-              {currentStep < 5 && (
+              {currentStep < 4 && (
                 <div className="absolute -right-4 top-[0.9rem] w-[3%] h-[0.01rem] bg-black" />
               )}
 
               <div className="flex items-center relative flex-1">
                 <div
-                  className={`w-7 h-7 flex items-center justify-center rounded-full border border-black z-50 ${
+                  className={cn(
+                    "w-7 h-7 flex items-center justify-center rounded-full border border-black z-50",
                     currentStep === stepNumber - 1 && "bg-black text-white"
-                  }`}
+                  )}
                 >
                   {currentStep >= stepNumber
                     ? currentStep == 0
@@ -121,19 +123,21 @@ export default function StepperComponent() {
       </div>
 
       {/* Stepper Content */}
-      {currentStep === 0 && <Step1 />}
+      {currentStep === 0 && <Step1 edit />}
       {currentStep === 1 && <Step2 />}
       {currentStep === 2 && <Step3 />}
       {currentStep === 3 && <Step4 />}
       {currentStep === 4 && <Step5 />}
       {currentStep === 5 && <Step6 />}
-      {currentStep === 6 && <InformacoesAtividade step edit />}
+      {currentStep === 6 && (
+        <InformacoesAtividade onBack={() => setCurrentStep(5)} edit />
+      )}
 
       <MyButton
         onClick={handleNextTo}
         size="lg"
         borderRadius="squared"
-        className="w-full my-8"
+        className={cn("w-full my-8", currentStep > 5 && "hidden")}
         rightIcon={<MyIcon name="seta-direita" />}
       >
         Próximo Passo

@@ -22,6 +22,11 @@ export default function FullActivitiesHistoric({
   const router = useRouter();
   const pathname = usePathname();
 
+  const handleCancel = (id: string | number) => {
+    console.log(id);
+    router.push(PATHS.atividadeRealizada(id));
+  };
+
   return (
     <section className="md:max-w-screen-custom">
       {activities.map((activity: any, index: number) => (
@@ -116,7 +121,7 @@ export default function FullActivitiesHistoric({
                 <div className="absolute top-0 right-3 cursor-pointer z-20">
                   <PopupActivity
                     onDuplicar={() => console.log("Duplicar")}
-                    onCancelar={() => console.log("Cancelar")}
+                    onCancelar={() => handleCancel(activity.id)}
                     onEditar={() => console.log("Editar")}
                     onOcultar={() => console.log("Ocultar")}
                     onExcluir={() => console.log("Excluir")}
