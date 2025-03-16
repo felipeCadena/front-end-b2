@@ -23,8 +23,11 @@ export default function FullActivitiesHistoric({
   const pathname = usePathname();
 
   const handleCancel = (id: string | number) => {
-    console.log(id);
-    router.push(PATHS.atividadeRealizada(id));
+    router.push(PATHS.cancelarAtividade(id));
+  };
+
+  const handleEdit = (id: string) => {
+    router.push(PATHS.editarAtividadeParceiro(id));
   };
 
   return (
@@ -122,7 +125,7 @@ export default function FullActivitiesHistoric({
                   <PopupActivity
                     onDuplicar={() => console.log("Duplicar")}
                     onCancelar={() => handleCancel(activity.id)}
-                    onEditar={() => console.log("Editar")}
+                    onEditar={() => handleEdit(activity.id)}
                     onOcultar={() => console.log("Ocultar")}
                     onExcluir={() => console.log("Excluir")}
                     onCustomer={() => console.log("onCustomer")}
