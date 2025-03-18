@@ -22,6 +22,10 @@ export default function Login() {
     if (email === "parceiro@gmail.com") {
       router.push(PATHS["minhas-atividades"]);
     }
+
+    if (email === "admin@gmail.com") {
+      router.push(PATHS.admin);
+    }
   };
 
   return (

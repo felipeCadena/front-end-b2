@@ -34,6 +34,10 @@ const ROOTS_RESERVAS_PARCEIRO = "/parceiro/reservas";
 const ROOTS_ATIVIDADES_OCULTAS = "/parceiro/reservas/ocultas";
 const ROOTS_INFORMACOES_ATIVIDADES = "/parceiro/informacoes-atividade";
 
+// Rotas Admin
+const ROOTS_ADMIN = "/admin";
+const ROOTS_PAGAMENTOS = "/admin/pagamento-parceiros";
+
 // ==========================================
 // * Dimanic routes
 const VISUALIZAR_ATIVIDADE = (slug: number | string) =>
@@ -91,6 +95,8 @@ const PATHS = {
   "fotos-de-passeios": ROOTS_FOTOS_PASSEIOS,
   "atividades-ocultas": ROOTS_ATIVIDADES_OCULTAS,
   "reservas-parceiro": ROOTS_RESERVAS_PARCEIRO,
+  admin: ROOTS_ADMIN,
+  "pagamento-parceiros": ROOTS_PAGAMENTOS,
   "enviar-fotos": ENVIAR_FOTOS,
   "enviar-videos": ENVIAR_VIDEOS,
   visualizarAtividade: VISUALIZAR_ATIVIDADE,

@@ -3,6 +3,7 @@
 import useLogin from "@/app/(pages)/(cliente)/(acesso)/login/login-store";
 import { notifications } from "@/common/constants/mock";
 import {
+  sideBarAdmin,
   sideBarClient,
   sideBarLp,
   sideBarPartnet,
@@ -31,8 +32,10 @@ export default function SidebarMenu({
       setSideBarActive(sideBarClient);
     } else if (pathname !== "/" && email.includes("parceiro")) {
       setSideBarActive(sideBarPartnet);
+    } else if (pathname !== "/" && email.includes("admin")) {
+      setSideBarActive(sideBarAdmin);
     } else {
-      setSideBarActive(sideBarLp);
+      setSideBarActive(sideBarAdmin);
     }
   }, [email]);
 
@@ -45,7 +48,7 @@ export default function SidebarMenu({
     <div className={`relative`}>
       <MyToggleGroup
         type="single"
-        className="absolute flex w-full flex-col items-start gap-4"
+        className="absolute flex w-full flex-col items-start"
       >
         {sideBarActive
           .filter((item) => !item.mobile)

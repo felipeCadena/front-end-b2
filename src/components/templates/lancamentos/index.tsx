@@ -20,33 +20,59 @@ import {
 } from "@/components/molecules/my-table";
 import { lancamentos } from "@/common/constants/mock";
 import { getData, getHora } from "@/utils/formatters";
+import MyIcon from "@/components/atoms/my-icon";
+import { useRouter } from "next/navigation";
 
-export default function Lancamentos() {
+export default function Lancamentos({
+  withoutFilters = false,
+  title = "Seus lançamentos",
+}: {
+  withoutFilters?: boolean;
+  title?: string;
+}) {
+  const router = useRouter();
+
   return (
-    <section className="mx-auto py-8 px-4">
+    <section className="mx-auto py-2 md:py-8 px-4">
       {/* Header */}
-      <div className="flex justify-between md:items-center mb-8">
+      <div
+        className={cn(
+          "flex items-center my-4",
+          withoutFilters ? "gap-4" : "justify-between"
+        )}
+      >
+        {withoutFilters && (
+          <MyIcon
+            name="voltar-black"
+            className="cursor-pointer"
+            onClick={() => router.back()}
+          />
+        )}
         <MyTypography
           variant="heading3"
           weight="bold"
-          className="underline decoration-primary-600 text-[1rem] md:text-[1.3rem]"
+          className={cn(
+            "text-[1rem] md:text-[1.3rem]",
+            !withoutFilters && "underline decoration-primary-600"
+          )}
         >
-          Seus lançamentos
+          {title}
         </MyTypography>
 
-        <div className="flex gap-4 max-sm:hidden">
-          <MySelect defaultValue="receber">
-            <SelectTrigger className="rounded-2xl w-[150px] text-[#848A9C] text-xs">
-              <SelectValue placeholder="A receber" />
-            </SelectTrigger>
-            <SelectContent className="rounded-lg">
-              <SelectItem value="receber">A receber</SelectItem>
-              <SelectItem value="pagar">Recebido</SelectItem>
-              <SelectItem value="pagar">Cancelada</SelectItem>
-            </SelectContent>
-          </MySelect>
+        {!withoutFilters && (
+          <div className="flex gap-4 max-sm:hidden">
+            <MySelect defaultValue="receber">
+              <SelectTrigger className="rounded-2xl w-[150px] text-[#848A9C] text-xs">
+                <SelectValue placeholder="A receber" />
+              </SelectTrigger>
+              <SelectContent className="rounded-lg">
+                <SelectItem value="receber">A receber</SelectItem>
+                <SelectItem value="pagar">Recebido</SelectItem>
+                <SelectItem value="pagar">Cancelada</SelectItem>
+              </SelectContent>
+            </MySelect>
 
-          {/* <MySelect defaultValue="data">
+            {/* <MySelect defaultValue="data">
             <SelectTrigger className="rounded-2xl w-[180px] text-[#848A9C] text-xs">
               <SelectValue placeholder="Data da atividade" />
             </SelectTrigger>
@@ -56,52 +82,52 @@ export default function Lancamentos() {
             </SelectContent>
           </MySelect> */}
 
-          <MySelect defaultValue="2025">
-            <SelectTrigger className="rounded-2xl w-[150px] text-[#848A9C] text-xs">
-              <SelectValue placeholder="Setembro" />
-            </SelectTrigger>
-            <SelectContent className="rounded-lg">
-              <SelectItem value="2024">2024</SelectItem>
-              <SelectItem value="2025">2025</SelectItem>
-              <SelectItem value="2026">2026</SelectItem>
-              <SelectItem value="2027">2027</SelectItem>
-              <SelectItem value="2028">2028</SelectItem>
-            </SelectContent>
-          </MySelect>
+            <MySelect defaultValue="2025">
+              <SelectTrigger className="rounded-2xl w-[150px] text-[#848A9C] text-xs">
+                <SelectValue placeholder="Setembro" />
+              </SelectTrigger>
+              <SelectContent className="rounded-lg">
+                <SelectItem value="2024">2024</SelectItem>
+                <SelectItem value="2025">2025</SelectItem>
+                <SelectItem value="2026">2026</SelectItem>
+                <SelectItem value="2027">2027</SelectItem>
+                <SelectItem value="2028">2028</SelectItem>
+              </SelectContent>
+            </MySelect>
 
-          <MySelect defaultValue="setembro">
-            <SelectTrigger className="rounded-2xl w-[150px] text-[#848A9C] text-xs">
-              <SelectValue placeholder="Mês" />
-            </SelectTrigger>
-            <SelectContent className="rounded-lg">
-              <SelectItem value="janeiro">Janeiro</SelectItem>
-              <SelectItem value="fevereiro">Fevereiro</SelectItem>
-              <SelectItem value="março">Março</SelectItem>
-              <SelectItem value="abril">Abril</SelectItem>
-              <SelectItem value="maio">Maio</SelectItem>
-              <SelectItem value="junho">Junho</SelectItem>
-              <SelectItem value="julho">Julho</SelectItem>
-              <SelectItem value="agosto">Agosto</SelectItem>
-              <SelectItem value="setembro">Setembro</SelectItem>
-              <SelectItem value="outubro">Outubro</SelectItem>
-              <SelectItem value="novembro">Novembro</SelectItem>
-              <SelectItem value="dezembro">Dezembro</SelectItem>
-            </SelectContent>
-          </MySelect>
-        </div>
+            <MySelect defaultValue="setembro">
+              <SelectTrigger className="rounded-2xl w-[150px] text-[#848A9C] text-xs">
+                <SelectValue placeholder="Mês" />
+              </SelectTrigger>
+              <SelectContent className="rounded-lg">
+                <SelectItem value="janeiro">Janeiro</SelectItem>
+                <SelectItem value="fevereiro">Fevereiro</SelectItem>
+                <SelectItem value="março">Março</SelectItem>
+                <SelectItem value="abril">Abril</SelectItem>
+                <SelectItem value="maio">Maio</SelectItem>
+                <SelectItem value="junho">Junho</SelectItem>
+                <SelectItem value="julho">Julho</SelectItem>
+                <SelectItem value="agosto">Agosto</SelectItem>
+                <SelectItem value="setembro">Setembro</SelectItem>
+                <SelectItem value="outubro">Outubro</SelectItem>
+                <SelectItem value="novembro">Novembro</SelectItem>
+                <SelectItem value="dezembro">Dezembro</SelectItem>
+              </SelectContent>
+            </MySelect>
+          </div>
+        )}
       </div>
 
-      <MyTable className="border-collapse mt-4">
+      <MyTable className="md:border-collapse mt-4 overflow-hidden">
         <TableHeader>
           <TableRow className="text-xs md:text-sm font-semibold">
-            <TableHead>Passeio</TableHead>
+            <TableHead className="px-8">Passeio</TableHead>
             <TableHead>Data da Atividade</TableHead>
             <TableHead className="max-sm:hidden">
               Duração da Atividade
             </TableHead>
-            <TableHead>Quant. de pessoas</TableHead>
+            <TableHead className="max-sm:hidden">Quant. de pessoas</TableHead>
             <TableHead>Total:</TableHead>
-            <TableHead></TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -114,7 +140,7 @@ export default function Lancamentos() {
                 lancamento.status === "cancelado" && "bg-[#FFE3E3]"
               )}
             >
-              <TableCell>
+              <TableCell className="max-sm:p-2 rounded-md">
                 <div className="flex items-center gap-6">
                   <Image
                     src={lancamento.imagem}
@@ -134,20 +160,22 @@ export default function Lancamentos() {
                   </MyTypography>
                 </div>
               </TableCell>
-              <TableCell className="max-sm:flex max-sm:justify-center max-sm:mt-2">
+              <TableCell className="max-sm:flex max-sm:justify-center max-sm:mt-4 max-sm:pr-12 md:px-4">
                 {getData(lancamento.data)}{" "}
                 <span className="max-sm:hidden">{` - ${getHora(lancamento.data)}`}</span>
               </TableCell>
-              <TableCell className="max-sm:hidden">
+              <TableCell className="max-sm:hidden md:px-8">
                 {lancamento.duracao}
               </TableCell>
-              <TableCell>{lancamento.quantidade}</TableCell>
+              <TableCell className="max-sm:hidden md:px-4">
+                {lancamento.quantidade}
+              </TableCell>
               <TableCell>
                 {lancamento.status === "cancelado"
                   ? "Cancelado"
                   : `R$${lancamento.valor.toFixed(2)}`}
               </TableCell>
-              <TableCell className="">
+              <TableCell className="max-sm:pl-2">
                 <div
                   className={cn(
                     "absolute right-0 top-0 h-full w-2 rounded-r-md opacity-50 bg-gray-300",
@@ -163,7 +191,7 @@ export default function Lancamentos() {
 
       {/* Footer com valor total */}
       <div className="flex justify-between items-center bg-[#a0e2ff46] py-4 px-2 rounded-lg mt-4 relative">
-        <MyTypography variant="body" weight="bold" className="px-4">
+        <MyTypography variant="body" weight="bold" className="md:px-2">
           Valor a receber
         </MyTypography>
         <span className="text-[#00A3FF] text-xs max-sm:hidden">
@@ -172,7 +200,7 @@ export default function Lancamentos() {
         <MyTypography
           variant="body"
           weight="bold"
-          className="text-[#00A3FF] px-12"
+          className="text-[#00A3FF] px-4"
         >
           R$ 350,00
         </MyTypography>

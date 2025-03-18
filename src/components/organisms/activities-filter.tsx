@@ -6,7 +6,17 @@ import { cn } from "@/utils/cn";
 import MyTypography from "../atoms/my-typography";
 import { usePathname } from "next/navigation";
 
-export default function ActivitiesFilter({ withText = true, small = false }) {
+type ActivitiesFilterProps = {
+  withText?: boolean;
+  small?: boolean;
+  admin?: boolean;
+};
+
+export default function ActivitiesFilter({
+  withText = true,
+  small = false,
+  admin = false,
+}: ActivitiesFilterProps) {
   const [selected, setSelected] = React.useState("Atividades no Ar");
   const pathname = usePathname();
 
@@ -27,7 +37,7 @@ export default function ActivitiesFilter({ withText = true, small = false }) {
   return (
     <section
       className={cn(
-        "flex flex-col justify-around gap-2 mx-auto max-sm:px-4",
+        "flex flex-col justify-around gap-2 mx-auto",
         withText ? "mt-12 md:my-12" : "my-6"
       )}
     >
@@ -41,13 +51,20 @@ export default function ActivitiesFilter({ withText = true, small = false }) {
           </MyTypography>
         </div>
       ) : (
-        withText && (
+        withText &&
+        !admin && (
           <div className="md:hidden">
             <MyTypography variant="heading2" weight="semibold" className="">
               Qual sua próxima aventura?
             </MyTypography>
           </div>
         )
+      )}
+
+      {admin && (
+        <MyTypography variant="heading2" weight="semibold" className="">
+          Qual tipo de parceria quer ver?
+        </MyTypography>
       )}
 
       {withText && (

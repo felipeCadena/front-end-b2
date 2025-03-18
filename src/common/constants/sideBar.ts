@@ -198,13 +198,13 @@ export const sideBarAdmin: any[] = [
   {
     label: "Avaliações de Atividades",
     link: "/avaliacoes",
-    icon: "star",
+    icon: "basic-star",
     web: true,
   },
   {
     label: "Pagamento de parceiros",
     link: "/pagamento-parceiros",
-    icon: "pagamento",
+    icon: "payment",
     web: false,
   },
   {
@@ -212,13 +212,6 @@ export const sideBarAdmin: any[] = [
     link: "/parceiros-cadastrados",
     icon: "parceiros",
     tab: "parceiros",
-    web: false,
-  },
-  {
-    label: "Histórico de Atividades",
-    link: "/informacoes",
-    icon: "duracao",
-    tab: "historico",
     web: false,
   },
   {
@@ -231,7 +224,7 @@ export const sideBarAdmin: any[] = [
   {
     label: "Financeiro",
     link: "/financeiro",
-    icon: "financeiro",
+    icon: "pie",
     web: true,
   },
   {
@@ -243,7 +236,7 @@ export const sideBarAdmin: any[] = [
   {
     label: "Configurações",
     link: "/configuracoes",
-    icon: "configuracoes",
+    icon: "config",
     web: true,
   },
   {

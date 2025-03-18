@@ -111,6 +111,10 @@ import SmallCancel from "./elements/small-cancel";
 import Duplicate from "./elements/duplicate";
 import DobleCheck from "./elements/doble-check";
 import Warning from "./elements/warning";
+import BasicStar from "./elements/basic-star";
+import Payment from "./elements/payment";
+import Config from "./elements/config";
+import Bell from "./elements/bell";
 
 export type IconsMapTypes = keyof typeof IconsMap;
 
@@ -232,6 +236,10 @@ const IconsMap = {
   duplicate: <Duplicate />,
   "doble-check": <DobleCheck />,
   warning: <Warning />,
+  "basic-star": <BasicStar />,
+  payment: <Payment />,
+  config: <Config />,
+  bell: <Bell />,
 };
 
 export default function MyIcon({
