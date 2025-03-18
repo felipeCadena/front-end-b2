@@ -35,7 +35,7 @@ export default function SidebarMenu({
     } else if (pathname !== "/" && email.includes("admin")) {
       setSideBarActive(sideBarAdmin);
     } else {
-      setSideBarActive(sideBarAdmin);
+      setSideBarActive(sideBarLp);
     }
   }, [email]);
 
