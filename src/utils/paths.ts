@@ -58,6 +58,9 @@ const EDITAR_ATIVIDADE_PARCEIRO = (slug: number | string) =>
 const CANCELAR_ATIVIDADE_PARCEIRO = (slug: number | string) =>
   `/parceiro/reservas/cancelar/${slug}`;
 
+const RELATORIO_ATIVIDADE_PARCEIRO = (slug: number | string) =>
+  `/parceiro/financeiro/relatorio/${slug}`;
+
 // ==========================================
 // * Dynamic encode routes
 // const PROPOSTA_PERSONALIZADO = (slug: string) => `/proposta/personalizado/${encodeUrl(slug)}`;
@@ -97,6 +100,7 @@ const PATHS = {
   visualizarAtividadeParceiro: VISUALIZAR_ATIVIDADE_PARCEIRO,
   editarAtividadeParceiro: EDITAR_ATIVIDADE_PARCEIRO,
   cancelarAtividade: CANCELAR_ATIVIDADE_PARCEIRO,
+  relatorioAtividade: RELATORIO_ATIVIDADE_PARCEIRO,
 };
 
 export default PATHS;

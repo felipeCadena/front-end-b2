@@ -13,6 +13,9 @@ import PATHS from "@/utils/paths";
 import { cn } from "@/utils/cn";
 import Calendar from "../atoms/my-icon/elements/calendar";
 import PopupActivity from "./popup-activity";
+import ModalClient from "./modal-client";
+import { clientList } from "@/common/constants/mock";
+import Pessoas from "../atoms/my-icon/elements/pessoas";
 
 export default function FullActivitiesHistoric({
   activities,
@@ -21,6 +24,7 @@ export default function FullActivitiesHistoric({
 }: any) {
   const router = useRouter();
   const pathname = usePathname();
+  const [showModal, setShowModal] = React.useState(false);
 
   const handleCancel = (id: string | number) => {
     router.push(PATHS.cancelarAtividade(id));
@@ -32,6 +36,15 @@ export default function FullActivitiesHistoric({
 
   return (
     <section className="md:max-w-screen-custom">
+      <ModalClient
+        open={showModal}
+        onClose={() => setShowModal(false)}
+        data={clientList}
+        icon={<Pessoas stroke="#9F9F9F" />}
+        title="Lista de Clientes"
+        descrition="Confira a lista de clientes para esta atividade:"
+        button="Fechar"
+      />
       {activities.map((activity: any, index: number) => (
         <div className="flex items-center gap-4 mt-20 mb-20 w-full" key={index}>
           {withDate && (
@@ -128,7 +141,7 @@ export default function FullActivitiesHistoric({
                     onEditar={() => handleEdit(activity.id)}
                     onOcultar={() => console.log("Ocultar")}
                     onExcluir={() => console.log("Excluir")}
-                    onCustomer={() => console.log("onCustomer")}
+                    onCustomer={() => setShowModal(true)}
                   />
                 </div>
               )}

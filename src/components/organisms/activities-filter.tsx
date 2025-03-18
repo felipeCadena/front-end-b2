@@ -21,7 +21,7 @@ export default function ActivitiesFilter({ withText = true, small = false }) {
     },
     {
       icon: "mar",
-      title: "Atividade na Água",
+      title: "Atividades Aquáticas",
     },
   ];
   return (

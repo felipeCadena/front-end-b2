@@ -8,9 +8,21 @@ import Now from "../atoms/my-icon/elements/now";
 import PopupActivity from "./popup-activity";
 import { useRouter } from "next/navigation";
 import PATHS from "@/utils/paths";
+import Hide from "../atoms/my-icon/elements/hide";
+import ModalClient from "./modal-client";
+import { clientList } from "@/common/constants/mock";
+import User from "../atoms/my-icon/elements/user";
+import Pessoas from "../atoms/my-icon/elements/pessoas";
 
-export default function ActivitiesHidden({ notifications }: any) {
+export default function ActivitiesHidden({
+  notifications,
+  hidden,
+}: {
+  notifications: any;
+  hidden?: boolean;
+}) {
   const router = useRouter();
+  const [showModal, setShowModal] = React.useState(false);
 
   const handleCancel = (id: string | number) => {
     router.push(PATHS.cancelarAtividade(id));
@@ -23,6 +35,15 @@ export default function ActivitiesHidden({ notifications }: any) {
   return (
     <section>
       <div className="mt-6 mx-4">
+        <ModalClient
+          open={showModal}
+          onClose={() => setShowModal(false)}
+          data={clientList}
+          icon={<Pessoas stroke="#9F9F9F" />}
+          title="Lista de Clientes"
+          descrition="Confira a lista de clientes para esta atividade:"
+          button="Fechar"
+        />
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
           {notifications.map(
             (
@@ -49,16 +70,22 @@ export default function ActivitiesHidden({ notifications }: any) {
                       : ""
                 )}
               >
-                <div className="absolute top-0 right-3 z-20">
-                  <PopupActivity
-                    onDuplicar={() => console.log("Duplicar")}
-                    onCancelar={() => handleCancel(notification.id as string)}
-                    onEditar={() => handleEdit(notification.id as string)}
-                    onOcultar={() => console.log("Ocultar")}
-                    onExcluir={() => console.log("Excluir")}
-                    onCustomer={() => console.log("onCustomer")}
-                  />
-                </div>
+                {!hidden ? (
+                  <div className="absolute top-0 right-3 z-20">
+                    <PopupActivity
+                      onDuplicar={() => console.log("Duplicar")}
+                      onCancelar={() => handleCancel(notification.id as string)}
+                      onEditar={() => handleEdit(notification.id as string)}
+                      onOcultar={() => console.log("Ocultar")}
+                      onExcluir={() => console.log("Excluir")}
+                      onCustomer={() => setShowModal(true)}
+                    />
+                  </div>
+                ) : (
+                  <div className="absolute top-4 right-3 z-20">
+                    <Hide iconColor="#9F9F9F" />
+                  </div>
+                )}
 
                 <div className="flex items-center justify-between w-full">
                   <MyTypography

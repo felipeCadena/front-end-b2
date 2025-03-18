@@ -15,7 +15,7 @@ export default function AtividadesCadastradas() {
   const router = useRouter();
 
   return (
-    <main className="mx-6 my-8 w-full space-y-12">
+    <main className="px-4 my-8 w-full space-y-8 md:space-y-12 overflow-x-hidden">
       <SearchActivity />
 
       <div className="">

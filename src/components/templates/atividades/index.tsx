@@ -54,7 +54,7 @@ export default function AtividadesTemplate() {
           weight="regular"
           className="md:opacity-50 md:mt-8"
         >
-          Atividade na Água
+          Atividades Aquática
         </MyTypography>
         <CarouselCustom activities={activitiesOcean} />
       </div>

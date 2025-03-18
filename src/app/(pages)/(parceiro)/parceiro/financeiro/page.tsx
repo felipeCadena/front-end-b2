@@ -1,6 +1,5 @@
 "use client";
 
-import MyButton from "@/components/atoms/my-button";
 import MyIcon, { IconsMapTypes } from "@/components/atoms/my-icon";
 import {
   MySelect,
@@ -11,7 +10,10 @@ import {
 } from "@/components/atoms/my-select";
 import MyTypography from "@/components/atoms/my-typography";
 import { CardContent, MyCard } from "@/components/molecules/my-card";
+import Lancamentos from "@/components/templates/lancamentos";
 import { cn } from "@/utils/cn";
+import PATHS from "@/utils/paths";
+import { useRouter } from "next/navigation";
 import {
   PieChart,
   Pie,
@@ -25,18 +27,35 @@ import {
   ReferenceLine,
   CartesianGrid,
 } from "recharts";
-import Lancamentos from "./lancamentos/page";
 
 const activities = [
-  { name: "Atividade na Água", icon: "mar", color: "#00C6FB", progress: 92 },
-  { name: "Atividade na Terra", icon: "terra", color: "#FFA500", progress: 68 },
-  { name: "Atividade no Ar", icon: "ar", color: "#FF66B2", progress: 75 },
+  {
+    id: 1,
+    name: "Atividades Aquáticas",
+    icon: "mar",
+    color: "#00C6FB",
+    progress: 92,
+  },
+  {
+    id: 2,
+    name: "Atividades na Terra",
+    icon: "terra",
+    color: "#FFA500",
+    progress: 68,
+  },
+  {
+    id: 3,
+    name: "Atividades no Ar",
+    icon: "ar",
+    color: "#FF66B2",
+    progress: 75,
+  },
 ];
 
 const pieData = [
-  { name: "Atividade na Água", value: 80, color: "#00C6FB" },
-  { name: "Atividade no Ar", value: 10, color: "#FF66B2" },
-  { name: "Atividade na Terra", value: 10, color: "#FFA500" },
+  { name: "Atividades Aquáticas", value: 80, color: "#00C6FB" },
+  { name: "Atividades no Ar", value: 10, color: "#FF66B2" },
+  { name: "Atividades na Terra", value: 10, color: "#FFA500" },
 ];
 
 const lineData = [
@@ -78,6 +97,8 @@ const renderCustomizedLabel = ({
 };
 
 export default function Dashboard() {
+  const router = useRouter();
+
   return (
     <main className="max-sm:mx-4 my-6">
       <div className="max-sm:space-y-6 md:grid md:grid-cols-3 md:gap-6 md:items-center md:my-12">
@@ -85,7 +106,13 @@ export default function Dashboard() {
           <CardContent className="space-y-4">
             <h2 className="text-lg font-semibold">Atividades</h2>
             {activities.map((activity, index) => (
-              <div key={index} className="flex flex-col gap-4">
+              <div
+                key={index}
+                className="flex flex-col gap-4 md:cursor-pointer"
+                onClick={() =>
+                  router.push(PATHS.relatorioAtividade(activity.id))
+                }
+              >
                 <div className="flex items-center gap-4 relative">
                   <MyTypography
                     variant="caption"

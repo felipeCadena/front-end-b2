@@ -271,21 +271,24 @@ export default function Atividade() {
           </div>
 
           <div>
-            <div className="space-y-4 mt-4">
-              <MyTypography variant="subtitle3" weight="bold">
-                Políticas da atividade
-              </MyTypography>
-
+            <div className="space-y-8 mt-4">
               <div className="space-y-2">
-                <MyTypography variant="subtitle3" weight="regular">
+                <MyTypography variant="subtitle3" weight="bold">
+                  Políticas da atividade
+                </MyTypography>
+                <MyTypography variant="body-big" weight="regular">
                   • Antecedência mínima para agendamento:{" "}
-                  {activity.politicas.antecedenciaAgendamento}
+                  <span className="block">
+                    {activity.politicas.antecedenciaAgendamento}
+                  </span>
                 </MyTypography>
-                <MyTypography variant="subtitle3" weight="regular">
+                <MyTypography variant="body-big" weight="regular">
                   • Antecedência mínima para cancelamento:{" "}
-                  {activity.politicas.antecedenciaCancelamento}
+                  <span className="block">
+                    {activity.politicas.antecedenciaCancelamento}
+                  </span>
                 </MyTypography>
-                <MyTypography variant="subtitle3" weight="regular">
+                <MyTypography variant="body-big" weight="regular">
                   • Quantidade de pessoas: {activity.politicas.maximoPessoas}
                 </MyTypography>
               </div>
@@ -295,11 +298,11 @@ export default function Atividade() {
                   Essa atividade será realizada:
                 </MyTypography>
 
-                <MyTypography variant="subtitle3" weight="regular">
+                <MyTypography variant="body-big" weight="regular">
                   • Em grupo
                 </MyTypography>
 
-                <MyTypography variant="subtitle3" weight="regular">
+                <MyTypography variant="body-big" weight="regular">
                   • Com criança
                 </MyTypography>
               </div>

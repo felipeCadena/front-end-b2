@@ -18,92 +18,23 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/molecules/my-table";
-
-interface Lancamento {
-  id: number;
-  imagem: string;
-  passeio: string;
-  data: string;
-  duracao: string;
-  quantidade: string;
-  valor: number;
-  status?: "concluido" | "cancelado" | "pendente";
-}
-
-const lancamentos: Lancamento[] = [
-  {
-    id: 1,
-    imagem: "/images/atividades/mar/mar-4.jpeg",
-    passeio: "Escalada Cristo - RJ",
-    data: "24/09 - 08:00 manhã",
-    duracao: "4 Horas",
-    quantidade: "2 adultos x 181,93",
-    valor: 363.86,
-  },
-  {
-    id: 2,
-    imagem: "/images/atividades/mar/mar-4.jpeg",
-    passeio: "Escalada Cristo - RJ",
-    data: "24/09 - 08:00 manhã",
-    duracao: "4 Horas",
-    quantidade: "2 adultos x 181,93",
-    valor: 363.86,
-  },
-  {
-    id: 3,
-    imagem: "/images/atividades/mar/mar-4.jpeg",
-    passeio: "Escalada Cristo - RJ",
-    data: "24/09 - 08:00 manhã",
-    duracao: "4 Horas",
-    quantidade: "2 adultos x 181,93",
-    valor: 363.86,
-  },
-  {
-    id: 4,
-    imagem: "/images/atividades/mar/mar-4.jpeg",
-    passeio: "Escalada Cristo - RJ",
-    data: "24/09 - 08:00 manhã",
-    duracao: "4 Horas",
-    quantidade: "2 adultos x 181,93",
-    valor: 363.86,
-    status: "pendente",
-  },
-  {
-    id: 5,
-    imagem: "/images/atividades/mar/mar-4.jpeg",
-    passeio: "Escalada Cristo - RJ",
-    data: "24/09 - 08:00 manhã",
-    duracao: "4 Horas",
-    quantidade: "2 adultos x 181,93",
-    valor: 363.86,
-    status: "pendente",
-  },
-  {
-    id: 6,
-    imagem: "/images/atividades/mar/mar-4.jpeg",
-    passeio: "Escalada Cristo - RJ",
-    data: "24/09 - 08:00 manhã",
-    duracao: "4 Horas",
-    quantidade: "2 adultos x 181,93",
-    valor: 363.86,
-    status: "cancelado",
-  },
-];
+import { lancamentos } from "@/common/constants/mock";
+import { getData, getHora } from "@/utils/formatters";
 
 export default function Lancamentos() {
   return (
-    <section className="mx-auto py-8">
+    <section className="mx-auto py-8 px-4">
       {/* Header */}
-      <div className="flex justify-between items-center mb-8">
+      <div className="flex justify-between md:items-center mb-8">
         <MyTypography
           variant="heading3"
           weight="bold"
-          className="underline decoration-primary-600"
+          className="underline decoration-primary-600 text-[1rem] md:text-[1.3rem]"
         >
           Seus lançamentos
         </MyTypography>
 
-        <div className="flex gap-4">
+        <div className="flex gap-4 max-sm:hidden">
           <MySelect defaultValue="receber">
             <SelectTrigger className="rounded-2xl w-[150px] text-[#848A9C] text-xs">
               <SelectValue placeholder="A receber" />
@@ -162,10 +93,12 @@ export default function Lancamentos() {
 
       <MyTable className="border-collapse mt-4">
         <TableHeader>
-          <TableRow className="text-sm font-semibold">
+          <TableRow className="text-xs md:text-sm font-semibold">
             <TableHead>Passeio</TableHead>
             <TableHead>Data da Atividade</TableHead>
-            <TableHead>Duração da Atividade</TableHead>
+            <TableHead className="max-sm:hidden">
+              Duração da Atividade
+            </TableHead>
             <TableHead>Quant. de pessoas</TableHead>
             <TableHead>Total:</TableHead>
             <TableHead></TableHead>
@@ -176,7 +109,7 @@ export default function Lancamentos() {
             <TableRow
               key={lancamento.id}
               className={cn(
-                "relative bg-gray-100",
+                "relative bg-gray-100 text-xs md:text-sm",
                 lancamento.status === "pendente" && "bg-primary-800",
                 lancamento.status === "cancelado" && "bg-[#FFE3E3]"
               )}
@@ -188,7 +121,7 @@ export default function Lancamentos() {
                     alt={lancamento.passeio}
                     width={80}
                     height={80}
-                    className="w-[70px] h-[70px] rounded-md object-cover"
+                    className="w-[70px] h-[70px] rounded-md object-cover max-sm:hidden"
                   />
                   <MyTypography
                     variant="body"
@@ -201,8 +134,13 @@ export default function Lancamentos() {
                   </MyTypography>
                 </div>
               </TableCell>
-              <TableCell>{lancamento.data}</TableCell>
-              <TableCell>{lancamento.duracao}</TableCell>
+              <TableCell className="max-sm:flex max-sm:justify-center max-sm:mt-2">
+                {getData(lancamento.data)}{" "}
+                <span className="max-sm:hidden">{` - ${getHora(lancamento.data)}`}</span>
+              </TableCell>
+              <TableCell className="max-sm:hidden">
+                {lancamento.duracao}
+              </TableCell>
               <TableCell>{lancamento.quantidade}</TableCell>
               <TableCell>
                 {lancamento.status === "cancelado"
@@ -228,7 +166,7 @@ export default function Lancamentos() {
         <MyTypography variant="body" weight="bold" className="px-4">
           Valor a receber
         </MyTypography>
-        <span className="text-[#00A3FF] text-xs">
+        <span className="text-[#00A3FF] text-xs max-sm:hidden">
           ----------------------------------------------------------------------------------------------------------------
         </span>
         <MyTypography

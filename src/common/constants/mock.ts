@@ -4,11 +4,82 @@ export const profile = {
   email: "",
 };
 
+interface Lancamento {
+  id: number;
+  imagem: string;
+  passeio: string;
+  data: string;
+  duracao: string;
+  quantidade: string;
+  valor: number;
+  status?: "concluido" | "cancelado" | "pendente";
+}
+
+export const lancamentos: Lancamento[] = [
+  {
+    id: 1,
+    imagem: "/images/atividades/mar/mar-4.jpeg",
+    passeio: "Escalada Cristo - RJ",
+    data: "2025-03-12T08:00:00",
+    duracao: "4 Horas",
+    quantidade: "2 adultos x 181,93",
+    valor: 363.86,
+  },
+  {
+    id: 2,
+    imagem: "/images/atividades/mar/mar-4.jpeg",
+    passeio: "Escalada Cristo - RJ",
+    data: "2025-03-12T08:00:00",
+    duracao: "4 Horas",
+    quantidade: "2 adultos x 181,93",
+    valor: 363.86,
+  },
+  {
+    id: 3,
+    imagem: "/images/atividades/mar/mar-4.jpeg",
+    passeio: "Escalada Cristo - RJ",
+    data: "2025-03-12T08:00:00",
+    duracao: "4 Horas",
+    quantidade: "2 adultos x 181,93",
+    valor: 363.86,
+  },
+  {
+    id: 4,
+    imagem: "/images/atividades/mar/mar-4.jpeg",
+    passeio: "Escalada Cristo - RJ",
+    data: "2025-03-12T08:00:00",
+    duracao: "4 Horas",
+    quantidade: "2 adultos x 181,93",
+    valor: 363.86,
+    status: "pendente",
+  },
+  {
+    id: 5,
+    imagem: "/images/atividades/mar/mar-4.jpeg",
+    passeio: "Escalada Cristo - RJ",
+    data: "2025-03-12T08:00:00",
+    duracao: "4 Horas",
+    quantidade: "2 adultos x 181,93",
+    valor: 363.86,
+    status: "pendente",
+  },
+  {
+    id: 6,
+    imagem: "/images/atividades/mar/mar-4.jpeg",
+    passeio: "Escalada Cristo - RJ",
+    data: "2025-03-12T08:00:00",
+    duracao: "4 Horas",
+    quantidade: "2 adultos x 181,93",
+    valor: 363.86,
+    status: "cancelado",
+  },
+];
+
 export const activitiesOcean = [
   {
     id: "1",
     image: "/images/atividades/mar/mar-1.jpeg",
-    tag: "Atividade na Água",
+    tag: "Atividades Aquáticas",
     stars: 5,
     title: "Atividade 1",
     localizacao: "Marina da Glória - RJ",
@@ -28,7 +99,7 @@ export const activitiesOcean = [
   {
     id: "2",
     image: "/images/atividades/mar/mar-2.jpeg",
-    tag: "Atividade na Água",
+    tag: "Atividades Aquáticas",
     stars: 5,
     title: "Atividade 2",
     localizacao: "Marina da Glória - RJ",
@@ -48,7 +119,7 @@ export const activitiesOcean = [
   {
     id: "3",
     image: "/images/atividades/mar/mar-3.jpeg",
-    tag: "Atividade na Água",
+    tag: "Atividades Aquáticas",
     stars: 5,
     title: "Atividade 3",
     localizacao: "Marina da Glória - RJ",
@@ -68,7 +139,7 @@ export const activitiesOcean = [
   {
     id: "4",
     image: "/images/atividades/mar/mar-4.jpeg",
-    tag: "Atividade na Água",
+    tag: "Atividades Aquáticas",
     stars: 5,
     title: "Atividade 4",
     localizacao: "Marina da Glória - RJ",
@@ -88,7 +159,7 @@ export const activitiesOcean = [
   {
     id: "5",
     image: "/images/atividades/mar/mar-5.jpeg",
-    tag: "Atividade na Água",
+    tag: "Atividades Aquáticas",
     stars: 5,
     title: "Atividade 5",
     localizacao: "Marina da Glória - RJ",
@@ -108,7 +179,7 @@ export const activitiesOcean = [
   {
     id: "6",
     image: "/images/atividades/mar/mar-6.jpeg",
-    tag: "Atividade na Água",
+    tag: "Atividades Aquáticas",
     stars: 5,
     title: "Atividade 6",
     localizacao: "Marina da Glória - RJ",
@@ -128,7 +199,7 @@ export const activitiesOcean = [
   {
     id: "7",
     image: "/images/atividades/mar/mar-7.jpeg",
-    tag: "Atividade na Água",
+    tag: "Atividades Aquáticas",
     stars: 5,
     title: "Atividade 7",
     localizacao: "Marina da Glória - RJ",
@@ -441,7 +512,7 @@ export const activities = [
   {
     id: "1",
     image: "/images/atividades/mar/mar-1.jpeg",
-    tag: "Atividade na Água",
+    tag: "Atividades Aquáticas",
     stars: 5,
     title: "Atividade 1",
     localizacao: "Marina da Glória - RJ",
@@ -501,7 +572,7 @@ export const activities = [
   {
     id: "4",
     image: "/images/atividades/mar/mar-2.jpeg",
-    tag: "Atividade na Água",
+    tag: "Atividades Aquáticas",
     stars: 5,
     title: "Atividade 4",
     localizacao: "Ilhas Tijuca - RJ",
@@ -522,7 +593,7 @@ export const activities = [
   {
     id: "5",
     image: "/images/atividades/mar/mar-3.jpeg",
-    tag: "Atividade na Água",
+    tag: "Atividades Aquáticas",
     stars: 5,
     title: "Atividade 5",
     localizacao: "Ilhas Tijuca - RJ",
@@ -646,6 +717,70 @@ export const notifications = [
       avatar: "/images/avatar1.png",
       nome: "Bruna Delduca",
     },
+  },
+];
+
+export const clientList = [
+  {
+    id: 1,
+    atividade: "Pedra da Gavea",
+    name: "Ana Francisca Moraes",
+    quantidade: 4,
+  },
+
+  {
+    id: 2,
+    atividade: "Pedra da Gavea",
+    name: "Larissa Freitas",
+    quantidade: 6,
+  },
+  {
+    id: 3,
+    atividade: "Pedra da Gavea",
+    name: "Bruno Almeida",
+    quantidade: 2,
+  },
+  {
+    id: 4,
+    atividade: "Pedra da Gavea",
+    name: "Bruno Almeida",
+    quantidade: 2,
+  },
+  {
+    id: 5,
+    atividade: "Pedra da Gavea",
+    name: "Bruno Almeida",
+    quantidade: 2,
+  },
+  {
+    id: 6,
+    atividade: "Pedra da Gavea",
+    name: "Bruno Almeida",
+    quantidade: 2,
+  },
+  {
+    id: 7,
+    atividade: "Pedra da Gavea",
+    name: "Bruno Almeida",
+    quantidade: 2,
+  },
+  {
+    id: 8,
+    atividade: "Pedra da Gavea",
+    name: "Bruno Almeida",
+    quantidade: 2,
+  },
+  {
+    id: 9,
+    atividade: "Pedra da Gavea",
+    name: "Bruno Almeida",
+    quantidade: 2,
+  },
+  {
+    id: 10,
+    atividade: "Pedra da Gavea",
+    name: "Bruno Almeida",
+    quantidade: 2,
   },
 ];
 
