@@ -121,13 +121,15 @@ export default function Lancamentos({
       <MyTable className="md:border-collapse mt-4 overflow-hidden">
         <TableHeader>
           <TableRow className="text-xs md:text-sm font-semibold">
-            <TableHead className="px-8">Passeio</TableHead>
+            <TableHead className="text-center">Passeio</TableHead>
             <TableHead>Data da Atividade</TableHead>
-            <TableHead className="max-sm:hidden">
+            <TableHead className="max-sm:hidden text-center">
               Duração da Atividade
             </TableHead>
-            <TableHead className="max-sm:hidden">Quant. de pessoas</TableHead>
-            <TableHead>Total:</TableHead>
+            <TableHead className="max-sm:hidden text-center">
+              Quant. de pessoas
+            </TableHead>
+            <TableHead className="text-center">Total:</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -135,12 +137,12 @@ export default function Lancamentos({
             <TableRow
               key={lancamento.id}
               className={cn(
-                "relative bg-gray-100 text-xs md:text-sm",
+                "relative bg-gray-100 text-xs md:text-sm text-center",
                 lancamento.status === "pendente" && "bg-primary-800",
                 lancamento.status === "cancelado" && "bg-[#FFE3E3]"
               )}
             >
-              <TableCell className="max-sm:p-2 rounded-md">
+              <TableCell className="max-sm:px-2 max-sm:py-3 rounded-l-md">
                 <div className="flex items-center gap-6">
                   <Image
                     src={lancamento.imagem}
@@ -160,7 +162,7 @@ export default function Lancamentos({
                   </MyTypography>
                 </div>
               </TableCell>
-              <TableCell className="max-sm:flex max-sm:justify-center max-sm:mt-4 max-sm:pr-12 md:px-4">
+              <TableCell className="text-center">
                 {getData(lancamento.data)}{" "}
                 <span className="max-sm:hidden">{` - ${getHora(lancamento.data)}`}</span>
               </TableCell>
