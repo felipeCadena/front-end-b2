@@ -11,6 +11,7 @@ import PartnerPaymentCard from "@/components/molecules/partner-payment";
 import PartnerApprovalCard from "@/components/molecules/partner-approval";
 import ActivityStatusCard from "@/components/molecules/activity-status";
 import PATHS from "@/utils/paths";
+import SearchActivity from "@/components/organisms/search-activity";
 
 export default function Admin() {
   const router = useRouter();
@@ -49,19 +50,15 @@ export default function Admin() {
   ];
 
   return (
-    <main className="max-w-lg mx-auto p-4 space-y-8">
+    <main className="max-w-lg mx-auto space-y-8">
       {/* Busca */}
-      <MyTextInput
-        placeholder="Procurar atividade"
-        noHintText
-        rightIcon={<MyIcon name="search" />}
-      />
+      <SearchActivity />
 
       {/* Filtro de Atividades */}
       <ActivitiesFilter admin />
 
       {/* Pagamentos */}
-      <div>
+      <div className="px-4">
         <MyTypography variant="subtitle2" weight="bold" className="my-4">
           Pagamentos de Parceiros
         </MyTypography>
@@ -88,7 +85,7 @@ export default function Admin() {
       </div>
 
       {/* Aprovações */}
-      <div className="space-y-6">
+      <div className="space-y-6 px-4">
         <div>
           <MyTypography variant="subtitle2" weight="bold" className="mb-4">
             Aprovar novos parceiros
@@ -135,7 +132,7 @@ export default function Admin() {
       </div>
 
       {/* Atividades Pendentes */}
-      <div>
+      <div className="px-4">
         <MyTypography variant="heading3" weight="bold" className="mb-2">
           Atividades pendentes
         </MyTypography>

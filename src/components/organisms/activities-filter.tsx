@@ -8,12 +8,14 @@ import { usePathname } from "next/navigation";
 
 type ActivitiesFilterProps = {
   withText?: boolean;
+  withoutText?: boolean;
   small?: boolean;
   admin?: boolean;
 };
 
 export default function ActivitiesFilter({
   withText = true,
+  withoutText,
   small = false,
   admin = false,
 }: ActivitiesFilterProps) {
@@ -37,7 +39,7 @@ export default function ActivitiesFilter({
   return (
     <section
       className={cn(
-        "flex flex-col justify-around gap-2 mx-auto",
+        "flex flex-col justify-around gap-2 mx-auto px-6",
         withText ? "mt-12 md:my-12" : "my-6"
       )}
     >
@@ -53,8 +55,8 @@ export default function ActivitiesFilter({
       ) : (
         withText &&
         !admin && (
-          <div className="md:hidden">
-            <MyTypography variant="heading2" weight="semibold" className="">
+          <div className={cn("md:hidden", withoutText && "hidden")}>
+            <MyTypography variant="heading2" weight="semibold" className="mx-4">
               Qual sua próxima aventura?
             </MyTypography>
           </div>
@@ -62,7 +64,7 @@ export default function ActivitiesFilter({
       )}
 
       {admin && (
-        <MyTypography variant="heading2" weight="semibold" className="">
+        <MyTypography variant="subtitle2" weight="bold">
           Qual tipo de parceria quer ver?
         </MyTypography>
       )}

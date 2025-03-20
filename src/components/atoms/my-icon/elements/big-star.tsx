@@ -1,4 +1,4 @@
-const BigStar = () => (
+const BigStar = ({ fill = "#8DC63F" }: { fill?: string }) => (
   <svg
     width="34"
     height="32"
@@ -8,7 +8,7 @@ const BigStar = () => (
   >
     <path
       d="M17.2308 0L22.396 10.1214L33.6182 11.9062L25.5884 19.9463L27.3588 31.1708L17.2308 26.0185L7.10278 31.1708L8.87318 19.9463L0.843334 11.9062L12.0655 10.1214L17.2308 0Z"
-      fill="#8DC63F"
+      fill={fill}
     />
   </svg>
 );

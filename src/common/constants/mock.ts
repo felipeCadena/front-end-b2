@@ -594,7 +594,7 @@ export const activities = [
     id: "5",
     image: "/images/atividades/mar/mar-3.jpeg",
     tag: "Atividades Aquáticas",
-    stars: 5,
+    stars: 1,
     title: "Atividade 5",
     localizacao: "Ilhas Tijuca - RJ",
     description:
@@ -615,7 +615,7 @@ export const activities = [
     id: "6",
     image: "/images/atividades/terra/terra-3.jpeg",
     tag: "Atividade Terrestre",
-    stars: 4,
+    stars: 2,
     title: "Atividade 6",
     localizacao: "São Conrado - RJ",
     description:
@@ -867,6 +867,42 @@ export const notificationActivities = [
     parceiro: {
       avatar: "/images/avatar1.png",
       nome: "Bruna Delduca",
+    },
+  },
+];
+
+export const recentActivities = [
+  {
+    id: 1,
+    title: "Atividade Monte Rio",
+    timestamp: "2025-02-10T22:11:00",
+    duracao: 2,
+    group: 10,
+    reason:
+      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",
+    read: false,
+    status: "realizada",
+    description: "Sua atividade foi cancelada por um dos nossos parceiros.",
+    parceiro: {
+      avatar: "/images/avatar1.png",
+      nome: "Bruna Delduca",
+    },
+  },
+  {
+    id: 2,
+    title: "Atividade Cristo Redentor",
+    timestamp: "2025-01-31T11:00:00",
+    duracao: 4,
+    group: 8,
+    reason:
+      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",
+    read: true,
+    status: "realizada",
+    description:
+      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas.",
+    parceiro: {
+      avatar: "/images/avatar1.png",
+      nome: "Felipe Almeida",
     },
   },
 ];

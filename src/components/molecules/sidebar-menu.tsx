@@ -23,7 +23,6 @@ export default function SidebarMenu({
 }: {
   closeSidebar: () => void;
 }) {
-  const [sideBar, setSideBar] = useState<any[]>(sideBarLp);
   const pathname = usePathname();
   const { email, setEmail, sideBarActive, setSideBarActive } = useLogin();
 

@@ -20,15 +20,19 @@ export default function Historico() {
         <div className="md:hidden">
           <SearchActivity />
         </div>
-        <ActivitiesFilter />
+        <ActivitiesFilter withoutText />
         <div className="w-full flex items-center justify-between space-x-12 md:hidden">
-          <MyTypography variant="subtitle1" weight="bold" className="text-nowrap">
+          <MyTypography
+            variant="subtitle1"
+            weight="bold"
+            className="text-nowrap"
+          >
             Histórico de atividades
           </MyTypography>
 
           <MySelect
-            //   value={}
-            //   onValueChange={}
+          //   value={}
+          //   onValueChange={}
           >
             <SelectTrigger className="rounded-2xl text-[#848A9C] text-xs">
               <SelectValue placeholder="Mensal" />
@@ -43,7 +47,7 @@ export default function Historico() {
           <ActivitiesHistoric activities={activities} />
         </div>
         <div className="max-sm:hidden">
-        <FullActivitiesHistoric activities={activities} />
+          <FullActivitiesHistoric activities={activities} />
         </div>
       </div>
     </section>

@@ -34,7 +34,7 @@ export default function ActivitiesHidden({
 
   return (
     <section>
-      <div className="mt-6 mx-4">
+      <div className="mt-6">
         <ModalClient
           open={showModal}
           onClose={() => setShowModal(false)}
