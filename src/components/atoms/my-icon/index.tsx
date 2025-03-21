@@ -115,6 +115,10 @@ import BasicStar from "./elements/basic-star";
 import Payment from "./elements/payment";
 import Config from "./elements/config";
 import Bell from "./elements/bell";
+import Images from "./elements/images";
+import SimpleCalendar from "./elements/simple-calendar";
+import TextIcon from "./elements/text";
+import Atention from "./elements/atention";
 
 export type IconsMapTypes = keyof typeof IconsMap;
 
@@ -240,6 +244,10 @@ const IconsMap = {
   payment: <Payment />,
   config: <Config />,
   bell: <Bell />,
+  images: <Images />,
+  "simple-calendar": <SimpleCalendar />,
+  text: <TextIcon />,
+  atention: <Atention />,
 };
 
 export default function MyIcon({

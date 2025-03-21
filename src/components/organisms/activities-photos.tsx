@@ -21,13 +21,13 @@ export default function ActivitiesPhotos({ activities }: any) {
         className="flex max-sm:flex-col md:justify-between gap-2 cursor-pointer my-6"
       >
         <div className="flex gap-2 cursor-pointer">
-          <div className="relative z-10 overflow-hidden w-[170px] h-[100px] hover:cursor-pointer rounded-md">
+          <div className="relative z-10 overflow-hidden w-[180px] h-[120px] hover:cursor-pointer rounded-md">
             <Image
               alt="sample_file"
               src={activity.image ?? ""}
               width={250}
               height={300}
-              className="w-[170px] h-[100px] object-cover"
+              className="w-[180px] h-[120px] object-cover"
             />
           </div>
 
@@ -38,11 +38,11 @@ export default function ActivitiesPhotos({ activities }: any) {
             <MyTypography variant="subtitle3" weight="bold" className="">
               {activity.title}
             </MyTypography>
-            <MyTypography variant="body-big" weight="regular" className="">
+            <MyTypography variant="body" weight="regular" className="">
               {`Data: ${getData(activity.reserva.timestamp)} - ${getHora(activity.reserva.timestamp)}`}
             </MyTypography>
             <MyTypography
-              variant="label"
+              variant="body"
               weight="regular"
               lightness={500}
               className=""

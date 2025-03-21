@@ -10,7 +10,7 @@ export const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          "font-bold text-[1rem] bg-primary-600 text-neutral-000 hover:bg-primary-600 disabled:bg-gray-300",
+          "font-bold text-[1rem] bg-primary-600 text-neutral-000 disabled:bg-gray-300",
         secondary:
           "text-primary-600 border border-primary-600 bg-traparent text-sm font-semibold",
         "secondary-muted":
@@ -34,8 +34,10 @@ export const buttonVariants = cva(
         "black-border":
           "border border-[#1E1E1E] text-[#1E1E1E] text-[0.875rem]",
         message: "bg-secondary-600 text-white font-semibold text-sm",
+        partner: "bg-secondary-200 text-secondary-600 font-semibold text-sm",
         "text-black": "text-black text-[0.9rem]",
         red: "bg-[#FF727233] text-[#FF7272] text-[0.9rem]",
+        config: "text-[1rem] bg-[#F1F0F5]",
       },
       size: {
         default: "h-10 px-4 py-2",

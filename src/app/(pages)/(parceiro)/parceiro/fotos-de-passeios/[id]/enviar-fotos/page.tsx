@@ -26,16 +26,17 @@ export default function EnviarFotos() {
         </MyTypography>
       </div>
 
-      <div className="space-y-2 my-4">
+      <div className="space-y-2 mt-4">
         <MyTypography variant="subtitle3" weight="bold" className="">
           Enviar fotos da atividade
         </MyTypography>
         <MyTypography variant="label" lightness={500} className="">
-          Enviar as fotos da atividade <span className="font-bold">até o dia 05/04/2024</span>
+          Enviar as fotos da atividade{" "}
+          <span className="font-bold">até o dia 05/04/2024</span>
         </MyTypography>
-      </div>   
+      </div>
 
-      <SendImages />   
+      <SendImages />
     </main>
   );
 }

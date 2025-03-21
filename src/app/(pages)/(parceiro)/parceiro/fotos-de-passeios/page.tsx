@@ -11,11 +11,11 @@ export default function FotosDePasseios() {
   const router = useRouter();
 
   return (
-    <main className="m-6">
+    <main className="px-4">
       <div className="flex gap-2 items-center">
         <MyIcon
           name="voltar-black"
-          className=""
+          className="-ml-2"
           onClick={() => router.back()}
         />
 

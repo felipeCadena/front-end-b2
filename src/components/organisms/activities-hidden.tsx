@@ -17,9 +17,11 @@ import Pessoas from "../atoms/my-icon/elements/pessoas";
 export default function ActivitiesHidden({
   notifications,
   hidden,
+  admin,
 }: {
   notifications: any;
   hidden?: boolean;
+  admin?: boolean;
 }) {
   const router = useRouter();
   const [showModal, setShowModal] = React.useState(false);
@@ -44,7 +46,12 @@ export default function ActivitiesHidden({
           descrition="Confira a lista de clientes para esta atividade:"
           button="Fechar"
         />
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+        <div
+          className={cn(
+            "grid grid-cols-1 md:grid-cols-3 gap-5",
+            admin && "md:grid-cols-2"
+          )}
+        >
           {notifications.map(
             (
               notification: {
@@ -67,7 +74,7 @@ export default function ActivitiesHidden({
                     ? "border border-[#FF7272]"
                     : notification.status == "em andamento"
                       ? "border border-primary-600"
-                      : ""
+                      : "border"
                 )}
               >
                 {!hidden ? (
