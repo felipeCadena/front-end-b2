@@ -25,6 +25,8 @@ export default function Activities({
   const handleActivity = (id: string) => {
     if (type === "parceiro") {
       return router.push(PATHS.visualizarAtividadeParceiro(id));
+    } else if (type === "admin") {
+      return router.push(`/admin/avaliacoes/atividade/${id}`);
     } else {
       router.push(PATHS.visualizarAtividade(id));
     }

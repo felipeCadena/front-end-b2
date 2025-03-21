@@ -94,7 +94,7 @@ const SelectScrollDownButton = React.forwardRef<
     )}
     {...props}
   >
-    <MyIcon name="right" />
+    {/* <MyIcon name="right" /> */}
   </SelectPrimitive.ScrollDownButton>
 ));
 SelectScrollDownButton.displayName =

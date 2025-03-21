@@ -265,6 +265,72 @@ export default function Dashboard() {
           </CardContent>
         </MyCard>
 
+        <MyCard className="md:h-full max-sm:hidden">
+          <CardContent className="space-y-4">
+            <h2 className="text-lg font-semibold">Atividades</h2>
+            {activities.map((activity, index) => (
+              <div
+                key={index}
+                className="flex flex-col gap-4 md:cursor-pointer"
+                onClick={() =>
+                  router.push(`/admin/financeiro/relatorio/${activity.id}`)
+                }
+              >
+                <div className="flex items-center gap-4 relative">
+                  <MyTypography
+                    variant="caption"
+                    className="text-sm font-semibold absolute top-[39%] left-[7%]"
+                  >
+                    {activity.progress}%
+                  </MyTypography>
+                  <ResponsiveContainer width={70} height={70}>
+                    <PieChart>
+                      <Pie
+                        data={[
+                          { name: activity.name, value: activity.progress },
+                          { name: "Restante", value: 100 - activity.progress },
+                        ]}
+                        dataKey="value"
+                        innerRadius={28}
+                        outerRadius={35}
+                        startAngle={90}
+                        endAngle={450}
+                        isAnimationActive={false}
+                      >
+                        <Cell fill={activity.color} />
+                        <Cell fill="#E5E7EB" />
+                      </Pie>
+                    </PieChart>
+                  </ResponsiveContainer>
+                  <div className="flex-1">
+                    <MyTypography
+                      variant="body-big"
+                      weight="semibold"
+                      className="flex items-center space-x-2"
+                    >
+                      <MyIcon
+                        name={activity.icon as IconsMapTypes}
+                        className="text-gray-700"
+                      />
+                      <span>{activity.name}</span>
+                    </MyTypography>
+                    <MyTypography
+                      variant="body-big"
+                      lightness={500}
+                      className="mt-1"
+                    >
+                      Lorem ipsum dolor sit am
+                    </MyTypography>
+                  </div>
+                </div>
+                {index !== activities.length - 1 && (
+                  <div className="w-full h-1 border-t border-dashed" />
+                )}
+              </div>
+            ))}
+          </CardContent>
+        </MyCard>
+
         <MyCard className="md:h-full">
           <CardContent className="w-full h-full flex flex-col gap-12 items-center p-3">
             <div className="w-full flex items-center justify-between space-x-32">
@@ -415,7 +481,7 @@ export default function Dashboard() {
         </CardContent>
       </MyCard>
 
-      <MyCard className="md:h-full">
+      <MyCard className="md:h-full md:hidden">
         <CardContent className="space-y-4">
           <h2 className="text-lg font-semibold">Atividades</h2>
           {activities.map((activity, index) => (
@@ -480,10 +546,6 @@ export default function Dashboard() {
           ))}
         </CardContent>
       </MyCard>
-
-      <div className="max-sm:hidden">
-        <Lancamentos />
-      </div>
     </main>
   );
 }

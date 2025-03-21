@@ -46,18 +46,18 @@ export default function ConfiguracoesSistema() {
         </MyTypography>
       </div>
 
-      <div className="p-4 max-w-lg mx-auto">
+      <div className="p-4">
         <MyTypography variant="subtitle2" weight="bold" className="mb-6">
           Configurações do Sistema
         </MyTypography>
-        <div className="space-y-2 flex flex-col gap-2">
+        <div className="max-sm:space-y-2 grid md:grid-cols-2 md:items-center gap-4">
           {systemConfigs.map((config, index) => (
             <MyButton
               key={index}
               variant="config"
               size="md"
               borderRadius="squared"
-              className="flex justify-between"
+              className="flex justify-between md:w-full"
               onClick={() => router.push(config.path)}
             >
               {config.title}

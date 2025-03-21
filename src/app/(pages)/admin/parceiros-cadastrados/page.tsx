@@ -11,21 +11,21 @@ export default function ParceiroCadastrados() {
 
   const newPartners = [
     {
-      id: 3,
+      id: 1,
       name: "Vitória Batista",
       activitiesCount: 0,
       avatar: "/images/avatar1.png",
       isNew: true,
     },
     {
-      id: 4,
+      id: 2,
       name: "Vera Oliveira",
       activitiesCount: 0,
       avatar: "/images/avatar1.png",
       isNew: true,
     },
     {
-      id: 1,
+      id: 3,
       name: "Bruna Almeida",
       activitiesCount: 0,
       avatar: "/images/avatar1.png",

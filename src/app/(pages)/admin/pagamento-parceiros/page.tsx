@@ -77,10 +77,10 @@ export default function PagamentosParceiros() {
         </MyTypography>
       </div>
 
-      <div className="w-full p-4 max-w-lg mx-auto space-y-6">
+      <div className="w-full p-4 space-y-6 md:space-y-16 md:mt-6">
         {/* Pagos */}
         <div>
-          <div className="flex justify-between items-center gap-48 mb-4">
+          <div className="flex items-center w-full mb-4">
             <MyTypography
               variant="subtitle3"
               weight="bold"
@@ -88,19 +88,21 @@ export default function PagamentosParceiros() {
             >
               Pagos
             </MyTypography>
-            <MySelect
-              //   value={}
-              //   onValueChange={}
-              value="Mensal"
-            >
-              <SelectTrigger className="rounded-2xl text-[#848A9C] text-xs">
-                <SelectValue placeholder="Mensal" />
-              </SelectTrigger>
-              <SelectContent className="rounded-lg">
-                <SelectItem value="Mensal">Mensal</SelectItem>
-                <SelectItem value="Semanal">Semanal</SelectItem>
-              </SelectContent>
-            </MySelect>
+            <div className="ml-auto">
+              <MySelect
+                //   value={}
+                //   onValueChange={}
+                value="Mensal"
+              >
+                <SelectTrigger className="rounded-2xl text-[#848A9C] text-xs">
+                  <SelectValue placeholder="Mensal" />
+                </SelectTrigger>
+                <SelectContent className="rounded-lg">
+                  <SelectItem value="Mensal">Mensal</SelectItem>
+                  <SelectItem value="Semanal">Semanal</SelectItem>
+                </SelectContent>
+              </MySelect>
+            </div>
           </div>
 
           <div className="space-y-3">
@@ -118,8 +120,8 @@ export default function PagamentosParceiros() {
         </div>
 
         {/* Aguardando Pagamento */}
-        <div>
-          <div className="flex justify-between gap-12 items-center mb-4">
+        <div className="w-full">
+          <div className="flex items-center w-full mb-4">
             <MyTypography
               variant="subtitle3"
               weight="bold"
@@ -127,19 +129,17 @@ export default function PagamentosParceiros() {
             >
               Aguardando Pagamento
             </MyTypography>
-            <MySelect
-              //   value={}
-              //   onValueChange={}
-              value="Mensal"
-            >
-              <SelectTrigger className="rounded-2xl text-[#848A9C] text-xs">
-                <SelectValue placeholder="Mensal" />
-              </SelectTrigger>
-              <SelectContent className="rounded-lg">
-                <SelectItem value="Mensal">Mensal</SelectItem>
-                <SelectItem value="Semanal">Semanal</SelectItem>
-              </SelectContent>
-            </MySelect>
+            <div className="ml-auto">
+              <MySelect value="Mensal">
+                <SelectTrigger className="rounded-2xl text-[#848A9C] text-xs">
+                  <SelectValue placeholder="Mensal" />
+                </SelectTrigger>
+                <SelectContent className="rounded-lg">
+                  <SelectItem value="Mensal">Mensal</SelectItem>
+                  <SelectItem value="Semanal">Semanal</SelectItem>
+                </SelectContent>
+              </MySelect>
+            </div>
           </div>
 
           <div className="space-y-3">

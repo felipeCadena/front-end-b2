@@ -221,13 +221,13 @@ export const sideBarAdmin: any[] = [
     label: "Notificações",
     link: "/admin/notificacoes",
     icon: "notificacoes",
-    web: false,
+    web: true,
   },
   {
     label: "Financeiro",
     link: "/admin/financeiro",
     icon: "pie",
-    web: true,
+    web: false,
     menu: true,
   },
   {
@@ -241,7 +241,6 @@ export const sideBarAdmin: any[] = [
     label: "Configurações",
     link: "/admin/configuracoes",
     icon: "config",
-    web: true,
     menu: true,
   },
   {
