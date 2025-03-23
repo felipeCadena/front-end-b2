@@ -25,6 +25,30 @@ export default function Parceiro() {
   const partnes = [
     {
       id: 1,
+      name: "Vitória Batista",
+      activitiesCount: 0,
+      avatar: "/images/avatar1.png",
+      isNew: true,
+      star: 5,
+    },
+    {
+      id: 2,
+      name: "Vera Oliveira",
+      activitiesCount: 0,
+      avatar: "/images/avatar1.png",
+      isNew: true,
+      star: 4,
+    },
+    {
+      id: 3,
+      name: "Bruna Almeida",
+      activitiesCount: 0,
+      avatar: "/images/avatar1.png",
+      isNew: true,
+      star: 3,
+    },
+    {
+      id: 4,
       name: "Luis Otávio Menezes",
       activitiesCount: 20,
       avatar: "/images/avatar3.png",
@@ -32,7 +56,7 @@ export default function Parceiro() {
       star: 5,
     },
     {
-      id: 2,
+      id: 5,
       name: "Vitória Batista",
       activitiesCount: 15,
       avatar: "/images/avatar1.png",
@@ -40,7 +64,7 @@ export default function Parceiro() {
       star: 4,
     },
     {
-      id: 4,
+      id: 6,
       name: "Vitória Batista",
       activitiesCount: 5,
       avatar: "/images/avatar1.png",
@@ -48,12 +72,36 @@ export default function Parceiro() {
       star: 3,
     },
     {
-      id: 5,
+      id: 7,
       name: "Vitória Batista",
       activitiesCount: 13,
       avatar: "/images/avatar1.png",
       isNew: false,
       star: 1,
+    },
+    {
+      id: 8,
+      name: "Vitória Batista",
+      activitiesCount: 15,
+      avatar: "/images/avatar1.png",
+      isNew: false,
+      star: 4,
+    },
+    {
+      id: 9,
+      name: "Vitória Batista",
+      activitiesCount: 5,
+      avatar: "/images/avatar1.png",
+      isNew: false,
+      star: 3,
+    },
+    {
+      id: 10,
+      name: "Vitória Batista",
+      activitiesCount: 13,
+      avatar: "/images/avatar1.png",
+      isNew: false,
+      star: 5,
     },
   ];
 
@@ -64,7 +112,7 @@ export default function Parceiro() {
       <div className="flex items-center gap-3 bg-white">
         <MyIcon
           name="voltar-black"
-          className="cursor-pointer"
+          className="cursor-pointer -ml-2"
           onClick={() => router.back()}
         />
         <MyTypography variant="subtitle2" weight="bold">
@@ -235,7 +283,7 @@ export default function Parceiro() {
               </MySelect>
             </div>
 
-            <div className="flex justify-center gap-4">
+            <div className="flex max-sm:flex-col justify-center gap-4">
               <MyButton
                 variant="default"
                 borderRadius="squared"
@@ -244,6 +292,16 @@ export default function Parceiro() {
               >
                 Atualizar
               </MyButton>
+              {partner?.isNew && (
+                <MyButton
+                  variant="partner"
+                  className="w-full"
+                  borderRadius="squared"
+                  size="lg"
+                >
+                  Aprovar
+                </MyButton>
+              )}
               <MyButton
                 variant="red"
                 borderRadius="squared"

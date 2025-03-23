@@ -163,7 +163,7 @@ export default function AdminWeb() {
                   description:
                     "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
                   image: "/images/atividades/ar/ar-1.jpeg",
-                  category: "Atividade Terrestre",
+                  category: "Atividades Terrestres",
                 }}
                 user={{
                   name: "Sara Nogueria",
@@ -182,7 +182,7 @@ export default function AdminWeb() {
                   description:
                     "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
                   image: "/images/atividades/terra/terra-1.jpeg",
-                  category: "Atividade Terrestre",
+                  category: "Atividades Terrestres",
                 }}
                 user={{
                   name: "Cliente: Luciana Bianco",

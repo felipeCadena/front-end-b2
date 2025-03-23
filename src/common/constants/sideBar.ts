@@ -244,6 +244,12 @@ export const sideBarAdmin: any[] = [
     menu: true,
   },
   {
+    label: "Marketing",
+    link: "/admin/marketing",
+    icon: "marketing",
+    menu: true,
+  },
+  {
     label: "Sair",
     link: "/",
     icon: "sair",

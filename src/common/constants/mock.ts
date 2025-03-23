@@ -222,7 +222,7 @@ export const activitiesLand = [
   {
     id: "1",
     image: "/images/atividades/terra/terra-1.jpeg",
-    tag: "Atividade Terrestre",
+    tag: "Atividades Terrestres",
     stars: 4,
     title: "Atividade 1",
     localizacao: "São Conrado - RJ",
@@ -242,7 +242,7 @@ export const activitiesLand = [
   {
     id: "2",
     image: "/images/atividades/terra/terra-2.jpeg",
-    tag: "Atividade Terrestre",
+    tag: "Atividades Terrestres",
     stars: 4,
     title: "Atividade 2",
     localizacao: "São Conrado - RJ",
@@ -262,7 +262,7 @@ export const activitiesLand = [
   {
     id: "3",
     image: "/images/atividades/terra/terra-3.jpeg",
-    tag: "Atividade Terrestre",
+    tag: "Atividades Terrestres",
     stars: 4,
     title: "Atividade 3",
     localizacao: "São Conrado - RJ",
@@ -282,7 +282,7 @@ export const activitiesLand = [
   {
     id: "4",
     image: "/images/atividades/terra/terra-4.jpeg",
-    tag: "Atividade Terrestre",
+    tag: "Atividades Terrestres",
     stars: 4,
     title: "Atividade 4",
     localizacao: "São Conrado - RJ",
@@ -302,7 +302,7 @@ export const activitiesLand = [
   {
     id: "5",
     image: "/images/atividades/terra/terra-5.jpeg",
-    tag: "Atividade Terrestre",
+    tag: "Atividades Terrestres",
     stars: 4,
     title: "Atividade 5",
     localizacao: "São Conrado - RJ",
@@ -322,7 +322,7 @@ export const activitiesLand = [
   {
     id: "6",
     image: "/images/atividades/terra/terra-6.jpeg",
-    tag: "Atividade Terrestre",
+    tag: "Atividades Terrestres",
     stars: 4,
     title: "Atividade 6",
     localizacao: "São Conrado - RJ",
@@ -342,7 +342,7 @@ export const activitiesLand = [
   {
     id: "7",
     image: "/images/atividades/terra/terra-1.jpeg",
-    tag: "Atividade Terrestre",
+    tag: "Atividades Terrestres",
     stars: 4,
     title: "Atividade 7",
     localizacao: "São Conrado - RJ",
@@ -365,7 +365,7 @@ export const activitiesAir = [
   {
     id: "1",
     image: "/images/atividades/ar/ar-1.jpeg",
-    tag: "Atividade Aérea",
+    tag: "Atividades Aéreas",
     stars: 3,
     title: "Atividade 1",
     localizacao: "Cosme Velho - RJ",
@@ -385,7 +385,7 @@ export const activitiesAir = [
   {
     id: "2",
     image: "/images/atividades/ar/ar-2.jpeg",
-    tag: "Atividade Aérea",
+    tag: "Atividades Aéreas",
     stars: 3,
     title: "Atividade 2",
     localizacao: "Cosme Velho - RJ",
@@ -406,7 +406,7 @@ export const activitiesAir = [
   {
     id: "3",
     image: "/images/atividades/ar/ar-3.jpeg",
-    tag: "Atividade Aérea",
+    tag: "Atividades Aéreas",
     stars: 3,
     title: "Atividade 3",
     localizacao: "Cosme Velho - RJ",
@@ -426,7 +426,7 @@ export const activitiesAir = [
   {
     id: "4",
     image: "/images/atividades/ar/ar-4.jpeg",
-    tag: "Atividade Aérea",
+    tag: "Atividades Aéreas",
     stars: 3,
     title: "Atividade 4",
     localizacao: "Cosme Velho - RJ",
@@ -447,7 +447,7 @@ export const activitiesAir = [
   {
     id: "5",
     image: "/images/atividades/ar/ar-1.jpeg",
-    tag: "Atividade Aérea",
+    tag: "Atividades Aéreas",
     stars: 3,
     title: "Atividade 5",
     localizacao: "Cosme Velho - RJ",
@@ -467,7 +467,7 @@ export const activitiesAir = [
   {
     id: "6",
     image: "/images/atividades/ar/ar-2.jpeg",
-    tag: "Atividade Aérea",
+    tag: "Atividades Aéreas",
     stars: 3,
     title: "Atividade 6",
     localizacao: "Cosme Velho - RJ",
@@ -488,7 +488,7 @@ export const activitiesAir = [
   {
     id: "7",
     image: "/images/atividades/ar/ar-3.jpeg",
-    tag: "Atividade Aérea",
+    tag: "Atividades Aéreas",
     stars: 3,
     title: "Atividade 7",
     localizacao: "Cosme Velho - RJ",
@@ -532,7 +532,7 @@ export const activities = [
   {
     id: "2",
     image: "/images/atividades/ar/ar-1.jpeg",
-    tag: "Atividade Aérea",
+    tag: "Atividades Aéreas",
     stars: 3,
     title: "Atividade 2",
     localizacao: "Cosme Velho - RJ",
@@ -552,7 +552,7 @@ export const activities = [
   {
     id: "3",
     image: "/images/atividades/terra/terra-1.jpeg",
-    tag: "Atividade Terrestre",
+    tag: "Atividades Terrestres",
     stars: 4,
     title: "Atividade 3",
     localizacao: "São Conrado - RJ",
@@ -614,7 +614,7 @@ export const activities = [
   {
     id: "6",
     image: "/images/atividades/terra/terra-3.jpeg",
-    tag: "Atividade Terrestre",
+    tag: "Atividades Terrestres",
     stars: 2,
     title: "Atividade 6",
     localizacao: "São Conrado - RJ",

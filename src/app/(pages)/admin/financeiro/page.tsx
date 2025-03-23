@@ -180,7 +180,7 @@ export default function Dashboard() {
       <div className="max-sm:space-y-6 md:grid md:grid-cols-3 md:gap-6 md:items-center md:my-12">
         <MyCard className="pb-8 md:h-full">
           <CardContent className="p-4 space-y-4 relative mx-auto">
-            <div className="w-full flex items-center justify-between space-x-16">
+            <div className="w-full flex items-center justify-between">
               <MyTypography
                 variant="subtitle3"
                 weight="bold"
@@ -188,19 +188,20 @@ export default function Dashboard() {
               >
                 Seus Rendimentos
               </MyTypography>
-
-              <MySelect
-              //   value={}
-              //   onValueChange={}
-              >
-                <SelectTrigger className="rounded-2xl text-[#848A9C] text-xs">
-                  <SelectValue placeholder="Mensal" />
-                </SelectTrigger>
-                <SelectContent className="rounded-lg">
-                  <SelectItem value="Mensal">Mensal</SelectItem>
-                  <SelectItem value="Semanal">Semanal</SelectItem>
-                </SelectContent>
-              </MySelect>
+              <div className="ml-auto">
+                <MySelect
+                //   value={}
+                //   onValueChange={}
+                >
+                  <SelectTrigger className="rounded-2xl text-[#848A9C] text-xs">
+                    <SelectValue placeholder="Mensal" />
+                  </SelectTrigger>
+                  <SelectContent className="rounded-lg">
+                    <SelectItem value="Mensal">Mensal</SelectItem>
+                    <SelectItem value="Semanal">Semanal</SelectItem>
+                  </SelectContent>
+                </MySelect>
+              </div>
             </div>
             <ResponsiveContainer width="100%" height={250}>
               <PieChart>
@@ -333,7 +334,7 @@ export default function Dashboard() {
 
         <MyCard className="md:h-full">
           <CardContent className="w-full h-full flex flex-col gap-12 items-center p-3">
-            <div className="w-full flex items-center justify-between space-x-32">
+            <div className="w-full flex items-center justify-between">
               <MyTypography
                 variant="subtitle3"
                 weight="bold"
@@ -341,19 +342,20 @@ export default function Dashboard() {
               >
                 Entradas
               </MyTypography>
-
-              <MySelect
-              //   value={}
-              //   onValueChange={}
-              >
-                <SelectTrigger className="rounded-2xl text-[#848A9C] text-xs">
-                  <SelectValue placeholder="Mensal" />
-                </SelectTrigger>
-                <SelectContent className="rounded-lg">
-                  <SelectItem value="Mensal">Mensal</SelectItem>
-                  <SelectItem value="Semanal">Semanal</SelectItem>
-                </SelectContent>
-              </MySelect>
+              <div className="ml-auto">
+                <MySelect
+                //   value={}
+                //   onValueChange={}
+                >
+                  <SelectTrigger className="rounded-2xl text-[#848A9C] text-xs">
+                    <SelectValue placeholder="Mensal" />
+                  </SelectTrigger>
+                  <SelectContent className="rounded-lg">
+                    <SelectItem value="Mensal">Mensal</SelectItem>
+                    <SelectItem value="Semanal">Semanal</SelectItem>
+                  </SelectContent>
+                </MySelect>
+              </div>
             </div>
 
             <div className="h-[250px] w-full mt-4">
@@ -401,7 +403,7 @@ export default function Dashboard() {
 
       <MyCard className="md:h-full">
         <CardContent className="p-4 space-y-4 relative mx-auto">
-          <div className="w-full flex items-center justify-between space-x-36">
+          <div className="w-full flex items-center justify-between">
             <MyTypography
               variant="subtitle3"
               weight="bold"
@@ -409,19 +411,20 @@ export default function Dashboard() {
             >
               Saídas
             </MyTypography>
-
-            <MySelect
-            //   value={}
-            //   onValueChange={}
-            >
-              <SelectTrigger className="rounded-2xl text-[#848A9C] text-xs">
-                <SelectValue placeholder="Mensal" />
-              </SelectTrigger>
-              <SelectContent className="rounded-lg">
-                <SelectItem value="Mensal">Mensal</SelectItem>
-                <SelectItem value="Semanal">Semanal</SelectItem>
-              </SelectContent>
-            </MySelect>
+            <div className="ml-auto">
+              <MySelect
+              //   value={}
+              //   onValueChange={}
+              >
+                <SelectTrigger className="rounded-2xl text-[#848A9C] text-xs">
+                  <SelectValue placeholder="Mensal" />
+                </SelectTrigger>
+                <SelectContent className="rounded-lg">
+                  <SelectItem value="Mensal">Mensal</SelectItem>
+                  <SelectItem value="Semanal">Semanal</SelectItem>
+                </SelectContent>
+              </MySelect>
+            </div>
           </div>
 
           {/* Legenda */}

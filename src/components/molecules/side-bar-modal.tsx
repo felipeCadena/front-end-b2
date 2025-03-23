@@ -9,8 +9,9 @@ import {
 } from "../atoms/my-drop-menu";
 import Link from "next/link";
 import MyIcon from "../atoms/my-icon";
-import useLogin from "@/app/(pages)/(cliente)/(acesso)/login/login-store";
-
+import { useAuthStore } from "@/store/useAuthStore";
+import { storage } from "@/services/auth";
+import { useRouter } from "next/navigation";
 export default function SideBarModal({
   children,
   sideBar,
@@ -18,10 +19,14 @@ export default function SideBarModal({
   children: React.ReactNode;
   sideBar: any[];
 }) {
-  const { setEmail } = useLogin();
-
-  const handleExit = (path: string) => {
-    path == "/" && setEmail("");
+  const { clearUser } = useAuthStore();
+  const router = useRouter();
+  const handleExit = (item: any) => {
+    if (item === "Sair") {
+      router.push("/login");
+      clearUser();
+      storage.clear();
+    }
   };
 
   return (
@@ -36,7 +41,7 @@ export default function SideBarModal({
               key={item.label}
               href={`${item.link == "/galeria-de-fotos" ? "/informacoes" : item.link}${item.tab ? `?tab=${item.tab}` : ""}`}
               passHref
-              onClick={() => handleExit(item.link)}
+              onClick={() => handleExit(item.label)}
             >
               <DropdownMenuItem
                 className="px-4 py-3 hover:text-black hover:bg-gray-100 cursor-pointer"

@@ -1,17 +1,13 @@
 "use client";
 
-import { activities } from "@/common/constants/mock";
 import MyIcon from "@/components/atoms/my-icon";
 import MyTypography from "@/components/atoms/my-typography";
 import SendImages from "@/components/organisms/send-images";
-import { useParams, useRouter } from "next/navigation";
-import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+import React from "react";
 
 export default function EnviarFotos() {
-  const { id } = useParams();
   const router = useRouter();
-
-  const acitivty = activities.find((activity: any) => activity.id === id);
 
   return (
     <main className="mt-6 mx-4">

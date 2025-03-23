@@ -1,5 +1,6 @@
 "use client";
 
+import MyButton from "@/components/atoms/my-button";
 import MyIcon from "@/components/atoms/my-icon";
 import MyTypography from "@/components/atoms/my-typography";
 import PartnerApprovalCard from "@/components/molecules/partner-approval";
@@ -35,7 +36,7 @@ export default function ParceiroCadastrados() {
 
   const partnes = [
     {
-      id: 1,
+      id: 4,
       name: "Luis Otávio Menezes",
       activitiesCount: 20,
       avatar: "/images/avatar3.png",
@@ -43,7 +44,7 @@ export default function ParceiroCadastrados() {
       star: 5,
     },
     {
-      id: 2,
+      id: 5,
       name: "Vitória Batista",
       activitiesCount: 15,
       avatar: "/images/avatar1.png",
@@ -51,7 +52,7 @@ export default function ParceiroCadastrados() {
       star: 4,
     },
     {
-      id: 4,
+      id: 6,
       name: "Vitória Batista",
       activitiesCount: 5,
       avatar: "/images/avatar1.png",
@@ -59,7 +60,7 @@ export default function ParceiroCadastrados() {
       star: 3,
     },
     {
-      id: 5,
+      id: 7,
       name: "Vitória Batista",
       activitiesCount: 13,
       avatar: "/images/avatar1.png",
@@ -67,7 +68,7 @@ export default function ParceiroCadastrados() {
       star: 1,
     },
     {
-      id: 6,
+      id: 8,
       name: "Vitória Batista",
       activitiesCount: 15,
       avatar: "/images/avatar1.png",
@@ -75,7 +76,7 @@ export default function ParceiroCadastrados() {
       star: 4,
     },
     {
-      id: 7,
+      id: 9,
       name: "Vitória Batista",
       activitiesCount: 5,
       avatar: "/images/avatar1.png",
@@ -83,7 +84,7 @@ export default function ParceiroCadastrados() {
       star: 3,
     },
     {
-      id: 8,
+      id: 10,
       name: "Vitória Batista",
       activitiesCount: 13,
       avatar: "/images/avatar1.png",
@@ -97,7 +98,7 @@ export default function ParceiroCadastrados() {
       <div className="flex items-center gap-3 bg-white">
         <MyIcon
           name="voltar-black"
-          className="cursor-pointer"
+          className="cursor-pointer -ml-2"
           onClick={() => router.back()}
         />
         <MyTypography variant="subtitle2" weight="bold">
@@ -126,6 +127,15 @@ export default function ParceiroCadastrados() {
             />
           )
         )}
+
+        <MyButton
+          variant="partner"
+          className="w-full col-span-1"
+          borderRadius="squared"
+          size="lg"
+        >
+          Aprovar todos
+        </MyButton>
       </div>
       <div className="space-y-4 md:grid md:grid-cols-3 md:gap-4 md:items-end">
         {partnes.map(

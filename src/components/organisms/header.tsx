@@ -11,10 +11,13 @@ import useLogin from "@/app/(pages)/(cliente)/(acesso)/login/login-store";
 import Image from "next/image";
 import SideBarModal from "../molecules/side-bar-modal";
 import { cn } from "@/utils/cn";
+import { useAuthStore } from "@/store/useAuthStore";
 
 export default function Header() {
   const router = useRouter();
   const pathname = usePathname();
+  const { sideBarActive } = useLogin();
+  const { user } = useAuthStore();
 
   const withoutHeaderMobile = () => {
     return (
@@ -25,8 +28,6 @@ export default function Header() {
       pathname.includes("editar")
     );
   };
-
-  const { email, sideBarActive } = useLogin();
 
   return (
     <header
@@ -55,7 +56,7 @@ export default function Header() {
         <LanguageDropdown />
 
         <div className="max-sm:hidden">
-          {!email ? (
+          {!user ? (
             <button
               onClick={() => router.push(PATHS.login)}
               className="text-sm flex items-center font-semibold gap-1 px-2 md:px-4 py-1 text-[0.9rem] text-white bg-black rounded-full shadow-md"

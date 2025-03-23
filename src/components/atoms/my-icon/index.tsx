@@ -119,6 +119,7 @@ import Images from "./elements/images";
 import SimpleCalendar from "./elements/simple-calendar";
 import TextIcon from "./elements/text";
 import Atention from "./elements/atention";
+import Marketing from "./elements/marketing";
 
 export type IconsMapTypes = keyof typeof IconsMap;
 
@@ -248,6 +249,7 @@ const IconsMap = {
   "simple-calendar": <SimpleCalendar />,
   text: <TextIcon />,
   atention: <Atention />,
+  marketing: <Marketing />,
 };
 
 export default function MyIcon({

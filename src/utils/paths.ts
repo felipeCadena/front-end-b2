@@ -1,35 +1,38 @@
-// ==========================================
+type PathsConfig = {
+  public: string[];
+  private: {
+    admin: string[];
+    partner: string[];
+    customer: string[];
+  };
+};
 
-import { vi } from "react-day-picker/locale";
-
-// import { encodeUrl } from "./url-util";
-
-// Static routes
-
-// Rotas Únicas
+// Rotas Públicas
 const ROOTS_INITIAL = "/";
 const ROOTS_LOGIN = "/login";
 const ROOTS_CADASTRO = "/cadastro";
 const ROOTS_SENHA = "/esqueci-minha-senha";
 const ROOTS_QUEMSOMOS = "/quem-somos";
 const ROOTS_ATIVIDADES = "/atividades";
+const ROOTS_PARCEIRO = "/parceiro";
+const ROOTS_CADASTRO_PARCEIRO = "/parceiro/cadastro";
+const ROOTS_CADASTRO_FLUXO_PARCEIRO = "/parceiro/cadastro-parceiro";
+const ROOTS_LOGIN_PARCEIRO = "/parceiro/login";
+const ROOTS_SENHA_PARCEIRO = "/parceiro/esqueci-minha-senha";
+const ROOTS_SOBRE_A_EMPRESA = "/parceiro/sobre-a-empresa";
+const ROOTS_TERMOS_PARCEIRO = "/parceiro/termos-de-uso";
+
+// Rotas Privadas
 const ROOTS_CARRINHO = "/carrinho";
 const ROOTS_FINALIZAR_COMPRA = "/finalizar-compra";
 // Agrupa Favoritos, Histórico, Reservas e Fotos (Na Web)
 const ROOTS_INFOS = "/informacoes";
 
 // Rotas Parceiros
-const ROOTS_PARCEIRO = "/parceiro";
-const ROOTS_CADASTRO_PARCEIRO = "/parceiro/cadastro";
-const ROOTS_CADASTRO_FLUXO_PARCEIRO = "/parceiro/cadastro-parceiro";
-const ROOTS_LOGIN_PARCEIRO = "/parceiro/login";
-const ROOTS_SENHA_PARCEIRO = "/parceiro/esqueci-minha-senha";
 const ROOTS_ATIVIDADES_CADASTRADAS = "/parceiro/atividades-cadastradas";
 const ROOTS_SUAS_ATIVIDADES = "/parceiro/minhas-atividades";
 const ROOTS_CADASTRO_ATIVIDADE = "/parceiro/cadastro-atividade";
 const ROOTS_FOTOS_PASSEIOS = "/parceiro/fotos-de-passeios";
-const ROOTS_SOBRE_A_EMPRESA = "/parceiro/sobre-a-empresa";
-const ROOTS_TERMOS_PARCEIRO = "/parceiro/termos-de-uso";
 const ROOTS_RESERVAS_PARCEIRO = "/parceiro/reservas";
 const ROOTS_ATIVIDADES_OCULTAS = "/parceiro/reservas/ocultas";
 const ROOTS_INFORMACOES_ATIVIDADES = "/parceiro/informacoes-atividade";
@@ -108,5 +111,52 @@ const PATHS = {
   cancelarAtividade: CANCELAR_ATIVIDADE_PARCEIRO,
   relatorioAtividade: RELATORIO_ATIVIDADE_PARCEIRO,
 };
+
+export const PATHS_CONFIG: PathsConfig = {
+  public: [
+    ROOTS_INITIAL,
+    ROOTS_LOGIN,
+    ROOTS_CADASTRO,
+    ROOTS_SENHA,
+    ROOTS_QUEMSOMOS,
+    ROOTS_ATIVIDADES,
+    ROOTS_PARCEIRO,
+    ROOTS_CADASTRO_PARCEIRO,
+    ROOTS_CADASTRO_FLUXO_PARCEIRO,
+    ROOTS_LOGIN_PARCEIRO,
+    ROOTS_SENHA_PARCEIRO,
+    ROOTS_SOBRE_A_EMPRESA,
+    ROOTS_TERMOS_PARCEIRO,
+  ],
+  private: {
+    admin: [
+      ROOTS_ADMIN,
+      ROOTS_PAGAMENTOS,
+      // ... outras rotas admin
+    ],
+    partner: [
+      ROOTS_ATIVIDADES_CADASTRADAS,
+      ROOTS_SUAS_ATIVIDADES,
+      ROOTS_CADASTRO_ATIVIDADE,
+      ROOTS_FOTOS_PASSEIOS,
+      ROOTS_RESERVAS_PARCEIRO,
+      ROOTS_ATIVIDADES_OCULTAS,
+      ROOTS_INFORMACOES_ATIVIDADES,
+      // ... outras rotas partner
+    ],
+    customer: [
+      ROOTS_CARRINHO,
+      ROOTS_FINALIZAR_COMPRA,
+      ROOTS_INFOS,
+      // ... outras rotas customer
+    ],
+  },
+};
+
+export const DEFAULT_ROLE_PATHS = {
+  admin: ROOTS_ADMIN,
+  partner: ROOTS_SUAS_ATIVIDADES,
+  customer: ROOTS_ATIVIDADES,
+} as const;
 
 export default PATHS;

@@ -1,30 +1,100 @@
 "use client";
 
+import { jwtDecode } from "jwt-decode";
 import MyButton from "@/components/atoms/my-button";
 import MyIcon from "@/components/atoms/my-icon";
 import MyLogo from "@/components/atoms/my-logo";
 import MyTextInput from "@/components/atoms/my-text-input";
 import MyTypography from "@/components/atoms/my-typography";
-import PATHS from "@/utils/paths";
+import PATHS, { DEFAULT_ROLE_PATHS } from "@/utils/paths";
 import { useRouter } from "next/navigation";
-import React from "react";
 import useLogin from "./login-store";
+import { toast } from "react-toastify";
+import { useAutoLogin } from "@/hooks/useAutoLogin";
+import { useAuthStore } from "@/store/useAuthStore";
+
+interface DecodedToken {
+  id: string;
+  name: string;
+  email: string;
+  isActive: boolean;
+  role: string;
+  iat: number;
+  exp: number;
+}
 
 export default function Login() {
   const router = useRouter();
-  const { email, setEmail } = useLogin();
+  const {
+    email,
+    password,
+    isLoading,
+    error,
+    setEmail,
+    setPassword,
+    login,
+    clearError,
+  } = useLogin();
+  const { setUser } = useAuthStore();
 
-  const handleLogin = () => {
-    if (email === "cliente@gmail.com") {
-      router.push(PATHS.atividades);
-    }
+  // Adiciona o hook de auto login
+  useAutoLogin();
 
-    if (email === "parceiro@gmail.com") {
-      router.push(PATHS["minhas-atividades"]);
-    }
+  const handleLogin = async () => {
+    try {
+      // Seta flag para evitar autologin
+      sessionStorage.setItem("isLoggingIn", "true");
 
-    if (email === "admin@gmail.com") {
-      router.push(PATHS.admin);
+      const data = await login();
+      setUser();
+
+      const decoded = jwtDecode<DecodedToken>(data.access_token);
+      // console.log("Decoded token:", decoded);
+
+      const userRole = decoded.role.toLowerCase();
+      // console.log("User role:", userRole);
+
+      const roleMapping = {
+        superadmin: "admin",
+        admin: "admin",
+        partner: "partner",
+        customer: "customer",
+      };
+
+      const mappedRole = roleMapping[userRole as keyof typeof roleMapping];
+      // console.log("Mapped role:", mappedRole);
+
+      // Verifica se a role foi mapeada corretamente
+      if (!mappedRole) {
+        console.error("Role não mapeada:", userRole);
+        toast.error("Erro no redirecionamento");
+        return;
+      }
+
+      // Verifica se existe um caminho padrão para a role
+      const defaultPath =
+        DEFAULT_ROLE_PATHS[mappedRole as keyof typeof DEFAULT_ROLE_PATHS];
+      console.log("Default path:", defaultPath);
+
+      if (!defaultPath) {
+        console.error("Caminho não encontrado para role:", mappedRole);
+        toast.error("Erro no redirecionamento");
+        return;
+      }
+
+      // Força o redirecionamento
+      // window.location.href = defaultPath;
+      // Ou use o router.push com um callback
+      router.push(defaultPath);
+      router.refresh();
+
+      toast.success("Login realizado com sucesso!");
+    } catch (err) {
+      console.error("Erro no login:", err);
+      toast.error(error || "Erro ao fazer login");
+    } finally {
+      // Remove a flag em caso de erro também
+      sessionStorage.removeItem("isLoggingIn");
     }
   };
 
@@ -55,7 +125,10 @@ export default function Login() {
             noHintText
             placeholder="b2adventure@gmail.com"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => {
+              clearError();
+              setEmail(e.target.value);
+            }}
             className="mt-2"
           />
         </div>
@@ -66,9 +139,20 @@ export default function Login() {
             placeholder="******"
             type="password"
             noHintText
+            value={password}
+            onChange={(e) => {
+              clearError();
+              setPassword(e.target.value);
+            }}
             className="mt-2"
           />
         </div>
+
+        {error && (
+          <MyTypography variant="caption" className="text-red-500 mt-2">
+            {error}
+          </MyTypography>
+        )}
 
         <div className="flex flex-col">
           <MyButton
@@ -85,8 +169,9 @@ export default function Login() {
             borderRadius="squared"
             size="md"
             onClick={handleLogin}
+            disabled={isLoading}
           >
-            Login
+            {isLoading ? "Entrando..." : "Login"}
           </MyButton>
 
           <MyButton

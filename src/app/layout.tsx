@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { Suspense } from "react";
-// import { ToastContainer } from "react-toastify";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import Layout from "@/components/organisms/layout";
-// import "react-toastify/dist/ReactToastify.css";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -27,18 +27,24 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.className} antialiased md:min-h-screen`}>
+      <body
+        suppressHydrationWarning={true}
+        className={`${inter.className} antialiased md:min-h-screen`}
+      >
         <Suspense>
           <Layout>{children}</Layout>
         </Suspense>
-        {/* <ToastContainer
-          theme="colored"
+        <ToastContainer
           position="top-right"
-          autoClose={2500}
-          pauseOnHover={false}
-          hideProgressBar
-          style={{ width: "420px" }}
-        /> */}
+          autoClose={3000}
+          hideProgressBar={false}
+          newestOnTop
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+        />
       </body>
     </html>
   );
