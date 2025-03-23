@@ -11,46 +11,28 @@ interface LoginCredentials {
   password: string;
 }
 
-interface DecodedToken {
-  id: string;
-  name: string;
-  email: string;
-  isActive: boolean;
-  internalRole: string;
-  permissions: Array<{
-    nome: string;
-    title: string;
-    permissions: Record<string, string[]>;
-  }>;
-  iat: number;
-  exp: number;
-}
-
 export const storage = {
   setTokens: (response: TokenResponse) => {
-    // Salva todo o objeto de autenticação
-    localStorage.setItem("@auth", JSON.stringify(response));
+    document.cookie = `@auth=${JSON.stringify(response)}; path=/; max-age=${response.expires_in}; samesite=lax`;
   },
 
   getTokens: () => {
-    const auth = localStorage.getItem("@auth");
-    if (!auth) return null;
+    try {
+      const cookie = document.cookie
+        .split(";")
+        .find((c) => c.trim().startsWith("@auth="));
 
-    return JSON.parse(auth) as TokenResponse;
-  },
+      if (!cookie) return null;
 
-  isTokenExpired: () => {
-    const auth = storage.getTokens();
-    if (!auth) return true;
-
-    const decodedToken = JSON.parse(
-      atob(auth.access_token.split(".")[1])
-    ) as DecodedToken;
-    return Date.now() >= decodedToken.exp * 1000;
+      const value = cookie.split("=")[1];
+      return JSON.parse(decodeURIComponent(value)) as TokenResponse;
+    } catch {
+      return null;
+    }
   },
 
   clear: () => {
-    localStorage.removeItem("@auth");
+    document.cookie = "@auth=; path=/; max-age=0";
   },
 };
 
@@ -59,6 +41,22 @@ export const authService = {
     const response = await api.post<TokenResponse>("/auth/login", credentials);
     storage.setTokens(response.data);
     return response.data;
+  },
+
+  loginWithSocialNetwork: async (token: string, social: string) => {
+    const response = await api.post<TokenResponse>(`/auth/login${social}`, {
+      token,
+    });
+    storage.setTokens(response.data);
+    return response.data;
+  },
+
+  forgotPassword: async (email: string) => {
+    await api.post("/auth/request/reset-password", { email });
+  },
+
+  resetPassword: async (password: string, refreshToken: string) => {
+    await api.post(`/auth/reset-password${refreshToken}`, { password });
   },
 
   refresh: async () => {

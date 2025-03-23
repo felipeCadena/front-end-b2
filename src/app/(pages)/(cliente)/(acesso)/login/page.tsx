@@ -12,6 +12,7 @@ import useLogin from "./login-store";
 import { toast } from "react-toastify";
 import { useAutoLogin } from "@/hooks/useAutoLogin";
 import { useAuthStore } from "@/store/useAuthStore";
+import GoogleLoginButton from "@/components/molecules/google-login-button";
 
 interface DecodedToken {
   id: string;
@@ -38,21 +39,19 @@ export default function Login() {
   const { setUser } = useAuthStore();
 
   // Adiciona o hook de auto login
-  useAutoLogin();
+  // useAutoLogin();
 
   const handleLogin = async () => {
     try {
-      // Seta flag para evitar autologin
-      sessionStorage.setItem("isLoggingIn", "true");
-
       const data = await login();
-      setUser();
+      // setUser();
 
       const decoded = jwtDecode<DecodedToken>(data.access_token);
-      // console.log("Decoded token:", decoded);
+
+      // Atualiza o user no store global
+      setUser();
 
       const userRole = decoded.role.toLowerCase();
-      // console.log("User role:", userRole);
 
       const roleMapping = {
         superadmin: "admin",
@@ -62,19 +61,10 @@ export default function Login() {
       };
 
       const mappedRole = roleMapping[userRole as keyof typeof roleMapping];
-      // console.log("Mapped role:", mappedRole);
-
-      // Verifica se a role foi mapeada corretamente
-      if (!mappedRole) {
-        console.error("Role não mapeada:", userRole);
-        toast.error("Erro no redirecionamento");
-        return;
-      }
 
       // Verifica se existe um caminho padrão para a role
       const defaultPath =
         DEFAULT_ROLE_PATHS[mappedRole as keyof typeof DEFAULT_ROLE_PATHS];
-      console.log("Default path:", defaultPath);
 
       if (!defaultPath) {
         console.error("Caminho não encontrado para role:", mappedRole);
@@ -82,9 +72,6 @@ export default function Login() {
         return;
       }
 
-      // Força o redirecionamento
-      // window.location.href = defaultPath;
-      // Ou use o router.push com um callback
       router.push(defaultPath);
       router.refresh();
 
@@ -92,9 +79,6 @@ export default function Login() {
     } catch (err) {
       console.error("Erro no login:", err);
       toast.error(error || "Erro ao fazer login");
-    } finally {
-      // Remove a flag em caso de erro também
-      sessionStorage.removeItem("isLoggingIn");
     }
   };
 
@@ -174,7 +158,7 @@ export default function Login() {
             {isLoading ? "Entrando..." : "Login"}
           </MyButton>
 
-          <MyButton
+          {/* <MyButton
             className="mt-4"
             variant="outline-neutral"
             borderRadius="squared"
@@ -182,7 +166,9 @@ export default function Login() {
             leftIcon={<MyIcon name="google" />}
           >
             Logar com o Google
-          </MyButton>
+          </MyButton> */}
+
+          <GoogleLoginButton />
 
           <MyButton
             className="mt-4"

@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { jwtDecode } from "jwt-decode";
-import { storage } from "@/services/auth";
+import { storage } from "@/services/api/auth";
 import { DEFAULT_ROLE_PATHS } from "@/utils/paths";
 import { toast } from "react-toastify";
 import { useAuthStore } from "@/store/useAuthStore";

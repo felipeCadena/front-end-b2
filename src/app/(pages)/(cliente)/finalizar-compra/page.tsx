@@ -54,7 +54,7 @@ export default function FinalizarCompra() {
   ];
 
   return (
-    <section className="">
+    <section className="px-4">
       <div className="flex gap-4 items-center max-sm:hidden">
         <MyIcon
           name="voltar-black"

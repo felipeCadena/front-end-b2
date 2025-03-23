@@ -9,14 +9,19 @@ import { useRouter } from "next/navigation";
 import React from "react";
 import useLogin from "../(cliente)/(acesso)/login/login-store";
 import MyButton from "@/components/atoms/my-button";
+import { users } from "@/services/api/users";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 export default function Perfil() {
   const router = useRouter();
-  const {email} = useLogin()
-  const [visibility, setVisibility] = React.useState(false);
-  
 
-  const activity = activities.find((activity) => activity.id === "1");
+  const { email } = useLogin();
+  const [visibility, setVisibility] = React.useState(false);
+
+  const { data: user } = useQuery({
+    queryKey: ["user"],
+    queryFn: () => users.getUserLogged(),
+  });
 
   return (
     <section className="px-6 my-8">
@@ -34,14 +39,14 @@ export default function Perfil() {
       <div className="flex flex-col items-center gap-2 text-center mt-8">
         <Image
           alt="avatar"
-          src={activity?.parceiro?.avatar ?? ""}
+          src={user?.photo ?? ""}
           width={28}
           height={28}
           className="w-28 h-28 rounded-full object-contain"
         />
         <div>
           <MyTypography variant="label" weight="semibold">
-            {activity?.parceiro?.nome}
+            {user?.name}
           </MyTypography>
           <MyTypography
             variant="label"
@@ -63,24 +68,36 @@ export default function Perfil() {
           label="E-mail"
           placeholder="b2adventure@gmail.com"
           className="mt-2"
-          value={email ?? ""}
+          value={user?.email ?? ""}
         />
-        <MyTextInput label="Nome Completo" placeholder="Nome Completo" value={activity?.parceiro?.nome} className="mt-2"/>
+        <MyTextInput
+          label="Nome Completo"
+          placeholder="Nome Completo"
+          value={user?.name}
+          className="mt-2"
+        />
         <MyTextInput
           label="Senha cadastrada"
           placeholder="******"
           type={visibility ? "text" : "password"}
-          rightIcon={<MyIcon name={visibility ? "hide" : "eye"} className="mr-4 mt-2 cursor-pointer" onClick={() => setVisibility(prev => !prev)} />}
+          rightIcon={
+            <MyIcon
+              name={visibility ? "hide" : "eye"}
+              className="mr-4 mt-2 cursor-pointer"
+              onClick={() => setVisibility((prev) => !prev)}
+            />
+          }
           className="mt-2"
         />
 
-        <MyButton 
-          variant="default" 
+        <MyButton
+          variant="default"
           borderRadius="squared"
           size="lg"
           className="mt-4 px-12"
           onClick={() => router.push("/")}
-        >Atualizar 
+        >
+          Atualizar
         </MyButton>
       </div>
     </section>

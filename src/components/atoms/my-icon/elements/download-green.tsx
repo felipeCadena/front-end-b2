@@ -5,7 +5,7 @@ const DownloadGreen = ({
 }: {
   width?: string;
   height?: string;
-  onClick: () => void;
+  onClick?: () => void;
 }) => (
   <svg
     width={width}

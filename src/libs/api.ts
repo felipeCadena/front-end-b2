@@ -1,5 +1,5 @@
 import axios from "axios";
-import { storage, authService } from "@/services/auth";
+import { storage } from "@/services/api/auth";
 
 export const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_BACKEND_URL,

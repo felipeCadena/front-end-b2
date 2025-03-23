@@ -5,6 +5,8 @@ import { Suspense } from "react";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Layout from "@/components/organisms/layout";
+import AuthProvider from "@/providers/auth-provider";
+import { Provider } from "@/providers/provider";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -31,20 +33,24 @@ export default function RootLayout({
         suppressHydrationWarning={true}
         className={`${inter.className} antialiased md:min-h-screen`}
       >
-        <Suspense>
-          <Layout>{children}</Layout>
-        </Suspense>
-        <ToastContainer
-          position="top-right"
-          autoClose={3000}
-          hideProgressBar={false}
-          newestOnTop
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-        />
+        <AuthProvider>
+          <Provider>
+            <Suspense>
+              <Layout>{children}</Layout>
+            </Suspense>
+            <ToastContainer
+              position="top-right"
+              autoClose={3000}
+              hideProgressBar={false}
+              newestOnTop
+              closeOnClick
+              rtl={false}
+              pauseOnFocusLoss
+              draggable
+              pauseOnHover
+            />
+          </Provider>
+        </AuthProvider>
       </body>
     </html>
   );

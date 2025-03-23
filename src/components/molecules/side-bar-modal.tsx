@@ -10,7 +10,7 @@ import {
 import Link from "next/link";
 import MyIcon from "../atoms/my-icon";
 import { useAuthStore } from "@/store/useAuthStore";
-import { storage } from "@/services/auth";
+import { storage } from "@/services/api/auth";
 import { useRouter } from "next/navigation";
 export default function SideBarModal({
   children,

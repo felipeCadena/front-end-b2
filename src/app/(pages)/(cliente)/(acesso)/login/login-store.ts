@@ -1,6 +1,6 @@
 import { sideBarLp } from "@/common/constants/sideBar";
 import { create } from "zustand";
-import { storage, TokenResponse } from "@/services/auth";
+import { storage, TokenResponse } from "@/services/api/auth";
 import { api } from "@/libs/api";
 
 interface LoginStore {

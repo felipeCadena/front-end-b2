@@ -17,7 +17,7 @@ import { cn } from "@/utils/cn";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useMemo } from "react";
-import { storage } from "@/services/auth";
+import { storage } from "@/services/api/auth";
 import useLogin from "@/app/(pages)/(cliente)/(acesso)/login/login-store";
 
 export default function SidebarMenu({
@@ -26,23 +26,28 @@ export default function SidebarMenu({
   closeSidebar: () => void;
 }) {
   const { user, clearUser, setUser } = useAuthStore();
-  const { setSideBarActive } = useLogin();
+  const { setSideBarActive, sideBarActive } = useLogin();
   const router = useRouter();
+
   // Memoiza os itens do sidebar baseado no user.role
-  const sideBarItems = useMemo(() => {
-    if (!user) return sideBarLp;
+  // const sideBarItems = useMemo(() => {
+  //   if (!user) return sideBarLp;
 
-    const sideBarMap = {
-      admin: sideBarAdmin,
-      partner: sideBarPartnet,
-      customer: sideBarClient,
-      default: sideBarLp,
-    };
+  //   const sideBarMap = {
+  //     admin: sideBarAdmin,
+  //     partner: sideBarPartnet,
+  //     customer: sideBarClient,
+  //     default: sideBarLp,
+  //   };
 
-    return (
-      sideBarMap[user.role as keyof typeof sideBarMap] || sideBarMap.default
-    );
-  }, [user?.role]); // Só recalcula quando a role mudar
+  //   return (
+  //     sideBarMap[user.role as keyof typeof sideBarMap] || sideBarMap.default
+  //   );
+  // }, [user?.role]); // Só recalcula quando a role mudar
+
+  // const filteredItems = useMemo(() => {
+  //   return sideBarItems.filter((item) => !item.mobile);
+  // }, [sideBarItems]);
 
   useEffect(() => {
     // Atualiza o user do store usando o token
@@ -81,18 +86,13 @@ export default function SidebarMenu({
     closeSidebar();
   };
 
-  // Memoiza os itens filtrados
-  const filteredItems = useMemo(() => {
-    return sideBarItems.filter((item) => !item.mobile);
-  }, [sideBarItems]);
-
   return (
     <div className="relative">
       <MyToggleGroup
         type="single"
         className="absolute flex w-full flex-col items-start"
       >
-        {filteredItems.map((item) => (
+        {sideBarActive.map((item) => (
           <ToggleGroupItem
             asChild
             key={item.label}

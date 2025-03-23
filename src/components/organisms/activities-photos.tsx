@@ -38,7 +38,7 @@ export default function ActivitiesPhotos({
             className="flex max-sm:flex-col md:justify-between gap-2 cursor-pointer my-6 space-y-2"
             onClick={() => admin && handleImagesAdmin(activity.id)}
           >
-            <div className="flex gap-2 cursor-pointer">
+            <div className="w-full flex gap-2 cursor-pointer">
               <div
                 className={cn(
                   "relative z-10 overflow-hidden w-[180px] h-[120px] hover:cursor-pointer rounded-md",
@@ -57,7 +57,7 @@ export default function ActivitiesPhotos({
                 />
               </div>
 
-              <div className="space-y-1">
+              <div className="space-y-1 max-sm:w-1/2">
                 <MyBadge variant="outline" className="p-1">
                   {activity.tag}
                 </MyBadge>

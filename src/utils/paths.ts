@@ -13,8 +13,10 @@ const ROOTS_LOGIN = "/login";
 const ROOTS_CADASTRO = "/cadastro";
 const ROOTS_SENHA = "/esqueci-minha-senha";
 const ROOTS_QUEMSOMOS = "/quem-somos";
+const ROOTS_FALE_CONOSCO = "/fale-conosco";
 const ROOTS_ATIVIDADES = "/atividades";
 const ROOTS_PARCEIRO = "/parceiro";
+const ROOTS_PERFIL = "/perfil";
 const ROOTS_CADASTRO_PARCEIRO = "/parceiro/cadastro";
 const ROOTS_CADASTRO_FLUXO_PARCEIRO = "/parceiro/cadastro-parceiro";
 const ROOTS_LOGIN_PARCEIRO = "/parceiro/login";
@@ -40,6 +42,16 @@ const ROOTS_INFORMACOES_ATIVIDADES = "/parceiro/informacoes-atividade";
 // Rotas Admin
 const ROOTS_ADMIN = "/admin";
 const ROOTS_PAGAMENTOS = "/admin/pagamento-parceiros";
+const ROOTS_PARCEIROS_CADASTRADOS = "/admin/parceiros-cadastrados";
+const ROOTS_ADMIN_FINANCEIRO = "/admin/financeiro";
+const ROOTS_ADMIN_AVALIACOES = "/admin/avaliacoes";
+const ROOTS_ADMIN_NOTIFICACOES = "/admin/notificacoes";
+const ROOTS_ADMIN_CONFIG = "/admin/configuracoes";
+const ROOTS_ADMIN_CONFIG_FOTOS = "/admin/configuracoes/fotos";
+const ROOTS_ADMIN_CONFIG_TEXTOS = "/admin/configuracoes/textos";
+const ROOTS_ADMIN_CONFIG_JUSTIFICATIVAS = "/admin/configuracoes/justificativas";
+const ROOTS_ADMIN_CONFIG_IDIOMAS = "/admin/configuracoes/idioma";
+const ROOTS_ADMIN_MARKETING = "/admin/marketing";
 
 // ==========================================
 // * Dimanic routes
@@ -68,6 +80,9 @@ const CANCELAR_ATIVIDADE_PARCEIRO = (slug: number | string) =>
 const RELATORIO_ATIVIDADE_PARCEIRO = (slug: number | string) =>
   `/parceiro/financeiro/relatorio/${slug}`;
 
+const RELATORIO_ADMIN_FINANCEIRO = (slug: number | string) =>
+  `/admin/financeiro/relatorio/${slug}`;
+
 // ==========================================
 // * Dynamic encode routes
 // const PROPOSTA_PERSONALIZADO = (slug: string) => `/proposta/personalizado/${encodeUrl(slug)}`;
@@ -88,6 +103,8 @@ const PATHS = {
   "finalizar-compra": ROOTS_FINALIZAR_COMPRA,
   "termos-parceiro": ROOTS_TERMOS_PARCEIRO,
   parceiro: ROOTS_PARCEIRO,
+  perfil: ROOTS_PERFIL,
+  "fale-conosco": ROOTS_FALE_CONOSCO,
   "sobre-a-empresa": ROOTS_SOBRE_A_EMPRESA,
   "cadastro-parceiro": ROOTS_CADASTRO_PARCEIRO,
   "fluxo-cadastro-parceiro": ROOTS_CADASTRO_FLUXO_PARCEIRO,
@@ -100,6 +117,9 @@ const PATHS = {
   "reservas-parceiro": ROOTS_RESERVAS_PARCEIRO,
   admin: ROOTS_ADMIN,
   "pagamento-parceiros": ROOTS_PAGAMENTOS,
+  "admin-financeiro": ROOTS_ADMIN_FINANCEIRO,
+  "relatorio-admin-financeiro": RELATORIO_ADMIN_FINANCEIRO,
+  "relatorio-atividade-parceiro": RELATORIO_ATIVIDADE_PARCEIRO,
   "enviar-fotos": ENVIAR_FOTOS,
   "enviar-videos": ENVIAR_VIDEOS,
   visualizarAtividade: VISUALIZAR_ATIVIDADE,
@@ -127,12 +147,27 @@ export const PATHS_CONFIG: PathsConfig = {
     ROOTS_SENHA_PARCEIRO,
     ROOTS_SOBRE_A_EMPRESA,
     ROOTS_TERMOS_PARCEIRO,
+    ROOTS_FALE_CONOSCO,
+    ROOTS_PERFIL,
+    "/atividades/atividade/*",
   ],
   private: {
     admin: [
       ROOTS_ADMIN,
       ROOTS_PAGAMENTOS,
-      // ... outras rotas admin
+      ROOTS_ADMIN_FINANCEIRO,
+      ROOTS_PERFIL,
+      ROOTS_ADMIN_AVALIACOES,
+      ROOTS_ADMIN_NOTIFICACOES,
+      ROOTS_PARCEIROS_CADASTRADOS,
+      ROOTS_ADMIN_CONFIG,
+      ROOTS_ADMIN_MARKETING,
+      ROOTS_ADMIN_CONFIG_FOTOS,
+      ROOTS_ADMIN_CONFIG_TEXTOS,
+      ROOTS_ADMIN_CONFIG_JUSTIFICATIVAS,
+      ROOTS_ADMIN_CONFIG_IDIOMAS,
+      "/admin/financeiro/relatorio/*",
+      "/admin/marketing/atividade/*",
     ],
     partner: [
       ROOTS_ATIVIDADES_CADASTRADAS,
@@ -142,13 +177,16 @@ export const PATHS_CONFIG: PathsConfig = {
       ROOTS_RESERVAS_PARCEIRO,
       ROOTS_ATIVIDADES_OCULTAS,
       ROOTS_INFORMACOES_ATIVIDADES,
-      // ... outras rotas partner
+      "/parceiro/atividades-cadastradas/atividade/*",
+      "/parceiro/atividades-cadastradas/atividade/*/editar",
+      "/parceiro/reservas/cancelar/*",
+      "/parceiro/financeiro/relatorio/*",
     ],
     customer: [
       ROOTS_CARRINHO,
       ROOTS_FINALIZAR_COMPRA,
       ROOTS_INFOS,
-      // ... outras rotas customer
+      "/notificacoes/notificacao/*",
     ],
   },
 };

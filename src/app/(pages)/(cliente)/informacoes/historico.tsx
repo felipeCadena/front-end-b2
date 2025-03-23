@@ -15,13 +15,13 @@ import React from "react";
 
 export default function Historico() {
   return (
-    <section className="mx-auto max-sm:max-w-5xl">
+    <section className="w-full">
       <div className="mx-4 space-y-8">
         <div className="md:hidden">
           <SearchActivity />
         </div>
         <ActivitiesFilter withoutText />
-        <div className="w-full flex items-center justify-between space-x-12 md:hidden">
+        <div className="w-full flex items-center md:hidden">
           <MyTypography
             variant="subtitle1"
             weight="bold"
@@ -29,19 +29,20 @@ export default function Historico() {
           >
             Histórico de atividades
           </MyTypography>
-
-          <MySelect
-          //   value={}
-          //   onValueChange={}
-          >
-            <SelectTrigger className="rounded-2xl text-[#848A9C] text-xs">
-              <SelectValue placeholder="Mensal" />
-            </SelectTrigger>
-            <SelectContent className="rounded-lg">
-              <SelectItem value="Mensal">Mensal</SelectItem>
-              <SelectItem value="Semanal">Semanal</SelectItem>
-            </SelectContent>
-          </MySelect>
+          <div className="ml-auto">
+            <MySelect
+            //   value={}
+            //   onValueChange={}
+            >
+              <SelectTrigger className="rounded-2xl text-[#848A9C] text-xs">
+                <SelectValue placeholder="Mensal" />
+              </SelectTrigger>
+              <SelectContent className="rounded-lg">
+                <SelectItem value="Mensal">Mensal</SelectItem>
+                <SelectItem value="Semanal">Semanal</SelectItem>
+              </SelectContent>
+            </MySelect>
+          </div>
         </div>
         <div className="md:hidden">
           <ActivitiesHistoric activities={activities} />

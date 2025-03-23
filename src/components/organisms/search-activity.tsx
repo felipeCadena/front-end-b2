@@ -11,7 +11,7 @@ export default function SearchActivity({ className }: { className?: string }) {
   const [search, setSearch] = React.useState("");
 
   return (
-    <section className={cn("mt-2 md:w-2/3 md:mx-auto max-sm:px-4", className)}>
+    <section className={cn("mt-2 md:w-2/3 md:mx-auto ", className)}>
       <MyTextInput
         placeholder="Procurar atividade"
         noHintText

@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { jwtDecode } from "jwt-decode";
-import { storage } from "@/services/auth";
+import { storage } from "@/services/api/auth";
 import { toast } from "react-toastify";
 
 interface DecodedToken {
@@ -26,7 +26,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
   user: null,
   setUser: () => {
     const auth = storage.getTokens();
-    if (!auth?.access_token) {
+    if (!auth) {
       set({ user: null });
       return;
     }
