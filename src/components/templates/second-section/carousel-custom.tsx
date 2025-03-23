@@ -36,12 +36,6 @@ export default function CarouselCustom({
     }
   };
 
-  const showLeftShadow = scrollPosition > 0;
-
-  const showRightShadow =
-    ref.current &&
-    ref.current.scrollWidth > ref.current.clientWidth + scrollPosition + 1;
-
   const handleActivity = (id: string) => {
     if (type === "parceiro") {
       return router.push(PATHS.visualizarAtividadeParceiro(id));
@@ -103,7 +97,7 @@ export default function CarouselCustom({
             </div>
 
             <div className="mt-1 flex gap-2 items-center">
-              <MyBadge variant="outline" className="p-1">
+              <MyBadge variant="outline" className="p-1 text-nowrap">
                 {activity.tag}
               </MyBadge>
               <StarRating rating={activity.stars} />

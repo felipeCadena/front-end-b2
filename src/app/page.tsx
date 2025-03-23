@@ -9,7 +9,7 @@ import Review from "@/components/templates/third-section/review";
 export default function Home() {
   return (
     <main className="md:mx-auto w-full md:max-w-screen-custom md:px-8">
-      <div className="overflow-x-hidden">
+      <div className="overflow-x-hidden ">
         <SearchActivity />
         <FirstSection />
         <SecondSection />

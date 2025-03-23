@@ -33,7 +33,7 @@ export default function Lancamentos({
   const router = useRouter();
 
   return (
-    <section className="mx-auto py-2 md:py-8 px-4">
+    <section className="mx-auto py-2 md:py-8 px-4 overflow-hidden">
       {/* Header */}
       <div
         className={cn(
@@ -118,7 +118,7 @@ export default function Lancamentos({
         )}
       </div>
 
-      <MyTable className="md:border-collapse mt-4 overflow-hidden">
+      <MyTable className="md:border-collapse mt-4">
         <TableHeader>
           <TableRow className="text-xs md:text-sm font-semibold">
             <TableHead className="text-center">Passeio</TableHead>
@@ -172,19 +172,16 @@ export default function Lancamentos({
               <TableCell className="max-sm:hidden md:px-4">
                 {lancamento.quantidade}
               </TableCell>
-              <TableCell>
+              <TableCell
+                className={cn(
+                  "border-r-8 rounded-r-md border-opacity-50 border-gray-300",
+                  lancamento.status === "pendente" && "border-[#C0E197]",
+                  lancamento.status === "cancelado" && "border-[#FF5757]"
+                )}
+              >
                 {lancamento.status === "cancelado"
                   ? "Cancelado"
                   : `R$${lancamento.valor.toFixed(2)}`}
-              </TableCell>
-              <TableCell className="max-sm:pl-2">
-                <div
-                  className={cn(
-                    "absolute right-0 top-0 h-full w-2 rounded-r-md opacity-50 bg-gray-300",
-                    lancamento.status === "pendente" && "bg-primary-600",
-                    lancamento.status === "cancelado" && "bg-[#FF5757]"
-                  )}
-                />
               </TableCell>
             </TableRow>
           ))}
