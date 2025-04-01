@@ -36,6 +36,7 @@ export default function AvailabilityModal({
     null
   );
   const [selectedDates, setSelectedDates] = React.useState<Date[]>([]); // Estado para armazenar as datas selecionadas
+  const [duration, setDuration] = React.useState("");
 
   return (
     <MyDialog open={isOpen} onOpenChange={onClose}>
@@ -59,7 +60,7 @@ export default function AvailabilityModal({
             setSelectedDates={setSelectedDates}
           />
 
-          <TimePickerModal />
+          <TimePickerModal value={duration} onChange={setDuration} />
 
           <PeopleSelector />
 

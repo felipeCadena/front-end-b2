@@ -27,7 +27,6 @@ export const useAuthStore = create<AuthStore>()(
       setUser: (user) => set({ user }),
       clearUser: () => {
         set({ user: null });
-        authService.logout();
       },
     }),
     {

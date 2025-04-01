@@ -15,9 +15,9 @@ const libraries: "places"[] = ["places"];
 
 export default function SearchInfoActivity() {
   const [selectedLocation, setSelectedLocation] = React.useState(null);
-  //
+  const [duration, setDuration] = React.useState("");
 
-  const { isLoaded, loadError } = useLoadScript({
+  const { isLoaded, loadError, url } = useLoadScript({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API || "",
     libraries,
   });
@@ -51,15 +51,15 @@ export default function SearchInfoActivity() {
             leftIcon={<MyIcon name="localizacao" className="ml-3" />}
           /> */}
 
-          <GoogleMapsAutocomplete
+          {/* <GoogleMapsAutocomplete
             onLocationSelected={handleLocationSelected}
             isLoaded={isLoaded}
-          />
+          /> */}
         </div>
 
         <OneDay />
 
-        <TimePickerModal />
+        <TimePickerModal value={duration} onChange={setDuration} />
 
         <PeopleSelector />
       </div>

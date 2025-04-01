@@ -10,7 +10,6 @@ import FacebookProvider from "next-auth/providers/facebook";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { authService } from "@/services/api/auth";
 import { jwtDecode } from "jwt-decode";
-import { getServerSession } from "next-auth";
 import { DEFAULT_ROLE_PATHS } from "@/utils/paths";
 
 interface DecodedToken {
@@ -96,7 +95,6 @@ export const authOptions: NextAuthOptions = {
             (user.accessToken = response.access_token),
             (user.refreshToken = response.refresh_token),
             (user.role = decodedToken.role);
-          user.expiresIn = response.expires_in;
           user.image = decodedToken.image;
           user.defaultPath =
             DEFAULT_ROLE_PATHS[
@@ -122,7 +120,6 @@ export const authOptions: NextAuthOptions = {
             (user.accessToken = response.access_token),
             (user.refreshToken = response.refresh_token),
             (user.role = decodedToken.role);
-          user.expiresIn = response.expires_in;
           user.image = decodedToken.image;
           user.defaultPath =
             DEFAULT_ROLE_PATHS[
@@ -136,7 +133,7 @@ export const authOptions: NextAuthOptions = {
         return false;
       }
     },
-    async jwt({ token, user, account }) {
+    async jwt({ token, user }) {
       // Quando fizer login, adiciona os dados ao token
       if (user) {
         token.accessToken = user.accessToken;
@@ -148,6 +145,7 @@ export const authOptions: NextAuthOptions = {
         token.defaultPath = user.defaultPath;
         token.image = user.image ?? "";
       }
+
       return token;
     },
     async session({ session, token }) {

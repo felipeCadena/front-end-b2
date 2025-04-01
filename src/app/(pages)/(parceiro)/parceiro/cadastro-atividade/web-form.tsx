@@ -6,7 +6,7 @@ import MyTextInput from "@/components/atoms/my-text-input";
 import MyTypography from "@/components/atoms/my-typography";
 import ActivitiesFilter from "@/components/organisms/activities-filter";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   MySelect,
   SelectContent,
@@ -28,138 +28,191 @@ import { Dropzone } from "@/components/molecules/drop-zone";
 import Image from "next/image";
 import PATHS from "@/utils/paths";
 import { cn } from "@/utils/cn";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { FormProvider, useForm } from "react-hook-form";
-import ControlledTextInput from "@/components/molecules/controlled-text-input";
-import ControlledTextarea from "@/components/molecules/controlled-textarea";
-import ControlledSelect from "@/components/molecules/controlled-select";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale/pt-BR";
+import {
+  Recurrence,
+  TypeAdventure,
+  useAdventureStore,
+} from "@/store/useAdventureStore";
+import MyTextarea from "@/components/atoms/my-textarea";
+import {
+  convertToHours,
+  convertToTimeString,
+  getDifficultyDescription,
+  getDifficultyNumber,
+} from "@/utils/formatters";
+import AutocompleteInput from "@/components/organisms/google-autocomplete";
+import { LoadScript, useLoadScript } from "@react-google-maps/api";
 
-const formSchema = z.object({
-  title: z.string(),
-  addressStreet: z.string(),
-  addressPostalCode: z.string(),
-  addressNumber: z.string(),
-  addressComplement: z.string().optional(),
-  addressNeighborhood: z.string(),
-  addressCity: z.string(),
-  addressState: z.string(),
-  addressCountry: z.string(),
-  coordinates: z.string(),
-  pointRefAddress: z.string(),
-  description: z.string(),
-  itemsIncluded: z.array(z.string()),
-  duration: z.string(),
-  priceAdult: z.number(),
-  priceChildren: z.number(),
-  transportIncluded: z.boolean(),
-  picturesIncluded: z.boolean(),
-  typeAdventure: z.enum(["terra", "ar", "mar"]),
-  personsLimit: z.number(),
-  partnerId: z.string().optional(),
-  isInGroup: z.boolean(),
-  isChildrenAllowed: z.boolean(),
-  difficult: z.number().min(1).max(5),
-  daysBeforeSchedule: z.number(),
-  daysBeforeCancellation: z.number(),
-  isRepeatable: z.boolean(),
-  recurrences: z
-    .array(
-      z.object({
-        recurrenceWeekly: z.string().optional(),
-        recurrenceMonthly: z.string().optional(),
-        recurrenceHour: z.string(),
-      })
-    )
-    .optional(),
-});
-
-export default function WebForm({ type }: { type?: string }) {
+interface AddressData {
+  addressStreet: string;
+  addressPostalCode: string;
+  addressNumber: string;
+  addressComplement: string;
+  addressNeighborhood: string;
+  addressCity: string;
+  addressState: string;
+  addressCountry: string;
+  coordinates: string;
+}
+export default function WebForm({
+  type,
+  handleBack,
+  handleNext,
+}: {
+  type?: string;
+  handleBack?: () => void;
+  handleNext?: () => void;
+}) {
   const router = useRouter();
+  const {
+    setAdventureData,
+    typeAdventure,
+    description,
+    title,
+    hoursBeforeCancellation,
+    hoursBeforeSchedule,
+    selectionBlocks,
+    addSelectionBlock,
+    removeSelectionBlock,
+    updateSelectionBlock,
+    recurrences,
+    difficult,
+    duration,
+  } = useAdventureStore();
+
   const [files, setFiles] = React.useState<File[] | null>(null);
   const inputRef = React.useRef<HTMLInputElement>(null);
-
-  const [selected, setSelected] = useState<"ar" | "terra" | "mar">("ar");
-  const [recurrenceWeekly, setRecurrenceWeekly] = useState<string[]>([]);
-  const [recurrenceHour, setRecurrenceHour] = useState<string[]>([]);
-
-  const [dates, setDates] = useState<Date[]>([]);
-  const [formattedDates, setFormattedDates] = useState<string>("");
-
-  // Função para formatar datas ao atualizar o estado
-  const handleDateChange = (dates: Date[]) => {
-    setDates(dates); // Atualiza o estado das datas selecionadas
-
-    // Converte para o formato de string esperado pelo backend
-    const formatted = dates
-      .map((d) => format(d, "dd/MM", { locale: ptBR }))
-      .join(",");
-    setFormattedDates(formatted);
+  // Atualiza as datas para um bloco específico
+  const handleDateChange = (blockId: number, dates: Date[]) => {
+    updateSelectionBlock(blockId, "dates", dates);
   };
 
-  const methods = useForm<z.infer<typeof formSchema>>({
-    defaultValues: {
-      title: "",
-      addressStreet: "",
-      addressPostalCode: "",
-      addressNumber: "",
-      addressComplement: "",
-      addressNeighborhood: "",
-      addressCity: "",
-      addressState: "",
-      addressCountry: "",
-      coordinates: "",
-      pointRefAddress: "",
-      description: "",
-      itemsIncluded: [],
-      duration: "",
-      priceAdult: 0,
-      priceChildren: 0,
-      transportIncluded: false,
-      picturesIncluded: false,
-      typeAdventure: selected,
-      personsLimit: 0,
-      partnerId: "",
-      isInGroup: false,
-      isChildrenAllowed: false,
-      difficult: 1,
-      daysBeforeSchedule: 0,
-      daysBeforeCancellation: 0,
-      isRepeatable: false,
-      recurrences: [
-        {
-          recurrenceWeekly: "",
-          recurrenceMonthly: "",
-          recurrenceHour: "",
-        },
-      ],
-    },
-    resolver: zodResolver(formSchema),
-  });
+  // Função para formatar os dados antes de salvar
+  const formatRecurrences = (): Recurrence[] => {
+    const formattedRecurrences: Recurrence[] = [];
 
-  const { control, handleSubmit, reset, watch } = methods;
+    selectionBlocks.forEach((block) => {
+      // Cria uma recorrência por bloco
+      if (block.recurrenceHour.length > 0) {
+        const recurrence: Recurrence = {
+          recurrenceHour: block.recurrenceHour.join(","),
+        };
 
-  const [selections, setSelections] = useState([{ id: Date.now() }]);
+        // Adiciona dias da semana se existirem
+        if (block.recurrenceWeekly.length > 0) {
+          recurrence.recurrenceWeekly = block.recurrenceWeekly
+            .map((day) => daysOfWeek.findIndex((d) => d.value === day) + 1)
+            .filter((index) => index !== -1)
+            .sort((a, b) => a - b)
+            .join(",");
+        }
 
-  const addSelection = () => {
-    setSelections([...selections, { id: Date.now() }]);
+        // Adiciona dias do mês se existirem
+        if (block.dates.length > 0) {
+          recurrence.recurrenceMonthly = block.dates
+            .map((date) => format(date, "dd"))
+            .map((day) => parseInt(day))
+            .sort((a, b) => a - b)
+            .join(",");
+        }
+
+        // Só adiciona a recorrência se tiver pelo menos um tipo de recorrência
+        if (recurrence.recurrenceWeekly || recurrence.recurrenceMonthly) {
+          formattedRecurrences.push(recurrence);
+        }
+      }
+    });
+
+    return formattedRecurrences;
   };
 
-  const removeSelection = (id: number) => {
-    setSelections(selections.filter((item) => item.id !== id));
-  };
+  // Atualiza o store quando necessário
+  useEffect(() => {
+    const formattedRecurrences = formatRecurrences();
+    console.log("Blocos de seleção:", selectionBlocks);
+    console.log("Recorrências formatadas:", formattedRecurrences);
+
+    setAdventureData({
+      isRepeatable: formattedRecurrences.length > 0,
+      recurrences: formattedRecurrences, // Agora salvamos as recorrências já formatadas
+    });
+  }, [selectionBlocks]);
 
   const handleClickUpload = () => {
     inputRef.current?.click();
   };
 
-  const onSubmit = (payload: any) => {};
+  const handleNextStep = () => {
+    handleNext && handleNext();
+  };
+
+  const handleSelectType = (value: TypeAdventure) => {
+    setAdventureData({
+      typeAdventure: value,
+    });
+  };
+
+  const handleAddSelectionBlock = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    addSelectionBlock();
+  };
+
+  // Converte de "HH:mm" para "Xh" ou "XhYY"
+  const formatDuration = (hours: string) => {
+    if (!hours) return "";
+
+    const [h, m] = hours.split("h");
+
+    // Garante que temos números válidos
+    const hour = parseInt(h);
+    const minute = parseInt(m);
+
+    if (isNaN(hour)) return "";
+
+    // Mantém os minutos se existirem e forem diferentes de zero
+    if (!isNaN(minute) && minute > 0) {
+      return `${hour}h${minute}`;
+    }
+
+    return `${hour}h`;
+  };
+
+  const handleLocationSelected = (place: google.maps.places.PlaceResult) => {
+    if (!place.address_components) return;
+
+    // Função auxiliar para encontrar componentes do endereço
+    const getAddressComponent = (type: string) => {
+      const component = place.address_components?.find((comp) =>
+        comp.types.includes(type)
+      );
+      return component?.long_name || "";
+    };
+
+    // Extrai o CEP removendo caracteres não numéricos
+    const postalCode = getAddressComponent("postal_code").replace(/\D/g, "");
+
+    const addressData: AddressData = {
+      addressStreet: getAddressComponent("route"),
+      addressPostalCode: postalCode,
+      addressNumber: getAddressComponent("street_number"),
+      addressComplement: "",
+      addressNeighborhood: getAddressComponent("sublocality"),
+      addressCity: getAddressComponent("administrative_area_level_2"),
+      addressState: getAddressComponent("administrative_area_level_1"),
+      addressCountry: "BR",
+      coordinates: place.geometry?.location
+        ? `${place.geometry.location.lat()}:${place.geometry.location.lng()}`
+        : "",
+    };
+
+    setAdventureData(addressData);
+  };
 
   return (
     <main className="space-y-10 my-6">
-      <FormProvider {...methods}>
+      <form>
         <div>
           <MyTypography variant="heading2" weight="bold" className="mb-2">
             Cadastre a sua atividade
@@ -174,21 +227,28 @@ export default function WebForm({ type }: { type?: string }) {
           </MyTypography>
         </div>
 
-        <ActivitiesFilter setSelected={setSelected} selected={selected} />
+        <ActivitiesFilter
+          setSelected={handleSelectType}
+          selected={typeAdventure}
+        />
 
         <div className="border-2  border-gray-300 rounded-lg p-8">
           <div className="space-y-6">
-            <ControlledTextInput
-              control={control}
-              name="title"
+            <MyTextInput
+              value={title}
+              onChange={(e) => setAdventureData({ title: e.target.value })}
               label="Nome da atividade"
               placeholder="Nome da atividade"
               className="mt-2"
             />
 
-            <ControlledTextarea
-              control={control}
-              name="description"
+            <MyTextarea
+              value={description}
+              onChange={(e) =>
+                setAdventureData({
+                  description: e.target.value,
+                })
+              }
               label="Descrição da atividade"
               placeholder="Lorem ipsum dolor sit amet, consectetur di..."
               classNameLabel="text-black text-base font-bold"
@@ -196,11 +256,15 @@ export default function WebForm({ type }: { type?: string }) {
             />
 
             <div className="grid grid-cols-2 gap-8">
-              <ControlledSelect
-                control={control}
-                name="daysBeforeSchedule"
+              <MySelect
                 label="Antecedência de Agendamento"
                 className="text-base text-black"
+                value={String(convertToTimeString(hoursBeforeSchedule))}
+                onValueChange={(value) =>
+                  setAdventureData({
+                    hoursBeforeSchedule: convertToHours(value),
+                  })
+                }
               >
                 <SelectTrigger className="py-6 my-1">
                   <SelectValue placeholder="Selecione o número de dias" />
@@ -212,13 +276,18 @@ export default function WebForm({ type }: { type?: string }) {
                     </SelectItem>
                   ))}
                 </SelectContent>
-              </ControlledSelect>
+              </MySelect>
 
-              <ControlledSelect
-                control={control}
+              <MySelect
                 name="daysBeforeCancellation"
                 label="Antecedência de Cancelamento"
                 className="text-base text-black"
+                value={String(convertToTimeString(hoursBeforeCancellation))}
+                onValueChange={(value) =>
+                  setAdventureData({
+                    hoursBeforeCancellation: convertToHours(value),
+                  })
+                }
               >
                 <SelectTrigger className="py-6 my-1">
                   <SelectValue placeholder="Selecione o número de dias" />
@@ -230,7 +299,7 @@ export default function WebForm({ type }: { type?: string }) {
                     </SelectItem>
                   ))}
                 </SelectContent>
-              </ControlledSelect>
+              </MySelect>
             </div>
           </div>
           <div className="space-y-10 mt-6">
@@ -240,36 +309,47 @@ export default function WebForm({ type }: { type?: string }) {
               </MyTypography>
 
               <div className="space-y-4 flex flex-col items-center">
-                {selections.map((item, index) => (
+                {selectionBlocks.map((block, index) => (
                   <div
-                    key={item.id}
+                    key={block.id}
                     className="w-full border px-6 first:py-4 py-8 rounded-lg space-y-4 relative"
                   >
                     <MultiSelect
                       placeholder="Selecione dias da semana"
                       options={daysOfWeek}
-                      selected={recurrenceWeekly}
-                      setSelected={setRecurrenceWeekly}
+                      selected={block.recurrenceWeekly}
+                      setSelected={(value) =>
+                        updateSelectionBlock(
+                          block.id,
+                          "recurrenceWeekly",
+                          value
+                        )
+                      }
                     />
+
                     <MyDatePicker
                       withlabel="Selecione dias específicos"
-                      selectedDates={dates}
-                      setSelectedDates={handleDateChange}
+                      selectedDates={block.dates}
+                      setSelectedDates={(dates) =>
+                        handleDateChange(block.id, dates)
+                      }
                     />
+
                     <MultiSelect
                       grid
                       placeholder="Selecione os horários"
                       options={hours}
-                      selected={recurrenceHour}
-                      setSelected={setRecurrenceHour}
+                      selected={block.recurrenceHour}
+                      setSelected={(value) =>
+                        updateSelectionBlock(block.id, "recurrenceHour", value)
+                      }
                     />
-
                     {index > 0 && (
                       <MyIcon
                         name="subtracao"
                         title="Remover"
                         className="absolute -top-3 right-1"
-                        onClick={() => removeSelection(item.id)}
+                        onClick={() => removeSelectionBlock(block.id)}
                       />
                     )}
                   </div>
@@ -280,7 +360,7 @@ export default function WebForm({ type }: { type?: string }) {
                   borderRadius="squared"
                   size="lg"
                   className="w-1/2 mx-auto"
-                  onClick={addSelection}
+                  onClick={(e) => handleAddSelectionBlock(e)}
                   leftIcon={<MyIcon name="soma" />}
                 >
                   Adicionar outro conjunto
@@ -291,6 +371,12 @@ export default function WebForm({ type }: { type?: string }) {
               <MySelect
                 label="Grau de Dificuldade"
                 className="text-base text-black"
+                value={getDifficultyDescription(difficult) ?? ""}
+                onValueChange={(value) =>
+                  setAdventureData({
+                    difficult: getDifficultyNumber(value) ?? undefined,
+                  })
+                }
               >
                 <SelectTrigger className="py-6 my-1">
                   <SelectValue placeholder="Selecione" />
@@ -312,19 +398,27 @@ export default function WebForm({ type }: { type?: string }) {
                 >
                   Duração
                 </MyTypography>
-                <TimePickerModal iconColor="black" />
+
+                <TimePickerModal
+                  iconColor="black"
+                  value={duration}
+                  onChange={(time) =>
+                    setAdventureData({ duration: formatDuration(time) })
+                  }
+                />
               </div>
             </div>
           </div>
 
           <div className="space-y-6 mt-6 p-6 bg-gray-100 border border-gray-300 rounded-lg">
             <div className="grid grid-cols-2 items-center gap-8">
-              <MyTextInput
+              {/* <MyTextInput
                 label="Local"
                 placeholder="Rio de Janeiro, Cristo Redentor"
                 classNameLabel="text-base text-black"
                 className="mt-2"
-              />
+              /> */}
+              {/* <AutocompleteInput onLocationSelected={handleLocationSelected} /> */}
 
               <MyTextInput
                 label="Ponto de referência"
@@ -467,8 +561,29 @@ export default function WebForm({ type }: { type?: string }) {
               Próximo Passo
             </MyButton>
           </div>
+
+          {type == "cadastro" && (
+            <div className="flex justify-between items-center w-full max-w-3xl mx-auto p-4">
+              <MyButton
+                variant="default"
+                borderRadius="squared"
+                onClick={handleBack}
+                leftIcon={<MyIcon name="seta-direita" className="rotate-180" />}
+              >
+                Voltar
+              </MyButton>
+              <MyButton
+                variant="default"
+                borderRadius="squared"
+                onClick={handleNextStep}
+                rightIcon={<MyIcon name="seta-direita" />}
+              >
+                Próximo
+              </MyButton>
+            </div>
+          )}
         </div>
-      </FormProvider>
+      </form>
     </main>
   );
 }

@@ -46,8 +46,8 @@ export default function SidebarMenu({
     }
   }, [user, session]);
 
-  const handleLogout = () => {
-    authService.logout();
+  const handleLogout = async () => {
+    await authService.logout();
     clearUser();
   };
 

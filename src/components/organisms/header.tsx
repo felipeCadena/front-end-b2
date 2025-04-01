@@ -21,7 +21,7 @@ export default function Header() {
   const pathname = usePathname();
   const { sideBarActive } = useLogin();
   const { data: session } = useSession();
-  const { user } = useAuthStore();
+  const { user, setUser } = useAuthStore();
 
   const withoutHeaderMobile = () => {
     return (
@@ -35,7 +35,13 @@ export default function Header() {
 
   const { data: userData } = useQuery({
     queryKey: ["user", user],
-    queryFn: () => users.getUserLogged(),
+    queryFn: async () => {
+      const user = await users.getUserLogged();
+      if (user) {
+        setUser(user);
+      }
+      return user;
+    },
     enabled: Boolean(session?.user),
   });
 
@@ -66,7 +72,7 @@ export default function Header() {
         <LanguageDropdown />
 
         <div className="max-sm:hidden">
-          {!userData && !userData?.role ? (
+          {!user ? (
             <button
               onClick={() => router.push(PATHS.login)}
               className="text-sm flex items-center font-semibold gap-1 px-2 md:px-4 py-1 text-[0.9rem] text-white bg-black rounded-full shadow-md"

@@ -54,11 +54,17 @@ export default function MultiSelect({
           className="w-full justify-between border border-gray-300"
         >
           {grid ? (
-            selected
-              .map((val) => options.find((o) => o.value === val)?.label)
-              .join(", ")
-              .slice(0, 30)
-              .concat("...")
+            selected.length > 0 ? (
+              selected
+                .map((val) => options.find((o) => o.value === val)?.label)
+                .join(", ")
+                .slice(0, 30)
+                .concat("...")
+            ) : (
+              <span className="text-neutral-400">
+                {placeholder ?? "Selecione"}
+              </span>
+            )
           ) : selected.length > 0 ? (
             selected
               .map((val) => daysMap[val])

@@ -30,6 +30,7 @@ export default function FinalizarCompra() {
   const [selectedPayment, setSelectedPayment] = useState<string>("");
   const [value, setValue] = React.useState<string>("");
   const [selectedDates, setSelectedDates] = React.useState<Date[]>([]); // Estado para armazenar as datas selecionadas
+  const [duration, setDuration] = React.useState("");
 
   const activity = activities.filter((activity) =>
     activity.title.includes("Atividade 2")
@@ -90,7 +91,7 @@ export default function FinalizarCompra() {
                 selectedDates={selectedDates}
                 setSelectedDates={setSelectedDates}
               />
-              <TimePickerModal />
+              <TimePickerModal value={duration} onChange={setDuration} />
               <PeopleSelector />
             </div>
           </div>

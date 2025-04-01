@@ -20,11 +20,9 @@ api.interceptors.request.use(async (config) => {
       config.headers.Authorization = `Bearer ${session?.user.refreshToken}`;
     }
   } else {
-    const decodedToken = jwtDecode<{ exp: number }>(session.user.accessToken);
+    const isSessionExpired = Date.now() > new Date(session.expires).getTime();
 
-    const isTokenExpired = Date.now() > decodedToken.exp * 1000;
-
-    if (isTokenExpired) {
+    if (isSessionExpired) {
       try {
         const refreshResponse = await axios.post(
           `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/refresh`,

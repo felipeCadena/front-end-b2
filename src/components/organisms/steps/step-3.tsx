@@ -1,3 +1,5 @@
+"use client";
+
 import { dificulties } from "@/common/constants/constants";
 import {
   MySelect,
@@ -11,6 +13,8 @@ import TimePickerModal from "@/components/molecules/time-picker";
 import React from "react";
 
 export default function Step3() {
+  const [duration, setDuration] = React.useState("");
+
   return (
     <section className="space-y-6">
       <MySelect
@@ -35,7 +39,11 @@ export default function Step3() {
         <MyTypography variant="subtitle3" weight="bold" className="mb-1">
           Duração da atividade
         </MyTypography>
-        <TimePickerModal iconColor={"black"} />
+        <TimePickerModal
+          iconColor="black"
+          value={duration}
+          onChange={setDuration}
+        />
       </div>
     </section>
   );

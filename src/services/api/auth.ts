@@ -60,21 +60,10 @@ export const authService = {
   },
 
   // Refresh do token
-  refreshToken: async (): Promise<TokenResponse> => {
+  refreshToken: async (refreshToken: string): Promise<TokenResponse> => {
     try {
-      const session = await getSession();
-      if (!session?.user?.refreshToken) {
-        throw new Error("No refresh token available");
-      }
-
       const response = await api.post<TokenResponse>("/auth/refresh", {
-        refresh_token: session.user.refreshToken,
-      });
-
-      // Atualiza a sessão com os novos tokens
-      await signIn("credentials", {
-        ...response.data,
-        redirect: false,
+        refresh_token: refreshToken,
       });
 
       return response.data;

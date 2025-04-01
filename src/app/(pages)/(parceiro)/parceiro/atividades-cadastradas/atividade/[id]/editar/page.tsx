@@ -38,6 +38,7 @@ export default function WebForm() {
   const [selectedDates, setSelectedDates] = React.useState<Date[]>([]); // Estado para armazenar as datas selecionadas
   const [recurrenceWeekly, setRecurrenceWeekly] = useState<string[]>([]);
   const [recurrenceHour, setRecurrenceHour] = useState<string[]>([]);
+  const [duration, setDuration] = React.useState("");
 
   const [selections, setSelections] = useState([{ id: Date.now() }]);
 
@@ -207,7 +208,12 @@ export default function WebForm() {
                     >
                       Duração
                     </MyTypography>
-                    <TimePickerModal iconColor="black" />
+
+                    <TimePickerModal
+                      iconColor="black"
+                      value={duration}
+                      onChange={setDuration}
+                    />
                   </div>
                 </div>
               </div>

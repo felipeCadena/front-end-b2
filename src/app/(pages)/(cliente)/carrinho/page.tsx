@@ -17,6 +17,7 @@ import React from "react";
 export default function Carrinho() {
   const router = useRouter();
   const [selectedDates, setSelectedDates] = React.useState<Date[]>([]); // Estado para armazenar as datas selecionadas
+  const [duration, setDuration] = React.useState("");
 
   const activity = activities.filter((activity) =>
     activity.title.includes("Atividade 2")
@@ -51,7 +52,7 @@ export default function Carrinho() {
             setSelectedDates={setSelectedDates}
           />
 
-          <TimePickerModal />
+          <TimePickerModal value={duration} onChange={setDuration} />
 
           <PeopleSelector />
         </div>

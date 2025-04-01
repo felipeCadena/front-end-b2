@@ -21,9 +21,10 @@ export default function SideBarModal({
 }) {
   const { clearUser } = useAuthStore();
   const router = useRouter();
-  const handleExit = (item: any) => {
+
+  const handleExit = async (item: any) => {
     if (item === "Sair") {
-      authService.logout();
+      await authService.logout();
       clearUser();
     }
   };

@@ -32,7 +32,6 @@ export default function Login() {
     try {
       await signIn("credentials", {
         ...credentials,
-        callbackUrl: "/admin",
       });
 
       // Busca a sessão atualizada
