@@ -5,7 +5,6 @@ import { usePathname } from "next/navigation";
 import PATHS from "@/utils/paths";
 import Header from "./header";
 import Footer from "../templates/footer";
-import { cn } from "@/utils/cn";
 
 const Layout = ({ children }: { children: JSX.Element | ReactNode }) => {
   const pathname = usePathname();

@@ -1,4 +1,5 @@
 import { api } from "@/libs/api";
+const axios = require("axios");
 
 export const users = {
   getUserLogged: async () => {
@@ -10,39 +11,70 @@ export const users = {
       throw error;
     }
   },
-  getUserById: async (id: string) => {
+  updatePassword: async (body: {
+    confirmPassword: string;
+    password: string;
+  }) => {
     try {
-      const response = await api.get(`/users/${id}`);
+      const response = await api.put("/users/password", body);
       return response.data;
     } catch (error) {
-      console.error(`Error fetching user with id ${id}:`, error);
+      console.error("Error updating password:", error);
       throw error;
     }
   },
-  createUser: async (userData: Record<string, any>) => {
+  registerCustomer: async (body: {
+    email: string;
+    name: string;
+    password: string;
+    cpf: string;
+    phone: string;
+  }) => {
     try {
-      const response = await api.post("/users", userData);
+      const response = await api.post("/users/customer", body);
       return response.data;
     } catch (error) {
-      console.error("Error creating user:", error);
+      console.error("Error registering customer:", error);
       throw error;
     }
   },
-  updateUser: async (id: string, userData: Record<string, any>) => {
+  uploadMedia: async (body: { mimetype: string; file: Buffer | Blob }) => {
     try {
-      const response = await api.put(`/users/${id}`, userData);
-      return response.data;
+      const response = await api.post(
+        "/users/media",
+        { mimetype: body.mimetype },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      const { url } = await fetch(response.data.uploadUrl, {
+        method: "PUT",
+        body: body.file,
+        headers: {
+          "Content-Type": body.mimetype,
+        },
+      }).then((res) => {
+        if (!res.ok) {
+          console.log("Failed to upload media", res);
+        }
+        return res;
+      });
+      console.log(url);
+      return url;
     } catch (error) {
-      console.error(`Error updating user with id ${id}:`, error);
+      console.error("Error uploading media:", error);
       throw error;
     }
   },
-  deleteUser: async (id: string) => {
+  deleteMedia: async (mediaId: string) => {
     try {
-      const response = await api.delete(`/users/${id}`);
+      const response = await api.delete(`/users/media/${mediaId}`);
       return response.data;
     } catch (error) {
-      console.error(`Error deleting user with id ${id}:`, error);
+      console.error("Error deleting media:", error);
       throw error;
     }
   },

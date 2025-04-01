@@ -1,11 +1,11 @@
 export const daysOfWeek = [
-  { label: "Segunda", value: "segunda" },
-  { label: "Terça", value: "terca" },
-  { label: "Quarta", value: "quarta" },
-  { label: "Quinta", value: "quinta" },
-  { label: "Sexta", value: "sexta" },
-  { label: "Sabádo", value: "sabado" },
-  { label: "Domingo", value: "domingo" },
+  { label: "1", value: "1" },
+  { label: "2", value: "2" },
+  { label: "3", value: "3" },
+  { label: "4", value: "4" },
+  { label: "5", value: "5" },
+  { label: "6", value: "6" },
+  { label: "0", value: "0" },
 ];
 
 export const days = [

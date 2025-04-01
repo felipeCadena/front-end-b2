@@ -81,7 +81,7 @@ export default function FullActivitiesHistoric({
             />
           </div>
 
-          <div className="w-full space-y-4 max-h-[265px]">
+          <div className="w-full space-y-2 max-h-[265px]">
             <div className="w-full flex justify-between mb-4 relative">
               <div
                 className="flex flex-col gap-2 cursor-pointer"

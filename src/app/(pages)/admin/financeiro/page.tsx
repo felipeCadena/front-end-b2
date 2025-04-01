@@ -58,16 +58,16 @@ const activities = [
 
 const pieData = [
   { name: "Atividades Aquáticas", value: 80, color: "#00C6FB" },
-  { name: "Atividades no Ar", value: 10, color: "#FF66B2" },
-  { name: "Atividades na Terra", value: 10, color: "#FFA500" },
+  { name: "Atividades Aéreas", value: 10, color: "#FF66B2" },
+  { name: "Atividades Terrestres", value: 10, color: "#FFA500" },
 ];
 
 const barData = [
   { name: "Jan", atual: 2400, anterior: 1800 },
   { name: "Fev", atual: 1398, anterior: 1000 },
   { name: "Mar", atual: 1800, anterior: 2200 },
-  { name: "Apr", atual: 1500, anterior: 2400 },
-  { name: "May", atual: 2200, anterior: 1800 },
+  { name: "Abr", atual: 1500, anterior: 2400 },
+  { name: "Mai", atual: 2200, anterior: 1800 },
   { name: "Jun", atual: 2800, anterior: 2000 },
   { name: "Jul", atual: 1600, anterior: 2400 },
 ];
@@ -318,9 +318,12 @@ export default function Dashboard() {
                     <MyTypography
                       variant="body-big"
                       lightness={500}
-                      className="mt-1"
+                      className="mt-1 ml-1"
                     >
-                      Lorem ipsum dolor sit am
+                      % das atividades realizadas{" "}
+                      <span className="text-xs text-neutral-400">
+                        Saiba Mais
+                      </span>
                     </MyTypography>
                   </div>
                 </div>
@@ -536,9 +539,10 @@ export default function Dashboard() {
                   <MyTypography
                     variant="body-big"
                     lightness={500}
-                    className="mt-1"
+                    className="mt-1 ml-1"
                   >
-                    Lorem ipsum dolor sit am
+                    % das atividades realizadas.{" "}
+                    <span className="text-xs text-neutral-400">Saiba Mais</span>
                   </MyTypography>
                 </div>
               </div>

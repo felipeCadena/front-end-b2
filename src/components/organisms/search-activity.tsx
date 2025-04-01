@@ -5,10 +5,20 @@ import MyTextInput from "../atoms/my-text-input";
 import MyIcon from "../atoms/my-icon";
 import MyButton from "../atoms/my-button";
 import { cn } from "@/utils/cn";
+import { useQuery } from "@tanstack/react-query";
+import { adventures } from "@/services/api/adventures";
+import { useDebounce } from "@/hooks/useDebounce";
 
 export default function SearchActivity({ className }: { className?: string }) {
   const [chips, setChips] = React.useState<string[]>([]);
   const [search, setSearch] = React.useState("");
+
+  const debouncedValue = useDebounce(search, 700);
+
+  const { data: filterAdventure } = useQuery({
+    queryKey: ["user", debouncedValue],
+    queryFn: () => adventures.filterAdventures({ city: debouncedValue }),
+  });
 
   return (
     <section className={cn("mt-2 md:w-2/3 md:mx-auto max-sm:px-4", className)}>

@@ -154,9 +154,12 @@ export default function Dashboard() {
                     <MyTypography
                       variant="body-big"
                       lightness={500}
-                      className="mt-1"
+                      className="mt-1 ml-1"
                     >
-                      Lorem ipsum dolor sit am
+                      % das atividades realizadas{" "}
+                      <span className="text-xs text-neutral-400">
+                        Saiba Mais
+                      </span>
                     </MyTypography>
                   </div>
                 </div>

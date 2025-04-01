@@ -4,6 +4,7 @@ import MyBadge from "@/components/atoms/my-badge";
 import MyIcon from "@/components/atoms/my-icon";
 import MyTypography from "@/components/atoms/my-typography";
 import StarRating from "@/components/molecules/my-stars";
+import { Adventure } from "@/services/api/adventures";
 import { cn } from "@/utils/cn";
 import PATHS from "@/utils/paths";
 import Image from "next/image";
@@ -15,7 +16,7 @@ export default function CarouselCustom({
   activities,
   type,
 }: {
-  activities: any;
+  activities: Adventure[];
   type?: string;
 }) {
   const ref =
@@ -44,6 +45,17 @@ export default function CarouselCustom({
     }
   };
 
+  const handleNameActivity = (name: string) => {
+    switch (name) {
+      case "ar":
+        return "Atividades Aéreas";
+      case "terra":
+        return "Atividades Terrestres";
+      case "mar":
+        return "Atividades Aquáticas";
+    }
+  };
+
   return (
     <section className="relative">
       <MyIcon
@@ -65,77 +77,87 @@ export default function CarouselCustom({
         )}
         {...events}
       >
-        {activities.map((activity: any, index: number) => (
-          <div
-            key={index}
-            className="min-w-[70%] md:min-w-[30%] lg:min-w-[25%] flex flex-col gap-1 cursor-pointer md:mb-8"
-            onClick={() => handleActivity(activity.id)}
-          >
-            <div className="relative z-10 overflow-hidden h-[225px] w-full md:w-[250px] hover:cursor-pointer rounded-md">
-              <Image
-                alt="sample_file"
-                src={activity.image ?? ""}
-                width={250}
-                height={300}
-                className="w-full md:w-[250px] h-[225px] object-cover"
-              />
-              {type !== "parceiro" && activity.favorite ? (
-                <MyIcon
-                  name="full-heart"
-                  variant="circled"
-                  className="absolute top-3 right-3"
-                />
-              ) : (
-                type !== "parceiro" && (
-                  <MyIcon
-                    name="black-heart"
-                    variant="circled"
-                    className="absolute top-3 right-3"
+        {activities &&
+          activities.map((activity: any, index: number) => {
+            const activityImage =
+              activity?.images?.find(
+                (image: { default?: boolean }) => image.default
+              )?.url ??
+              activity?.images?.[0]?.url ??
+              "/images/atividades/ar/ar-1.jpeg";
+
+            return (
+              <div
+                key={index}
+                className="min-w-[70%] md:min-w-[30%] lg:min-w-[25%] flex flex-col gap-1 cursor-pointer md:mb-8"
+                onClick={() => handleActivity(activity?.id)}
+              >
+                <div className="relative z-10 overflow-hidden h-[225px] w-full md:w-[250px] hover:cursor-pointer rounded-md">
+                  <Image
+                    alt="Fotos da atividade"
+                    src={activityImage}
+                    width={250}
+                    height={300}
+                    className="w-full md:w-[250px] h-[225px] object-cover"
                   />
-                )
-              )}
-            </div>
+                  {type !== "parceiro" && activity?.favorite ? (
+                    <MyIcon
+                      name="full-heart"
+                      variant="circled"
+                      className="absolute top-3 right-3"
+                    />
+                  ) : (
+                    type !== "parceiro" && (
+                      <MyIcon
+                        name="black-heart"
+                        variant="circled"
+                        className="absolute top-3 right-3"
+                      />
+                    )
+                  )}
+                </div>
 
-            <div className="mt-1 flex gap-2 items-center">
-              <MyBadge variant="outline" className="p-1 text-nowrap">
-                {activity.tag}
-              </MyBadge>
-              <StarRating rating={activity.stars} />
-            </div>
+                <div className="mt-1 flex gap-2 items-center">
+                  <MyBadge variant="outline" className="p-1 text-nowrap">
+                    {handleNameActivity(activity?.typeAdventure)}
+                  </MyBadge>
+                  <StarRating rating={activity?.averageRating} />
+                </div>
 
-            <div className="flex gap-2 items-center mt-1">
-              <Image
-                alt="foto parceiro"
-                src={activity.parceiro.avatar}
-                width={40}
-                height={40}
-                className="rounded-full"
-              />
-              <MyTypography
-                variant="body"
-                weight="medium"
-                className="mt-1 text-nowrap"
-              >
-                {activity.parceiro.nome}
-              </MyTypography>
-            </div>
+                <div className="flex gap-2 items-center mt-1">
+                  <Image
+                    alt="foto parceiro"
+                    src={activity?.partner?.logo ?? "/user.png"}
+                    width={40}
+                    height={40}
+                    className="rounded-full"
+                  />
+                  <MyTypography
+                    variant="body"
+                    weight="medium"
+                    className="mt-1 text-nowrap"
+                  >
+                    {activity?.partner?.fantasyName}
+                  </MyTypography>
+                </div>
 
-            <MyTypography variant="subtitle1" weight="bold">
-              {activity.title}
-            </MyTypography>
-            <MyTypography variant="body-big" className="md:pr-4">
-              {activity.description.slice(0, 105).concat("...")}{" "}
-              <MyTypography
-                variant="body-big"
-                weight="bold"
-                lightness={500}
-                className="inline cursor-pointer"
-              >
-                Saiba Mais
-              </MyTypography>
-            </MyTypography>
-          </div>
-        ))}
+                <MyTypography variant="subtitle1" weight="bold">
+                  {activity?.title}
+                </MyTypography>
+                <MyTypography variant="body-big" className="md:pr-4">
+                  {activity?.description.slice(0, 105).concat("...")}
+                  <MyTypography
+                    variant="body-big"
+                    weight="bold"
+                    lightness={500}
+                    className="inline cursor-pointer"
+                  >
+                    Saiba Mais
+                  </MyTypography>
+                </MyTypography>
+              </div>
+            );
+          })}
       </div>
     </section>
   );

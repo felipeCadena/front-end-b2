@@ -10,7 +10,7 @@ export default function EnviarFotos() {
   const router = useRouter();
 
   return (
-    <main className="mt-6 mx-4">
+    <main className="my-6 mx-4">
       <div className="flex gap-4 items-center">
         <MyIcon
           name="voltar-black"

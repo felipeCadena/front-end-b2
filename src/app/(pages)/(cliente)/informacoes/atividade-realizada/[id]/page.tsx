@@ -94,7 +94,7 @@ export default function AtividadeRealizada() {
         <div className="p-3 mt-6 bg-[#F1F0F587] border border-primary-600/30 border-opacity-80 rounded-lg shadow-sm hover:bg-gray-100 relative">
           <div className="absolute inset-y-0 left-0 w-3 bg-primary-900 rounded-l-lg"></div>
 
-          <div className="flex items-center gap-1 ml-4">
+          <div className="flex items-center gap-1 ml-4" onClick={() => {}}>
             <Image
               alt="sample_file"
               src="/icons/drive.png"

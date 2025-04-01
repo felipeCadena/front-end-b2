@@ -8,7 +8,7 @@ import SearchActivity from "@/components/organisms/search-activity";
 import ActivitiesFilter from "@/components/organisms/activities-filter";
 import MyTypography from "@/components/atoms/my-typography";
 import CarouselCustom from "@/components/templates/second-section/carousel-custom";
-import { activities } from "@/common/constants/mock";
+import { activities, newActivities } from "@/common/constants/mock";
 import MyIcon from "@/components/atoms/my-icon";
 import PATHS from "@/utils/paths";
 import { useRouter } from "next/navigation";
@@ -50,7 +50,11 @@ export default function SuasAtividades() {
           <MyTypography variant="heading2" weight="semibold">
             Veja suas atividades
           </MyTypography>
-          <MyTypography variant="body-big" weight="regular" className="-mb-4">
+          <MyTypography
+            variant="body-big"
+            weight="regular"
+            className="mb-4 md:mb-4"
+          >
             Acompanhe suas atividades cadastradas
           </MyTypography>
           <ActivitiesFilter withText={false} />
@@ -67,11 +71,18 @@ export default function SuasAtividades() {
           <MyTypography
             variant="subtitle3"
             weight="regular"
-            className="md:opacity-50"
+            className="md:opacity-50 md:text-base"
           >
             Suas atividades mais bem avaliadas!
           </MyTypography>
-          <CarouselCustom activities={activities} type="parceiro" />
+
+          <CarouselCustom
+            activities={newActivities.map((activity) => ({
+              ...activity,
+              addressComplement: activity.addressComplement || "",
+            }))}
+            type="parceiro"
+          />
 
           <div className="border-2 border-gray-200 w-1/2 mx-auto rounded-md mb-6 md:hidden" />
 
@@ -85,11 +96,17 @@ export default function SuasAtividades() {
           <MyTypography
             variant="subtitle3"
             weight="regular"
-            className="md:opacity-50"
+            className="md:opacity-50 md:text-base"
           >
             Suas atividades mais vendidas!
           </MyTypography>
-          <CarouselCustom activities={activities} type="parceiro" />
+          <CarouselCustom
+            activities={newActivities.map((activity) => ({
+              ...activity,
+              addressComplement: activity.addressComplement || "",
+            }))}
+            type="parceiro"
+          />
         </div>
       </section>
     </main>

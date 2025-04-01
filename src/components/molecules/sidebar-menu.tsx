@@ -17,50 +17,21 @@ import { cn } from "@/utils/cn";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useMemo } from "react";
-import { storage } from "@/services/api/auth";
+import { authService } from "@/services/api/auth";
 import useLogin from "@/app/(pages)/(cliente)/(acesso)/login/login-store";
+import { useSession } from "next-auth/react";
 
 export default function SidebarMenu({
   closeSidebar,
 }: {
   closeSidebar: () => void;
 }) {
-  const { user, clearUser, setUser } = useAuthStore();
+  const { user, clearUser } = useAuthStore();
+  const { data: session } = useSession();
   const { setSideBarActive, sideBarActive } = useLogin();
-  const router = useRouter();
-
-  // Memoiza os itens do sidebar baseado no user.role
-  // const sideBarItems = useMemo(() => {
-  //   if (!user) return sideBarLp;
-
-  //   const sideBarMap = {
-  //     admin: sideBarAdmin,
-  //     partner: sideBarPartnet,
-  //     customer: sideBarClient,
-  //     default: sideBarLp,
-  //   };
-
-  //   return (
-  //     sideBarMap[user.role as keyof typeof sideBarMap] || sideBarMap.default
-  //   );
-  // }, [user?.role]); // Só recalcula quando a role mudar
-
-  // const filteredItems = useMemo(() => {
-  //   return sideBarItems.filter((item) => !item.mobile);
-  // }, [sideBarItems]);
 
   useEffect(() => {
-    // Atualiza o user do store usando o token
-    setUser();
-  }, [setUser]);
-
-  useEffect(() => {
-    if (!user) {
-      setSideBarActive(sideBarLp);
-      return;
-    }
-
-    switch (user.role) {
+    switch (session?.user?.role) {
       case "admin":
         setSideBarActive(sideBarAdmin);
         break;
@@ -73,12 +44,11 @@ export default function SidebarMenu({
       default:
         setSideBarActive(sideBarLp);
     }
-  }, [user]);
+  }, [user, session]);
 
   const handleLogout = () => {
-    storage.clear();
+    authService.logout();
     clearUser();
-    router.push("/login");
   };
 
   const handleCloseSidebar = (event: React.MouseEvent) => {

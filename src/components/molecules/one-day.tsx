@@ -10,25 +10,9 @@ import { MyCalendar } from "./my-calendar";
 import { ptBR } from "date-fns/locale/pt-BR";
 import MyTypography from "../atoms/my-typography";
 
-type MyDatePickerProps = {
-  withlabel?: string;
-  selectedDates: Date[]; // Array de datas selecionadas
-  setSelectedDates: (dates: Date[]) => void; // Função para atualizar as datas
-};
-
-export function MyDatePicker({
-  withlabel,
-  selectedDates,
-  setSelectedDates,
-}: MyDatePickerProps) {
+export function OneDay({ withlabel }: { withlabel?: string }) {
+  const [date, setDate] = React.useState<Date>();
   const [open, setOpen] = React.useState(false);
-
-  const handleDateSelect = (dates?: Date[] | undefined) => {
-    if (!dates) return; // Se não houver datas, não faz nada
-    const formattedDates = dates.map((date) => format(date, "HH:mm")).join(",");
-    setSelectedDates(dates); // Atualiza o estado com todas as datas selecionadas
-    console.log(formattedDates); // Exibe as datas formatadas no console
-  };
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -42,11 +26,9 @@ export function MyDatePicker({
         >
           {!withlabel && <MyIcon name="date" />}
           {withlabel ? (
-            selectedDates && selectedDates?.length > 0 ? (
+            date ? (
               <span className="text-black">
-                {selectedDates
-                  .map((d) => format(d, "dd/MM", { locale: ptBR }))
-                  .join(", ")}
+                {date && format(date, "dd/MM", { locale: ptBR })}
               </span>
             ) : (
               <MyTypography
@@ -58,11 +40,9 @@ export function MyDatePicker({
                 {withlabel}
               </MyTypography>
             )
-          ) : selectedDates && selectedDates.length > 0 ? (
+          ) : date ? (
             <span className="text-black">
-              {selectedDates
-                .map((d) => format(d, "dd/MM", { locale: ptBR }))
-                .join(", ")}
+              {date && format(date, "dd/MM", { locale: ptBR })}
             </span>
           ) : (
             <MyTypography variant="body" weight="regular" className="text-sm">
@@ -76,9 +56,9 @@ export function MyDatePicker({
         align="center"
       >
         <MyCalendar
-          mode="multiple"
-          selected={selectedDates}
-          onSelect={handleDateSelect}
+          mode="single"
+          selected={date}
+          onSelect={setDate}
           locale={ptBR}
           className="capitalize"
         />

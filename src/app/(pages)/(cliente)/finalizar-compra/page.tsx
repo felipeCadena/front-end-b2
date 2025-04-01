@@ -29,6 +29,7 @@ export default function FinalizarCompra() {
   const router = useRouter();
   const [selectedPayment, setSelectedPayment] = useState<string>("");
   const [value, setValue] = React.useState<string>("");
+  const [selectedDates, setSelectedDates] = React.useState<Date[]>([]); // Estado para armazenar as datas selecionadas
 
   const activity = activities.filter((activity) =>
     activity.title.includes("Atividade 2")
@@ -85,7 +86,10 @@ export default function FinalizarCompra() {
               Escolha o dia e horário para realizar a atividade.
             </MyTypography>
             <div className="border space-y-6 border-gray-300 rounded-lg py-8 md:space-y-10 md:py-9 px-5 mt-8">
-              <MyDatePicker />
+              <MyDatePicker
+                selectedDates={selectedDates}
+                setSelectedDates={setSelectedDates}
+              />
               <TimePickerModal />
               <PeopleSelector />
             </div>

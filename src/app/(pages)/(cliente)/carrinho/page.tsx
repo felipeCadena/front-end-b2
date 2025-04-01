@@ -16,6 +16,7 @@ import React from "react";
 
 export default function Carrinho() {
   const router = useRouter();
+  const [selectedDates, setSelectedDates] = React.useState<Date[]>([]); // Estado para armazenar as datas selecionadas
 
   const activity = activities.filter((activity) =>
     activity.title.includes("Atividade 2")
@@ -45,7 +46,10 @@ export default function Carrinho() {
         </MyTypography>
 
         <div className="border space-y-6 border-gray-300 rounded-lg py-8 px-5">
-          <MyDatePicker />
+          <MyDatePicker
+            selectedDates={selectedDates}
+            setSelectedDates={setSelectedDates}
+          />
 
           <TimePickerModal />
 
@@ -53,7 +57,7 @@ export default function Carrinho() {
         </div>
       </div>
 
-      <ShoppingDetails activityDetails={activityDetails}/>
+      <ShoppingDetails activityDetails={activityDetails} />
 
       <MyButton
         variant="outline-neutral"
@@ -74,7 +78,6 @@ export default function Carrinho() {
       >
         Finalizar Pedido
       </MyButton>
-
     </section>
   );
 }

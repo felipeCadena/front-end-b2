@@ -10,7 +10,7 @@ import {
 import Link from "next/link";
 import MyIcon from "../atoms/my-icon";
 import { useAuthStore } from "@/store/useAuthStore";
-import { storage } from "@/services/api/auth";
+import { authService } from "@/services/api/auth";
 import { useRouter } from "next/navigation";
 export default function SideBarModal({
   children,
@@ -23,9 +23,8 @@ export default function SideBarModal({
   const router = useRouter();
   const handleExit = (item: any) => {
     if (item === "Sair") {
-      router.push("/login");
+      authService.logout();
       clearUser();
-      storage.clear();
     }
   };
 

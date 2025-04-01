@@ -5,12 +5,17 @@ import MyIcon, { IconsMapTypes } from "../atoms/my-icon";
 import { cn } from "@/utils/cn";
 import MyTypography from "../atoms/my-typography";
 import { usePathname } from "next/navigation";
+import { useDebounce } from "@/hooks/useDebounce";
+import { useQuery } from "@tanstack/react-query";
+import { adventures } from "@/services/api/adventures";
 
 type ActivitiesFilterProps = {
   withText?: boolean;
   withoutText?: boolean;
   small?: boolean;
   admin?: boolean;
+  selected?: "ar" | "terra" | "mar" | "";
+  setSelected?: (value: "ar" | "terra" | "mar") => void;
 };
 
 export default function ActivitiesFilter({
@@ -18,28 +23,42 @@ export default function ActivitiesFilter({
   withoutText,
   small = false,
   admin = false,
+  selected,
+  setSelected = () => {},
 }: ActivitiesFilterProps) {
-  const [selected, setSelected] = React.useState("Atividades no Ar");
   const pathname = usePathname();
 
-  const activities = [
+  const activities: {
+    icon: IconsMapTypes;
+    name: "ar" | "terra" | "mar";
+    title: string;
+  }[] = [
     {
       icon: "ar",
-      title: "Atividades no Ar",
+      name: "ar",
+      title: "Atividades Aéreas",
     },
     {
       icon: "terra",
-      title: "Atividades na Terra",
+      name: "terra",
+      title: "Atividades Terrestres",
     },
     {
       icon: "mar",
+      name: "mar",
       title: "Atividades Aquáticas",
     },
   ];
+
+  // const { data: filterAdventure } = useQuery({
+  //   queryKey: ["user", selected],
+  //   queryFn: () => adventures.filterAdventures({ typeAdventure: selected }),
+  // });
+
   return (
     <section
       className={cn(
-        "flex flex-col justify-around gap-2 mx-auto px-6",
+        "flex flex-col justify-around gap-2 mx-auto",
         withText ? "mt-12 md:my-12" : "my-6"
       )}
     >
@@ -91,11 +110,11 @@ export default function ActivitiesFilter({
             size="md"
             className={cn(
               "flex max-sm:flex-col gap-1 items-center rounded-md max-sm:w-[6.5rem] max-sm:h-[6.5rem] md:py-8 md:w-1/2 md:border-2 md:border-black md:text-nowrap",
-              item.title === selected &&
+              item.name === selected &&
                 "border border-black bg-[#E5E4E9] opacity-100",
               small && "md:flex-col md:w-[10rem] md:h-[5rem]"
             )}
-            onClick={() => setSelected(item.title)}
+            onClick={() => setSelected(item.name)}
           >
             <MyIcon name={item.icon as IconsMapTypes} />
             <span className="px-4">{item.title}</span>

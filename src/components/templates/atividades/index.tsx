@@ -4,6 +4,7 @@ import {
   activitiesAir,
   activitiesLand,
   activitiesOcean,
+  newActivities,
 } from "@/common/constants/mock";
 import MyTypography from "@/components/atoms/my-typography";
 import ShoppingCard from "@/components/molecules/shopping-card";
@@ -34,7 +35,12 @@ export default function AtividadesTemplate() {
         >
           Atividades Aéreas
         </MyTypography>
-        <CarouselCustom activities={activitiesAir} />
+        <CarouselCustom
+          activities={newActivities.map((activity) => ({
+            ...activity,
+            addressComplement: activity.addressComplement || "",
+          }))}
+        />
 
         <div className="border-2 border-gray-200 w-1/2 mx-auto rounded-md mb-6 md:hidden" />
 
@@ -45,7 +51,12 @@ export default function AtividadesTemplate() {
         >
           Atividades Terrestres
         </MyTypography>
-        <CarouselCustom activities={activitiesLand} />
+        <CarouselCustom
+          activities={newActivities.map((activity) => ({
+            ...activity,
+            addressComplement: activity.addressComplement || "",
+          }))}
+        />
 
         <div className="border-2 border-gray-200 w-1/2 mx-auto rounded-md mb-6 md:hidden" />
 
@@ -56,7 +67,12 @@ export default function AtividadesTemplate() {
         >
           Atividades Aquática
         </MyTypography>
-        <CarouselCustom activities={activitiesOcean} />
+        <CarouselCustom
+          activities={newActivities.map((activity) => ({
+            ...activity,
+            addressComplement: activity.addressComplement || "",
+          }))}
+        />
       </div>
       <ShoppingCard items={"1"} />
     </section>

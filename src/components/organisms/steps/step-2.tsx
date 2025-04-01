@@ -17,6 +17,9 @@ import React, { useState } from "react";
 
 export default function Step2() {
   const [selections, setSelections] = useState([{ id: Date.now() }]);
+  const [selectedDates, setSelectedDates] = React.useState<Date[]>([]); // Estado para armazenar as datas selecionadas
+  const [recurrenceWeekly, setRecurrenceWeekly] = useState<string[]>([]);
+  const [recurrenceHour, setRecurrenceHour] = useState<string[]>([]);
 
   const addSelection = () => {
     setSelections([...selections, { id: Date.now() }]);
@@ -78,12 +81,22 @@ export default function Step2() {
               <MultiSelect
                 placeholder="Selecione dias da semana"
                 options={daysOfWeek}
+                selected={recurrenceWeekly}
+                setSelected={setRecurrenceWeekly}
               />
-              <MyDatePicker withlabel="Selecione dias específicos" />
+
+              <MyDatePicker
+                selectedDates={selectedDates}
+                setSelectedDates={setSelectedDates}
+                withlabel="Selecione dias específicos"
+              />
+
               <MultiSelect
                 grid
                 placeholder="Selecione os horários"
                 options={hours}
+                selected={recurrenceHour}
+                setSelected={setRecurrenceHour}
               />
 
               {index > 0 && (

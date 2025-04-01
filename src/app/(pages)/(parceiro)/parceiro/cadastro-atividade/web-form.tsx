@@ -3,7 +3,6 @@
 import MyButton from "@/components/atoms/my-button";
 import MyIcon from "@/components/atoms/my-icon";
 import MyTextInput from "@/components/atoms/my-text-input";
-import MyTextarea from "@/components/atoms/my-textarea";
 import MyTypography from "@/components/atoms/my-typography";
 import ActivitiesFilter from "@/components/organisms/activities-filter";
 import { useRouter } from "next/navigation";
@@ -29,11 +28,118 @@ import { Dropzone } from "@/components/molecules/drop-zone";
 import Image from "next/image";
 import PATHS from "@/utils/paths";
 import { cn } from "@/utils/cn";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { FormProvider, useForm } from "react-hook-form";
+import ControlledTextInput from "@/components/molecules/controlled-text-input";
+import ControlledTextarea from "@/components/molecules/controlled-textarea";
+import ControlledSelect from "@/components/molecules/controlled-select";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale/pt-BR";
+
+const formSchema = z.object({
+  title: z.string(),
+  addressStreet: z.string(),
+  addressPostalCode: z.string(),
+  addressNumber: z.string(),
+  addressComplement: z.string().optional(),
+  addressNeighborhood: z.string(),
+  addressCity: z.string(),
+  addressState: z.string(),
+  addressCountry: z.string(),
+  coordinates: z.string(),
+  pointRefAddress: z.string(),
+  description: z.string(),
+  itemsIncluded: z.array(z.string()),
+  duration: z.string(),
+  priceAdult: z.number(),
+  priceChildren: z.number(),
+  transportIncluded: z.boolean(),
+  picturesIncluded: z.boolean(),
+  typeAdventure: z.enum(["terra", "ar", "mar"]),
+  personsLimit: z.number(),
+  partnerId: z.string().optional(),
+  isInGroup: z.boolean(),
+  isChildrenAllowed: z.boolean(),
+  difficult: z.number().min(1).max(5),
+  daysBeforeSchedule: z.number(),
+  daysBeforeCancellation: z.number(),
+  isRepeatable: z.boolean(),
+  recurrences: z
+    .array(
+      z.object({
+        recurrenceWeekly: z.string().optional(),
+        recurrenceMonthly: z.string().optional(),
+        recurrenceHour: z.string(),
+      })
+    )
+    .optional(),
+});
 
 export default function WebForm({ type }: { type?: string }) {
   const router = useRouter();
   const [files, setFiles] = React.useState<File[] | null>(null);
   const inputRef = React.useRef<HTMLInputElement>(null);
+
+  const [selected, setSelected] = useState<"ar" | "terra" | "mar">("ar");
+  const [recurrenceWeekly, setRecurrenceWeekly] = useState<string[]>([]);
+  const [recurrenceHour, setRecurrenceHour] = useState<string[]>([]);
+
+  const [dates, setDates] = useState<Date[]>([]);
+  const [formattedDates, setFormattedDates] = useState<string>("");
+
+  // Função para formatar datas ao atualizar o estado
+  const handleDateChange = (dates: Date[]) => {
+    setDates(dates); // Atualiza o estado das datas selecionadas
+
+    // Converte para o formato de string esperado pelo backend
+    const formatted = dates
+      .map((d) => format(d, "dd/MM", { locale: ptBR }))
+      .join(",");
+    setFormattedDates(formatted);
+  };
+
+  const methods = useForm<z.infer<typeof formSchema>>({
+    defaultValues: {
+      title: "",
+      addressStreet: "",
+      addressPostalCode: "",
+      addressNumber: "",
+      addressComplement: "",
+      addressNeighborhood: "",
+      addressCity: "",
+      addressState: "",
+      addressCountry: "",
+      coordinates: "",
+      pointRefAddress: "",
+      description: "",
+      itemsIncluded: [],
+      duration: "",
+      priceAdult: 0,
+      priceChildren: 0,
+      transportIncluded: false,
+      picturesIncluded: false,
+      typeAdventure: selected,
+      personsLimit: 0,
+      partnerId: "",
+      isInGroup: false,
+      isChildrenAllowed: false,
+      difficult: 1,
+      daysBeforeSchedule: 0,
+      daysBeforeCancellation: 0,
+      isRepeatable: false,
+      recurrences: [
+        {
+          recurrenceWeekly: "",
+          recurrenceMonthly: "",
+          recurrenceHour: "",
+        },
+      ],
+    },
+    resolver: zodResolver(formSchema),
+  });
+
+  const { control, handleSubmit, reset, watch } = methods;
 
   const [selections, setSelections] = useState([{ id: Date.now() }]);
 
@@ -49,9 +155,11 @@ export default function WebForm({ type }: { type?: string }) {
     inputRef.current?.click();
   };
 
+  const onSubmit = (payload: any) => {};
+
   return (
     <main className="space-y-10 my-6">
-      <section>
+      <FormProvider {...methods}>
         <div>
           <MyTypography variant="heading2" weight="bold" className="mb-2">
             Cadastre a sua atividade
@@ -65,25 +173,32 @@ export default function WebForm({ type }: { type?: string }) {
             Preencha os dados da sua atividade
           </MyTypography>
         </div>
-        <ActivitiesFilter />
+
+        <ActivitiesFilter setSelected={setSelected} selected={selected} />
 
         <div className="border-2  border-gray-300 rounded-lg p-8">
           <div className="space-y-6">
-            <MyTextInput
-              label="Nome da Atividade"
+            <ControlledTextInput
+              control={control}
+              name="title"
+              label="Nome da atividade"
               placeholder="Nome da atividade"
               className="mt-2"
             />
 
-            <MyTextarea
-              placeholder="Lorem ipsum dolor sit amet, consectetur di..."
+            <ControlledTextarea
+              control={control}
+              name="description"
               label="Descrição da atividade"
+              placeholder="Lorem ipsum dolor sit amet, consectetur di..."
               classNameLabel="text-black text-base font-bold"
               rows={5}
             />
 
             <div className="grid grid-cols-2 gap-8">
-              <MySelect
+              <ControlledSelect
+                control={control}
+                name="daysBeforeSchedule"
                 label="Antecedência de Agendamento"
                 className="text-base text-black"
               >
@@ -97,9 +212,11 @@ export default function WebForm({ type }: { type?: string }) {
                     </SelectItem>
                   ))}
                 </SelectContent>
-              </MySelect>
+              </ControlledSelect>
 
-              <MySelect
+              <ControlledSelect
+                control={control}
+                name="daysBeforeCancellation"
                 label="Antecedência de Cancelamento"
                 className="text-base text-black"
               >
@@ -113,7 +230,7 @@ export default function WebForm({ type }: { type?: string }) {
                     </SelectItem>
                   ))}
                 </SelectContent>
-              </MySelect>
+              </ControlledSelect>
             </div>
           </div>
           <div className="space-y-10 mt-6">
@@ -131,12 +248,20 @@ export default function WebForm({ type }: { type?: string }) {
                     <MultiSelect
                       placeholder="Selecione dias da semana"
                       options={daysOfWeek}
+                      selected={recurrenceWeekly}
+                      setSelected={setRecurrenceWeekly}
                     />
-                    <MyDatePicker withlabel="Selecione dias específicos" />
+                    <MyDatePicker
+                      withlabel="Selecione dias específicos"
+                      selectedDates={dates}
+                      setSelectedDates={handleDateChange}
+                    />
                     <MultiSelect
                       grid
                       placeholder="Selecione os horários"
                       options={hours}
+                      selected={recurrenceHour}
+                      setSelected={setRecurrenceHour}
                     />
 
                     {index > 0 && (
@@ -343,7 +468,7 @@ export default function WebForm({ type }: { type?: string }) {
             </MyButton>
           </div>
         </div>
-      </section>
+      </FormProvider>
     </main>
   );
 }

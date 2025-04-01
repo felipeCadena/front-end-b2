@@ -100,7 +100,7 @@ export default function AvaliacoesWeb() {
           <TabsContent value="favoritos">
             <div className="space-y-3">
               <MyTypography variant="subtitle3" weight="bold" className="my-4">
-                Atividades recém cadastradas
+                Favoritos dos clientes
               </MyTypography>
 
               <Activities

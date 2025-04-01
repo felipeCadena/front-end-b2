@@ -1,81 +1,115 @@
 import { api } from "@/libs/api";
+import { getSession, signIn, signOut } from "next-auth/react";
 
 export interface TokenResponse {
   access_token: string;
   refresh_token: string;
   expires_in: number;
+  role?: string;
+  id?: string;
 }
 
 interface LoginCredentials {
-  email: string;
-  password: string;
+  email: string | undefined;
+  password: string | undefined;
 }
 
-export const storage = {
-  setTokens: (response: TokenResponse) => {
-    document.cookie = `@auth=${JSON.stringify(response)}; path=/; max-age=${response.expires_in}; samesite=lax`;
+export const authService = {
+  // Login com email/senha
+  login: async (credentials: LoginCredentials) => {
+    try {
+      const response = await api.post<TokenResponse>(
+        "/auth/login",
+        credentials
+      );
+
+      return response.data;
+    } catch (error) {
+      console.error("Erro no login:", error);
+      throw error;
+    }
   },
 
-  getTokens: () => {
+  // Login com redes sociais
+  loginWithSocialNetwork: async (token: string, social: string) => {
     try {
-      const cookie = document.cookie
-        .split(";")
-        .find((c) => c.trim().startsWith("@auth="));
+      const response = await api.post<TokenResponse>(`/auth/login/${social}`, {
+        token,
+      });
 
-      if (!cookie) return null;
+      if (!response) {
+        console.error("Erro:", response);
+        return null;
+      }
 
-      const value = cookie.split("=")[1];
-      return JSON.parse(decodeURIComponent(value)) as TokenResponse;
-    } catch {
+      return response.data;
+    } catch (error) {
+      console.error("Erro no login:", error);
       return null;
     }
   },
 
-  clear: () => {
-    document.cookie = "@auth=; path=/; max-age=0";
-  },
-};
-
-export const authService = {
-  login: async (credentials: LoginCredentials) => {
-    const response = await api.post<TokenResponse>("/auth/login", credentials);
-    storage.setTokens(response.data);
-    return response.data;
-  },
-
-  loginWithSocialNetwork: async (token: string, social: string) => {
-    const response = await api.post<TokenResponse>(`/auth/login${social}`, {
-      token,
-    });
-    storage.setTokens(response.data);
-    return response.data;
-  },
-
+  // Recuperação de senha
   forgotPassword: async (email: string) => {
     await api.post("/auth/request/reset-password", { email });
   },
 
+  // Reset de senha
   resetPassword: async (password: string, refreshToken: string) => {
     await api.post(`/auth/reset-password${refreshToken}`, { password });
   },
 
-  refresh: async () => {
-    const auth = storage.getTokens();
-    if (!auth?.refresh_token) throw new Error("No refresh token available");
+  // Refresh do token
+  refreshToken: async (): Promise<TokenResponse> => {
+    try {
+      const session = await getSession();
+      if (!session?.user?.refreshToken) {
+        throw new Error("No refresh token available");
+      }
 
-    const response = await api.post<TokenResponse>("/auth/refresh", {
-      refresh_token: auth.refresh_token,
-    });
+      const response = await api.post<TokenResponse>("/auth/refresh", {
+        refresh_token: session.user.refreshToken,
+      });
 
-    storage.setTokens(response.data);
-    return response.data;
+      // Atualiza a sessão com os novos tokens
+      await signIn("credentials", {
+        ...response.data,
+        redirect: false,
+      });
+
+      return response.data;
+    } catch (error) {
+      console.error("Erro no refresh:", error);
+      throw error;
+    }
   },
 
+  // Logout
   logout: async () => {
     try {
       await api.post("/auth/logout");
+    } catch (error) {
+      console.error("Erro no logout:", error);
     } finally {
-      storage.clear();
+      // Limpa a sessão do NextAuth
+      await signOut({ redirect: false });
     }
+  },
+
+  // Verifica se está autenticado
+  isAuthenticated: async () => {
+    const session = await getSession();
+    return !!session;
+  },
+
+  // Pega os tokens da sessão
+  getTokens: async () => {
+    const session = await getSession();
+    if (!session?.user) return null;
+
+    return {
+      access_token: session.user.accessToken,
+      refresh_token: session.user.refreshToken,
+    };
   },
 };

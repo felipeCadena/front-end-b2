@@ -12,11 +12,15 @@ import Image from "next/image";
 import SideBarModal from "../molecules/side-bar-modal";
 import { cn } from "@/utils/cn";
 import { useAuthStore } from "@/store/useAuthStore";
+import { useQuery } from "@tanstack/react-query";
+import { users } from "@/services/api/users";
+import { getSession, useSession } from "next-auth/react";
 
 export default function Header() {
   const router = useRouter();
   const pathname = usePathname();
   const { sideBarActive } = useLogin();
+  const { data: session } = useSession();
   const { user } = useAuthStore();
 
   const withoutHeaderMobile = () => {
@@ -28,6 +32,12 @@ export default function Header() {
       pathname.includes("editar")
     );
   };
+
+  const { data: userData } = useQuery({
+    queryKey: ["user", user],
+    queryFn: () => users.getUserLogged(),
+    enabled: Boolean(session?.user),
+  });
 
   return (
     <header
@@ -56,7 +66,7 @@ export default function Header() {
         <LanguageDropdown />
 
         <div className="max-sm:hidden">
-          {!user ? (
+          {!userData && !userData?.role ? (
             <button
               onClick={() => router.push(PATHS.login)}
               className="text-sm flex items-center font-semibold gap-1 px-2 md:px-4 py-1 text-[0.9rem] text-white bg-black rounded-full shadow-md"
@@ -69,11 +79,11 @@ export default function Header() {
               <div className="flex items-center gap-1 cursor-pointer">
                 <MyIcon name="chevron-down" />
                 <Image
-                  src="/images/avatar1.png"
+                  src={userData?.photo?.url ?? "/user.png"}
                   alt="Avatar"
                   width={50}
                   height={50}
-                  className="rounded-full"
+                  className="rounded-full w-14 h-14 object-cover"
                 />
               </div>
             </SideBarModal>

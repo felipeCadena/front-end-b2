@@ -35,6 +35,9 @@ export default function WebForm() {
   const [files, setFiles] = React.useState<File[] | null>(null);
   const inputRef = React.useRef<HTMLInputElement>(null);
   const [next, setNext] = useState(false);
+  const [selectedDates, setSelectedDates] = React.useState<Date[]>([]); // Estado para armazenar as datas selecionadas
+  const [recurrenceWeekly, setRecurrenceWeekly] = useState<string[]>([]);
+  const [recurrenceHour, setRecurrenceHour] = useState<string[]>([]);
 
   const [selections, setSelections] = useState([{ id: Date.now() }]);
 
@@ -138,12 +141,22 @@ export default function WebForm() {
                         <MultiSelect
                           placeholder="Selecione dias da semana"
                           options={daysOfWeek}
+                          selected={recurrenceWeekly}
+                          setSelected={setRecurrenceWeekly}
                         />
-                        <MyDatePicker withlabel="Selecione dias específicos" />
+
+                        <MyDatePicker
+                          selectedDates={selectedDates}
+                          setSelectedDates={setSelectedDates}
+                          withlabel="Selecione dias específicos"
+                        />
+
                         <MultiSelect
                           grid
                           placeholder="Selecione os horários"
                           options={hours}
+                          selected={recurrenceHour}
+                          setSelected={setRecurrenceHour}
                         />
 
                         {index > 0 && (

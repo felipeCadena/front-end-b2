@@ -1,6 +1,7 @@
 "use client";
 
-import { jwtDecode } from "jwt-decode";
+import React from "react";
+
 import MyButton from "@/components/atoms/my-button";
 import MyIcon from "@/components/atoms/my-icon";
 import MyLogo from "@/components/atoms/my-logo";
@@ -10,48 +11,47 @@ import PATHS, { DEFAULT_ROLE_PATHS } from "@/utils/paths";
 import { useRouter } from "next/navigation";
 import useLogin from "./login-store";
 import { toast } from "react-toastify";
-import { useAutoLogin } from "@/hooks/useAutoLogin";
 import { useAuthStore } from "@/store/useAuthStore";
 import GoogleLoginButton from "@/components/molecules/google-login-button";
-
-interface DecodedToken {
-  id: string;
-  name: string;
-  email: string;
-  isActive: boolean;
-  role: string;
-  iat: number;
-  exp: number;
-}
+import { getSession, signIn } from "next-auth/react";
+import FacebookLoginButton from "@/components/molecules/facebook-login-button";
 
 export default function Login() {
   const router = useRouter();
-  const {
-    email,
-    password,
-    isLoading,
-    error,
-    setEmail,
-    setPassword,
-    login,
-    clearError,
-  } = useLogin();
   const { setUser } = useAuthStore();
+  const [isLoading, setIsLoading] = React.useState(false);
 
-  // Adiciona o hook de auto login
-  // useAutoLogin();
+  const [visibility, setVisibility] = React.useState(false);
+
+  const { email, password, error, setEmail, setPassword, clearError } =
+    useLogin();
 
   const handleLogin = async () => {
+    setIsLoading(true);
+    const credentials = { email, password };
     try {
-      const data = await login();
-      // setUser();
+      await signIn("credentials", {
+        ...credentials,
+        callbackUrl: "/admin",
+      });
 
-      const decoded = jwtDecode<DecodedToken>(data.access_token);
+      // Busca a sessão atualizada
+      const session = await getSession();
+
+      if (!session?.user?.role) {
+        console.log("Erro ao obter dados do usuário");
+        return;
+      }
+
+      const userRole = session.user.role.toLowerCase() ?? "";
 
       // Atualiza o user no store global
-      setUser();
-
-      const userRole = decoded.role.toLowerCase();
+      setUser({
+        id: session.user.id ?? "",
+        name: session.user.name ?? "",
+        email: session.user.email ?? "",
+        role: userRole,
+      });
 
       const roleMapping = {
         superadmin: "admin",
@@ -79,6 +79,8 @@ export default function Login() {
     } catch (err) {
       console.error("Erro no login:", err);
       toast.error(error || "Erro ao fazer login");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -121,14 +123,19 @@ export default function Login() {
           <MyTextInput
             label="Senha"
             placeholder="******"
-            type="password"
-            noHintText
-            value={password}
+            type={visibility ? "text" : "password"}
+            rightIcon={
+              <MyIcon
+                name={visibility ? "hide" : "eye"}
+                className="mr-4 mt-2 cursor-pointer"
+                onClick={() => setVisibility((prev) => !prev)}
+              />
+            }
+            className="mt-2"
             onChange={(e) => {
               clearError();
               setPassword(e.target.value);
             }}
-            className="mt-2"
           />
         </div>
 
@@ -158,27 +165,9 @@ export default function Login() {
             {isLoading ? "Entrando..." : "Login"}
           </MyButton>
 
-          {/* <MyButton
-            className="mt-4"
-            variant="outline-neutral"
-            borderRadius="squared"
-            size="md"
-            leftIcon={<MyIcon name="google" />}
-          >
-            Logar com o Google
-          </MyButton> */}
-
           <GoogleLoginButton />
 
-          <MyButton
-            className="mt-4"
-            variant="outline-neutral"
-            borderRadius="squared"
-            size="md"
-            leftIcon={<MyIcon name="facebook" />}
-          >
-            Logar com o Facebook
-          </MyButton>
+          <FacebookLoginButton />
 
           <div className="text-center mt-12">
             <MyTypography

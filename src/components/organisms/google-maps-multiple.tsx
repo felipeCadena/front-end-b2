@@ -2,9 +2,12 @@
 
 import React from "react";
 import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
-import MyTypography from "../atoms/my-typography";
 
-export default function GoogleMapsMultiple({ locations }: { locations: { lat: number; lng: number }[] }) {
+export default function GoogleMapsMultiple({
+  locations,
+}: {
+  locations: { lat: number; lng: number }[];
+}) {
   const mapContainerStyle = {
     width: "100%",
     height: "380px",
@@ -16,9 +19,9 @@ export default function GoogleMapsMultiple({ locations }: { locations: { lat: nu
   return (
     <LoadScript googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API!}>
       <div className="rounded-xl overflow-hidden max-sm:mt-4">
-        <GoogleMap 
-          mapContainerStyle={mapContainerStyle} 
-          center={center} 
+        <GoogleMap
+          mapContainerStyle={mapContainerStyle}
+          center={center}
           zoom={12}
           options={{
             disableDefaultUI: true, // Remove controles padrão para um design mais limpo

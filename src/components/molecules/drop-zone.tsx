@@ -2,12 +2,14 @@ import { cn } from "@/utils/cn";
 import React, { ChangeEvent, useState } from "react";
 import MyTextInput from "../atoms/my-text-input";
 
-interface DropzoneProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "onChange"> {
+interface DropzoneProps
+  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "onChange"> {
   onChange: (files: FileList | null) => void;
+  small?: boolean;
 }
 
 export const Dropzone = React.forwardRef<HTMLInputElement, DropzoneProps>(
-  ({ className, onChange, children, ...props }, ref) => {
+  ({ className, onChange, small, children, ...props }, ref) => {
     const [isDragging, setIsDragging] = useState(false);
 
     const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
@@ -34,11 +36,12 @@ export const Dropzone = React.forwardRef<HTMLInputElement, DropzoneProps>(
     return (
       <div
         className={cn(
-          "w-full rounded-lg border border-dashed border-neutral-400 p-4",
+          !small &&
+            "w-full rounded-lg border border-dashed border-neutral-400 p-4",
           {
             "rounded-md border-dashed border-primary-600": isDragging,
           },
-          className,
+          className
         )}
         onDragOver={handleDragOver}
         onDrop={handleDrop}
@@ -47,15 +50,15 @@ export const Dropzone = React.forwardRef<HTMLInputElement, DropzoneProps>(
         {children}
         <MyTextInput
           ref={ref}
-          type='file'
+          type="file"
           noHintText
-          className='hidden'
+          className="hidden"
           onChange={handleChange}
           {...props}
         />
       </div>
     );
-  },
+  }
 );
 
 Dropzone.displayName = "Dropzone";
