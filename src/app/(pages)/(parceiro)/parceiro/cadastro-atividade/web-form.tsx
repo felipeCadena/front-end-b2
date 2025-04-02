@@ -412,14 +412,20 @@ export default function WebForm({
 
           <div className="space-y-6 mt-6 p-6 bg-gray-100 border border-gray-300 rounded-lg">
             <div className="grid grid-cols-2 items-center gap-8">
-              {/* <MyTextInput
-                label="Local"
-                placeholder="Rio de Janeiro, Cristo Redentor"
-                classNameLabel="text-base text-black"
-                className="mt-2"
-              /> */}
-              {/* <AutocompleteInput onLocationSelected={handleLocationSelected} /> */}
+              <div className="mb-4">
+                <MyTypography
+                  variant="subtitle4"
+                  weight="bold"
+                  className="mb-2"
+                >
+                  Local
+                </MyTypography>
 
+                <AutocompleteInput
+                  icon={false}
+                  className="text-neutral-600 text-base"
+                />
+              </div>
               <MyTextInput
                 label="Ponto de referência"
                 placeholder="Próximo ao centro"

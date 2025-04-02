@@ -38,6 +38,7 @@ export const buttonVariants = cva(
         "text-black": "text-black text-[0.9rem]",
         red: "bg-[#FF727233] text-[#FF7272] text-[0.9rem]",
         config: "text-[1rem] bg-[#F1F0F5]",
+        input: "border bg-white",
       },
       size: {
         default: "h-10 px-4 py-2",

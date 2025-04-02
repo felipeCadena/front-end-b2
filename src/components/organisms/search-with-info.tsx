@@ -10,6 +10,7 @@ import TimePickerModal from "../molecules/time-picker";
 import { OneDay } from "../molecules/one-day";
 import { useLoadScript } from "@react-google-maps/api";
 import GoogleMapsAutocomplete from "@/components/organisms/google-autocomplete";
+import AutocompleteInput from "@/components/organisms/google-autocomplete";
 
 const libraries: "places"[] = ["places"];
 
@@ -44,17 +45,7 @@ export default function SearchInfoActivity() {
       </div>
       <div className="mx-auto space-y-5 p-4 max-sm:border max-sm:border-gray-300 rounded-lg">
         <div className="max-sm:mt-4">
-          {/* <MyTextInput
-            noHintText
-            placeholder="Localização"
-            className="placeholder:text-black"
-            leftIcon={<MyIcon name="localizacao" className="ml-3" />}
-          /> */}
-
-          {/* <GoogleMapsAutocomplete
-            onLocationSelected={handleLocationSelected}
-            isLoaded={isLoaded}
-          /> */}
+          <AutocompleteInput />
         </div>
 
         <OneDay />
