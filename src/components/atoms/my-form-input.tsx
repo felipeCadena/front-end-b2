@@ -114,7 +114,7 @@ export default function MyFormInput<T extends FieldValues>({
                   <MyButton
                     type="button"
                     variant="ghost"
-                    className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                    className="absolute right-0 top-8 px-3 py-2 hover:bg-transparent"
                     onClick={() => setShowPassword(!showPassword)}
                   >
                     {showPassword ? (
