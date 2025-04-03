@@ -51,7 +51,8 @@ const formSchema = z
       if (!/[\W_]/.test(value)) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
-          message: 'A senha deve conter pelo menos um caractere especial.',
+          message:
+            'A senha deve conter pelo menos um caractere especial e um número.',
         });
       }
     }),
@@ -93,14 +94,20 @@ export default function Cadastro() {
     setIsLoading(true);
     try {
       await users.registerCustomer({ name, email, phone, cpf, password });
+
       form.reset();
       toast.success('Cadastro feito com sucesso!');
+
+      router.push(PATHS.login);
     } catch (error) {
       if (error instanceof AxiosError) {
         if (error.response?.status === 401) {
           return toast.error('Email ou senha inválidos');
-        } else {
+        }
+        if (error.response?.status === 500) {
           toast.error(`Um erro inesperado ocorreu. Tente novamente.`);
+        } else {
+          toast.error(error.response?.data.message);
         }
       }
     } finally {
