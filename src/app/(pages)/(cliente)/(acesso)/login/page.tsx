@@ -177,8 +177,8 @@ export default function Login() {
             >
               Deseja ser um parceiro? Clique{' '}
               <MyButton
-                variant="link"
-                className="p-0"
+                variant="text"
+                className="p-0 underline"
                 onClick={() => router.push(PATHS.parceiro)}
               >
                 aqui

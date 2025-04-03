@@ -113,7 +113,7 @@ export default function EsqueciMinhaSenha() {
               variant="text"
               type="button"
               className="p-0 ml-2 underline"
-              onClick={() => router.push(PATHS.cadastro)}
+              onClick={() => router.push(PATHS.login)}
             >
               Bora lá!
             </MyButton>

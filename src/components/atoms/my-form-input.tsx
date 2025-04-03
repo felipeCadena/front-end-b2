@@ -108,6 +108,7 @@ export default function MyFormInput<T extends FieldValues>({
                   placeholder={placeholder}
                   disabled={disabled}
                   label={label}
+                  className="mt-2"
                 />
                 {type === 'password' && (
                   <MyButton
