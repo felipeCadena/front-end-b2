@@ -56,7 +56,7 @@ export const authService = {
 
   // Reset de senha
   resetPassword: async (password: string, refreshToken: string) => {
-    await api.post(`/auth/reset-password${refreshToken}`, { password });
+    await api.post(`/auth/reset-password/${refreshToken}`, { password });
   },
 
   // Refresh do token
