@@ -67,7 +67,6 @@ export default function Login() {
 
       if (!defaultPath) {
         console.error("Caminho não encontrado para role:", mappedRole);
-        toast.error("Erro no redirecionamento");
         return;
       }
 
@@ -167,6 +166,23 @@ export default function Login() {
           <GoogleLoginButton />
 
           <FacebookLoginButton />
+          <div className="text-center mt-4">
+            <MyTypography
+              variant="label"
+              weight="regular"
+              className="text-[#5F5C6B]"
+            >
+              Deseja ser um parceiro? Clique{" "}
+              <MyButton
+                variant="link"
+                className="p-0"
+                onClick={() => router.push(PATHS.parceiro)}
+              >
+                aqui
+              </MyButton>
+              .
+            </MyTypography>
+          </div>
 
           <div className="text-center mt-12">
             <MyTypography

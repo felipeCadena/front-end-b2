@@ -45,6 +45,8 @@ export default function Header() {
     enabled: Boolean(session?.user),
   });
 
+  console.log(user);
+
   return (
     <header
       className={cn(
@@ -72,7 +74,7 @@ export default function Header() {
         <LanguageDropdown />
 
         <div className="max-sm:hidden">
-          {!user ? (
+          {!user?.role ? (
             <button
               onClick={() => router.push(PATHS.login)}
               className="text-sm flex items-center font-semibold gap-1 px-2 md:px-4 py-1 text-[0.9rem] text-white bg-black rounded-full shadow-md"
