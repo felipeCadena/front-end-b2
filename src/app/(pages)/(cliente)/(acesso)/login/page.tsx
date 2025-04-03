@@ -145,15 +145,18 @@ export default function Login() {
         )}
 
         <div className="flex flex-col">
-          <MyButton
-            variant="text"
-            onClick={() => router.push(PATHS['esqueci-minha-senha'])}
-          >
-            Esqueci minha senha
-          </MyButton>
+          <div className="w-full flex justify-center">
+            <MyButton
+              variant="text"
+              onClick={() => router.push(PATHS['esqueci-minha-senha'])}
+              className="p-0 hover:text-[#7daf44] underline"
+            >
+              Esqueci minha senha
+            </MyButton>
+          </div>
 
           <MyButton
-            className="mt-8"
+            className="mt-8 hover:bg-[#7daf44]"
             variant="default"
             borderRadius="squared"
             size="md"
