@@ -21,7 +21,7 @@ export function OneDay({ withlabel }: { withlabel?: string }) {
           variant="date"
           borderRadius="squared"
           className={cn(
-            "w-full justify-start text-sm items-center gap-2 py-6 border-gray-300 md:bg-white"
+            "w-full justify-start text-base items-center gap-2 py-6 border-gray-300 md:bg-white"
           )}
         >
           {!withlabel && <MyIcon name="date" />}

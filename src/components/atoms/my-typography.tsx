@@ -11,6 +11,7 @@ const typographyMap = cva("", {
       subtitle1: "text-[1.125rem] leading-7",
       subtitle2: "text-[1.125rem] md:text-[1.5rem]",
       subtitle3: "text-[1rem] md:text-[1.2rem]",
+      subtitle4: "text-[1rem]",
       "body-big": "text-[0.9rem] ",
       body: "md:text-[0.875rem] text-[0.775rem]",
       "body-small": "md:text-[0.825rem] text-[0.675rem]",

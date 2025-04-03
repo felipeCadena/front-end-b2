@@ -67,7 +67,7 @@ export default function Login() {
 
       if (!defaultPath) {
         console.error('Caminho não encontrado para role:', mappedRole);
-        toast.error('Erro no redirecionamento');
+
         return;
       }
 
@@ -145,15 +145,13 @@ export default function Login() {
         )}
 
         <div className="flex flex-col">
-          <div className="w-full flex justify-center">
-            <MyButton
-              variant="text"
-              onClick={() => router.push(PATHS['esqueci-minha-senha'])}
-              className="p-0 hover:text-[#7daf44] underline"
-            >
-              Esqueci minha senha
-            </MyButton>
-          </div>
+          <MyButton
+            variant="text"
+            className="p-0 hover:text-[#7daf44] underline"
+            onClick={() => router.push(PATHS['esqueci-minha-senha'])}
+          >
+            Esqueci minha senha
+          </MyButton>
 
           <MyButton
             className="mt-8 hover:bg-[#7daf44]"

@@ -44,6 +44,7 @@ import {
 } from "@/utils/formatters";
 import AutocompleteInput from "@/components/organisms/google-autocomplete";
 import { LoadScript, useLoadScript } from "@react-google-maps/api";
+import GoogleTeste from "@/components/organisms/google-teste";
 
 interface AddressData {
   addressStreet: string;
@@ -56,6 +57,15 @@ interface AddressData {
   addressCountry: string;
   coordinates: string;
 }
+
+interface LocationData {
+  address: string;
+  coordinates: {
+    lat: number;
+    lng: number;
+  } | null;
+}
+
 export default function WebForm({
   type,
   handleBack,
@@ -80,10 +90,29 @@ export default function WebForm({
     recurrences,
     difficult,
     duration,
+    addressCity,
+    addressNeighborhood,
+    addressNumber,
+    addressPostalCode,
+    addressState,
+    addressStreet,
+    addressComplement,
+    addressCountry,
   } = useAdventureStore();
 
   const [files, setFiles] = React.useState<File[] | null>(null);
   const inputRef = React.useRef<HTMLInputElement>(null);
+  const [adress, setAdress] = useState<LocationData | null>(null);
+
+  console.log(addressCity);
+  console.log(addressNeighborhood);
+  console.log(addressNumber);
+  console.log(addressPostalCode);
+  console.log(addressState);
+  console.log(addressStreet);
+  console.log(addressComplement);
+  console.log(addressCountry);
+
   // Atualiza as datas para um bloco específico
   const handleDateChange = (blockId: number, dates: Date[]) => {
     updateSelectionBlock(blockId, "dates", dates);
@@ -179,35 +208,66 @@ export default function WebForm({
     return `${hour}h`;
   };
 
-  const handleLocationSelected = (place: google.maps.places.PlaceResult) => {
-    if (!place.address_components) return;
-
-    // Função auxiliar para encontrar componentes do endereço
-    const getAddressComponent = (type: string) => {
-      const component = place.address_components?.find((comp) =>
-        comp.types.includes(type)
-      );
-      return component?.long_name || "";
+  const handleLocationSelected = (locationData: LocationData) => {
+    setAdress({
+      address: locationData.address,
+      coordinates: locationData.coordinates,
+    });
+    // Função para extrair o CEP do endereço
+    const extractPostalCode = (address: string) => {
+      const cepRegex = /\d{5}-?\d{3}/;
+      const match = address.match(cepRegex);
+      return match ? match[0] : "";
     };
 
-    // Extrai o CEP removendo caracteres não numéricos
-    const postalCode = getAddressComponent("postal_code").replace(/\D/g, "");
+    // Função para parsear o endereço
+    const parseAddress = (fullAddress: string) => {
+      // Divide o endereço em partes usando a vírgula como separador
+      const parts = fullAddress.split(",").map((part) => part.trim());
 
-    const addressData: AddressData = {
-      addressStreet: getAddressComponent("route"),
-      addressPostalCode: postalCode,
-      addressNumber: getAddressComponent("street_number"),
+      // Primeira parte geralmente contém rua, número e bairro
+      const firstPart = parts[0].split("-").map((part) => part.trim());
+      const streetAndNumber = firstPart[0];
+      const neighborhood = firstPart[1] || "";
+
+      // Segunda parte geralmente contém cidade
+      const city = parts[1]?.replace(/-.*$/, "").trim() || "";
+
+      // Terceira parte geralmente contém estado
+      const state = parts[1]?.split("-")[1]?.trim() || "";
+
+      // Extrai número da rua (se houver)
+      const numberMatch = streetAndNumber.match(/,?\s*(\d+)\s*$/);
+      const number = numberMatch ? numberMatch[1] : "";
+      const street = streetAndNumber.replace(/,?\s*\d+\s*$/, "");
+
+      return {
+        street,
+        number,
+        neighborhood,
+        city,
+        state,
+        country: "BR",
+        postalCode: extractPostalCode(fullAddress),
+      };
+    };
+
+    const addressInfo = parseAddress(locationData.address);
+
+    // Atualiza o store com os dados parseados
+    setAdventureData({
+      addressStreet: addressInfo.street,
+      addressNumber: addressInfo.number,
+      addressNeighborhood: addressInfo.neighborhood,
+      addressCity: addressInfo.city,
+      addressState: addressInfo.state,
+      addressCountry: addressInfo.country,
+      addressPostalCode: addressInfo.postalCode,
       addressComplement: "",
-      addressNeighborhood: getAddressComponent("sublocality"),
-      addressCity: getAddressComponent("administrative_area_level_2"),
-      addressState: getAddressComponent("administrative_area_level_1"),
-      addressCountry: "BR",
-      coordinates: place.geometry?.location
-        ? `${place.geometry.location.lat()}:${place.geometry.location.lng()}`
+      coordinates: locationData.coordinates
+        ? `${locationData.coordinates.lat}:${locationData.coordinates.lng}`
         : "",
-    };
-
-    setAdventureData(addressData);
+    });
   };
 
   return (
@@ -412,24 +472,42 @@ export default function WebForm({
 
           <div className="space-y-6 mt-6 p-6 bg-gray-100 border border-gray-300 rounded-lg">
             <div className="grid grid-cols-2 items-center gap-8">
-              {/* <MyTextInput
-                label="Local"
-                placeholder="Rio de Janeiro, Cristo Redentor"
-                classNameLabel="text-base text-black"
-                className="mt-2"
-              /> */}
-              {/* <AutocompleteInput onLocationSelected={handleLocationSelected} /> */}
+              <div className="mb-4">
+                <MyTypography
+                  variant="subtitle4"
+                  weight="bold"
+                  className="mb-2"
+                >
+                  Local
+                </MyTypography>
 
+                <AutocompleteInput
+                  icon={false}
+                  className="text-neutral-600 text-base"
+                  onLocationSelected={handleLocationSelected}
+                />
+
+                <GoogleTeste />
+              </div>
               <MyTextInput
                 label="Ponto de referência"
                 placeholder="Próximo ao centro"
                 classNameLabel="text-base text-black"
                 className="mt-2"
+                onChange={(e) =>
+                  setAdventureData({
+                    addressComplement: e.target.value,
+                  })
+                }
+                value={addressComplement}
               />
             </div>
 
             <GoogleMaps
-              location={{ lat: -22.9519, lng: -43.2105 }}
+              location={{
+                lat: adress?.coordinates?.lat ?? -22.9519,
+                lng: adress?.coordinates?.lng ?? -43.2105,
+              }}
               height="400px"
             />
           </div>
