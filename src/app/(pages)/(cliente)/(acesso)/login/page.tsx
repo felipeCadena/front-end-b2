@@ -1,20 +1,20 @@
-"use client";
+'use client';
 
-import React from "react";
+import React from 'react';
 
-import MyButton from "@/components/atoms/my-button";
-import MyIcon from "@/components/atoms/my-icon";
-import MyLogo from "@/components/atoms/my-logo";
-import MyTextInput from "@/components/atoms/my-text-input";
-import MyTypography from "@/components/atoms/my-typography";
-import PATHS, { DEFAULT_ROLE_PATHS } from "@/utils/paths";
-import { useRouter } from "next/navigation";
-import useLogin from "./login-store";
-import { toast } from "react-toastify";
-import { useAuthStore } from "@/store/useAuthStore";
-import GoogleLoginButton from "@/components/molecules/google-login-button";
-import { getSession, signIn } from "next-auth/react";
-import FacebookLoginButton from "@/components/molecules/facebook-login-button";
+import MyButton from '@/components/atoms/my-button';
+import MyIcon from '@/components/atoms/my-icon';
+import MyLogo from '@/components/atoms/my-logo';
+import MyTextInput from '@/components/atoms/my-text-input';
+import MyTypography from '@/components/atoms/my-typography';
+import PATHS, { DEFAULT_ROLE_PATHS } from '@/utils/paths';
+import { useRouter } from 'next/navigation';
+import useLogin from './login-store';
+import { toast } from 'react-toastify';
+import { useAuthStore } from '@/store/useAuthStore';
+import GoogleLoginButton from '@/components/molecules/google-login-button';
+import { getSession, signIn } from 'next-auth/react';
+import FacebookLoginButton from '@/components/molecules/facebook-login-button';
 
 export default function Login() {
   const router = useRouter();
@@ -30,7 +30,7 @@ export default function Login() {
     setIsLoading(true);
     const credentials = { email, password };
     try {
-      await signIn("credentials", {
+      await signIn('credentials', {
         ...credentials,
       });
 
@@ -38,25 +38,25 @@ export default function Login() {
       const session = await getSession();
 
       if (!session?.user?.role) {
-        console.log("Erro ao obter dados do usuário");
+        console.log('Erro ao obter dados do usuário');
         return;
       }
 
-      const userRole = session.user.role.toLowerCase() ?? "";
+      const userRole = session.user.role.toLowerCase() ?? '';
 
       // Atualiza o user no store global
       setUser({
-        id: session.user.id ?? "",
-        name: session.user.name ?? "",
-        email: session.user.email ?? "",
+        id: session.user.id ?? '',
+        name: session.user.name ?? '',
+        email: session.user.email ?? '',
         role: userRole,
       });
 
       const roleMapping = {
-        superadmin: "admin",
-        admin: "admin",
-        partner: "partner",
-        customer: "customer",
+        superadmin: 'admin',
+        admin: 'admin',
+        partner: 'partner',
+        customer: 'customer',
       };
 
       const mappedRole = roleMapping[userRole as keyof typeof roleMapping];
@@ -66,18 +66,18 @@ export default function Login() {
         DEFAULT_ROLE_PATHS[mappedRole as keyof typeof DEFAULT_ROLE_PATHS];
 
       if (!defaultPath) {
-        console.error("Caminho não encontrado para role:", mappedRole);
-        toast.error("Erro no redirecionamento");
+        console.error('Caminho não encontrado para role:', mappedRole);
+        toast.error('Erro no redirecionamento');
         return;
       }
 
       router.push(defaultPath);
       router.refresh();
 
-      toast.success("Login realizado com sucesso!");
+      toast.success('Login realizado com sucesso!');
     } catch (err) {
-      console.error("Erro no login:", err);
-      toast.error(error || "Erro ao fazer login");
+      console.error('Erro no login:', err);
+      toast.error(error || 'Erro ao fazer login');
     } finally {
       setIsLoading(false);
     }
@@ -122,10 +122,10 @@ export default function Login() {
           <MyTextInput
             label="Senha"
             placeholder="******"
-            type={visibility ? "text" : "password"}
+            type={visibility ? 'text' : 'password'}
             rightIcon={
               <MyIcon
-                name={visibility ? "hide" : "eye"}
+                name={visibility ? 'hide' : 'eye'}
                 className="mr-4 mt-2 cursor-pointer"
                 onClick={() => setVisibility((prev) => !prev)}
               />
@@ -147,8 +147,7 @@ export default function Login() {
         <div className="flex flex-col">
           <MyButton
             variant="text"
-            className="mt-4"
-            onClick={() => router.push(PATHS["esqueci-minha-senha"])}
+            onClick={() => router.push(PATHS['esqueci-minha-senha'])}
           >
             Esqueci minha senha
           </MyButton>
@@ -161,14 +160,31 @@ export default function Login() {
             onClick={handleLogin}
             disabled={isLoading}
           >
-            {isLoading ? "Entrando..." : "Login"}
+            {isLoading ? 'Entrando...' : 'Login'}
           </MyButton>
 
           <GoogleLoginButton />
 
           <FacebookLoginButton />
+          <div className="text-center mt-4">
+            <MyTypography
+              variant="label"
+              weight="regular"
+              className="text-[#5F5C6B]"
+            >
+              Deseja ser um parceiro? Clique{' '}
+              <MyButton
+                variant="link"
+                className="p-0"
+                onClick={() => router.push(PATHS.parceiro)}
+              >
+                aqui
+              </MyButton>
+              .
+            </MyTypography>
+          </div>
 
-          <div className="text-center mt-12">
+          <div className="text-center mt-4">
             <MyTypography
               variant="label"
               weight="regular"
