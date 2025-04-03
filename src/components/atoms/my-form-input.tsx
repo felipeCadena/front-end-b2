@@ -1,4 +1,5 @@
-import { EyeIcon, EyeOffIcon } from 'lucide-react';
+import Eye from './my-icon/elements/eye';
+import Hide from './my-icon/elements/hide';
 import { HTMLInputTypeAttribute, useState } from 'react';
 import { FieldValues, Path, UseFormReturn } from 'react-hook-form';
 import { NumericFormat, PatternFormat } from 'react-number-format';
@@ -8,11 +9,12 @@ import {
   FormControl,
   FormField,
   FormItem,
+  FormLabel,
   FormMessage,
 } from '../atoms/my-form';
-import { Input } from '@/components/ui/input';
+import MyTextInput from './my-text-input';
 
-import { Skeleton } from '../ui/skeleton';
+import { Skeleton } from './my-skeleton';
 import { cn } from '@/utils/cn';
 
 type Props<T extends FieldValues> = {
@@ -73,7 +75,7 @@ export default function FormInput<T extends FieldValues>({
                   disabled={disabled}
                   placeholder={placeholder}
                   value={field.value}
-                  customInput={Input}
+                  customInput={MyTextInput}
                   format={maskFormat || ''}
                   onValueChange={(values) => {
                     field.onChange({
@@ -86,7 +88,7 @@ export default function FormInput<T extends FieldValues>({
                 />
               ) : (
                 <NumericFormat
-                  customInput={Input}
+                  customInput={MyTextInput}
                   value={field.value}
                   decimalSeparator=","
                   allowedDecimalSeparators={[',', '.']}
@@ -107,7 +109,7 @@ export default function FormInput<T extends FieldValues>({
               )
             ) : (
               <div className="relative">
-                <Input
+                <MyTextInput
                   {...field}
                   type={showPassword ? 'text' : type}
                   placeholder={placeholder}
@@ -121,15 +123,9 @@ export default function FormInput<T extends FieldValues>({
                     onClick={() => setShowPassword(!showPassword)}
                   >
                     {showPassword ? (
-                      <EyeOffIcon
-                        className="h-4 w-4 text-neutral-400"
-                        aria-hidden="true"
-                      />
+                      <Hide aria-hidden="true" />
                     ) : (
-                      <EyeIcon
-                        className="h-4 w-4 text-neutral-400"
-                        aria-hidden="true"
-                      />
+                      <Eye aria-hidden="true" />
                     )}
                   </MyButton>
                 )}
