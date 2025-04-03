@@ -13,7 +13,7 @@ import {
 
 import { cn } from '@/utils/cn';
 
-const Form = FormProvider;
+const MyForm = FormProvider;
 
 type FormFieldContextValue<
   TFieldValues extends FieldValues = FieldValues,
@@ -149,7 +149,7 @@ const FormMessage = React.forwardRef<
 FormMessage.displayName = 'FormMessage';
 
 export {
-  Form,
+  MyForm,
   FormControl,
   FormDescription,
   FormField,
