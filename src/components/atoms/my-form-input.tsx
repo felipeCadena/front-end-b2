@@ -9,7 +9,6 @@ import {
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from '../atoms/my-form';
 import MyTextInput from './my-text-input';
@@ -36,7 +35,7 @@ type Props<T extends FieldValues> = {
   readonly type?: HTMLInputTypeAttribute;
 };
 
-export default function FormInput<T extends FieldValues>({
+export default function MyFormInput<T extends FieldValues>({
   form,
   name,
   withMask,
@@ -46,7 +45,6 @@ export default function FormInput<T extends FieldValues>({
   prefix,
   decimalScale = 2,
   className,
-  labelClassname,
   type = 'text',
   label = '',
   placeholder = label ?? '',
@@ -63,11 +61,6 @@ export default function FormInput<T extends FieldValues>({
       name={name}
       render={({ field }) => (
         <FormItem className={cn('w-full', className)}>
-          {label && (
-            <FormLabel className={cn('text-lg font-bold', labelClassname)}>
-              {label}
-            </FormLabel>
-          )}
           <FormControl>
             {withMask ? (
               !numeric ? (
@@ -114,6 +107,7 @@ export default function FormInput<T extends FieldValues>({
                   type={showPassword ? 'text' : type}
                   placeholder={placeholder}
                   disabled={disabled}
+                  label={label}
                 />
                 {type === 'password' && (
                   <MyButton
@@ -139,16 +133,9 @@ export default function FormInput<T extends FieldValues>({
   );
 }
 
-function LoadingState({
-  className,
-  label,
-}: {
-  className?: string;
-  label?: string;
-}) {
+function LoadingState({ className }: { className?: string; label?: string }) {
   return (
     <FormItem className={cn('w-full', className)}>
-      {label && <FormLabel>{label}</FormLabel>}
       <Skeleton className="h-10 w-full bg-neutral-200" />
     </FormItem>
   );

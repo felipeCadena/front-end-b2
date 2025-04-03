@@ -3,7 +3,6 @@
 import MyButton from '@/components/atoms/my-button';
 import MyCheckbox from '@/components/atoms/my-checkbox';
 import MyIcon from '@/components/atoms/my-icon';
-import MyTextInput from '@/components/atoms/my-text-input';
 import MyTypography from '@/components/atoms/my-typography';
 import PATHS from '@/utils/paths';
 import { useRouter } from 'next/navigation';
@@ -12,6 +11,11 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { MyForm } from '@/components/atoms/my-form';
+import MyFormInput from '@/components/atoms/my-form-input';
+import { users } from '@/services/api/users';
+import { toast } from 'react-toastify';
+import { AxiosError } from 'axios';
+import MySpinner from '@/components/atoms/my-spinner';
 
 const formSchema = z
   .object({
@@ -24,9 +28,33 @@ const formSchema = z
       .string()
       .trim()
       .min(8, { message: 'Forneça um número de celular válido.' }),
-    password: z
+    cpf: z
       .string()
-      .min(6, { message: 'A senha deve ter no mínimo 6 caracteres.' }),
+      .trim()
+      .min(11, { message: 'Por favor insira um cpf válido' }),
+    password: z.string().superRefine((value, ctx) => {
+      if (value.length < 6) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.too_small,
+          minimum: 6,
+          type: 'string',
+          inclusive: true,
+          message: 'A senha deve ter no mínimo 6 caracteres.',
+        });
+      }
+      if (!/[A-Z]/.test(value)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'A senha deve conter pelo menos uma letra maiúscula.',
+        });
+      }
+      if (!/[\W_]/.test(value)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'A senha deve conter pelo menos um caractere especial.',
+        });
+      }
+    }),
     confirmPassword: z.string(),
   })
   .superRefine((data, ctx) => {
@@ -44,27 +72,47 @@ type FormData = z.infer<typeof formSchema>;
 export default function Cadastro() {
   const router = useRouter();
   const [visibility, setVisibility] = React.useState(false);
+  const [isLoading, setIsLoading] = React.useState(false);
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
+    mode: 'onChange',
+    criteriaMode: 'all',
     defaultValues: {
       name: '',
       email: '',
       phone: '',
+      cpf: '',
       password: '',
       confirmPassword: '',
     },
   });
 
-  const handleCadastro = async () => {};
-
-  const handleSubmit = async () => {};
+  const handleSubmit = async (formData: FormData) => {
+    const { name, email, phone, cpf, password } = formData;
+    setIsLoading(true);
+    try {
+      await users.registerCustomer({ name, email, phone, cpf, password });
+      form.reset();
+      toast.success('Cadastro feito com sucesso!');
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        if (error.response?.status === 401) {
+          return toast.error('Email ou senha inválidos');
+        } else {
+          toast.error(`Um erro inesperado ocorreu. Tente novamente.`);
+        }
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <MyForm {...form}>
       <form
         onSubmit={form.handleSubmit(handleSubmit)}
-        className="flex flex-col bg-white rounded-lg max-w-lg m-auto w-full py-16 px-6 md:px-12"
+        className="flex flex-col bg-white rounded-lg max-w-lg m-auto w-full py-8 px-6 md:px-12"
       >
         <div className="relative flex max-sm:flex-col gap-4 md:items-center">
           <MyIcon
@@ -72,53 +120,52 @@ export default function Cadastro() {
             className="hover:cursor-pointer"
             onClick={() => router.push(PATHS.login)}
           />
-          <MyTypography variant="heading2" weight="bold" className="mt-2">
+          <MyTypography variant="heading2" weight="bold">
             Cadastre-se
           </MyTypography>
         </div>
 
-        <div className="my-6">
-          <MyTextInput
-            label="Nome Completo"
+        <div className="my-4">
+          <MyFormInput
+            form={form}
+            name="name"
+            label="Nome completo:"
             placeholder="Nome Completo"
-            className="mt-2"
+            className="mt-2 mb-4"
           />
-          <MyTextInput
+          <MyFormInput
+            form={form}
+            name="email"
             type="email"
-            label="E-mail ou celular"
+            label="E-mail:"
             placeholder="b2adventure@gmail.com"
-            className="mt-2"
+            className="mb-4"
           />
-          <MyTextInput
-            label="Telefone/Celular"
+          <MyFormInput
+            form={form}
+            name="phone"
+            label="Telefone/Celular:"
             placeholder="b2adventure@gmail.com"
-            className="mt-2"
+            className="mb-4"
           />
-          <MyTextInput
-            label="Senha"
+          <MyFormInput form={form} name="cpf" label="CPF" className="mb-6" />
+
+          <MyFormInput
+            form={form}
+            name="password"
+            label="Senha:"
             placeholder="******"
             type={visibility ? 'text' : 'password'}
-            rightIcon={
-              <MyIcon
-                name={visibility ? 'hide' : 'eye'}
-                className="mr-4 mt-2 cursor-pointer"
-                onClick={() => setVisibility((prev) => !prev)}
-              />
-            }
-            className="mt-2"
+            className="mb-4"
           />
-          <MyTextInput
-            label="Confirmar Senha"
+
+          <MyFormInput
+            form={form}
+            name="confirmPassword"
+            label="Confirmar Senha:"
             placeholder="******"
             type={visibility ? 'text' : 'password'}
-            rightIcon={
-              <MyIcon
-                name={visibility ? 'hide' : 'eye'}
-                className="mr-4 mt-2 cursor-pointer"
-                onClick={() => setVisibility((prev) => !prev)}
-              />
-            }
-            className="mt-2"
+            className="mb-4"
           />
 
           <MyCheckbox label="Li e aceito os" termsLink="termos de uso" />
@@ -131,10 +178,10 @@ export default function Cadastro() {
             borderRadius="squared"
             size="md"
           >
-            Cadastrar Conta
+            {isLoading ? <MySpinner /> : 'Cadastrar Conta'}
           </MyButton>
 
-          <div className="text-center mt-12">
+          <div className="flex justify-center items-center text-center mt-4">
             <MyTypography
               variant="label"
               weight="regular"
@@ -145,7 +192,7 @@ export default function Cadastro() {
             <MyButton
               onClick={() => router.push(PATHS.login)}
               variant="text"
-              className=""
+              className="p-0 ml-2"
             >
               Bora lá!
             </MyButton>
