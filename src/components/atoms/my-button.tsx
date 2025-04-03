@@ -10,7 +10,7 @@ export const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          'font-bold text-[1rem] bg-primary-600 text-neutral-000 disabled:bg-gray-300',
+          'font-bold text-[1rem] bg-primary-600 text-neutral-000 disabled:bg-gray-300 hover:bg-[#7daf44]',
         secondary:
           'text-primary-600 border border-primary-600 bg-traparent text-sm font-semibold',
         'secondary-muted':
@@ -24,7 +24,7 @@ export const buttonVariants = cva(
         link: 'underline-offset-4 underline text-primary-600 hover:text-primary-600 disabled:text-gray-200',
         'link-muted':
           'underline-offset-4 underline text-neutral-800 hover:text-neutral-900 disabled:text-neutral-200',
-        text: 'text-primary-600 text-[0.875rem] font-semibold hover:text-primary-600 disabled:text-gray-200',
+        text: 'text-primary-600 text-[0.875rem] font-semibold hover:text-primary-600 disabled:text-gray-200 hover:text-[#7daf44]',
         'text-muted': 'text-neutral-400 text-[0.9rem]',
         date: 'border bg-traparent',
         ghost: 'hover:bg-accent hover:text-accent-foreground',
