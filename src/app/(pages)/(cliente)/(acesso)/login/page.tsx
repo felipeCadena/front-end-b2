@@ -67,6 +67,7 @@ export default function Login() {
 
       if (!defaultPath) {
         console.error("Caminho não encontrado para role:", mappedRole);
+
         return;
       }
 
@@ -146,7 +147,6 @@ export default function Login() {
         <div className="flex flex-col">
           <MyButton
             variant="text"
-            className="mt-4"
             onClick={() => router.push(PATHS["esqueci-minha-senha"])}
           >
             Esqueci minha senha
@@ -184,7 +184,7 @@ export default function Login() {
             </MyTypography>
           </div>
 
-          <div className="text-center mt-12">
+          <div className="text-center mt-4">
             <MyTypography
               variant="label"
               weight="regular"
