@@ -31,7 +31,6 @@ export const buttonVariants = cva(
         black:
           'bg-black text-white text-[0.85rem] md:text-[1rem] font-semibold',
         payment:
-<<<<<<< HEAD
           'border border-[#1E1E1E] text-[#1E1E1E] opacity-30 text-[0.875rem] focus:border focus:border-primary-600 focus:bg-primary-900 focus:opacity-100',
         'black-border':
           'border border-[#1E1E1E] text-[#1E1E1E] text-[0.875rem]',
@@ -40,17 +39,7 @@ export const buttonVariants = cva(
         'text-black': 'text-black text-[0.9rem]',
         red: 'bg-[#FF727233] text-[#FF7272] text-[0.9rem]',
         config: 'text-[1rem] bg-[#F1F0F5]',
-=======
-          "border border-[#1E1E1E] text-[#1E1E1E] opacity-30 text-[0.875rem] focus:border focus:border-primary-600 focus:bg-primary-900 focus:opacity-100",
-        "black-border":
-          "border border-[#1E1E1E] text-[#1E1E1E] text-[0.875rem]",
-        message: "bg-secondary-600 text-white font-semibold text-sm",
-        partner: "bg-secondary-200 text-secondary-600 font-semibold text-sm",
-        "text-black": "text-black text-[0.9rem]",
-        red: "bg-[#FF727233] text-[#FF7272] text-[0.9rem]",
-        config: "text-[1rem] bg-[#F1F0F5]",
-        input: "border bg-white",
->>>>>>> 9046e15dd519725be17b0dd90a15049548829a35
+        input: 'border bg-white',
       },
       size: {
         default: 'h-10 px-4 py-2',
