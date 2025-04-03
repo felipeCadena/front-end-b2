@@ -1,14 +1,14 @@
-"use client";
+'use client';
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 
-import { getSession, signIn, useSession } from "next-auth/react";
-import MyButton from "@/components/atoms/my-button";
-import MyIcon from "@/components/atoms/my-icon";
-import { toast } from "react-toastify";
-import { useAuthStore } from "@/store/useAuthStore";
-import { useRouter } from "next/navigation";
-import { DEFAULT_ROLE_PATHS } from "@/utils/paths";
+import { getSession, signIn, useSession } from 'next-auth/react';
+import MyButton from '@/components/atoms/my-button';
+import MyIcon from '@/components/atoms/my-icon';
+import { toast } from 'react-toastify';
+import { useAuthStore } from '@/store/useAuthStore';
+import { useRouter } from 'next/navigation';
+import { DEFAULT_ROLE_PATHS } from '@/utils/paths';
 
 export default function GoogleLoginButton() {
   const router = useRouter();
@@ -19,14 +19,14 @@ export default function GoogleLoginButton() {
 
   // Observa mudanças na sessão após o login
   useEffect(() => {
-    if (isAuthenticating && status === "authenticated" && session?.user) {
+    if (isAuthenticating && status === 'authenticated' && session?.user) {
       try {
         // Atualiza o store com os dados do usuário
         const userData = {
           id: session.user.id,
-          name: session.user.name ?? "",
-          email: session.user.email ?? "",
-          role: session?.user.role?.toLowerCase() ?? "",
+          name: session.user.name ?? '',
+          email: session.user.email ?? '',
+          role: session?.user.role?.toLowerCase() ?? '',
         };
 
         setUser({
@@ -37,12 +37,12 @@ export default function GoogleLoginButton() {
         });
 
         // Define a rota com base na role
-        const userRole = session.user.role?.toLowerCase() ?? "";
+        const userRole = session.user.role?.toLowerCase() ?? '';
         const roleMapping = {
-          superadmin: "admin",
-          admin: "admin",
-          partner: "partner",
-          customer: "customer",
+          superadmin: 'admin',
+          admin: 'admin',
+          partner: 'partner',
+          customer: 'customer',
         };
 
         const mappedRole = roleMapping[userRole as keyof typeof roleMapping];
@@ -51,13 +51,13 @@ export default function GoogleLoginButton() {
 
         if (defaultPath) {
           router.push(defaultPath);
-          toast.success("Login realizado com sucesso!");
+          toast.success('Login realizado com sucesso!');
         }
 
         setIsAuthenticating(false);
       } catch (error) {
-        console.error("Erro ao processar dados da sessão:", error);
-        toast.error("Erro ao processar login");
+        console.error('Erro ao processar dados da sessão:', error);
+        toast.error('Erro ao processar login');
         setIsAuthenticating(false);
       }
     }
@@ -68,12 +68,12 @@ export default function GoogleLoginButton() {
       setIsLoading(true);
       setIsAuthenticating(true);
 
-      await signIn("google", {
+      await signIn('google', {
         redirect: false,
       });
     } catch (error) {
-      console.error("Erro no processo de login:", error);
-      toast.error("Erro ao processar login");
+      console.error('Erro no processo de login:', error);
+      toast.error('Erro ao processar login');
       setIsAuthenticating(false);
     } finally {
       setIsLoading(false);
@@ -90,7 +90,7 @@ export default function GoogleLoginButton() {
       onClick={handleGoogleLogin}
       disabled={isLoading}
     >
-      {isLoading ? "Entrando..." : "Logar com o Google"}
+      {isLoading ? 'Entrando...' : 'Logar com o Google'}
     </MyButton>
   );
 }
