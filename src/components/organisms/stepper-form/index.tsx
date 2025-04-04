@@ -3,28 +3,18 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import MyStepper from "@/components/molecules/my-stepper";
-import MyButton from "@/components/atoms/my-button";
-import MyIcon from "@/components/atoms/my-icon";
 import TermosParceiro from "./step-1";
 import CadastroParceiro from "./step-2";
 import Sobre from "./step-3";
 import Informacoes from "./step-4";
-import { useRouter } from "next/navigation";
+
 import WebForm from "@/app/(pages)/(parceiro)/parceiro/cadastro-atividade/web-form";
-import { cn } from "@/utils/cn";
+
 import InformacoesAtividade from "@/components/templates/informacoes-atividade";
-import PATHS from "@/utils/paths";
-import userPartner from "@/store/usePartner";
-import { toast } from "react-toastify";
-import { useStepperStore } from "@/store/useStepperStore";
 
 export default function StepperForm() {
   const [currentStep, setCurrentStep] = useState(0);
   const totalSteps = 6;
-  const router = useRouter();
-  const { fantasyName } = useStepperStore();
-
-  console.log(fantasyName);
 
   const handleNext = () => {
     if (currentStep < totalSteps - 1) {
@@ -33,6 +23,7 @@ export default function StepperForm() {
   };
 
   const handleBack = () => {
+    console.log(currentStep);
     if (currentStep > 0) {
       setCurrentStep((prev) => prev - 1);
     }

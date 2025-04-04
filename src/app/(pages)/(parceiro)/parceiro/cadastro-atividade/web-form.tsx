@@ -29,7 +29,6 @@ import Image from "next/image";
 import PATHS from "@/utils/paths";
 import { cn } from "@/utils/cn";
 import { format } from "date-fns";
-import { ptBR } from "date-fns/locale/pt-BR";
 import {
   Recurrence,
   TypeAdventure,
@@ -42,9 +41,7 @@ import {
   getDifficultyDescription,
   getDifficultyNumber,
 } from "@/utils/formatters";
-import AutocompleteInput from "@/components/organisms/google-autocomplete";
-import { LoadScript, useLoadScript } from "@react-google-maps/api";
-import GoogleTeste from "@/components/organisms/google-teste";
+import AutocompleteCombobox from "@/components/organisms/google-autocomplete";
 
 interface AddressData {
   addressStreet: string;
@@ -55,11 +52,11 @@ interface AddressData {
   addressCity: string;
   addressState: string;
   addressCountry: string;
-  coordinates: string;
 }
 
 interface LocationData {
   address: string;
+  completeAddress: AddressData;
   coordinates: {
     lat: number;
     lng: number;
@@ -76,6 +73,7 @@ export default function WebForm({
   handleNext?: () => void;
 }) {
   const router = useRouter();
+
   const {
     setAdventureData,
     typeAdventure,
@@ -87,31 +85,14 @@ export default function WebForm({
     addSelectionBlock,
     removeSelectionBlock,
     updateSelectionBlock,
-    recurrences,
     difficult,
     duration,
-    addressCity,
-    addressNeighborhood,
-    addressNumber,
-    addressPostalCode,
-    addressState,
-    addressStreet,
     addressComplement,
-    addressCountry,
   } = useAdventureStore();
 
   const [files, setFiles] = React.useState<File[] | null>(null);
   const inputRef = React.useRef<HTMLInputElement>(null);
-  const [adress, setAdress] = useState<LocationData | null>(null);
-
-  console.log(addressCity);
-  console.log(addressNeighborhood);
-  console.log(addressNumber);
-  console.log(addressPostalCode);
-  console.log(addressState);
-  console.log(addressStreet);
-  console.log(addressComplement);
-  console.log(addressCountry);
+  const [address, setAddress] = useState<LocationData | null>(null);
 
   // Atualiza as datas para um bloco específico
   const handleDateChange = (blockId: number, dates: Date[]) => {
@@ -177,6 +158,12 @@ export default function WebForm({
     handleNext && handleNext();
   };
 
+  const handleBackStep = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    handleBack && handleBack();
+  };
+
   const handleSelectType = (value: TypeAdventure) => {
     setAdventureData({
       typeAdventure: value,
@@ -209,65 +196,28 @@ export default function WebForm({
   };
 
   const handleLocationSelected = (locationData: LocationData) => {
-    setAdress({
-      address: locationData.address,
-      coordinates: locationData.coordinates,
-    });
-    // Função para extrair o CEP do endereço
-    const extractPostalCode = (address: string) => {
-      const cepRegex = /\d{5}-?\d{3}/;
-      const match = address.match(cepRegex);
-      return match ? match[0] : "";
-    };
+    console.log("Location Data Received:", locationData);
 
-    // Função para parsear o endereço
-    const parseAddress = (fullAddress: string) => {
-      // Divide o endereço em partes usando a vírgula como separador
-      const parts = fullAddress.split(",").map((part) => part.trim());
+    if (locationData.coordinates) {
+      // Atualiza o estado com as coordenadas
+      setAddress({
+        address: locationData.address,
+        coordinates: locationData.coordinates,
+        completeAddress: locationData.completeAddress,
+      });
 
-      // Primeira parte geralmente contém rua, número e bairro
-      const firstPart = parts[0].split("-").map((part) => part.trim());
-      const streetAndNumber = firstPart[0];
-      const neighborhood = firstPart[1] || "";
-
-      // Segunda parte geralmente contém cidade
-      const city = parts[1]?.replace(/-.*$/, "").trim() || "";
-
-      // Terceira parte geralmente contém estado
-      const state = parts[1]?.split("-")[1]?.trim() || "";
-
-      // Extrai número da rua (se houver)
-      const numberMatch = streetAndNumber.match(/,?\s*(\d+)\s*$/);
-      const number = numberMatch ? numberMatch[1] : "";
-      const street = streetAndNumber.replace(/,?\s*\d+\s*$/, "");
-
-      return {
-        street,
-        number,
-        neighborhood,
-        city,
-        state,
-        country: "BR",
-        postalCode: extractPostalCode(fullAddress),
-      };
-    };
-
-    const addressInfo = parseAddress(locationData.address);
-
-    // Atualiza o store com os dados parseados
-    setAdventureData({
-      addressStreet: addressInfo.street,
-      addressNumber: addressInfo.number,
-      addressNeighborhood: addressInfo.neighborhood,
-      addressCity: addressInfo.city,
-      addressState: addressInfo.state,
-      addressCountry: addressInfo.country,
-      addressPostalCode: addressInfo.postalCode,
-      addressComplement: "",
-      coordinates: locationData.coordinates
-        ? `${locationData.coordinates.lat}:${locationData.coordinates.lng}`
-        : "",
-    });
+      // Atualiza o store com o endereço
+      setAdventureData({
+        addressStreet: locationData.address,
+        coordinates: `${locationData.coordinates.lat}:${locationData.coordinates.lng}`,
+        addressPostalCode: locationData.completeAddress.addressPostalCode,
+        addressNumber: locationData.completeAddress.addressNumber,
+        addressComplement: locationData.completeAddress.addressComplement,
+        addressNeighborhood: locationData.completeAddress.addressNeighborhood,
+        addressCity: locationData.completeAddress.addressCity,
+        addressState: locationData.completeAddress.addressState,
+      });
+    }
   };
 
   return (
@@ -480,14 +430,10 @@ export default function WebForm({
                 >
                   Local
                 </MyTypography>
-
-                <AutocompleteInput
-                  icon={false}
-                  className="text-neutral-600 text-base"
+                <AutocompleteCombobox
                   onLocationSelected={handleLocationSelected}
+                  className="my-custom-class"
                 />
-
-                <GoogleTeste />
               </div>
               <MyTextInput
                 label="Ponto de referência"
@@ -505,8 +451,8 @@ export default function WebForm({
 
             <GoogleMaps
               location={{
-                lat: adress?.coordinates?.lat ?? -22.9519,
-                lng: adress?.coordinates?.lng ?? -43.2105,
+                lat: address?.coordinates?.lat ?? -22.9519,
+                lng: address?.coordinates?.lng ?? -43.2105,
               }}
               height="400px"
             />
@@ -645,7 +591,7 @@ export default function WebForm({
               <MyButton
                 variant="default"
                 borderRadius="squared"
-                onClick={handleBack}
+                onClick={(e) => handleBackStep(e)}
                 leftIcon={<MyIcon name="seta-direita" className="rotate-180" />}
               >
                 Voltar

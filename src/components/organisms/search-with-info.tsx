@@ -9,8 +9,7 @@ import MyTypography from "../atoms/my-typography";
 import TimePickerModal from "../molecules/time-picker";
 import { OneDay } from "../molecules/one-day";
 import { useLoadScript } from "@react-google-maps/api";
-import GoogleMapsAutocomplete from "@/components/organisms/google-autocomplete";
-import AutocompleteInput from "@/components/organisms/google-autocomplete";
+import GoogleAutoComplete from "./google-autocomplete";
 
 const libraries: "places"[] = ["places"];
 
@@ -45,7 +44,7 @@ export default function SearchInfoActivity() {
       </div>
       <div className="mx-auto space-y-5 p-4 max-sm:border max-sm:border-gray-300 rounded-lg">
         <div className="max-sm:mt-4">
-          <AutocompleteInput />
+          <GoogleAutoComplete />
         </div>
 
         <OneDay />
