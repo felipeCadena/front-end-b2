@@ -167,7 +167,7 @@ export default function Perfil() {
       <div className="relative flex gap-4 items-center">
         <MyIcon
           name="seta"
-          className="rotate-180"
+          className="rotate-180 cursor-pointer"
           onClick={() => router.back()}
         />
         <MyTypography variant="heading3" weight="bold" className="">
