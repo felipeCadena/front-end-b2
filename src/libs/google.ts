@@ -1,6 +1,6 @@
-"use server";
+'use server';
 
-import { Client } from "@googlemaps/google-maps-services-js";
+import { Client } from '@googlemaps/google-maps-services-js';
 
 const client = new Client();
 export const autocomplete = async (input: string) => {
@@ -11,8 +11,8 @@ export const autocomplete = async (input: string) => {
       params: {
         input,
         key: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API!,
-        language: "pt-BR", // Define o idioma como português do Brasil
-        components: ["country:br"], // Restringe resultados ao Brasil
+        language: 'pt-BR', // Define o idioma como português do Brasil
+        components: ['country:br'], // Restringe resultados ao Brasil
       },
     });
 
@@ -33,11 +33,11 @@ export const getPlaceDetails = async (placeId: string) => {
         key: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API!,
         // fields: ["geometry"], // Removido o .location pois deve ser acessado depois
         fields: [
-          "formatted_address",
-          "geometry",
-          "address_components",
-          "name",
-          "vicinity",
+          'formatted_address',
+          'geometry',
+          'address_components',
+          'name',
+          'vicinity',
         ],
       },
     });
@@ -52,7 +52,7 @@ export const getPlaceDetails = async (placeId: string) => {
 
     return null;
   } catch (error) {
-    console.error("Erro ao buscar detalhes do lugar:", error);
+    console.error('Erro ao buscar detalhes do lugar:', error);
     return null;
   }
 };

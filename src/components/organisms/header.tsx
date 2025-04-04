@@ -1,20 +1,20 @@
-"use client";
+'use client';
 
-import React from "react";
-import Sidebar from "./sidebar";
-import MyLogo from "../atoms/my-logo";
-import LanguageDropdown from "./language-dropdown";
-import MyIcon from "../atoms/my-icon";
-import { usePathname, useRouter } from "next/navigation";
-import PATHS from "@/utils/paths";
-import useLogin from "@/app/(pages)/(cliente)/(acesso)/login/login-store";
-import Image from "next/image";
-import SideBarModal from "../molecules/side-bar-modal";
-import { cn } from "@/utils/cn";
-import { useAuthStore } from "@/store/useAuthStore";
-import { useQuery } from "@tanstack/react-query";
-import { users } from "@/services/api/users";
-import { getSession, useSession } from "next-auth/react";
+import React from 'react';
+import Sidebar from './sidebar';
+import MyLogo from '../atoms/my-logo';
+import LanguageDropdown from './language-dropdown';
+import MyIcon from '../atoms/my-icon';
+import { usePathname, useRouter } from 'next/navigation';
+import PATHS from '@/utils/paths';
+import useLogin from '@/app/(pages)/(cliente)/(acesso)/login/login-store';
+import Image from 'next/image';
+import SideBarModal from '../molecules/side-bar-modal';
+import { cn } from '@/utils/cn';
+import { useAuthStore } from '@/store/useAuthStore';
+import { useQuery } from '@tanstack/react-query';
+import { users } from '@/services/api/users';
+import { getSession, useSession } from 'next-auth/react';
 
 export default function Header() {
   const router = useRouter();
@@ -25,16 +25,16 @@ export default function Header() {
 
   const withoutHeaderMobile = () => {
     return (
-      pathname === PATHS["sobre-a-empresa"] ||
-      pathname === PATHS["cadastro-parceiro"] ||
-      pathname === PATHS["informacoes-atividades"] ||
-      pathname === PATHS["cadastro-atividade"] ||
-      pathname.includes("editar")
+      pathname === PATHS['sobre-a-empresa'] ||
+      pathname === PATHS['cadastro-parceiro'] ||
+      pathname === PATHS['informacoes-atividades'] ||
+      pathname === PATHS['cadastro-atividade'] ||
+      pathname.includes('editar')
     );
   };
 
   const { data: userData } = useQuery({
-    queryKey: ["user", user],
+    queryKey: ['user', user],
     queryFn: async () => {
       const user = await users.getUserLogged();
       if (user) {
@@ -45,18 +45,16 @@ export default function Header() {
     enabled: Boolean(session?.user),
   });
 
-  console.log(user);
-
   return (
     <header
       className={cn(
-        "top-0 z-50 h-[100px] w-full md:max-w-screen-custom md:mx-auto bg-white flex items-center justify-between px-4 md:px-6 mb-4",
-        withoutHeaderMobile() && "max-sm:hidden"
+        'top-0 z-50 h-[100px] w-full md:max-w-screen-custom md:mx-auto bg-white flex items-center justify-between px-4 md:px-6 mb-4',
+        withoutHeaderMobile() && 'max-sm:hidden'
       )}
     >
       <div
         className="max-sm:hidden cursor-pointer"
-        onClick={() => router.push("/")}
+        onClick={() => router.push('/')}
       >
         <MyLogo variant="web" width={122} height={40} />
       </div>
@@ -87,7 +85,7 @@ export default function Header() {
               <div className="flex items-center gap-1 cursor-pointer">
                 <MyIcon name="chevron-down" />
                 <Image
-                  src={userData?.photo?.url ?? "/user.png"}
+                  src={userData?.photo?.url ?? '/user.png'}
                   alt="Avatar"
                   width={50}
                   height={50}
