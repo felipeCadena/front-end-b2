@@ -11,12 +11,9 @@ export const users = {
       throw error;
     }
   },
-  updatePassword: async (body: {
-    confirmPassword: string;
-    password: string;
-  }) => {
+  updatePassword: async (body: { password: string }) => {
     try {
-      const response = await api.put('/users/password', body);
+      const response = await api.patch('/users', body);
       return response.data;
     } catch (error) {
       console.error('Error updating password:', error);
