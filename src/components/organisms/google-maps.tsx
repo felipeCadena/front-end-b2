@@ -18,6 +18,8 @@ export default function GoogleMaps({
     null
   );
 
+  console.log(location);
+
   useEffect(() => {
     async function loadMarker() {
       if (isLoaded && mapRef.current) {

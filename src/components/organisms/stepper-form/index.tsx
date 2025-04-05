@@ -39,7 +39,7 @@ export default function StepperForm() {
     <Sobre handleBack={handleBack} handleNext={handleNext} />,
     <Informacoes handleBack={handleBack} handleNext={handleNext} />,
     <WebForm type="cadastro" handleBack={handleBack} handleNext={handleNext} />,
-    <InformacoesAtividade step />,
+    <InformacoesAtividade step onBack={handleBack} />,
     // <Step5 />,
     // <Step6 />,
     // <Step7 />,

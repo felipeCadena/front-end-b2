@@ -1,11 +1,16 @@
 "use client";
 
-import { types } from "@/common/constants/constants";
+import {
+  isChildrenAllowedTypes,
+  isInGroupTypes,
+} from "@/common/constants/constants";
 import MyButton from "@/components/atoms/my-button";
 import MyIcon, { IconsMapTypes } from "@/components/atoms/my-icon";
 import MyLogo from "@/components/atoms/my-logo";
 import MyTextInput from "@/components/atoms/my-text-input";
 import MyTypography from "@/components/atoms/my-typography";
+import { adventures } from "@/services/api/adventures";
+import { useAdventureStore } from "@/store/useAdventureStore";
 import { cn } from "@/utils/cn";
 import PATHS from "@/utils/paths";
 import { useRouter } from "next/navigation";
@@ -21,8 +26,69 @@ export default function InformacoesAtividade({
   onBack?: () => void;
 }) {
   const router = useRouter();
-  const [selected, setSelected] = React.useState("Em grupo");
+  const {
+    isInGroup,
+    isChildrenAllowed,
+    priceChildren,
+    priceAdult,
+    personsLimit,
+    addressCity,
+    addressNeighborhood,
+    addressState,
+    addressStreet,
+    addressPostalCode,
+    addressNumber,
+    addressComplement,
+    addressCountry,
+    pointRefAddress,
+    description,
+    difficult,
+    itemsIncluded,
+    transportIncluded,
+    picturesIncluded,
+    waterIncluded,
+    foodIncluded,
+    fuelIncluded,
+    duration,
+    hoursBeforeSchedule,
+    hoursBeforeCancellation,
+    isRepeatable,
+    recurrences,
+    tempImages,
+    title,
+    typeAdventure,
+    coordinates,
+    setAdventureData,
+  } = useAdventureStore();
   const params = "1";
+
+  const b2Tax = process.env.NEXT_PUBLIC_PERCENTAGE_TAX;
+
+  const handleTaxDetails = () => {
+    const total = (priceAdult + priceChildren) * personsLimit;
+    const tax = (total * Number(b2Tax)) / 100;
+    const totalWithTax = total - tax;
+
+    return {
+      total,
+      tax: tax ?? "30%",
+      totalWithTax,
+    };
+  };
+
+  const coordinatesString = `${coordinates?.lat}x${coordinates?.lng}`;
+
+  const handleItemsIncluded = () => {
+    const items = [];
+    if (waterIncluded) items.push("Água");
+    if (foodIncluded) items.push("Alimentação");
+    if (fuelIncluded) items.push("Combustível");
+    if (transportIncluded) items.push("Transporte");
+    if (picturesIncluded) items.push("Fotos");
+    return JSON.stringify(items);
+  };
+
+  console.log(handleItemsIncluded());
 
   const handleNext = () => {
     if (edit) {
@@ -31,6 +97,101 @@ export default function InformacoesAtividade({
       );
     } else {
       router.push(`${PATHS["minhas-atividades"]}?openModal=true`);
+    }
+  };
+
+  const handleSubmit = async () => {
+    try {
+      // 1. Cria a aventura
+      const adventureResponse = await adventures.createAdventure({
+        title,
+        pointRefAddress,
+        typeAdventure: typeAdventure as "terra" | "ar" | "mar",
+        coordinates: coordinatesString,
+        isInGroup,
+        isChildrenAllowed,
+        priceAdult,
+        priceChildren,
+        personsLimit,
+        addressCity,
+        addressNeighborhood,
+        addressState,
+        addressStreet,
+        addressPostalCode,
+        addressNumber,
+        addressComplement,
+        addressCountry,
+        description,
+        difficult,
+        itemsIncluded: handleItemsIncluded(),
+        transportIncluded,
+        picturesIncluded,
+        duration,
+        hoursBeforeSchedule,
+        hoursBeforeCancellation,
+        isRepeatable,
+        recurrences,
+      });
+
+      const adventureId = adventureResponse.id;
+
+      // 2. Converte base64 para Blob e cria estrutura dos arquivos
+      const files = await Promise.all(
+        tempImages.map(async (base64Image, index) => {
+          if (typeof base64Image !== "string") {
+            throw new Error(
+              "Esperado base64 string. Verifique o conteúdo de tempImages."
+            );
+          }
+
+          const res = await fetch(base64Image);
+          const arrayBuffer = await res.arrayBuffer();
+          const blob = new Blob([arrayBuffer], {
+            type: base64Image.substring(
+              base64Image.indexOf(":") + 1,
+              base64Image.indexOf(";")
+            ),
+          });
+
+          return {
+            filename: `image-${index}.jpg`,
+            mimetype: blob.type,
+            file: blob,
+            isDefault: index === 0, // primeira imagem como default
+          };
+        })
+      );
+
+      // 3. Chama addMedia para obter os uploadUrls
+      const uploadMedias = await adventures.addMedia(
+        adventureId,
+        files.map(({ filename, mimetype, isDefault }) => ({
+          filename,
+          mimetype,
+          isDefault,
+        }))
+      );
+
+      // 4. Envia os blobs para os uploadUrls
+      await Promise.all(
+        uploadMedias.map((media, index) =>
+          fetch(media.uploadUrl, {
+            method: "PUT",
+            body: files[index].file,
+            headers: {
+              "Content-Type": files[index].mimetype,
+            },
+          }).then((res) => {
+            if (!res.ok) {
+              console.error(`Falha ao enviar imagem ${index}`, res);
+            }
+          })
+        )
+      );
+
+      console.log("Aventura criada e imagens enviadas com sucesso!");
+    } catch (error) {
+      console.error("Erro ao criar aventura ou enviar imagens:", error);
     }
   };
 
@@ -53,17 +214,42 @@ export default function InformacoesAtividade({
       </MyTypography>
 
       <div className="grid grid-cols-2 gap-4 my-6 md:my-8">
-        {types.map((item, index) => (
+        {isInGroupTypes.map((item, index) => (
           <MyButton
             key={index}
             variant="outline-muted"
             size="sm"
             className={cn(
               "flex justify-center gap-2 rounded-md py-6 border border-black text-nowrap",
-              item.title === selected &&
+              item.title === (isInGroup ? "Em grupo" : "Individual") &&
                 "border border-black bg-[#E5E4E9] opacity-100"
             )}
-            onClick={() => setSelected(item.title)}
+            onClick={() =>
+              setAdventureData({
+                isInGroup: item.title == "Em grupo" ? true : false,
+              })
+            }
+          >
+            <MyIcon name={item.icon as IconsMapTypes} className="" />
+            <span className="">{item.title}</span>
+          </MyButton>
+        ))}
+        {isChildrenAllowedTypes.map((item, index) => (
+          <MyButton
+            key={index}
+            variant="outline-muted"
+            size="sm"
+            className={cn(
+              "flex justify-center gap-2 rounded-md py-6 border border-black text-nowrap",
+              item.title ===
+                (isChildrenAllowed ? "Com crianças" : "Sem crianças") &&
+                "border border-black bg-[#E5E4E9] opacity-100"
+            )}
+            onClick={() =>
+              setAdventureData({
+                isChildrenAllowed: item.title == "Com crianças" ? true : false,
+              })
+            }
           >
             <MyIcon name={item.icon as IconsMapTypes} className="" />
             <span className="">{item.title}</span>
@@ -79,6 +265,12 @@ export default function InformacoesAtividade({
           className="mt-2 pl-12"
           noHintText
           leftIcon={<MyIcon name="small-group" className="ml-5 mt-6" />}
+          value={personsLimit}
+          onChange={(e) =>
+            setAdventureData({
+              personsLimit: Number(e.target.value),
+            })
+          }
         />
 
         <MyTextInput
@@ -87,6 +279,12 @@ export default function InformacoesAtividade({
           className="mt-2 pl-12"
           noHintText
           leftIcon={<MyIcon name="dollar" className="ml-5 mt-5" />}
+          value={priceAdult}
+          onChange={(e) =>
+            setAdventureData({
+              priceAdult: Number(e.target.value),
+            })
+          }
         />
 
         <MyTextInput
@@ -95,6 +293,12 @@ export default function InformacoesAtividade({
           className="mt-2 pl-12"
           noHintText
           leftIcon={<MyIcon name="dollar" className="ml-5 mt-5" />}
+          value={priceChildren}
+          onChange={(e) =>
+            setAdventureData({
+              priceChildren: Number(e.target.value),
+            })
+          }
         />
       </div>
 
@@ -104,7 +308,7 @@ export default function InformacoesAtividade({
             Custo Adultos
           </MyTypography>
           <MyTypography variant="label" weight="bold" className="mb-1">
-            R$ 40,00
+            R$ {priceAdult ?? "0,00"}
           </MyTypography>
         </div>
         <div className="flex justify-between">
@@ -112,7 +316,7 @@ export default function InformacoesAtividade({
             Custo Crianças
           </MyTypography>
           <MyTypography variant="label" weight="bold" className="mb-1">
-            R$ 40,00
+            R$ {priceChildren ?? "0,00"}
           </MyTypography>
         </div>
 
@@ -121,7 +325,7 @@ export default function InformacoesAtividade({
             Tarifa B2
           </MyTypography>
           <MyTypography variant="label" weight="bold" className="mb-1">
-            R$ 40,00
+            R$ {handleTaxDetails().tax ?? "0,00"}
           </MyTypography>
         </div>
 
@@ -138,12 +342,24 @@ export default function InformacoesAtividade({
             weight="bold"
             className="text-primary-600"
           >
-            R$ 350,00
+            R$ {handleTaxDetails().total ?? "0,00"}
           </MyTypography>
         </div>
       </div>
 
-      <div className={cn("space-y-8 my-6", step && "hidden")}>
+      <div className={cn("space-y-8 my-6")}>
+        {(edit || step) && (
+          <MyButton
+            variant="black-border"
+            borderRadius="squared"
+            leftIcon={<MyIcon name="seta" className="rotate-180" />}
+            className="w-full font-bold"
+            size="lg"
+            onClick={onBack}
+          >
+            Voltar para etapa anterior
+          </MyButton>
+        )}
         {!edit && (
           <MyButton
             variant="black-border"
@@ -154,19 +370,6 @@ export default function InformacoesAtividade({
             onClick={() => router.push(PATHS.visualizarAtividade(params))}
           >
             Visualizar atividade
-          </MyButton>
-        )}
-
-        {edit && (
-          <MyButton
-            variant="black-border"
-            borderRadius="squared"
-            leftIcon={<MyIcon name="seta" className="rotate-180" />}
-            className="w-full font-bold"
-            size="lg"
-            onClick={onBack}
-          >
-            Voltar para etapa anterior
           </MyButton>
         )}
 

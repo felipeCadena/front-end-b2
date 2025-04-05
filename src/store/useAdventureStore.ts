@@ -1,6 +1,15 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
+function fileToBase64(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
 export interface Recurrence {
   recurrenceWeekly?: string; // "1,3,5" (dias da semana: 1-7)
   recurrenceMonthly?: string; // "15,30" (dias do mês: 1-31)
@@ -16,13 +25,14 @@ export interface SelectionBlock {
 
 export type TypeAdventure = "terra" | "ar" | "mar" | "";
 
-interface AdventureState {
+export interface AdventureState {
   // Dados básicos
   title: string;
   description: string;
   typeAdventure: TypeAdventure;
 
   // Endereço
+  address: string; // endereço completo pra persistir o valor
   addressStreet: string;
   addressPostalCode: string;
   addressNumber: string;
@@ -31,7 +41,7 @@ interface AdventureState {
   addressCity: string;
   addressState: string;
   addressCountry: string;
-  coordinates: string;
+  coordinates: { lat: number; lng: number } | null;
   pointRefAddress: string;
 
   // Detalhes
@@ -41,6 +51,9 @@ interface AdventureState {
   priceChildren: number;
   transportIncluded: boolean;
   picturesIncluded: boolean;
+  waterIncluded: boolean;
+  foodIncluded: boolean;
+  fuelIncluded: boolean;
   personsLimit: number;
   partnerId?: string;
   isInGroup: boolean;
@@ -56,7 +69,7 @@ interface AdventureState {
   selectionBlocks: SelectionBlock[];
 
   // Imagens temporárias (antes de enviar)
-  tempImages: File[];
+  tempImages: (string | File)[];
 
   // Métodos
   setAdventureData: (data: Partial<AdventureState>) => void;
@@ -87,7 +100,7 @@ const initialState = {
   addressCity: "",
   addressState: "",
   addressCountry: "BR",
-  coordinates: "",
+  coordinates: { lat: 0, lng: 0 },
   pointRefAddress: "",
   itemsIncluded: [],
   duration: "",
@@ -95,8 +108,11 @@ const initialState = {
   priceChildren: 0,
   transportIncluded: false,
   picturesIncluded: false,
+  waterIncluded: false,
+  foodIncluded: false,
+  fuelIncluded: false,
   personsLimit: 0,
-  isInGroup: false,
+  isInGroup: true,
   isChildrenAllowed: false,
   difficult: 1,
   hoursBeforeSchedule: 1,
@@ -104,6 +120,7 @@ const initialState = {
   isRepeatable: false,
   recurrences: [],
   tempImages: [],
+  address: "",
 
   selectionBlocks: [
     {
@@ -155,12 +172,13 @@ export const useAdventureStore = create<AdventureState>()(
           ...data,
         })),
 
-      addTempImage: (file) =>
-        set((state) => ({
-          ...state,
-          tempImages: [...state.tempImages, file],
-        })),
-
+      addTempImage: (file: File) => {
+        fileToBase64(file).then((base64) => {
+          set((state) => ({
+            tempImages: [...state.tempImages, base64],
+          }));
+        });
+      },
       removeTempImage: (index) =>
         set((state) => ({
           ...state,

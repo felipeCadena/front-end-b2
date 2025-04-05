@@ -30,6 +30,7 @@ import PATHS from "@/utils/paths";
 import { cn } from "@/utils/cn";
 import { format } from "date-fns";
 import {
+  AdventureState,
   Recurrence,
   TypeAdventure,
   useAdventureStore,
@@ -87,7 +88,15 @@ export default function WebForm({
     updateSelectionBlock,
     difficult,
     duration,
-    addressComplement,
+    pointRefAddress,
+    transportIncluded,
+    picturesIncluded,
+    waterIncluded,
+    foodIncluded,
+    fuelIncluded,
+    tempImages,
+    coordinates,
+    addTempImage,
   } = useAdventureStore();
 
   const [files, setFiles] = React.useState<File[] | null>(null);
@@ -154,7 +163,9 @@ export default function WebForm({
     inputRef.current?.click();
   };
 
-  const handleNextStep = () => {
+  const handleNextStep = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
     handleNext && handleNext();
   };
 
@@ -208,17 +219,28 @@ export default function WebForm({
 
       // Atualiza o store com o endereço
       setAdventureData({
-        addressStreet: locationData.address,
-        coordinates: `${locationData.coordinates.lat}:${locationData.coordinates.lng}`,
+        address: locationData.address,
+        addressStreet: locationData.completeAddress.addressStreet,
+        coordinates: {
+          lat: locationData.coordinates.lat,
+          lng: locationData.coordinates.lng,
+        },
         addressPostalCode: locationData.completeAddress.addressPostalCode,
         addressNumber: locationData.completeAddress.addressNumber,
-        addressComplement: locationData.completeAddress.addressComplement,
         addressNeighborhood: locationData.completeAddress.addressNeighborhood,
         addressCity: locationData.completeAddress.addressCity,
         addressState: locationData.completeAddress.addressState,
       });
     }
   };
+
+  const handleImages = (fileList: FileList) => {
+    const files = Array.from(fileList);
+    for (const file of files) {
+      addTempImage(file); // Usa o método do store que já converte para base64 e salva como string
+    }
+  };
+  console.log(tempImages);
 
   return (
     <main className="space-y-10 my-6">
@@ -422,7 +444,7 @@ export default function WebForm({
 
           <div className="space-y-6 mt-6 p-6 bg-gray-100 border border-gray-300 rounded-lg">
             <div className="grid grid-cols-2 items-center gap-8">
-              <div className="mb-4">
+              <div className="">
                 <MyTypography
                   variant="subtitle4"
                   weight="bold"
@@ -442,17 +464,17 @@ export default function WebForm({
                 className="mt-2"
                 onChange={(e) =>
                   setAdventureData({
-                    addressComplement: e.target.value,
+                    pointRefAddress: e.target.value,
                   })
                 }
-                value={addressComplement}
+                value={pointRefAddress}
               />
             </div>
 
             <GoogleMaps
               location={{
-                lat: address?.coordinates?.lat ?? -22.9519,
-                lng: address?.coordinates?.lng ?? -43.2105,
+                lat: coordinates?.lat ?? -22.9519,
+                lng: coordinates?.lng ?? -43.2105,
               }}
               height="400px"
             />
@@ -462,6 +484,69 @@ export default function WebForm({
             <MySelect
               label="Transporte Incluso"
               className="text-base text-black"
+              value={transportIncluded ? "true" : "false"}
+              onValueChange={(value) =>
+                setAdventureData({
+                  transportIncluded: Boolean(value) ?? false,
+                })
+              }
+            >
+              <SelectTrigger className="py-6 my-1">
+                <SelectValue placeholder="Selecione" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="true">Sim</SelectItem>
+                <SelectItem value="false">Não Oferecemos</SelectItem>
+              </SelectContent>
+            </MySelect>
+
+            <MySelect
+              label="Água inclusa"
+              className="text-base text-black"
+              value={waterIncluded ? "true" : "false"}
+              onValueChange={(value) =>
+                setAdventureData({
+                  waterIncluded: Boolean(value) ?? false,
+                })
+              }
+            >
+              <SelectTrigger className="py-6 my-1">
+                <SelectValue placeholder="Selecione" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="true">Sim</SelectItem>
+                <SelectItem value="false">Não Oferecemos</SelectItem>
+              </SelectContent>
+            </MySelect>
+
+            <MySelect
+              label="Alimentação inclusa"
+              className="text-base text-black"
+              value={foodIncluded ? "true" : "false"}
+              onValueChange={(value) =>
+                setAdventureData({
+                  foodIncluded: Boolean(value) ?? false,
+                })
+              }
+            >
+              <SelectTrigger className="py-6 my-1">
+                <SelectValue placeholder="Selecione" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="true">Sim</SelectItem>
+                <SelectItem value="false">Não Oferecemos</SelectItem>
+              </SelectContent>
+            </MySelect>
+
+            <MySelect
+              label="Combustível incluso"
+              className="text-base text-black"
+              value={fuelIncluded ? "true" : "false"}
+              onValueChange={(value) =>
+                setAdventureData({
+                  fuelIncluded: Boolean(value) ?? false,
+                })
+              }
             >
               <SelectTrigger className="py-6 my-1">
                 <SelectValue placeholder="Selecione" />
@@ -475,6 +560,12 @@ export default function WebForm({
             <MySelect
               label="Fotos da atividade inclusa"
               className="text-base text-black"
+              value={picturesIncluded ? "true" : "false"}
+              onValueChange={(value) =>
+                setAdventureData({
+                  picturesIncluded: Boolean(value) ?? false,
+                })
+              }
             >
               <SelectTrigger className="py-6 my-1">
                 <SelectValue placeholder="Selecione" />
@@ -502,16 +593,8 @@ export default function WebForm({
 
             <Dropzone
               ref={inputRef}
-              disabled={files?.length == 5}
-              onChange={(fileList) => {
-                fileList &&
-                  setFiles((prev) => {
-                    if (prev) {
-                      return [...prev, ...Array.from(fileList)];
-                    }
-                    return [...Array.from(fileList)];
-                  });
-              }}
+              disabled={tempImages?.length == 5}
+              onChange={(files) => files && handleImages(files)}
               multiple={true}
               accept="jpg, png, image/*"
             >
@@ -537,25 +620,31 @@ export default function WebForm({
 
             <div className="grid grid-cols-5 gap-4 my-6">
               {Array.from({ length: 5 }).map((_, index) => {
-                const file = files && files[index];
+                const file = tempImages && tempImages[index];
+
+                const isBase64 = typeof file === "string";
+                const imageUrl = isBase64
+                  ? file
+                  : file instanceof File
+                    ? URL.createObjectURL(file)
+                    : "";
+
                 return file ? (
-                  <div key={file.name} className="relative">
+                  <div key={index} className="relative">
                     <Image
                       width={100}
                       height={100}
-                      src={URL.createObjectURL(file)}
-                      alt={file.name}
+                      src={imageUrl}
+                      alt={`Imagem ${index}`}
                       className="w-full h-[100px] rounded-md object-cover"
                     />
                     <MyIcon
                       name="x-red"
                       className="absolute top-1 right-1 cursor-pointer bg-white rounded-full"
                       onClick={() =>
-                        setFiles((prev) =>
-                          prev
-                            ? prev.filter((item) => item.name !== file.name)
-                            : []
-                        )
+                        setAdventureData({
+                          tempImages: tempImages.filter((_, i) => i !== index),
+                        })
                       }
                     />
                   </div>
@@ -599,7 +688,7 @@ export default function WebForm({
               <MyButton
                 variant="default"
                 borderRadius="squared"
-                onClick={handleNextStep}
+                onClick={(e) => handleNextStep(e)}
                 rightIcon={<MyIcon name="seta-direita" />}
               >
                 Próximo

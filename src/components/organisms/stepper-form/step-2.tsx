@@ -107,7 +107,7 @@ export default function CadastroParceiro({
             rightIcon={
               <MyIcon
                 name={visibility ? "hide" : "eye"}
-                className="mr-4 mt-2 cursor-pointer"
+                className="mr-4 mt-7 cursor-pointer"
                 onClick={() => setVisibility((prev) => !prev)}
               />
             }
@@ -125,7 +125,7 @@ export default function CadastroParceiro({
             rightIcon={
               <MyIcon
                 name={visibility ? "hide" : "eye"}
-                className="mr-4 mt-2 cursor-pointer"
+                className="mr-4 mt-7 cursor-pointer"
                 onClick={() => setVisibility((prev) => !prev)}
               />
             }

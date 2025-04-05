@@ -1,6 +1,22 @@
 import { api } from "@/libs/api";
 // Removed duplicate Adventure interface declaration
 
+type Media = {
+  id: string;
+  url: string;
+  name: string;
+  title: string | null;
+  description: string | null;
+  mimetype: string;
+  adventureId: number;
+  scheduleId: number | null;
+  index: number | null;
+  isDefault: boolean;
+  createdAt: string; // ou Date, dependendo de como você lida com datas
+  updatedAt: string; // ou Date
+  uploadUrl: string;
+};
+
 export interface GetAdventuresResponse {
   limit: number;
   skipped: number;
@@ -56,7 +72,7 @@ export interface Adventure {
   qntRatings: number;
   sumTotalRatings: number;
   personsLimit: number;
-  partnerId: number;
+  partnerId?: number;
   partner: AdventurePartner;
   isInGroup: boolean;
   isChildrenAllowed: boolean;
@@ -87,7 +103,7 @@ export interface CreateAdventureBody {
   coordinates: string;
   pointRefAddress: string;
   description: string;
-  itemsIncluded: string[];
+  itemsIncluded: string;
   duration: string;
   priceAdult: number;
   priceChildren: number;
@@ -98,9 +114,9 @@ export interface CreateAdventureBody {
   partnerId?: string;
   isInGroup: boolean;
   isChildrenAllowed: boolean;
-  difficult: 1 | 2 | 3 | 4 | 5;
-  daysBeforeSchedule: number;
-  daysBeforeCancellation: number;
+  difficult: number;
+  hoursBeforeSchedule: number;
+  hoursBeforeCancellation: number;
   isRepeatable: boolean;
   recurrences?: {
     recurrenceWeekly?: string; // e.g., "1,3,5"
@@ -209,13 +225,16 @@ export const adventures = {
     files: Array<{
       filename: string;
       mimetype: string;
-      title: string;
-      description: string;
-      isDefault: boolean;
+      title?: string;
+      description?: string;
+      isDefault?: boolean;
     }>
-  ): Promise<void> => {
+  ): Promise<Media[]> => {
     try {
-      await api.post<void>(`/adventures/${id}/media`, { files });
+      const response = await api.post<Media[]>(`/adventures/${id}/media`, {
+        files,
+      });
+      return response.data;
     } catch (error) {
       console.error("Erro ao adicionar mídia:", error);
       throw error;

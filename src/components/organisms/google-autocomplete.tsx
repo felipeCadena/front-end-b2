@@ -3,6 +3,9 @@ import { autocomplete, getPlaceDetails } from "@/libs/google";
 import { useDebounce } from "@/hooks/useDebounce";
 import { StandaloneSearchBox } from "@react-google-maps/api";
 import { useGoogleMaps } from "@/providers/google-provider";
+import MyTextInput from "../atoms/my-text-input";
+import MyIcon from "../atoms/my-icon";
+import { useAdventureStore } from "@/store/useAdventureStore";
 
 interface AddressData {
   addressStreet: string;
@@ -31,11 +34,7 @@ export default function AutocompleteCombobox({
   onLocationSelected?: (location: LocationData) => void;
 }) {
   const { isLoaded } = useGoogleMaps();
-  const [predictions, setPredictions] = useState<any[]>([]);
-  const [input, setInput] = useState("");
-  const [open, setOpen] = useState(false);
-
-  const debouncedInput = useDebounce(input, 500);
+  const { address, setAdventureData } = useAdventureStore();
 
   function extractAddressComponents(data: any) {
     const components = data.address_components;
@@ -69,29 +68,16 @@ export default function AutocompleteCombobox({
     return address;
   }
 
-  React.useEffect(() => {
-    if (debouncedInput) {
-      const fetchPredictions = async () => {
-        const results = await autocomplete(debouncedInput);
-
-        if (results) {
-          setPredictions(results ?? []);
-          setOpen(results.length > 0);
-        }
-      };
-      fetchPredictions();
-    } else {
-      setPredictions([]);
-      setOpen(false);
-    }
-  }, [debouncedInput]);
-
   const handlePlaceSelect = async (prediction: any) => {
-    setInput(prediction.formatted_address);
-    setOpen(false);
-
-    const coordinates = await getPlaceDetails(prediction.place_id);
     const addressComponents = extractAddressComponents(prediction);
+    const formattedAddress = prediction.formatted_address;
+
+    const { lat, lng } = prediction.geometry?.location;
+    const coordinates = { lat: lat(), lng: lng() };
+
+    setAdventureData({
+      address: formattedAddress,
+    });
 
     onLocationSelected?.({
       address: prediction.formatted_address,
@@ -115,10 +101,13 @@ export default function AutocompleteCombobox({
             }
           }}
         >
-          <input
+          <MyTextInput
             type="text"
             placeholder="Digite um endereço"
-            className="w-full h-12 px-4 border border-gray-300 rounded"
+            noHintText
+            leftIcon={<MyIcon name="localizacao" />}
+            value={address} // Exibe o endereço salvo
+            onChange={(e) => setAdventureData({ address: e.target.value })}
           />
         </StandaloneSearchBox>
       )}
