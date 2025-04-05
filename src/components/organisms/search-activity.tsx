@@ -43,6 +43,7 @@ export default function SearchActivity({ className }: { className?: string }) {
               onClick={() => {
                 setAdventures(filterAdventure ?? []);
                 setSearchedAdventures(debouncedValue);
+                setSearch('');
               }}
             >
               Pesquisar
