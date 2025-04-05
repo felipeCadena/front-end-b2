@@ -88,8 +88,6 @@ export default function InformacoesAtividade({
     return JSON.stringify(items);
   };
 
-  console.log(handleItemsIncluded());
-
   const handleNext = () => {
     if (edit) {
       router.push(

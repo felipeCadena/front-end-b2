@@ -30,8 +30,6 @@ export default function Informacoes({
     handleNext();
   };
 
-  console.log(payday);
-
   return (
     <div
       className={cn(

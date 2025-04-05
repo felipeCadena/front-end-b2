@@ -23,7 +23,6 @@ export default function StepperForm() {
   };
 
   const handleBack = () => {
-    console.log(currentStep);
     if (currentStep > 0) {
       setCurrentStep((prev) => prev - 1);
     }

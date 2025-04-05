@@ -240,7 +240,6 @@ export default function WebForm({
       addTempImage(file); // Usa o método do store que já converte para base64 e salva como string
     }
   };
-  console.log(tempImages);
 
   return (
     <main className="space-y-10 my-6">

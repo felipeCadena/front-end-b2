@@ -9,7 +9,7 @@ interface AdventureStore {
 const useAdventures = create<AdventureStore>((set, get) => {
   const initializeAdventures = async () => {
     const fetchedAdventures = await adventures.getAdventures();
-    set({ adventures: fetchedAdventures.data });
+    set({ adventures: fetchedAdventures });
   };
 
   // Initialize adventures when the store is created
