@@ -1,19 +1,28 @@
-"use client";
+'use client';
 
-import {
-  activitiesAir,
-  activitiesLand,
-  activitiesOcean,
-  newActivities,
-} from "@/common/constants/mock";
-import MyTypography from "@/components/atoms/my-typography";
-import ShoppingCard from "@/components/molecules/shopping-card";
-import ActivitiesFilter from "@/components/organisms/activities-filter";
-import SearchActivity from "@/components/organisms/search-activity";
-import CarouselCustom from "@/components/templates/second-section/carousel-custom";
-import React from "react";
+import MyTypography from '@/components/atoms/my-typography';
+import ShoppingCard from '@/components/molecules/shopping-card';
+import ActivitiesFilter from '@/components/organisms/activities-filter';
+import SearchActivity from '@/components/organisms/search-activity';
+import CarouselCustom from '@/components/templates/second-section/carousel-custom';
+import React from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { Adventure, adventures } from '@/services/api/adventures';
 
 export default function AtividadesTemplate() {
+  const { data: activities } = useQuery({
+    queryKey: ['activities'],
+    queryFn: () => adventures.getAdventures({ limit: 30, skip: 0 }),
+  });
+
+  const filterActivity = (typeAdventure: string) => {
+    return (
+      activities?.filter(
+        (activity) => activity.typeAdventure === typeAdventure
+      ) ?? []
+    );
+  };
+
   return (
     <section className="">
       <SearchActivity />
@@ -36,9 +45,9 @@ export default function AtividadesTemplate() {
           Atividades Aéreas
         </MyTypography>
         <CarouselCustom
-          activities={newActivities.map((activity) => ({
+          activities={filterActivity('ar').map((activity) => ({
             ...activity,
-            addressComplement: activity.addressComplement || "",
+            addressComplement: activity.addressComplement || '',
           }))}
         />
 
@@ -52,9 +61,9 @@ export default function AtividadesTemplate() {
           Atividades Terrestres
         </MyTypography>
         <CarouselCustom
-          activities={newActivities.map((activity) => ({
+          activities={filterActivity('terra').map((activity) => ({
             ...activity,
-            addressComplement: activity.addressComplement || "",
+            addressComplement: activity.addressComplement || '',
           }))}
         />
 
@@ -68,13 +77,13 @@ export default function AtividadesTemplate() {
           Atividades Aquática
         </MyTypography>
         <CarouselCustom
-          activities={newActivities.map((activity) => ({
+          activities={filterActivity('mar').map((activity) => ({
             ...activity,
-            addressComplement: activity.addressComplement || "",
+            addressComplement: activity.addressComplement || '',
           }))}
         />
       </div>
-      <ShoppingCard items={"1"} />
+      <ShoppingCard items={'1'} />
     </section>
   );
 }
