@@ -1,39 +1,51 @@
-"use client";
+'use client';
 
-import { notifications } from "@/common/constants/mock";
-import MyButton from "@/components/atoms/my-button";
-import MyIcon from "@/components/atoms/my-icon";
-import MyTypography from "@/components/atoms/my-typography";
-import { cn } from "@/utils/cn";
-import { formatDate, getData, getHora, isDateInPast } from "@/utils/formatters";
-import PATHS from "@/utils/paths";
-import { useRouter } from "next/navigation";
-import React from "react";
+import { notifications } from '@/common/constants/mock';
+import MyButton from '@/components/atoms/my-button';
+import MyIcon from '@/components/atoms/my-icon';
+import MyTypography from '@/components/atoms/my-typography';
+import { notificationsService } from '@/services/api/notifications';
+import { cn } from '@/utils/cn';
+import { formatDate, getData, getHora, isDateInPast } from '@/utils/formatters';
+import PATHS from '@/utils/paths';
+import { useQuery } from '@tanstack/react-query';
+import { useRouter } from 'next/navigation';
+import React from 'react';
 
 export default function Notificacoes() {
   const router = useRouter();
 
+  const { data: userNotifications = [] } = useQuery({
+    queryKey: ['notifications'],
+    queryFn: () =>
+      notificationsService.listNotifications({
+        limit: 30,
+      }),
+  });
+
+  console.log('NOTIFICATIONS ===>', userNotifications);
+
   const getMonthName = (timestamp: string) => {
     const months = [
-      "Janeiro",
-      "Fevereiro",
-      "Março",
-      "Abril",
-      "Maio",
-      "Junho",
-      "Julho",
-      "Agosto",
-      "Setembro",
-      "Outubro",
-      "Novembro",
-      "Dezembro",
+      'Janeiro',
+      'Fevereiro',
+      'Março',
+      'Abril',
+      'Maio',
+      'Junho',
+      'Julho',
+      'Agosto',
+      'Setembro',
+      'Outubro',
+      'Novembro',
+      'Dezembro',
     ];
 
     const date = new Date(timestamp);
     return months[date.getMonth()];
   };
 
-  const groupedNotifications = notifications.reduce<
+  const groupedNotifications = userNotifications.reduce<
     Record<string, typeof notifications>
   >((acc, notification) => {
     const monthYear = getMonthName(notification.timestamp); // Exemplo: "Fevereiro"
@@ -45,6 +57,8 @@ export default function Notificacoes() {
 
     return acc;
   }, {});
+
+  console.log('GROUPED NOT', groupedNotifications);
 
   return (
     <section className="mx-6">
@@ -76,8 +90,8 @@ export default function Notificacoes() {
                 <div
                   key={notification.id}
                   className={cn(
-                    "w-full flex flex-col gap-2 px-3 py-2 bg-[#F1F0F5] rounded-lg shadow-sm hover:bg-gray-100 relative cursor-pointer",
-                    notification.status == "realizada" && "opacity-70"
+                    'w-full flex flex-col gap-2 px-3 py-2 bg-[#F1F0F5] rounded-lg shadow-sm hover:bg-gray-100 relative cursor-pointer',
+                    notification.status == 'realizada' && 'opacity-70'
                   )}
                   onClick={() =>
                     router.push(PATHS.visualizarNotificacao(notification.id))
@@ -85,34 +99,38 @@ export default function Notificacoes() {
                 >
                   <div
                     className={cn(
-                      "absolute inset-y-0 left-0 w-2 rounded-l-lg",
-                      notification.status == "cancelada"
-                        ? "bg-[#FF7272] opacity-50"
-                        : notification.status == "pendente"
-                          ? "bg-primary-900"
-                          : "bg-[#D6D6D6]"
+                      'absolute inset-y-0 left-0 w-2 rounded-l-lg',
+                      notification.status == 'cancelada'
+                        ? 'bg-[#FF7272] opacity-50'
+                        : notification.status == 'pendente'
+                          ? 'bg-primary-900'
+                          : 'bg-[#D6D6D6]'
                     )}
                   />
 
                   <div className="flex items-center justify-between w-full">
-                  <MyTypography
-                    variant="notification"
-                    weight="semibold"
-                    className="ml-1 mt-1 flex gap-2 items-center"
-                  >
-                    {formatDate(notification.timestamp) == "Agora pouco" && (
-                      <MyIcon name="now" />
+                    <MyTypography
+                      variant="notification"
+                      weight="semibold"
+                      className="ml-1 mt-1 flex gap-2 items-center"
+                    >
+                      {formatDate(notification.timestamp) == 'Agora pouco' && (
+                        <MyIcon name="now" />
+                      )}
+                      {formatDate(notification.timestamp)}
+                      {formatDate(notification.timestamp) != 'Agora pouco' &&
+                        ` - ${getHora(notification.timestamp)}`}
+                    </MyTypography>
+                    {formatDate(notification.timestamp) == 'Agora pouco' && (
+                      <MyButton
+                        className="ml-1"
+                        borderRadius="squared"
+                        size="sm"
+                        variant="default"
+                      >
+                        Novo
+                      </MyButton>
                     )}
-                    {formatDate(notification.timestamp)}
-                    {formatDate(notification.timestamp) != "Agora pouco" &&
-                      ` - ${getHora(notification.timestamp)}`}
-                  </MyTypography>
-                  {formatDate(notification.timestamp) == "Agora pouco" && <MyButton
-                    className="ml-1"
-                    borderRadius="squared"
-                    size="sm"
-                    variant="default"
-                  >Novo</MyButton>}
                   </div>
 
                   <MyTypography
@@ -127,8 +145,8 @@ export default function Notificacoes() {
                     weight="regular"
                     className="ml-1 flex justify-between"
                   >
-                    {notification.description.slice(0, 30) + "..."}
-                    <MyIcon name={notification.read ? "read" : "unread"} />
+                    {notification.description.slice(0, 30) + '...'}
+                    <MyIcon name={notification.read ? 'read' : 'unread'} />
                   </MyTypography>
                 </div>
               ))}

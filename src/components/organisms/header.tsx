@@ -38,8 +38,11 @@ export default function Header() {
     queryFn: async () => {
       const user = await users.getUserLogged();
       if (user) {
+        console.log('USER --> ', user);
         setUser(user);
       }
+
+      console.log('WITHOUT USER --> ', user);
       return user;
     },
     enabled: Boolean(session?.user),
