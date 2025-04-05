@@ -1,14 +1,15 @@
-import { type NextAuthOptions, type User } from "next-auth";
-import { addSeconds, isAfter, parseISO } from "date-fns";
+import { type NextAuthOptions, type User } from 'next-auth';
+import { addSeconds, isAfter, parseISO } from 'date-fns';
 
-import GoogleProvider from "next-auth/providers/google";
-import FacebookProvider from "next-auth/providers/facebook";
-import CredentialsProvider from "next-auth/providers/credentials";
-import { authService } from "@/services/api/auth";
-import { jwtDecode } from "jwt-decode";
-import { DEFAULT_ROLE_PATHS } from "@/utils/paths";
+import GoogleProvider from 'next-auth/providers/google';
+import FacebookProvider from 'next-auth/providers/facebook';
+import CredentialsProvider from 'next-auth/providers/credentials';
+import { authService } from '@/services/api/auth';
+import { jwtDecode } from 'jwt-decode';
+import { DEFAULT_ROLE_PATHS } from '@/utils/paths';
+import { signOut } from 'next-auth/react';
 
-declare module "next-auth" {
+declare module 'next-auth' {
   interface User {
     expiresIn?: number;
   }
@@ -45,18 +46,18 @@ export const authOptions: NextAuthOptions = {
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-      name: "google",
+      name: 'google',
     }),
     FacebookProvider({
       clientId: process.env.FACEBOOK_CLIENT_ID!,
       clientSecret: process.env.FACEBOOK_CLIENT_SECRET!,
-      name: "facebook",
+      name: 'facebook',
     }),
     CredentialsProvider({
-      name: "credentials",
+      name: 'credentials',
       credentials: {
-        email: { label: "Email", type: "text" },
-        password: { label: "Password", type: "password" },
+        email: { label: 'Email', type: 'text' },
+        password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials) {
         try {
@@ -64,7 +65,11 @@ export const authOptions: NextAuthOptions = {
 
           const response = await authService.login(credentials);
 
-          if (!response?.access_token) return null;
+          if (!response?.access_token) {
+            signOut();
+
+            return null;
+          }
 
           // Decodifica o token para obter os dados do usuário
           const decodedToken = jwtDecode<DecodedToken>(response.access_token);
@@ -88,7 +93,7 @@ export const authOptions: NextAuthOptions = {
               ],
           };
         } catch (error) {
-          console.error("Erro no login:", error);
+          console.error('Erro no login:', error);
           return null;
         }
       },
@@ -98,7 +103,7 @@ export const authOptions: NextAuthOptions = {
     async signIn({ user, account }: SignCallback) {
       try {
         // Se for login social
-        if (account?.provider === "google") {
+        if (account?.provider === 'google') {
           if (!account?.id_token) return false;
 
           const response = await authService.loginWithSocialNetwork(
@@ -127,7 +132,7 @@ export const authOptions: NextAuthOptions = {
             ];
         }
 
-        if (account?.provider === "facebook") {
+        if (account?.provider === 'facebook') {
           if (!account?.access_token) return false;
 
           const response = await authService.loginWithSocialNetwork(
@@ -158,7 +163,7 @@ export const authOptions: NextAuthOptions = {
 
         return true;
       } catch (error) {
-        console.error("Erro no login por rede social:", error);
+        console.error('Erro no login por rede social:', error);
         return false;
       }
     },
@@ -172,7 +177,7 @@ export const authOptions: NextAuthOptions = {
         token.id = user.id;
         token.email = user.email;
         token.defaultPath = user.defaultPath;
-        token.image = user.image ?? "";
+        token.image = user.image ?? '';
         token.expiresAt = user.expiresAt;
 
         return token;
@@ -189,7 +194,7 @@ export const authOptions: NextAuthOptions = {
             token.expiresAt = newExpiresAt;
           }
         } catch (error) {
-          console.error("Erro ao renovar token:", error);
+          console.error('Erro ao renovar token:', error);
         }
       }
 
@@ -217,13 +222,13 @@ export const authOptions: NextAuthOptions = {
     },
   },
   pages: {
-    signIn: "/login",
-    error: "/",
-    signOut: "/",
-    verifyRequest: "/",
+    signIn: '/login',
+    error: '/',
+    signOut: '/',
+    verifyRequest: '/',
   },
   session: {
-    strategy: "jwt",
+    strategy: 'jwt',
     maxAge: 30 * 24 * 60 * 60, // 30 days},
   },
 };

@@ -177,15 +177,15 @@ export const adventures = {
   },
   filterAdventures: async (
     params: GetAdventuresParams
-  ): Promise<GetAdventuresResponse> => {
+  ): Promise<Adventure[]> => {
     try {
-      const response = await api.get<GetAdventuresResponse>(
+      const { data } = await api.get<GetAdventuresResponse>(
         '/adventures/filter',
         {
           params,
         }
       );
-      return response.data;
+      return data.data;
     } catch (error) {
       console.error('Error filtering adventures:', error);
       throw error;
