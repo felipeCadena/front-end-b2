@@ -14,7 +14,8 @@ import { cn } from '@/utils/cn';
 import { useAuthStore } from '@/store/useAuthStore';
 import { useQuery } from '@tanstack/react-query';
 import { users } from '@/services/api/users';
-import { getSession, useSession } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
+import { verifyAccessToken } from '@/utils/verifyAccessToken';
 
 export default function Header() {
   const router = useRouter();
@@ -38,14 +39,17 @@ export default function Header() {
     queryFn: async () => {
       const user = await users.getUserLogged();
       if (user) {
-        console.log('USER --> ', user);
         setUser(user);
       }
 
-      console.log('WITHOUT USER --> ', user);
       return user;
     },
     enabled: Boolean(session?.user),
+  });
+
+  const { data: isTokenValid } = useQuery({
+    queryKey: ['validToken'],
+    queryFn: () => verifyAccessToken(session?.user.expiresAt as number),
   });
 
   return (
@@ -75,7 +79,7 @@ export default function Header() {
         <LanguageDropdown />
 
         <div className="max-sm:hidden">
-          {!user?.role ? (
+          {!isTokenValid ? (
             <button
               onClick={() => router.push(PATHS.login)}
               className="text-sm flex items-center font-semibold gap-1 px-2 md:px-4 py-1 text-[0.9rem] text-white bg-black rounded-full shadow-md"
