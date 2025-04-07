@@ -1,6 +1,6 @@
 import { api } from '@/libs/api';
 
-interface Notification {
+export interface Notification {
   id: number;
   title: string;
   timestamp: string;
