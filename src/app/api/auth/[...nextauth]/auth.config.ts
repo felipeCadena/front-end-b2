@@ -180,16 +180,17 @@ export const authOptions: NextAuthOptions = {
 
       if (Date.now() > token.expiresAt) {
         try {
-          const dataAuth = await authService.refreshToken(token.refreshToken);
+          const dataAuth = await authService.refreshToken();
 
           if (dataAuth?.access_token) {
             const newExpiresAt = Date.now() + dataAuth.expires_in * 1000;
 
             token.accessToken = dataAuth.access_token;
+            token.refreshToken = dataAuth.refresh_token;
             token.expiresAt = newExpiresAt;
           }
-        } catch (error) {
-          console.error("Erro ao renovar token:", error);
+        } catch (err) {
+          console.error("Erro ao renovar token:", (err as any)?.response?.data);
         }
       }
 
@@ -224,6 +225,6 @@ export const authOptions: NextAuthOptions = {
   },
   session: {
     strategy: "jwt",
-    maxAge: 30 * 24 * 60 * 60, // 30 days},
+    maxAge: 30 * 24 * 60 * 60, // 30 days
   },
 };

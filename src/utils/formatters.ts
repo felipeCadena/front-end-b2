@@ -175,3 +175,53 @@ export const getDifficultyNumber = (description: string) => {
   const index = dificulties.indexOf(description);
   return index !== -1 ? index + 1 : null;
 };
+
+export const handleNameActivity = (name: string) => {
+  switch (name) {
+    case "ar":
+      return "Atividades Aéreas";
+    case "terra":
+      return "Atividades Terrestres";
+    case "mar":
+      return "Atividades Aquáticas";
+    default:
+      return "";
+  }
+};
+
+export function formatAddress(address: {
+  addressStreet: string;
+  addressNumber?: string;
+  addressComplement?: string;
+  addressNeighborhood?: string;
+  addressCity: string;
+  addressState: string;
+  addressPostalCode?: string;
+  addressCountry?: string;
+}): string {
+  const {
+    addressStreet,
+    addressNumber,
+    addressComplement,
+    addressNeighborhood,
+    addressCity,
+    addressState,
+    addressPostalCode,
+    addressCountry,
+  } = address;
+
+  const number =
+    addressNumber && addressNumber !== "SN" ? addressNumber : "s/n";
+
+  const parts = [
+    `${addressStreet}, ${number}`,
+    addressComplement,
+    addressNeighborhood,
+    `${addressCity} - ${addressState}`,
+    addressPostalCode,
+    addressCountry === "BR" ? "Brasil" : addressCountry,
+  ];
+
+  // Remove qualquer parte que esteja vazia, nula ou undefined
+  return parts.filter(Boolean).join(", ");
+}

@@ -6,6 +6,7 @@ import { useGoogleMaps } from "@/providers/google-provider";
 import MyTextInput from "../atoms/my-text-input";
 import MyIcon from "../atoms/my-icon";
 import { useAdventureStore } from "@/store/useAdventureStore";
+import { useEditAdventureStore } from "@/store/useEditAdventureStore";
 
 interface AddressData {
   addressStreet: string;
@@ -27,14 +28,17 @@ interface LocationData {
 }
 
 export default function AutocompleteCombobox({
+  edit,
   onLocationSelected,
 }: {
-  icon?: boolean;
-  className?: string;
+  edit?: boolean;
   onLocationSelected?: (location: LocationData) => void;
 }) {
   const { isLoaded } = useGoogleMaps();
   const { address, setAdventureData } = useAdventureStore();
+  const { addressEdit, setEditData } = useEditAdventureStore();
+
+  console.log(addressEdit);
 
   function extractAddressComponents(data: any) {
     const components = data.address_components;
@@ -75,15 +79,27 @@ export default function AutocompleteCombobox({
     const { lat, lng } = prediction.geometry?.location;
     const coordinates = { lat: lat(), lng: lng() };
 
-    setAdventureData({
-      address: formattedAddress,
-    });
+    if (edit) {
+      setEditData({
+        addressEdit: formattedAddress,
+      });
 
-    onLocationSelected?.({
-      address: prediction.formatted_address,
-      coordinates: coordinates,
-      completeAddress: addressComponents,
-    });
+      onLocationSelected?.({
+        address: prediction.formatted_address,
+        coordinates: coordinates,
+        completeAddress: addressComponents,
+      });
+    } else {
+      setAdventureData({
+        address: formattedAddress,
+      });
+
+      onLocationSelected?.({
+        address: prediction.formatted_address,
+        coordinates: coordinates,
+        completeAddress: addressComponents,
+      });
+    }
   };
 
   const inputref = React.useRef<google.maps.places.SearchBox | null>(null);
@@ -101,14 +117,25 @@ export default function AutocompleteCombobox({
             }
           }}
         >
-          <MyTextInput
-            type="text"
-            placeholder="Digite um endereço"
-            noHintText
-            leftIcon={<MyIcon name="localizacao" />}
-            value={address} // Exibe o endereço salvo
-            onChange={(e) => setAdventureData({ address: e.target.value })}
-          />
+          {edit ? (
+            <MyTextInput
+              type="text"
+              placeholder="Digite um endereço"
+              noHintText
+              leftIcon={<MyIcon name="localizacao" />}
+              value={addressEdit} // Exibe o endereço salvo
+              onChange={(e) => setEditData({ addressEdit: e.target.value })}
+            />
+          ) : (
+            <MyTextInput
+              type="text"
+              placeholder="Digite um endereço"
+              noHintText
+              leftIcon={<MyIcon name="localizacao" />}
+              value={address} // Exibe o endereço salvo
+              onChange={(e) => setAdventureData({ address: e.target.value })}
+            />
+          )}
         </StandaloneSearchBox>
       )}
     </div>

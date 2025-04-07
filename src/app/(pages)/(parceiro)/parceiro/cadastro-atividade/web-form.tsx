@@ -453,7 +453,6 @@ export default function WebForm({
                 </MyTypography>
                 <AutocompleteCombobox
                   onLocationSelected={handleLocationSelected}
-                  className="my-custom-class"
                 />
               </div>
               <MyTextInput

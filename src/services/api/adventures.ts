@@ -1,4 +1,4 @@
-import { api } from '@/libs/api';
+import { api } from "@/libs/api";
 // Removed duplicate Adventure interface declaration
 
 type Media = {
@@ -33,12 +33,12 @@ export interface GetAdventuresParams {
 }
 
 export interface AdventureImage {
-  id: number;
-  adventureId: number;
-  name: string;
-  mimetype: string;
-  title: string;
-  isDefault: boolean;
+  id?: string;
+  adventureId?: number;
+  name?: string;
+  mimetype?: string;
+  title?: string;
+  isDefault?: boolean;
   url: string;
 }
 
@@ -47,8 +47,16 @@ export interface AdventurePartner {
   fantasyName: string;
   logo: string;
 }
+
+export interface AdventureSchedule {
+  id: string;
+  adventureId: number;
+  type: string;
+  value: number;
+  groupId: string;
+}
 export interface Adventure {
-  id: number;
+  id: string;
   title: string;
   addressStreet: string;
   addressPostalCode: string;
@@ -67,7 +75,7 @@ export interface Adventure {
   priceChildren: string;
   transportIncluded: boolean;
   picturesIncluded: boolean;
-  typeAdventure: string;
+  typeAdventure: "ar" | "terra" | "mar" | "";
   averageRating: number;
   qntRatings: number;
   sumTotalRatings: number;
@@ -77,12 +85,13 @@ export interface Adventure {
   isInGroup: boolean;
   isChildrenAllowed: boolean;
   difficult: number;
-  daysBeforeSchedule: number;
-  daysBeforeCancellation: number;
+  hoursBeforeSchedule: number;
+  hoursBeforeCancellation: number;
   onSite: boolean;
   adminApproved: boolean;
   suspend: boolean;
   hour: number;
+  recurrence: AdventureSchedule[];
   isRepeatable: boolean;
   totalFavorites: number;
   createdAt: string;
@@ -105,11 +114,11 @@ export interface CreateAdventureBody {
   description: string;
   itemsIncluded: string;
   duration: string;
-  priceAdult: number;
-  priceChildren: number;
+  priceAdult: string;
+  priceChildren: string;
   transportIncluded: boolean;
   picturesIncluded: boolean;
-  typeAdventure: 'terra' | 'ar' | 'mar';
+  typeAdventure: "terra" | "ar" | "mar";
   personsLimit: number;
   partnerId?: string;
   isInGroup: boolean;
@@ -128,21 +137,20 @@ export interface CreateAdventureBody {
 export const adventures = {
   createAdventure: async (body: CreateAdventureBody): Promise<Adventure> => {
     try {
-      const { data } = await api.post<Adventure>('/adventures', body);
+      const { data } = await api.post<Adventure>("/adventures", body);
       return data;
     } catch (error) {
-      console.error('Erro ao criar atividade:', error);
+      console.error("Erro ao criar atividade:", error);
       throw error;
     }
   },
   getAdventures: async (params?: GetAdventuresParams): Promise<Adventure[]> => {
     try {
-      const { data } = await api.get('/adventures', {
-        params,
-      });
+      const { data } = await api.get<Adventure[]>(`/adventures`);
+
       return data;
     } catch (error) {
-      console.error('Erro ao recuperar atividades:', error);
+      console.error("Erro ao recuperar atividades:", error);
       throw error;
     }
   },
@@ -151,7 +159,7 @@ export const adventures = {
       const { data } = await api.get<Adventure>(`/adventures/${id}`);
       return data;
     } catch (error) {
-      console.error('Erro ao recuperar atividade:', error);
+      console.error("Erro ao recuperar atividade:", error);
       throw error;
     }
   },
@@ -160,10 +168,10 @@ export const adventures = {
     body: Partial<CreateAdventureBody>
   ): Promise<Adventure> => {
     try {
-      const { data } = await api.put<Adventure>(`/adventures/${id}`, body);
+      const { data } = await api.patch<Adventure>(`/adventures/${id}`, body);
       return data;
     } catch (error) {
-      console.error('Erro ao atualizar atividade:', error);
+      console.error("Erro ao atualizar atividade:", error);
       throw error;
     }
   },
@@ -171,7 +179,7 @@ export const adventures = {
     try {
       await api.delete<void>(`/adventures/${id}`);
     } catch (error) {
-      console.error('Erro ao recuperar atividade:', error);
+      console.error("Erro ao recuperar atividade:", error);
       throw error;
     }
   },
@@ -180,14 +188,14 @@ export const adventures = {
   ): Promise<GetAdventuresResponse> => {
     try {
       const response = await api.get<GetAdventuresResponse>(
-        '/adventures/filter',
+        "/adventures/filter",
         {
           params,
         }
       );
       return response.data;
     } catch (error) {
-      console.error('Error filtering adventures:', error);
+      console.error("Error filtering adventures:", error);
       throw error;
     }
   },
@@ -196,7 +204,7 @@ export const adventures = {
     try {
       await api.post<void>(`/adventures/${id}/favorite`);
     } catch (error) {
-      console.error('Erro ao adicionar favorito:', error);
+      console.error("Erro ao adicionar favorito:", error);
       throw error;
     }
   },
@@ -204,16 +212,16 @@ export const adventures = {
     try {
       await api.post<void>(`/adventures/${id}/favorite/${favoriteId}/remove`);
     } catch (error) {
-      console.error('Erro ao remover favorito:', error);
+      console.error("Erro ao remover favorito:", error);
       throw error;
     }
   },
   listFavorites: async (): Promise<Adventure[]> => {
     try {
-      const { data } = await api.get<Adventure[]>('/adventures/favorites');
+      const { data } = await api.get<Adventure[]>("/adventures/favorites");
       return data;
     } catch (error) {
-      console.error('Erro ao listar favoritos:', error);
+      console.error("Erro ao listar favoritos:", error);
       throw error;
     }
   },
@@ -234,28 +242,47 @@ export const adventures = {
       });
       return response.data;
     } catch (error) {
-      console.error('Erro ao adicionar mídia:', error);
+      console.error("Erro ao adicionar mídia:", error);
       throw error;
     }
   },
   updateMedia: async (
-    id: number,
-    mediaID: number,
+    id: string,
+    mediaID: string,
     body: {
-      name: string;
+      name?: string;
       mimetype: string;
-      title: string;
-      description: string;
-      isDefault: boolean;
-    },
-    updateBinary: boolean = false
-  ): Promise<void> => {
+      title?: string;
+      description?: string;
+      isDefault?: boolean;
+      file: Blob | Buffer;
+    }
+    // updateBinary: boolean = false
+  ): Promise<any> => {
     try {
-      await api.put<void>(`/adventures/${id}/media/${mediaID}`, body, {
-        params: { updateBinary },
+      const response = await api.patch<any>(
+        `/adventures/${id}/media/${mediaID}?updateBinary=true`,
+        {
+          mimetype: body.mimetype,
+        }
+      );
+
+      const { url } = await fetch(response.data.uploadUrl, {
+        method: "PUT",
+        body: body.file,
+        headers: {
+          "Content-Type": body.mimetype,
+        },
+      }).then((res) => {
+        if (!res.ok) {
+          console.log("Failed to upload media", res);
+        }
+        return res;
       });
+      console.log(url);
+      return url;
     } catch (error) {
-      console.error('Erro ao atualizar mídia:', error);
+      console.error("Erro ao atualizar mídia:", error);
       throw error;
     }
   },
@@ -263,7 +290,7 @@ export const adventures = {
     try {
       await api.delete<void>(`/adventures/${id}/media/${mediaID}`);
     } catch (error) {
-      console.error('Erro ao deletar mídia:', error);
+      console.error("Erro ao deletar mídia:", error);
       throw error;
     }
   },
@@ -272,7 +299,7 @@ export const adventures = {
       const { data } = await api.get<any[]>(`/adventures/${id}/medias`);
       return data;
     } catch (error) {
-      console.error('Erro ao listar mídias:', error);
+      console.error("Erro ao listar mídias:", error);
       throw error;
     }
   },

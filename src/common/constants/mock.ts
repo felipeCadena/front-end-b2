@@ -1338,3 +1338,11 @@ export const album = [
   "/images/atividades/mar/mar-6.jpeg",
   "/images/atividades/mar/mar-7.jpeg",
 ];
+
+export const mockAlbum = [
+  { url: "/images/atividades/ar/ar-1.jpeg" },
+  { url: "/images/atividades/ar/ar-1.jpeg" },
+  { url: "/images/atividades/ar/ar-1.jpeg" },
+  { url: "/images/atividades/ar/ar-1.jpeg" },
+  { url: "/images/atividades/ar/ar-1.jpeg" },
+];

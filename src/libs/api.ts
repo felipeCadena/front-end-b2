@@ -15,13 +15,21 @@ api.interceptors.request.use(async (config) => {
   if (!session?.user.accessToken) return config;
 
   // Se for rota de logout, usa refresh_token
-  if (config.url?.includes("/auth/logout")) {
+  if (
+    config.url?.includes("/auth/logout") ||
+    config.url?.includes("/auth/refresh")
+  ) {
     if (session?.user.refreshToken) {
+      console.log(session?.user.refreshToken);
       config.headers.Authorization = `Bearer ${session?.user.refreshToken}`;
+      console.log("refresh: ", config);
     }
   } else {
     config.headers.Authorization = `Bearer ${session.user.accessToken}`;
+    console.log("access: ", config);
   }
+
+  console.log("final: ", config);
 
   return config;
 });

@@ -11,9 +11,10 @@ import MyTextInput from "@/components/atoms/my-text-input";
 import MyTypography from "@/components/atoms/my-typography";
 import { adventures } from "@/services/api/adventures";
 import { useAdventureStore } from "@/store/useAdventureStore";
+import { useEditAdventureStore } from "@/store/useEditAdventureStore";
 import { cn } from "@/utils/cn";
 import PATHS from "@/utils/paths";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import React from "react";
 
 export default function InformacoesAtividade({
@@ -58,13 +59,15 @@ export default function InformacoesAtividade({
     title,
     typeAdventure,
     coordinates,
-    setAdventureData,
-  } = useAdventureStore();
+    setEditData,
+  } = useEditAdventureStore();
+
+  const { id } = useParams();
 
   const b2Tax = process.env.NEXT_PUBLIC_PERCENTAGE_TAX;
 
   const handleTaxDetails = () => {
-    const total = (priceAdult + priceChildren) * personsLimit;
+    const total = (Number(priceAdult) + Number(priceChildren)) * personsLimit;
     const tax = (total * Number(b2Tax)) / 100;
     const totalWithTax = total - tax;
 
@@ -87,107 +90,69 @@ export default function InformacoesAtividade({
     return JSON.stringify(items);
   };
 
+  const adventure = {
+    title,
+    pointRefAddress,
+    typeAdventure: typeAdventure as "terra" | "ar" | "mar",
+    coordinates: coordinatesString,
+    isInGroup,
+    isChildrenAllowed,
+    priceAdult,
+    priceChildren,
+    personsLimit,
+    addressCity,
+    addressNeighborhood,
+    addressState,
+    addressStreet,
+    addressPostalCode,
+    addressNumber,
+    addressComplement,
+    addressCountry,
+    description,
+    difficult,
+    itemsIncluded: handleItemsIncluded(),
+    transportIncluded,
+    picturesIncluded,
+    duration,
+    hoursBeforeSchedule,
+    hoursBeforeCancellation,
+    isRepeatable,
+    recurrences,
+  };
+
+  console.log(adventure);
+  console.log(tempImages);
+
   const handleSubmit = async () => {
-    try {
-      // 1. Cria a aventura
-
-      const adventure = {
-        title,
-        pointRefAddress,
-        typeAdventure: typeAdventure as "terra" | "ar" | "mar",
-        coordinates: coordinatesString,
-        isInGroup,
-        isChildrenAllowed,
-        priceAdult,
-        priceChildren,
-        personsLimit,
-        addressCity,
-        addressNeighborhood,
-        addressState,
-        addressStreet,
-        addressPostalCode,
-        addressNumber,
-        addressComplement,
-        addressCountry,
-        description,
-        difficult,
-        itemsIncluded: handleItemsIncluded(),
-        transportIncluded,
-        picturesIncluded,
-        duration,
-        hoursBeforeSchedule,
-        hoursBeforeCancellation,
-        isRepeatable,
-        recurrences,
-      };
-
-      console.log(adventure);
-      const adventureResponse = await adventures.createAdventure(adventure);
-
-      const adventureId = adventureResponse.id;
-
-      // // 2. Converte base64 para Blob e cria estrutura dos arquivos
-      const files = await Promise.all(
-        tempImages.map(async (base64Image, index) => {
-          if (typeof base64Image !== "string") {
-            throw new Error(
-              "Esperado base64 string. Verifique o conteúdo de tempImages."
-            );
-          }
-
-          const res = await fetch(base64Image);
-          const arrayBuffer = await res.arrayBuffer();
-          const blob = new Blob([arrayBuffer], {
-            type: base64Image.substring(
-              base64Image.indexOf(":") + 1,
-              base64Image.indexOf(";")
-            ),
-          });
-
-          return {
-            filename: `image-${index}.${blob.type.split("/")[1]}`, // nome do arquivo
-            mimetype: blob.type,
-            file: blob,
-            isDefault: index === 0, // primeira imagem como default
-          };
-        })
-      );
-
-      // 3. Chama addMedia para obter os uploadUrls
-      const uploadMedias = await adventures.addMedia(
-        adventureId,
-        files.map(({ filename, mimetype, isDefault }) => ({
-          filename,
-          mimetype,
-          isDefault,
-        }))
-      );
-
-      // 4. Envia os blobs para os uploadUrls
-      await Promise.all(
-        uploadMedias.map((media, index) =>
-          fetch(media.uploadUrl, {
-            method: "PUT",
-            body: files[index].file,
-            headers: {
-              "Content-Type": files[index].mimetype,
-            },
-          }).then((res) => {
-            if (!res.ok) {
-              console.error(`Falha ao enviar imagem ${index}`, res);
-            }
-          })
-        )
-      );
-
-      router.push(
-        `${PATHS.visualizarAtividadeParceiro(adventureId)}?openModal=true`
-      );
-
-      console.log("Aventura criada e imagens enviadas com sucesso!");
-    } catch (error) {
-      console.error("Erro ao criar aventura ou enviar imagens:", error);
-    }
+    //     try {
+    //       // 1. Atualiza a aventura
+    //       const adventureResponse = await adventures.updateAdventureById(Number(id), adventure);
+    //       // 2. Processa as imagens
+    //       for (const image of tempImages) {
+    //         if (image.file) {
+    //           // Nova imagem
+    //           const mediaResponse = await adventures.updateMedia(Number(id), [{
+    //             filename: image.file.name,
+    //             mimetype: image.file.type,
+    //             isDefault: image.isDefault || false
+    //           }]);
+    //           // Upload do arquivo
+    //           await fetch(mediaResponse[0].uploadUrl, {
+    //             method: "PUT",
+    //             body: image.file,
+    //             headers: {
+    //               "Content-Type": image.file.type,
+    //             },
+    //           });
+    //         } else if (image.id) {
+    //           // Imagem existente - atualiza apenas se necessário
+    //           await adventures.updateMedia(Number(id), Number(image.id))
+    //       }
+    //       router.push(`${PATHS.visualizarAtividadeParceiro(Number(id))}?openModal=true`);
+    //     } catch (error) {
+    //       console.error("Erro ao atualizar aventura ou imagens:", error);
+    //     }
+    // }
   };
 
   return (
@@ -220,7 +185,7 @@ export default function InformacoesAtividade({
                 "border border-black bg-[#E5E4E9] opacity-100"
             )}
             onClick={() =>
-              setAdventureData({
+              setEditData({
                 isInGroup: item.title == "Em grupo" ? true : false,
               })
             }
@@ -241,7 +206,7 @@ export default function InformacoesAtividade({
                 "border border-black bg-[#E5E4E9] opacity-100"
             )}
             onClick={() =>
-              setAdventureData({
+              setEditData({
                 isChildrenAllowed: item.title == "Com crianças" ? true : false,
               })
             }
@@ -257,12 +222,12 @@ export default function InformacoesAtividade({
           label="Quantidade de pessoas"
           placeholder="Digite a quantidade de pessoas"
           classNameLabel="font-bold text-black"
-          className="mt-2 pl-12"
+          className="pl-12"
           noHintText
           leftIcon={<MyIcon name="small-group" className="ml-5 mt-6" />}
           value={personsLimit}
           onChange={(e) =>
-            setAdventureData({
+            setEditData({
               personsLimit: Number(e.target.value),
             })
           }
@@ -271,13 +236,13 @@ export default function InformacoesAtividade({
         <MyTextInput
           label="Valor por adulto"
           placeholder="R$ 200"
-          className="mt-2 pl-12"
+          className="pl-12"
           noHintText
           leftIcon={<MyIcon name="dollar" className="ml-5 mt-5" />}
           value={priceAdult}
           onChange={(e) =>
-            setAdventureData({
-              priceAdult: Number(e.target.value),
+            setEditData({
+              priceAdult: e.target.value,
             })
           }
         />
@@ -285,13 +250,13 @@ export default function InformacoesAtividade({
         <MyTextInput
           label="Valor por criança"
           placeholder="R$ 100"
-          className="mt-2 pl-12"
+          className="pl-12"
           noHintText
           leftIcon={<MyIcon name="dollar" className="ml-5 mt-5" />}
           value={priceChildren}
           onChange={(e) =>
-            setAdventureData({
-              priceChildren: Number(e.target.value),
+            setEditData({
+              priceChildren: e.target.value,
             })
           }
         />
@@ -343,30 +308,16 @@ export default function InformacoesAtividade({
       </div>
 
       <div className={cn("space-y-8 my-6")}>
-        {(edit || step) && (
-          <MyButton
-            variant="black-border"
-            borderRadius="squared"
-            leftIcon={<MyIcon name="seta" className="rotate-180" />}
-            className="w-full font-bold"
-            size="lg"
-            onClick={onBack}
-          >
-            Voltar para etapa anterior
-          </MyButton>
-        )}
-        {/* {!edit && (
-          <MyButton
-            variant="black-border"
-            borderRadius="squared"
-            rightIcon={<MyIcon name="seta" className="ml-3" />}
-            className="w-full font-bold"
-            size="lg"
-            onClick={() => router.push(PATHS.visualizarAtividade(params))}
-          >
-            Visualizar atividade
-          </MyButton>
-        )} */}
+        <MyButton
+          variant="black-border"
+          borderRadius="squared"
+          leftIcon={<MyIcon name="seta" className="rotate-180" />}
+          className="w-full font-bold"
+          size="lg"
+          onClick={() => router.back()}
+        >
+          Voltar para etapa anterior
+        </MyButton>
 
         <MyButton
           variant="default"
@@ -376,7 +327,7 @@ export default function InformacoesAtividade({
           size="lg"
           onClick={handleSubmit}
         >
-          {edit ? "Concluir edição" : "Concluir atividade"}
+          Concluir edição
         </MyButton>
       </div>
     </main>

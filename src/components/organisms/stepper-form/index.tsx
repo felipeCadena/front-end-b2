@@ -11,12 +11,56 @@ import Informacoes from "./step-4";
 import WebForm from "@/app/(pages)/(parceiro)/parceiro/cadastro-atividade/web-form";
 
 import InformacoesAtividade from "@/components/templates/informacoes-atividade";
+import { partnerService } from "@/services/api/partner";
+import { useStepperStore } from "@/store/useStepperStore";
 
 export default function StepperForm() {
   const [currentStep, setCurrentStep] = useState(0);
+  const {
+    bankAccount,
+    bankAgency,
+    bankName,
+    cnpj,
+    email,
+    fantasyName,
+    name,
+    password,
+    payday,
+    phone,
+    pixKey,
+  } = useStepperStore();
+
   const totalSteps = 6;
 
+  // const handleRegisterUser = async () => {
+  //   const response = await
+  // }
+
+  const handleRegisterPartner = async () => {
+    const response = await partnerService.createPartner({
+      fantasyName,
+      businessEmail: email,
+      businessPhone: phone,
+      cnpj,
+      userId: "",
+      bankAccount,
+      bankAgency,
+      bankName,
+      pixKey,
+      payday,
+      companyName: "",
+      about: "",
+      address: "",
+    });
+  };
+
   const handleNext = () => {
+    if (currentStep == 1) {
+    }
+
+    if (currentStep == 3) {
+    }
+
     if (currentStep < totalSteps - 1) {
       setCurrentStep((prev) => prev + 1);
     }

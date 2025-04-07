@@ -115,7 +115,7 @@ export const sideBarClient: any[] = [
 export const sideBarPartnet: any[] = [
   {
     label: "Perfil",
-    link: "/perfil",
+    link: "/parceiro/perfil",
     icon: "perfil",
     web: false,
     menu: true,

@@ -1,22 +1,38 @@
 "use client";
-import { useEffect, useState } from "react";
-import useSearchQueryService from "@/services/use-search-query-service";
+import React from "react";
 import ModalAlert from "@/components/molecules/modal-alert";
 import MyButton from "@/components/atoms/my-button";
-import AtividadesTemplate from "@/components/templates/atividades";
 import SearchActivity from "@/components/organisms/search-activity";
 import ActivitiesFilter from "@/components/organisms/activities-filter";
 import MyTypography from "@/components/atoms/my-typography";
 import CarouselCustom from "@/components/templates/second-section/carousel-custom";
-import { activities, newActivities } from "@/common/constants/mock";
+import { newActivities } from "@/common/constants/mock";
 import MyIcon from "@/components/atoms/my-icon";
 import PATHS from "@/utils/paths";
 import { useRouter } from "next/navigation";
 import { useAlert } from "@/hooks/useAlert";
+import { useQuery } from "@tanstack/react-query";
+import { partnerService } from "@/services/api/partner";
+import { adventures } from "@/services/api/adventures";
 
 export default function SuasAtividades() {
   const router = useRouter();
   const { handleClose, isModalOpen } = useAlert();
+  const [selected, setSelected] = React.useState<"ar" | "terra" | "mar" | "">(
+    ""
+  );
+
+  const params = selected !== "" ? { typeAdventure: selected } : undefined;
+
+  const { data: myAdventures } = useQuery({
+    queryKey: ["myAdventures", selected],
+    queryFn: () => partnerService.getMyAdventures(params),
+  });
+
+  const { data: allAdventures } = useQuery({
+    queryKey: ["adventuresPartners"],
+    queryFn: () => adventures.getAdventures({ orderBy: "qntTotalSales desc" }),
+  });
 
   return (
     <main className="max-w-screen-custom">
@@ -57,7 +73,11 @@ export default function SuasAtividades() {
           >
             Acompanhe suas atividades cadastradas
           </MyTypography>
-          <ActivitiesFilter withText={false} />
+          <ActivitiesFilter
+            withText={false}
+            setSelected={setSelected}
+            selected={selected}
+          />
         </div>
 
         <div className="my-8 md:my-16">
@@ -76,13 +96,7 @@ export default function SuasAtividades() {
             Suas atividades mais bem avaliadas!
           </MyTypography>
 
-          <CarouselCustom
-            activities={newActivities.map((activity) => ({
-              ...activity,
-              addressComplement: activity.addressComplement || "",
-            }))}
-            type="parceiro"
-          />
+          <CarouselCustom activities={myAdventures} type="parceiro" />
 
           <div className="border-2 border-gray-200 w-1/2 mx-auto rounded-md mb-6 md:hidden" />
 
@@ -100,13 +114,7 @@ export default function SuasAtividades() {
           >
             Suas atividades mais vendidas!
           </MyTypography>
-          <CarouselCustom
-            activities={newActivities.map((activity) => ({
-              ...activity,
-              addressComplement: activity.addressComplement || "",
-            }))}
-            type="parceiro"
-          />
+          <CarouselCustom activities={allAdventures} type="parceiro" />
         </div>
       </section>
     </main>

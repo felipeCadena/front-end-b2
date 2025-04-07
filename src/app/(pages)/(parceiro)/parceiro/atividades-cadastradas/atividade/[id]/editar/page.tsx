@@ -3,11 +3,10 @@
 import MyButton from "@/components/atoms/my-button";
 import MyIcon from "@/components/atoms/my-icon";
 import MyTextInput from "@/components/atoms/my-text-input";
-import MyTextarea from "@/components/atoms/my-textarea";
 import MyTypography from "@/components/atoms/my-typography";
 import ActivitiesFilter from "@/components/organisms/activities-filter";
-import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import { useParams, useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
 import {
   MySelect,
   SelectContent,
@@ -27,36 +26,233 @@ import TimePickerModal from "@/components/molecules/time-picker";
 import GoogleMaps from "@/components/organisms/google-maps";
 import { Dropzone } from "@/components/molecules/drop-zone";
 import Image from "next/image";
-import InformacoesAtividade from "@/components/templates/informacoes-atividade";
-import StepperEdit from "./stepper";
+import PATHS from "@/utils/paths";
+import { cn } from "@/utils/cn";
+import { format } from "date-fns";
+import { Recurrence, TypeAdventure } from "@/store/useAdventureStore";
+import MyTextarea from "@/components/atoms/my-textarea";
+import {
+  convertToHours,
+  convertToTimeString,
+  getDifficultyDescription,
+  getDifficultyNumber,
+} from "@/utils/formatters";
+import AutocompleteCombobox from "@/components/organisms/google-autocomplete";
+import { useQuery } from "@tanstack/react-query";
+import { adventures } from "@/services/api/adventures";
+import { useEditAdventureStore } from "@/store/useEditAdventureStore";
 
-export default function WebForm() {
+interface RecurrenceBlock {
+  id: string;
+  recurrenceWeekly: string[];
+  recurrenceHour: string[];
+  dates: Date[];
+}
+
+interface ApiRecurrence {
+  id: string;
+  adventureId: number;
+  type: "HOUR" | "WEEKLY" | "MONTHLY";
+  value: number;
+  groupId: string;
+}
+
+interface AddressData {
+  addressStreet: string;
+  addressPostalCode: string;
+  addressNumber: string;
+  addressComplement: string;
+  addressNeighborhood: string;
+  addressCity: string;
+  addressState: string;
+  addressCountry: string;
+}
+
+interface LocationData {
+  address: string;
+  completeAddress: AddressData;
+  coordinates: {
+    lat: number;
+    lng: number;
+  } | null;
+}
+
+export default function EditAtividade({ type }: { type?: string }) {
   const router = useRouter();
-  const [files, setFiles] = React.useState<File[] | null>(null);
+
+  const {
+    selectionBlocks,
+    initializeFromAdventure,
+    addSelectionBlock,
+    removeSelectionBlock,
+    updateSelectionBlock,
+    hoursBeforeCancellation,
+    hoursBeforeSchedule,
+    difficult,
+    duration,
+    pointRefAddress,
+    transportIncluded,
+    picturesIncluded,
+    waterIncluded,
+    foodIncluded,
+    fuelIncluded,
+    tempImages,
+    coordinates,
+    addTempImage,
+    setEditData,
+    addressEdit,
+  } = useEditAdventureStore();
+
+  const { id } = useParams();
+
   const inputRef = React.useRef<HTMLInputElement>(null);
-  const [next, setNext] = useState(false);
-  const [selectedDates, setSelectedDates] = React.useState<Date[]>([]); // Estado para armazenar as datas selecionadas
-  const [recurrenceWeekly, setRecurrenceWeekly] = useState<string[]>([]);
-  const [recurrenceHour, setRecurrenceHour] = useState<string[]>([]);
-  const [duration, setDuration] = React.useState("");
+  const [address, setAddress] = useState<LocationData | null>(null);
 
-  const [selections, setSelections] = useState([{ id: Date.now() }]);
-
-  const addSelection = () => {
-    setSelections([...selections, { id: Date.now() }]);
+  // Atualiza as datas para um bloco específico
+  const handleDateChange = (blockId: string, dates: Date[]) => {
+    updateSelectionBlock(blockId, "dates", dates);
   };
 
-  const removeSelection = (id: number) => {
-    setSelections(selections.filter((item) => item.id !== id));
+  // Função para formatar os dados antes de salvar
+  const formatRecurrences = (): Recurrence[] => {
+    const formattedRecurrences: Recurrence[] = [];
+
+    selectionBlocks.forEach((block) => {
+      // Cria uma recorrência por bloco
+      if (block.recurrenceHour.length > 0) {
+        const recurrence: Recurrence = {
+          recurrenceHour: block.recurrenceHour.join(","),
+        };
+
+        // Adiciona dias da semana se existirem
+        if (block.recurrenceWeekly.length > 0) {
+          recurrence.recurrenceWeekly = block.recurrenceWeekly
+            .map((day) => daysOfWeek.findIndex((d) => d.value === day) + 1)
+            .filter((index) => index !== -1)
+            .sort((a, b) => a - b)
+            .join(",");
+        }
+
+        // Adiciona dias do mês se existirem
+        if (block.dates.length > 0) {
+          recurrence.recurrenceMonthly = block.dates
+            .map((date) => format(date, "dd"))
+            .map((day) => parseInt(day))
+            .sort((a, b) => a - b)
+            .join(",");
+        }
+
+        // Só adiciona a recorrência se tiver pelo menos um tipo de recorrência
+        if (recurrence.recurrenceWeekly || recurrence.recurrenceMonthly) {
+          formattedRecurrences.push(recurrence);
+        }
+      }
+    });
+
+    return formattedRecurrences;
   };
+
+  // Atualiza o store quando necessário
+  useEffect(() => {
+    const formattedRecurrences = formatRecurrences();
+    console.log("Blocos de seleção:", selectionBlocks);
+    console.log("Recorrências formatadas:", formattedRecurrences);
+
+    setEditData({
+      isRepeatable: formattedRecurrences.length > 0,
+      recurrences: formattedRecurrences, // Agora salvamos as recorrências já formatadas
+    });
+  }, [selectionBlocks]);
 
   const handleClickUpload = () => {
     inputRef.current?.click();
   };
 
+  const handleSelectType = (value: TypeAdventure) => {
+    setEditData({
+      typeAdventure: value,
+    });
+  };
+
+  const handleAddSelectionBlock = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    addSelectionBlock();
+  };
+
+  // Converte de "HH:mm" para "Xh" ou "XhYY"
+  const formatDuration = (hours: string) => {
+    if (!hours) return "";
+
+    const [h, m] = hours.split("h");
+
+    // Garante que temos números válidos
+    const hour = parseInt(h);
+    const minute = parseInt(m);
+
+    if (isNaN(hour)) return "";
+
+    // Mantém os minutos se existirem e forem diferentes de zero
+    if (!isNaN(minute) && minute > 0) {
+      return `${hour}h${minute}`;
+    }
+
+    return `${hour}h`;
+  };
+
+  const handleLocationSelected = (locationData: LocationData) => {
+    console.log("Location Data Received:", locationData);
+
+    if (locationData.coordinates) {
+      // Atualiza o estado com as coordenadas
+      setAddress({
+        address: locationData.address,
+        coordinates: locationData.coordinates,
+        completeAddress: locationData.completeAddress,
+      });
+
+      // Atualiza o store com o endereço
+      setEditData({
+        addressEdit: locationData.address,
+        addressStreet: locationData.completeAddress.addressStreet,
+        coordinates: {
+          lat: locationData.coordinates.lat,
+          lng: locationData.coordinates.lng,
+        },
+        addressPostalCode: locationData.completeAddress.addressPostalCode,
+        addressNumber: locationData.completeAddress.addressNumber,
+        addressNeighborhood: locationData.completeAddress.addressNeighborhood,
+        addressCity: locationData.completeAddress.addressCity,
+        addressState: locationData.completeAddress.addressState,
+      });
+    }
+  };
+
+  const handleImages = (fileList: FileList) => {
+    const files = Array.from(fileList);
+    for (const file of files) {
+      addTempImage(file); // Usa o método do store que já converte para base64 e salva como string
+    }
+  };
+
+  const { data: activity } = useQuery({
+    queryKey: ["editActivity"],
+    queryFn: async () => {
+      const response = await adventures.getAdventureById(Number(id));
+      initializeFromAdventure(response);
+      return response;
+    },
+    // enabled: false,
+  });
+
+  const handleNext = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    router.push(PATHS.editarAtividadeInfo(String(id)));
+  };
+
   return (
-    <main>
-      <div className="space-y-10 my-6 max-sm:hidden">
+    <main className="space-y-10 my-6">
+      <form>
         <div>
           <MyTypography variant="heading2" weight="bold" className="mb-2">
             Edite sua atividade
@@ -70,314 +266,430 @@ export default function WebForm() {
             Atualize as informações da sua atividade
           </MyTypography>
         </div>
-        {!next && <ActivitiesFilter withText={false} />}
+
+        <ActivitiesFilter
+          setSelected={handleSelectType}
+          selected={activity?.typeAdventure ?? ""}
+        />
 
         <div className="border-2  border-gray-300 rounded-lg p-8">
-          {!next && (
+          <div className="space-y-6">
+            <MyTextInput
+              value={activity?.title}
+              onChange={(e) => setEditData({ title: e.target.value })}
+              label="Nome da atividade"
+              placeholder="Nome da atividade"
+              className="mt-2"
+            />
+
+            <MyTextarea
+              value={activity?.description}
+              onChange={(e) =>
+                setEditData({
+                  description: e.target.value,
+                })
+              }
+              label="Descrição da atividade"
+              placeholder="Lorem ipsum dolor sit amet, consectetur di..."
+              classNameLabel="text-black text-base font-bold"
+              rows={5}
+            />
+
+            <div className="grid grid-cols-2 gap-8">
+              <MySelect
+                label="Antecedência de Agendamento"
+                className="text-base text-black"
+                value={convertToTimeString(Number(hoursBeforeSchedule)) ?? ""}
+                onValueChange={(value) =>
+                  setEditData({
+                    hoursBeforeSchedule: convertToHours(value),
+                  })
+                }
+              >
+                <SelectTrigger className="py-6 my-1">
+                  <SelectValue placeholder="Selecione o número de dias" />
+                </SelectTrigger>
+                <SelectContent>
+                  {days.map((day) => (
+                    <SelectItem key={day} value={day}>
+                      {day}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </MySelect>
+
+              <MySelect
+                name="daysBeforeCancellation"
+                label="Antecedência de Cancelamento"
+                className="text-base text-black"
+                value={
+                  convertToTimeString(Number(hoursBeforeCancellation)) ?? ""
+                }
+                onValueChange={(value) =>
+                  setEditData({
+                    hoursBeforeCancellation: convertToHours(value),
+                  })
+                }
+              >
+                <SelectTrigger className="py-6 my-1">
+                  <SelectValue placeholder="Selecione o número de dias" />
+                </SelectTrigger>
+                <SelectContent>
+                  {days.map((day) => (
+                    <SelectItem key={day} value={day}>
+                      {day}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </MySelect>
+            </div>
+          </div>
+          <div className="space-y-10 mt-6">
             <div>
-              <div className="space-y-6">
-                <MyTextInput
-                  label="Nome da Atividade"
-                  placeholder="Nome da atividade"
-                  className="mt-2"
-                />
+              <MyTypography variant="subtitle3" weight="bold" className="mb-3">
+                Repetir a atividade
+              </MyTypography>
 
-                <MyTextarea
-                  placeholder="Lorem ipsum dolor sit amet, consectetur di..."
-                  label="Descrição da atividade"
-                  classNameLabel="text-black text-base font-bold"
-                  rows={5}
-                />
-
-                <div className="grid grid-cols-2 gap-8">
-                  <MySelect
-                    label="Antecedência de Agendamento"
-                    className="text-base text-black"
+              <div className="space-y-4 flex flex-col items-center">
+                {selectionBlocks.map((block, index) => (
+                  <div
+                    key={block.id}
+                    className="w-full border px-6 first:py-4 py-8 rounded-lg space-y-4 relative"
                   >
-                    <SelectTrigger className="py-6 my-1">
-                      <SelectValue placeholder="Selecione o número de dias" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {days.map((day) => (
-                        <SelectItem key={day} value={day}>
-                          {day}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </MySelect>
-
-                  <MySelect
-                    label="Antecedência de Cancelamento"
-                    className="text-base text-black"
-                  >
-                    <SelectTrigger className="py-6 my-1">
-                      <SelectValue placeholder="Selecione o número de dias" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {days.map((day) => (
-                        <SelectItem key={day} value={day}>
-                          {day}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </MySelect>
-                </div>
-              </div>
-              <div className="space-y-10 mt-6">
-                <div>
-                  <MyTypography
-                    variant="subtitle3"
-                    weight="bold"
-                    className="mb-3"
-                  >
-                    Repetir a atividade
-                  </MyTypography>
-
-                  <div className="space-y-4 flex flex-col items-center">
-                    {selections.map((item, index) => (
-                      <div
-                        key={item.id}
-                        className="w-full border px-6 first:py-4 py-8 rounded-lg space-y-4 relative"
-                      >
-                        <MultiSelect
-                          placeholder="Selecione dias da semana"
-                          options={daysOfWeek}
-                          selected={recurrenceWeekly}
-                          setSelected={setRecurrenceWeekly}
-                        />
-
-                        <MyDatePicker
-                          selectedDates={selectedDates}
-                          setSelectedDates={setSelectedDates}
-                          withlabel="Selecione dias específicos"
-                        />
-
-                        <MultiSelect
-                          grid
-                          placeholder="Selecione os horários"
-                          options={hours}
-                          selected={recurrenceHour}
-                          setSelected={setRecurrenceHour}
-                        />
-
-                        {index > 0 && (
-                          <MyIcon
-                            name="subtracao"
-                            title="Remover"
-                            className="absolute -top-3 right-1"
-                            onClick={() => removeSelection(item.id)}
-                          />
-                        )}
-                      </div>
-                    ))}
-
-                    <MyButton
-                      variant="secondary"
-                      borderRadius="squared"
-                      size="lg"
-                      className="w-1/2 mx-auto"
-                      onClick={addSelection}
-                      leftIcon={<MyIcon name="soma" />}
-                    >
-                      Adicionar outro conjunto
-                    </MyButton>
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 items-center gap-8">
-                  <MySelect
-                    label="Grau de Dificuldade"
-                    className="text-base text-black"
-                  >
-                    <SelectTrigger className="py-6 my-1">
-                      <SelectValue placeholder="Selecione" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {dificulties.map((dificulty) => (
-                        <SelectItem key={dificulty} value={dificulty}>
-                          {dificulty}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </MySelect>
-
-                  <div>
-                    <MyTypography
-                      variant="subtitle3"
-                      weight="bold"
-                      className="mb-1"
-                    >
-                      Duração
-                    </MyTypography>
-
-                    <TimePickerModal
-                      iconColor="black"
-                      value={duration}
-                      onChange={setDuration}
+                    <MultiSelect
+                      placeholder="Selecione dias da semana"
+                      options={daysOfWeek}
+                      selected={block.recurrenceWeekly}
+                      setSelected={(value) =>
+                        updateSelectionBlock(
+                          String(block.id),
+                          "recurrenceWeekly",
+                          value
+                        )
+                      }
                     />
+
+                    <MyDatePicker
+                      withlabel="Selecione dias específicos"
+                      selectedDates={block.dates}
+                      setSelectedDates={(dates) =>
+                        handleDateChange(String(block.id), dates)
+                      }
+                    />
+
+                    <MultiSelect
+                      grid
+                      placeholder="Selecione os horários"
+                      options={hours}
+                      selected={block.recurrenceHour}
+                      setSelected={(value) =>
+                        updateSelectionBlock(
+                          String(block.id),
+                          "recurrenceHour",
+                          value
+                        )
+                      }
+                    />
+                    {index > 0 && (
+                      <MyIcon
+                        name="subtracao"
+                        title="Remover"
+                        className="absolute -top-3 right-1"
+                        onClick={() => removeSelectionBlock(String(block.id))}
+                      />
+                    )}
                   </div>
-                </div>
-              </div>
+                ))}
 
-              <div className="space-y-6 mt-6 p-6 bg-gray-100 border border-gray-300 rounded-lg">
-                <div className="grid grid-cols-2 items-center gap-8">
-                  <MyTextInput
-                    label="Local"
-                    placeholder="Rio de Janeiro, Cristo Redentor"
-                    classNameLabel="text-base text-black"
-                    className="mt-2"
-                  />
-
-                  <MyTextInput
-                    label="Ponto de referência"
-                    placeholder="Próximo ao centro"
-                    classNameLabel="text-base text-black"
-                    className="mt-2"
-                  />
-                </div>
-
-                <GoogleMaps
-                  location={{ lat: -22.9519, lng: -43.2105 }}
-                  height="400px"
-                />
-              </div>
-
-              <div className="grid grid-cols-2 items-center gap-8 mt-6">
-                <MySelect
-                  label="Transporte Incluso"
-                  className="text-base text-black"
+                <MyButton
+                  variant="secondary"
+                  borderRadius="squared"
+                  size="lg"
+                  className="w-1/2 mx-auto"
+                  onClick={(e) => handleAddSelectionBlock(e)}
+                  leftIcon={<MyIcon name="soma" />}
                 >
-                  <SelectTrigger className="py-6 my-1">
-                    <SelectValue placeholder="Selecione" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="true">Sim</SelectItem>
-                    <SelectItem value="false">Não Oferecemos</SelectItem>
-                  </SelectContent>
-                </MySelect>
-
-                <MySelect
-                  label="Fotos da atividade inclusa"
-                  className="text-base text-black"
-                >
-                  <SelectTrigger className="py-6 my-1">
-                    <SelectValue placeholder="Selecione" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="true">Sim</SelectItem>
-                    <SelectItem value="false">Não Oferecemos</SelectItem>
-                  </SelectContent>
-                </MySelect>
+                  Adicionar outro conjunto
+                </MyButton>
               </div>
+            </div>
+            <div className="grid grid-cols-2 items-center gap-8">
+              <MySelect
+                label="Grau de Dificuldade"
+                className="text-base text-black"
+                value={getDifficultyDescription(difficult ?? 0) ?? ""}
+                onValueChange={(value) =>
+                  setEditData({
+                    difficult: getDifficultyNumber(value) ?? undefined,
+                  })
+                }
+              >
+                <SelectTrigger className="py-6 my-1">
+                  <SelectValue placeholder="Selecione" />
+                </SelectTrigger>
+                <SelectContent>
+                  {dificulties.map((dificulty) => (
+                    <SelectItem key={dificulty} value={dificulty}>
+                      {dificulty}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </MySelect>
 
-              {/* Seção de Upload de Imagens */}
-              <div className="mt-8">
+              <div>
                 <MyTypography
                   variant="subtitle3"
                   weight="bold"
                   className="mb-1"
                 >
-                  Imagens da Atividade
-                </MyTypography>
-                <MyTypography
-                  variant="body"
-                  weight="medium"
-                  lightness={400}
-                  className="mb-4"
-                >
-                  Máximo de 5 fotos por atividade
+                  Duração
                 </MyTypography>
 
-                <Dropzone
-                  ref={inputRef}
-                  disabled={files?.length == 5}
-                  onChange={(fileList) => {
-                    fileList &&
-                      setFiles((prev) => {
-                        if (prev) {
-                          return [...prev, ...Array.from(fileList)];
-                        }
-                        return [...Array.from(fileList)];
-                      });
-                  }}
-                  multiple={true}
-                  accept="jpg, png, image/*"
-                >
-                  <div
-                    className="flex cursor-pointer flex-col items-center justify-center gap-y-2"
-                    onClick={handleClickUpload}
-                  >
-                    <MyIcon name="upload" />
-                    <div className="text-center space-y-2">
-                      <MyTypography variant="body-big" lightness={400}>
-                        Enviar imagens
-                      </MyTypography>
-                      <MyTypography lightness={400}>
-                        ou arraste os arquivos aqui
-                      </MyTypography>
-                      <MyTypography lightness={400}>JPG e PNG</MyTypography>
-                      <MyTypography lightness={400}>
-                        Tamanho máximo de cada imagem: 1MB
-                      </MyTypography>
-                    </div>
-                  </div>
-                </Dropzone>
-
-                <div className="grid grid-cols-5 gap-4 my-6">
-                  {Array.from({ length: 5 }).map((_, index) => {
-                    const file = files && files[index];
-                    return file ? (
-                      <div key={file.name} className="relative">
-                        <Image
-                          width={100}
-                          height={100}
-                          src={URL.createObjectURL(file)}
-                          alt={file.name}
-                          className="w-full h-[100px] rounded-md object-cover"
-                        />
-                        <MyIcon
-                          name="x-red"
-                          className="absolute top-1 right-1 cursor-pointer bg-white rounded-full"
-                          onClick={() =>
-                            setFiles((prev) =>
-                              prev
-                                ? prev.filter((item) => item.name !== file.name)
-                                : []
-                            )
-                          }
-                        />
-                      </div>
-                    ) : (
-                      <div
-                        key={`placeholder-${index}`}
-                        className="w-full h-[100px] border border-dashed border-neutral-400 rounded-md"
-                      />
-                    );
-                  })}
-                </div>
+                <TimePickerModal
+                  iconColor="black"
+                  value={duration ?? "0"}
+                  onChange={(time) =>
+                    setEditData({ duration: formatDuration(time) })
+                  }
+                />
               </div>
             </div>
-          )}
+          </div>
 
-          {next && <InformacoesAtividade onBack={() => setNext(false)} edit />}
-
-          {!next && (
-            <div className="flex justify-center mt-12">
-              <MyButton
-                size="lg"
-                borderRadius="squared"
-                className="w-1/2"
-                rightIcon={<MyIcon name="seta-direita" />}
-                onClick={() => setNext(true)}
-              >
-                Próximo Passo
-              </MyButton>
+          <div className="space-y-6 mt-6 p-6 bg-gray-100 border border-gray-300 rounded-lg">
+            <div className="grid grid-cols-2 items-center gap-8">
+              <div className="">
+                <MyTypography
+                  variant="subtitle4"
+                  weight="bold"
+                  className="mb-2"
+                >
+                  Local
+                </MyTypography>
+                <AutocompleteCombobox
+                  edit
+                  onLocationSelected={handleLocationSelected}
+                />
+              </div>
+              <MyTextInput
+                label="Ponto de referência"
+                placeholder="Próximo ao centro"
+                classNameLabel="text-base text-black"
+                className="mt-2"
+                onChange={(e) =>
+                  setEditData({
+                    pointRefAddress: e.target.value,
+                  })
+                }
+                value={pointRefAddress}
+              />
             </div>
-          )}
+
+            <GoogleMaps
+              location={{
+                lat: coordinates?.lat ?? -22.9519,
+                lng: coordinates?.lng ?? -43.2105,
+              }}
+              height="400px"
+            />
+          </div>
+
+          <div className="grid grid-cols-2 items-center gap-8 mt-6">
+            <MySelect
+              label="Transporte Incluso"
+              className="text-base text-black"
+              value={transportIncluded ? "true" : "false"}
+              onValueChange={(value) =>
+                setEditData({
+                  transportIncluded: Boolean(value) ?? false,
+                })
+              }
+            >
+              <SelectTrigger className="py-6 my-1">
+                <SelectValue placeholder="Selecione" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="true">Sim</SelectItem>
+                <SelectItem value="false">Não Oferecemos</SelectItem>
+              </SelectContent>
+            </MySelect>
+
+            <MySelect
+              label="Água inclusa"
+              className="text-base text-black"
+              value={waterIncluded ? "true" : "false"}
+              onValueChange={(value) =>
+                setEditData({
+                  waterIncluded: Boolean(value) ?? false,
+                })
+              }
+            >
+              <SelectTrigger className="py-6 my-1">
+                <SelectValue placeholder="Selecione" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="true">Sim</SelectItem>
+                <SelectItem value="false">Não Oferecemos</SelectItem>
+              </SelectContent>
+            </MySelect>
+
+            <MySelect
+              label="Alimentação inclusa"
+              className="text-base text-black"
+              value={foodIncluded ? "true" : "false"}
+              onValueChange={(value) =>
+                setEditData({
+                  foodIncluded: Boolean(value) ?? false,
+                })
+              }
+            >
+              <SelectTrigger className="py-6 my-1">
+                <SelectValue placeholder="Selecione" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="true">Sim</SelectItem>
+                <SelectItem value="false">Não Oferecemos</SelectItem>
+              </SelectContent>
+            </MySelect>
+
+            <MySelect
+              label="Combustível incluso"
+              className="text-base text-black"
+              value={fuelIncluded ? "true" : "false"}
+              onValueChange={(value) =>
+                setEditData({
+                  fuelIncluded: Boolean(value) ?? false,
+                })
+              }
+            >
+              <SelectTrigger className="py-6 my-1">
+                <SelectValue placeholder="Selecione" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="true">Sim</SelectItem>
+                <SelectItem value="false">Não Oferecemos</SelectItem>
+              </SelectContent>
+            </MySelect>
+
+            <MySelect
+              label="Fotos da atividade inclusa"
+              className="text-base text-black"
+              value={picturesIncluded ? "true" : "false"}
+              onValueChange={(value) =>
+                setEditData({
+                  picturesIncluded: Boolean(value) ?? false,
+                })
+              }
+            >
+              <SelectTrigger className="py-6 my-1">
+                <SelectValue placeholder="Selecione" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="true">Sim</SelectItem>
+                <SelectItem value="false">Não Oferecemos</SelectItem>
+              </SelectContent>
+            </MySelect>
+          </div>
+
+          {/* Seção de Upload de Imagens */}
+          <div className="mt-8">
+            <MyTypography variant="subtitle3" weight="bold" className="mb-1">
+              Imagens da Atividade
+            </MyTypography>
+            <MyTypography
+              variant="body"
+              weight="medium"
+              lightness={400}
+              className="mb-4"
+            >
+              Máximo de 5 fotos por atividade
+            </MyTypography>
+
+            <Dropzone
+              ref={inputRef}
+              disabled={tempImages?.length == 5}
+              onChange={(files) => files && handleImages(files)}
+              multiple={true}
+              accept="jpg, png, image/*"
+            >
+              <div
+                className="flex cursor-pointer flex-col items-center justify-center gap-y-2"
+                onClick={handleClickUpload}
+              >
+                <MyIcon name="upload" />
+                <div className="text-center space-y-2">
+                  <MyTypography variant="body-big" lightness={400}>
+                    Enviar imagens
+                  </MyTypography>
+                  <MyTypography lightness={400}>
+                    ou arraste os arquivos aqui
+                  </MyTypography>
+                  <MyTypography lightness={400}>JPG e PNG</MyTypography>
+                  <MyTypography lightness={400}>
+                    Tamanho máximo de cada imagem: 1MB
+                  </MyTypography>
+                </div>
+              </div>
+            </Dropzone>
+
+            <div className="grid grid-cols-5 gap-4 my-6">
+              {Array.from({ length: 5 }).map((_, index) => {
+                const file = tempImages && tempImages[index];
+
+                const isBase64 = typeof file === "string";
+                const imageUrl = isBase64
+                  ? file
+                  : file instanceof File
+                    ? URL.createObjectURL(file)
+                    : "";
+
+                return file ? (
+                  <div key={index} className="relative">
+                    <Image
+                      width={100}
+                      height={100}
+                      src={imageUrl}
+                      alt={`Imagem ${index}`}
+                      className="w-full h-[100px] rounded-md object-cover"
+                    />
+                    <MyIcon
+                      name="x-red"
+                      className="absolute top-1 right-1 cursor-pointer bg-white rounded-full"
+                      onClick={() =>
+                        setEditData({
+                          tempImages: tempImages.filter((_, i) => i !== index),
+                        })
+                      }
+                    />
+                  </div>
+                ) : (
+                  <div
+                    key={`placeholder-${index}`}
+                    className="w-full h-[100px] border border-dashed border-neutral-400 rounded-md"
+                  />
+                );
+              })}
+            </div>
+          </div>
+
+          <div
+            className={cn(
+              "flex justify-center mt-12",
+              type === "cadastro" && "hidden"
+            )}
+          >
+            <MyButton
+              size="lg"
+              borderRadius="squared"
+              className="w-1/2"
+              rightIcon={<MyIcon name="seta-direita" />}
+              onClick={(e) => handleNext(e)}
+            >
+              Próximo Passo
+            </MyButton>
+          </div>
         </div>
-      </div>
-      <div className="md:hidden">
-        <StepperEdit />
-      </div>
+      </form>
     </main>
   );
 }
