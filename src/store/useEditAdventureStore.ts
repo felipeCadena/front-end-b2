@@ -28,7 +28,7 @@ export interface Recurrence {
 
 interface EditAdventureState {
   // Dados básicos
-  id?: number;
+  id?: string;
   title: string;
   description: string;
   typeAdventure: TypeAdventure;

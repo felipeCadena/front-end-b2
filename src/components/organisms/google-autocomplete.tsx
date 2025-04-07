@@ -38,8 +38,6 @@ export default function AutocompleteCombobox({
   const { address, setAdventureData } = useAdventureStore();
   const { addressEdit, setEditData } = useEditAdventureStore();
 
-  console.log(addressEdit);
-
   function extractAddressComponents(data: any) {
     const components = data.address_components;
     const address: AddressData = {

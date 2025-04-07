@@ -19,6 +19,15 @@ export default function Atividade() {
 
   const activity = activities.find((activity) => activity.id === id);
 
+  const images = [
+    { url: "/images/atividades/montanha.webp" },
+    { url: "/images/atividades/paraquedas.webp" },
+    { url: "/images/atividades/mergulho.webp" },
+    { url: "/images/atividades/moto.webp" },
+    { url: "/images/atividades/parapente.webp" },
+    { url: "/images/atividades/canoagem.webp" },
+  ];
+
   return (
     <section className="my-10">
       <div className="relative">
@@ -29,16 +38,7 @@ export default function Atividade() {
         />
 
         <div className="md:hidden">
-          <CarouselImages
-            images={[
-              "/images/atividades/montanha.webp",
-              "/images/atividades/paraquedas.webp",
-              "/images/atividades/mergulho.webp",
-              "/images/atividades/moto.webp",
-              "/images/atividades/parapente.webp",
-              "/images/atividades/canoagem.webp",
-            ]}
-          />
+          <CarouselImages images={images} />
         </div>
         <div className="max-sm:hidden flex flex-col my-8">
           <div className="flex items-start gap-8">

@@ -47,8 +47,8 @@ export interface AdventureState {
   // Detalhes
   itemsIncluded: string[];
   duration: string;
-  priceAdult: number;
-  priceChildren: number;
+  priceAdult: string;
+  priceChildren: string;
   transportIncluded: boolean;
   picturesIncluded: boolean;
   waterIncluded: boolean;
@@ -104,8 +104,8 @@ const initialState = {
   pointRefAddress: "",
   itemsIncluded: [],
   duration: "",
-  priceAdult: 0,
-  priceChildren: 0,
+  priceAdult: "",
+  priceChildren: "",
   transportIncluded: false,
   picturesIncluded: false,
   waterIncluded: false,

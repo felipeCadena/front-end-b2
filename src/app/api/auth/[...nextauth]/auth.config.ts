@@ -7,6 +7,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { authService } from "@/services/api/auth";
 import { jwtDecode } from "jwt-decode";
 import { DEFAULT_ROLE_PATHS } from "@/utils/paths";
+import { signOut } from "next-auth/react";
 
 declare module "next-auth" {
   interface User {
@@ -64,7 +65,11 @@ export const authOptions: NextAuthOptions = {
 
           const response = await authService.login(credentials);
 
-          if (!response?.access_token) return null;
+          if (!response?.access_token) {
+            signOut();
+
+            return null;
+          }
 
           // Decodifica o token para obter os dados do usuário
           const decodedToken = jwtDecode<DecodedToken>(response.access_token);
@@ -190,7 +195,8 @@ export const authOptions: NextAuthOptions = {
             token.expiresAt = newExpiresAt;
           }
         } catch (err) {
-          console.error("Erro ao renovar token:", (err as any)?.response?.data);
+          // console.error("Erro ao renovar token:", (err as any)?.response?.data);
+          console.error("Erro ao renovar token");
         }
       }
 

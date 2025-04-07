@@ -67,6 +67,15 @@ export default function AtividadeAdmin() {
     valorCrianca: 100.0,
   };
 
+  const images = [
+    { url: "/images/atividades/montanha.webp" },
+    { url: "/images/atividades/paraquedas.webp" },
+    { url: "/images/atividades/mergulho.webp" },
+    { url: "/images/atividades/moto.webp" },
+    { url: "/images/atividades/parapente.webp" },
+    { url: "/images/atividades/canoagem.webp" },
+  ];
+
   return (
     <section className="my-10">
       <div className="relative">
@@ -82,16 +91,7 @@ export default function AtividadeAdmin() {
         </div>
 
         <div className="md:hidden">
-          <CarouselImages
-            images={[
-              "/images/atividades/montanha.webp",
-              "/images/atividades/paraquedas.webp",
-              "/images/atividades/cachoeira.webp",
-              "/images/atividades/moto.webp",
-              "/images/atividades/parapente.webp",
-              "/images/atividades/sup.webp",
-            ]}
-          />
+          <CarouselImages images={images} />
         </div>
         <div className="flex flex-col max-sm:items-center my-8">
           <div className="flex max-sm:flex-col items-start justify-between gap-8">

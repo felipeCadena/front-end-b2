@@ -64,7 +64,7 @@ export default function InformacoesAtividade({
   const b2Tax = process.env.NEXT_PUBLIC_PERCENTAGE_TAX;
 
   const handleTaxDetails = () => {
-    const total = (priceAdult + priceChildren) * personsLimit;
+    const total = (Number(priceAdult) + Number(priceChildren)) * personsLimit;
     const tax = (total * Number(b2Tax)) / 100;
     const totalWithTax = total - tax;
 
@@ -277,7 +277,7 @@ export default function InformacoesAtividade({
           value={priceAdult}
           onChange={(e) =>
             setAdventureData({
-              priceAdult: Number(e.target.value),
+              priceAdult: e.target.value,
             })
           }
         />
@@ -291,7 +291,7 @@ export default function InformacoesAtividade({
           value={priceChildren}
           onChange={(e) =>
             setAdventureData({
-              priceChildren: Number(e.target.value),
+              priceChildren: e.target.value,
             })
           }
         />

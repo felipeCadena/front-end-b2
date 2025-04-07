@@ -7,7 +7,7 @@ import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 
 type CarouselImagesProps = {
-  images: AdventureImage[] | undefined;
+  images: Partial<AdventureImage>[] | undefined;
   rounded?: boolean;
 };
 

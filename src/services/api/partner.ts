@@ -185,7 +185,6 @@ export const partnerService = {
       const { data } = await api.get<Adventure[]>(
         `/adventures${queryString ? `?${queryString}` : ""}`
       );
-      console.log(data);
       return data;
     } catch (error) {
       console.error("Error fetching adventures:", error);

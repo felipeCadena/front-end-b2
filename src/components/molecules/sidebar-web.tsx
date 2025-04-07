@@ -15,10 +15,12 @@ import MyIcon from "../atoms/my-icon";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useSession } from "next-auth/react";
 import { authService } from "@/services/api/auth";
+import useNotifications from "@/store/useNotifications";
 
 export default function SidebarMenuWeb({}) {
   const pathname = usePathname();
   const { email, setSideBarActive, sideBarActive } = useLogin();
+  const { unreadNotifications } = useNotifications();
 
   const { user, clearUser } = useAuthStore();
   const { data: session } = useSession();
@@ -82,8 +84,12 @@ export default function SidebarMenuWeb({}) {
                 )}
 
                 {item.label == "Notificações" && (
-                  <div className="absolute flex justify-center items-center bottom-4 left-3 bg-red-400 h-[1.125rem] w-[1.125rem] rounded-full text-white text-xs font-bold">
-                    {notifications?.length ?? 0}
+                  <div
+                    className={`absolute flex justify-center items-center bottom-4 left-3 ${unreadNotifications.length > 0 ? "bg-red-400 h-[1.125rem]" : "bg-slate-300 h-[1.125rem]"} w-[1.125rem] rounded-full text-white text-xs font-bold`}
+                  >
+                    {unreadNotifications?.length > 9
+                      ? "9+"
+                      : unreadNotifications?.length}
                   </div>
                 )}
 

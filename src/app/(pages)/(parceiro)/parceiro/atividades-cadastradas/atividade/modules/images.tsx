@@ -33,8 +33,6 @@ export default function UpdateImages({
     if (ref) ref.click();
   };
 
-  console.log(formData);
-
   const uploadImage = async (file: File, mediaId: string) => {
     if (file) {
       const arrayBuffer = await file.arrayBuffer();
@@ -84,7 +82,7 @@ export default function UpdateImages({
                 onChange={(fileList) => {
                   console.log(image);
                   if (fileList) {
-                    uploadImage(fileList[0], image.id);
+                    uploadImage(fileList[0], image.id ?? "");
                   }
                 }}
                 accept="jpg, png, image/*"

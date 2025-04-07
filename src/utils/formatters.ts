@@ -225,3 +225,23 @@ export function formatAddress(address: {
   // Remove qualquer parte que esteja vazia, nula ou undefined
   return parts.filter(Boolean).join(", ");
 }
+
+export const formatSearchFilter = (search: string) => {
+  if (search === "ar") {
+    return "Mostrando: Atividades aéreas";
+  }
+
+  if (search === "mar") {
+    return "Mostrando: Atividades aquáticas";
+  }
+
+  if (search === "terra") {
+    return "Mostrando: Atividades terrestres";
+  }
+
+  if (search === "") {
+    return "Atividades recém adicionadas:";
+  }
+
+  return `Esses são os resultados da sua busca: ${search}`;
+};
