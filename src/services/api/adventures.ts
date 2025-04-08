@@ -1,4 +1,5 @@
 import { api } from "@/libs/api";
+import axios from "@/libs/http-client/axios";
 // Removed duplicate Adventure interface declaration
 
 type Media = {
@@ -144,6 +145,34 @@ export const adventures = {
       throw error;
     }
   },
+  createAdventureWithToken: async (
+    body: CreateAdventureBody,
+    token: string
+  ): Promise<Adventure> => {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/adventures`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            ...(token && { Authorization: `Bearer ${token}` }),
+          },
+          body: JSON.stringify(body),
+        }
+      );
+      const data = await response.json();
+
+      if (!data.ok) {
+        console.error("Erro ao criar atividade");
+      }
+
+      return data;
+    } catch (error) {
+      console.error("Erro ao criar atividade:", error);
+      throw error;
+    }
+  },
   getAdventures: async (params?: GetAdventuresParams): Promise<Adventure[]> => {
     try {
       const { data } = await api.get<Adventure[]>(`/adventures`);
@@ -241,6 +270,42 @@ export const adventures = {
         files,
       });
       return response.data;
+    } catch (error) {
+      console.error("Erro ao adicionar mídia:", error);
+      throw error;
+    }
+  },
+  addMediaWithToken: async (
+    id: string,
+    files: Array<{
+      filename: string;
+      mimetype: string;
+      title?: string;
+      description?: string;
+      isDefault?: boolean;
+    }>,
+    token: string
+  ): Promise<Media[]> => {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/adventures/${id}/media`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            ...(token && { Authorization: `Bearer ${token}` }),
+          },
+          body: JSON.stringify({
+            files,
+          }),
+        }
+      );
+      const data = await response.json();
+      if (!data.ok) {
+        console.error("Erro ao adicionar mídia");
+      }
+
+      return data;
     } catch (error) {
       console.error("Erro ao adicionar mídia:", error);
       throw error;

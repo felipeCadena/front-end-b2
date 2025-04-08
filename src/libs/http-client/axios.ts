@@ -1,22 +1,20 @@
-import axios, { type AxiosInstance } from "axios";
+import axios, { AxiosInstance } from "axios";
 import { NEXT_PUBLIC_API_BACKEND_URL } from "@/common/constants/baseUrls";
 
-const config = {
-  baseURL: NEXT_PUBLIC_API_BACKEND_URL,
-  headers: {
-    "Access-Control-Allow-Credentials": "true",
-    "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Headers":
-      "Origin,X-Requested-With,Content-Type,Accept,content-type,application/json,multipart/form-data",
-    "Access-Control-Allow-Methods": "GET,PATCH,POST,DELETE,OPTIONS",
-  },
-};
+export default function getAxiosInstance(
+  path: string,
+  token?: string
+): AxiosInstance {
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+  };
 
-export default (path: string, headers?: any): AxiosInstance =>
-  axios.create({
-    ...config,
-    baseURL: `${config.baseURL}/${path}`,
-    headers: {
-      common: headers,
-    },
+  if (token) {
+    headers["Authorization"] = `Bearer ${token}`;
+  }
+
+  return axios.create({
+    baseURL: `${NEXT_PUBLIC_API_BACKEND_URL}/${path}`,
+    headers,
   });
+}

@@ -4,7 +4,6 @@ import MyButton from "@/components/atoms/my-button";
 import MyCheckbox from "@/components/atoms/my-checkbox";
 import MyIcon from "@/components/atoms/my-icon";
 import MyTypography from "@/components/atoms/my-typography";
-import userPartner from "@/store/usePartnerStore";
 import { useStepperStore } from "@/store/useStepperStore";
 import PATHS from "@/utils/paths";
 import { useRouter } from "next/navigation";

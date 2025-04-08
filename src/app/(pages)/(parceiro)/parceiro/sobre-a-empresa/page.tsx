@@ -12,14 +12,51 @@ import {
 } from "@/components/atoms/my-select";
 import MyTextInput from "@/components/atoms/my-text-input";
 import MyTypography from "@/components/atoms/my-typography";
+import { useStepperStore } from "@/store/useStepperStore";
 import { cn } from "@/utils/cn";
+import { formatCNPJ } from "@/utils/formatters";
 import PATHS from "@/utils/paths";
 import { useRouter } from "next/navigation";
 import React from "react";
+import { toast } from "react-toastify";
 
 export default function SobreAEmpresa() {
+  const {
+    setStepData,
+    fantasyName,
+    cnpj,
+    bankAccount,
+    bankAgency,
+    bankName,
+    payday,
+  } = useStepperStore();
+
   const router = useRouter();
-  const [steps, setSteps] = React.useState(1);
+
+  const handleNextStep = () => {
+    if (
+      !fantasyName ||
+      !cnpj ||
+      !bankAccount ||
+      !bankAgency ||
+      !bankName ||
+      !payday
+    ) {
+      toast.error("Todos os campos são obrigatórios!");
+      return;
+    }
+
+    setStepData(3, {
+      fantasyName,
+      cnpj,
+      bankAccount,
+      bankAgency,
+      bankName,
+      payday,
+    });
+
+    router.push(PATHS["cadastro-atividade"]);
+  };
 
   return (
     <section className="m-6 space-y-4 md:space-y-8 md:max-w-screen-md md:mx-auto md:mt-12 md:border-2 md:border-gray-200 md:rounded-xl md:py-16">
@@ -32,12 +69,7 @@ export default function SobreAEmpresa() {
         />
       </div>
 
-      <div
-        className={cn(
-          "space-y-4 md:space-y-8 md:w-2/3 md:mx-auto",
-          steps != 1 && "hidden"
-        )}
-      >
+      <div className={cn("space-y-4 md:space-y-8 md:w-2/3 md:mx-auto")}>
         <div className="space-y-2">
           <MyTypography variant="heading2" weight="bold">
             Agora nos conte um pouco sobre a sua empresa!
@@ -49,34 +81,25 @@ export default function SobreAEmpresa() {
 
         <div className="space-y-2">
           <MyTextInput
-            label="Nome da empresa/pessoa"
-            placeholder="Nome Completo"
+            onChange={(e) => setStepData(3, { fantasyName: e.target.value })}
+            value={fantasyName}
+            label="Nome fantasia empresa"
+            placeholder="Nome fantasia"
             className="mt-2"
           />
           <MyTextInput
-            label="CNPJ ou CPF"
+            onChange={(e) =>
+              setStepData(3, { cnpj: formatCNPJ(e.target.value) })
+            }
+            value={cnpj}
+            label="CNPJ"
             placeholder="XX.XXX.XXX/XXXX-XX"
             className="mt-2"
           />
         </div>
-
-        <MyButton
-          className="w-full hidden md:block"
-          variant="default"
-          borderRadius="squared"
-          size="lg"
-          onClick={() => setSteps(2)}
-        >
-          Próximo
-        </MyButton>
       </div>
 
-      <div
-        className={cn(
-          "md:space-y-8 md:w-2/3 md:mx-auto",
-          steps == 1 && "md:hidden"
-        )}
-      >
+      <div className={cn("md:space-y-8 md:w-2/3 md:mx-auto")}>
         <div className="hidden md:block space-y-2">
           <MyTypography variant="heading2" weight="bold">
             Precisamos de só mais algumas informações
@@ -94,6 +117,8 @@ export default function SobreAEmpresa() {
             label="Número da conta"
             placeholder="0987 2348 2348 1243"
             className="mt-2"
+            value={bankAccount}
+            onChange={(e) => setStepData(4, { bankAccount: e.target.value })}
           />
 
           <div className="flex gap-2">
@@ -101,14 +126,22 @@ export default function SobreAEmpresa() {
               label="Agência"
               placeholder="Digite sua agência"
               className="mt-2"
+              value={bankAgency}
+              onChange={(e) => setStepData(4, { bankAgency: e.target.value })}
             />
 
-            <MyTextInput label="Banco" placeholder="001" className="mt-2" />
+            <MyTextInput
+              label="Banco"
+              placeholder="001"
+              className="mt-2"
+              value={bankName}
+              onChange={(e) => setStepData(4, { bankName: e.target.value })}
+            />
           </div>
 
           <MySelect
-            //   value={}
-            //   onValueChange={}
+            value={String(payday) == "5" ? "05" : String(payday)}
+            onValueChange={(value) => setStepData(4, { payday: +value })}
             label="Data de Pagamento"
           >
             <SelectTrigger className="py-6 mt-1 mb-4">
@@ -126,7 +159,7 @@ export default function SobreAEmpresa() {
           variant="default"
           borderRadius="squared"
           size="lg"
-          onClick={() => router.push(PATHS["cadastro-atividade"])}
+          onClick={handleNextStep}
         >
           Cadastrar Atividades
         </MyButton>

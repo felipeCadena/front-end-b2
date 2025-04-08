@@ -74,7 +74,6 @@ export default function WebForm({
   handleNext?: () => void;
 }) {
   const router = useRouter();
-
   const {
     setAdventureData,
     typeAdventure,
@@ -284,6 +283,7 @@ export default function WebForm({
               placeholder="Lorem ipsum dolor sit amet, consectetur di..."
               classNameLabel="text-black text-base font-bold"
               rows={5}
+              maxLength={2000}
             />
 
             <div className="grid grid-cols-2 gap-8">

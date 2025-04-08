@@ -65,6 +65,9 @@ export default function StepperComponent() {
       case 5:
         setCurrentStep(4);
         break;
+      case 6:
+        setCurrentStep(5);
+        break;
     }
   };
 
@@ -127,17 +130,33 @@ export default function StepperComponent() {
       {currentStep === 3 && <Step4 />}
       {currentStep === 4 && <Step5 />}
       {currentStep === 5 && <Step6 />}
-      {currentStep === 6 && <InformacoesAtividade step edit />}
+      {currentStep === 6 && (
+        <InformacoesAtividade onBack={handleBackToInitial} step edit />
+      )}
 
-      <MyButton
-        onClick={handleNextTo}
-        size="lg"
-        borderRadius="squared"
-        className="w-full my-8"
-        rightIcon={<MyIcon name="seta-direita" />}
-      >
-        Próximo Passo
-      </MyButton>
+      {currentStep != 6 && (
+        <div className="space-y-4 mt-8">
+          <MyButton
+            onClick={handleBackToInitial}
+            size="lg"
+            borderRadius="squared"
+            className="w-full"
+            variant="black-border"
+            leftIcon={<MyIcon name="seta" className="rotate-180" />}
+          >
+            Passo Anterior
+          </MyButton>
+          <MyButton
+            onClick={handleNextTo}
+            size="lg"
+            borderRadius="squared"
+            className="w-full"
+            rightIcon={<MyIcon name="seta-direita" />}
+          >
+            Próximo Passo
+          </MyButton>
+        </div>
+      )}
     </main>
   );
 }

@@ -275,13 +275,13 @@ export default function AtividadeAdmin() {
                 <MyTypography variant="body-big" weight="regular">
                   • Antecedência mínima para agendamento:{" "}
                   <span className="block">
-                    {activity.politicas.antecedenciaAgendamento}
+                    {activity.politicas.antecedenciaAgendamento}h
                   </span>
                 </MyTypography>
                 <MyTypography variant="body-big" weight="regular">
                   • Antecedência mínima para cancelamento:{" "}
                   <span className="block">
-                    {activity.politicas.antecedenciaCancelamento}
+                    {activity.politicas.antecedenciaCancelamento}h
                   </span>
                 </MyTypography>
                 <MyTypography variant="body-big" weight="regular">

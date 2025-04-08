@@ -4,7 +4,6 @@ import MyButton from "@/components/atoms/my-button";
 import MyIcon from "@/components/atoms/my-icon";
 import MyTextInput from "@/components/atoms/my-text-input";
 import MyTypography from "@/components/atoms/my-typography";
-import ControlledTextInput from "@/components/molecules/controlled-text-input";
 import { useStepperStore } from "@/store/useStepperStore";
 import { formatCNPJ } from "@/utils/formatters";
 import React from "react";

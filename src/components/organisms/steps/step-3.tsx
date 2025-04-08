@@ -10,21 +10,50 @@ import {
 } from "@/components/atoms/my-select";
 import MyTypography from "@/components/atoms/my-typography";
 import TimePickerModal from "@/components/molecules/time-picker";
+import { useAdventureStore } from "@/store/useAdventureStore";
+import {
+  getDifficultyDescription,
+  getDifficultyNumber,
+} from "@/utils/formatters";
 import React from "react";
 
 export default function Step3() {
-  const [duration, setDuration] = React.useState("");
+  const { difficult, setAdventureData, duration } = useAdventureStore();
+
+  // Converte de "HH:mm" para "Xh" ou "XhYY"
+  const formatDuration = (hours: string) => {
+    if (!hours) return "";
+
+    const [h, m] = hours.split("h");
+
+    // Garante que temos números válidos
+    const hour = parseInt(h);
+    const minute = parseInt(m);
+
+    if (isNaN(hour)) return "";
+
+    // Mantém os minutos se existirem e forem diferentes de zero
+    if (!isNaN(minute) && minute > 0) {
+      return `${hour}h${minute}`;
+    }
+
+    return `${hour}h`;
+  };
 
   return (
     <section className="space-y-6">
       <MySelect
-        // value={value}
-        // onValueChange={setValue}
         label="Grau de Dificuldade"
         className="text-base text-black"
+        value={getDifficultyDescription(difficult) ?? ""}
+        onValueChange={(value) =>
+          setAdventureData({
+            difficult: getDifficultyNumber(value) ?? undefined,
+          })
+        }
       >
         <SelectTrigger className="py-6 my-1">
-          <SelectValue placeholder="Selecione " />
+          <SelectValue placeholder="Selecione" />
         </SelectTrigger>
         <SelectContent>
           {dificulties.map((dificulty) => (
@@ -42,7 +71,9 @@ export default function Step3() {
         <TimePickerModal
           iconColor="black"
           value={duration}
-          onChange={setDuration}
+          onChange={(time) =>
+            setAdventureData({ duration: formatDuration(time) })
+          }
         />
       </div>
     </section>

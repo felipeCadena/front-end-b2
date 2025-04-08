@@ -14,6 +14,7 @@ interface StepperState {
 
   // Step 3 - Sobre
   fantasyName: string;
+  companyName: string;
   cnpj: string;
 
   // Step 4 - Informações
@@ -39,6 +40,7 @@ const initialState = {
   confirmPassword: "",
 
   fantasyName: "",
+  companyName: "",
   cnpj: "",
 
   bankAccount: "",

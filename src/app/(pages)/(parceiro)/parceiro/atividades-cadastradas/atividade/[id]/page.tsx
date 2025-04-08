@@ -438,7 +438,7 @@ export default function Atividade() {
                   <MyTypography variant="body-big" weight="regular">
                     • Antecedência mínima para agendamento:{" "}
                     <span className="block">
-                      {activity?.hoursBeforeSchedule}
+                      {activity?.hoursBeforeSchedule}h
                     </span>
                   </MyTypography>
                 )}
@@ -446,7 +446,7 @@ export default function Atividade() {
                   <MyTypography variant="body-big" weight="regular">
                     • Antecedência mínima para cancelamento:{" "}
                     <span className="block">
-                      {activity?.hoursBeforeCancellation}
+                      {activity?.hoursBeforeCancellation}h
                     </span>
                   </MyTypography>
                 )}

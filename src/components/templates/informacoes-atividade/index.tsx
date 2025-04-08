@@ -10,9 +10,13 @@ import MyLogo from "@/components/atoms/my-logo";
 import MyTextInput from "@/components/atoms/my-text-input";
 import MyTypography from "@/components/atoms/my-typography";
 import { adventures } from "@/services/api/adventures";
+import { authService } from "@/services/api/auth";
+import { partnerService } from "@/services/api/partner";
 import { useAdventureStore } from "@/store/useAdventureStore";
+import { useStepperStore } from "@/store/useStepperStore";
 import { cn } from "@/utils/cn";
 import PATHS from "@/utils/paths";
+import { getSession, signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import React from "react";
 
@@ -43,7 +47,6 @@ export default function InformacoesAtividade({
     pointRefAddress,
     description,
     difficult,
-    itemsIncluded,
     transportIncluded,
     picturesIncluded,
     waterIncluded,
@@ -61,6 +64,21 @@ export default function InformacoesAtividade({
     setAdventureData,
   } = useAdventureStore();
 
+  const {
+    bankAccount,
+    bankAgency,
+    bankName,
+    cnpj,
+    email,
+    fantasyName,
+    name,
+    password,
+    payday,
+    phone,
+    pixKey,
+    clearForm,
+  } = useStepperStore();
+
   const b2Tax = process.env.NEXT_PUBLIC_PERCENTAGE_TAX;
 
   const handleTaxDetails = () => {
@@ -75,7 +93,7 @@ export default function InformacoesAtividade({
     };
   };
 
-  const coordinatesString = `${coordinates?.lat}x${coordinates?.lng}`;
+  const coordinatesString = `${coordinates?.lat}:${coordinates?.lng}`;
 
   const handleItemsIncluded = () => {
     const items = [];
@@ -89,7 +107,41 @@ export default function InformacoesAtividade({
 
   const handleSubmit = async () => {
     try {
-      // 1. Cria a aventura
+      // 1. Cria partner
+
+      const partner = {
+        fantasyName,
+        businessEmail: email,
+        businessPhone: phone,
+        cnpj,
+        bankAccount,
+        bankAgency,
+        bankName,
+        pixKey,
+        payday,
+        companyName: fantasyName,
+        about: "",
+        address: "",
+        user: {
+          name,
+          email,
+          password,
+          cpf: "",
+          phone,
+        },
+      };
+      await partnerService.createPartner(partner);
+
+      const credentials = {
+        email,
+        password,
+      };
+
+      // 2. Faz login para obter o access_token
+      const userData = await authService.login(credentials);
+      const { access_token } = userData;
+
+      // 3. Cria a aventura
 
       const adventure = {
         title,
@@ -110,6 +162,7 @@ export default function InformacoesAtividade({
         addressComplement,
         addressCountry,
         description,
+        partnerId: "",
         difficult,
         itemsIncluded: handleItemsIncluded(),
         transportIncluded,
@@ -121,12 +174,15 @@ export default function InformacoesAtividade({
         recurrences,
       };
 
-      console.log(adventure);
-      const adventureResponse = await adventures.createAdventure(adventure);
+      // 4. Cria a aventura com o access_token
+      const adventureResponse = await adventures.createAdventureWithToken(
+        adventure,
+        access_token
+      );
 
       const adventureId = adventureResponse.id;
 
-      // // 2. Converte base64 para Blob e cria estrutura dos arquivos
+      // 5. Converte base64 para Blob e cria estrutura dos arquivos
       const files = await Promise.all(
         tempImages.map(async (base64Image, index) => {
           if (typeof base64Image !== "string") {
@@ -153,17 +209,18 @@ export default function InformacoesAtividade({
         })
       );
 
-      // 3. Chama addMedia para obter os uploadUrls
-      const uploadMedias = await adventures.addMedia(
+      // 6. Chama addMedia para obter os uploadUrls
+      const uploadMedias = await adventures.addMediaWithToken(
         adventureId,
         files.map(({ filename, mimetype, isDefault }) => ({
           filename,
           mimetype,
           isDefault,
-        }))
+        })),
+        access_token
       );
 
-      // 4. Envia os blobs para os uploadUrls
+      // 7. Envia os blobs para os uploadUrls
       await Promise.all(
         uploadMedias.map((media, index) =>
           fetch(media.uploadUrl, {
@@ -180,9 +237,14 @@ export default function InformacoesAtividade({
         )
       );
 
-      router.push(
-        `${PATHS.visualizarAtividadeParceiro(adventureId)}?openModal=true`
-      );
+      // 8. Limpa o estado global
+      clearForm();
+
+      // 9. Faz o login no NextAuth + set Session + Redirect
+      await signIn("credentials", {
+        ...credentials,
+        callbackUrl: PATHS.visualizarAtividadeParceiro(adventureId),
+      });
 
       console.log("Aventura criada e imagens enviadas com sucesso!");
     } catch (error) {
