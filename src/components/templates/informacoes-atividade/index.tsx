@@ -16,7 +16,7 @@ import { useAdventureStore } from "@/store/useAdventureStore";
 import { useStepperStore } from "@/store/useStepperStore";
 import { cn } from "@/utils/cn";
 import PATHS from "@/utils/paths";
-import { getSession, signIn, useSession } from "next-auth/react";
+import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import React from "react";
 
@@ -62,6 +62,7 @@ export default function InformacoesAtividade({
     typeAdventure,
     coordinates,
     setAdventureData,
+    clearAdventure,
   } = useAdventureStore();
 
   const {
@@ -239,6 +240,7 @@ export default function InformacoesAtividade({
 
       // 8. Limpa o estado global
       clearForm();
+      clearAdventure();
 
       // 9. Faz o login no NextAuth + set Session + Redirect
       await signIn("credentials", {
