@@ -1,11 +1,11 @@
-import axios from "axios";
-import { jwtDecode } from "jwt-decode";
-import { getSession, signIn } from "next-auth/react";
+import axios from 'axios';
+import { jwtDecode } from 'jwt-decode';
+import { getSession, signIn } from 'next-auth/react';
 
 export const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_BACKEND_URL,
   headers: {
-    "Content-Type": "application/json",
+    'Content-Type': 'application/json',
   },
 });
 
@@ -16,8 +16,8 @@ api.interceptors.request.use(async (config) => {
 
   // Se for rota de logout, usa refresh_token
   if (
-    config.url?.includes("/auth/logout") ||
-    config.url?.includes("/auth/refresh")
+    config.url?.includes('/auth/logout') ||
+    config.url?.includes('/auth/refresh')
   ) {
     if (session?.user.refreshToken) {
       console.log(session?.user.refreshToken);

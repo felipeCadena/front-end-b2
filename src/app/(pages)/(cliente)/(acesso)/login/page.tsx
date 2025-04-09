@@ -36,6 +36,7 @@ export default function Login() {
 
       // Busca a sessão atualizada
       const session = await getSession();
+      console.log('SESSION', session);
 
       if (!session?.user?.role) {
         console.log('Erro ao obter dados do usuário');

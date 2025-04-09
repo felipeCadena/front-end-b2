@@ -11,7 +11,6 @@ export const verifyAccessToken = (tokenExpiration: number) => {
   }
 
   if (today > tokenExpiration) {
-    signOut();
     console.log({ message: 'Token expirado' });
     return false;
   }

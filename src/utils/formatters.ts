@@ -245,3 +245,35 @@ export const formatSearchFilter = (search: string) => {
 
   return `Esses são os resultados da sua busca: ${search}`;
 };
+
+export const formatAdventureType = (type: string) => {
+  if (type === 'ar') {
+    return 'Atividade Aérea';
+  }
+
+  if (type === 'mar') {
+    return 'Atividade Aquática';
+  }
+
+  return 'Atividade Terrestre';
+};
+
+export const formatPrice = (price: string) => {
+  const formattedPrice = Number(price).toLocaleString('pt-BR', {
+    style: 'currency',
+    currency: 'BRL',
+  });
+
+  return formattedPrice;
+};
+
+export const formatDificultyTag = (difficulty: number) => {
+  if (difficulty >= 0 && difficulty < 3) {
+    return 'bg-primary-900';
+  }
+  if (difficulty >= 3 && difficulty <= 4) {
+    return 'bg-orange-200';
+  }
+
+  return 'bg-red-200';
+};
