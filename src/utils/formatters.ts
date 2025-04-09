@@ -282,9 +282,8 @@ export const formatIconName = (name: string) => {
 };
 
 export const selectActivityImage = (activity: Adventure) => {
-  if (activity.images.length === 0) {
-    return `/images/atividades/${activity.typeAdventure}/${activity.typeAdventure}-1.jpeg`;
+  if (activity.images.length > 0) {
+    return activity.images[0]?.url;
   }
-
-  return activity.images[0]?.url;
+  return `/images/atividades/${activity.typeAdventure}/${activity.typeAdventure}-1.jpeg`;
 };

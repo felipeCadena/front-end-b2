@@ -1,18 +1,13 @@
 'use client';
 
-import MyBadge from '@/components/atoms/my-badge';
 import MyIcon from '@/components/atoms/my-icon';
-import MyTypography from '@/components/atoms/my-typography';
-import StarRating from '@/components/molecules/my-stars';
 import { ActivityCardSkeleton } from '@/components/organisms/activities-skeleton';
-import { Adventure } from '@/services/api/adventures';
+import { Adventure, adventures } from '@/services/api/adventures';
 import { cn } from '@/utils/cn';
-import { selectActivityImage } from '@/utils/formatters';
-import PATHS from '@/utils/paths';
-import Image from 'next/image';
-import { useRouter } from 'next/navigation';
 import { useRef, useState } from 'react';
 import { useDraggable } from 'react-use-draggable-scroll';
+import CarouselActivity from './carousel-activity';
+import { useQuery } from '@tanstack/react-query';
 
 export default function CarouselCustom({
   activities,
@@ -25,9 +20,8 @@ export default function CarouselCustom({
     useRef<HTMLDivElement>() as React.MutableRefObject<HTMLInputElement>;
 
   const { events } = useDraggable(ref);
-  const router = useRouter();
 
-  const [scrollPosition, setScrollPosition] = useState(0);
+  const [_scrollPosition, setScrollPosition] = useState(0);
 
   const handleScroll = (direction: 'left' | 'right') => {
     const scrollAmount = 300;
@@ -40,24 +34,22 @@ export default function CarouselCustom({
     }
   };
 
-  const handleActivity = (id: string) => {
-    if (type === 'parceiro') {
-      return router.push(PATHS.visualizarAtividadeParceiro(id));
-    } else {
-      router.push(PATHS.visualizarAtividade(id));
-    }
-  };
+  const { data: favoriteList = [] } = useQuery({
+    queryKey: ['favorite_list'],
+    queryFn: async () => {
+      const response = await adventures.listFavorites();
+      const favoritesIdList = response.map((favorite) => {
+        return {
+          favoriteID: favorite.id,
+          adventureID: favorite.adventure.id.toString(),
+        };
+      });
 
-  const handleNameActivity = (name: string) => {
-    switch (name) {
-      case 'ar':
-        return 'Atividades Aéreas';
-      case 'terra':
-        return 'Atividades Terrestres';
-      case 'mar':
-        return 'Atividades Aquáticas';
-    }
-  };
+      return favoritesIdList;
+    },
+  });
+
+  console.log('FAV LIST', favoriteList);
 
   return (
     <section className="relative">
@@ -83,7 +75,7 @@ export default function CarouselCustom({
         {...events}
       >
         {activities
-          ? activities.map((activity: any, index: number) => {
+          ? activities.map((activity) => {
               // const activityImage =
               //   activity?.images?.find(
               //     (image: { default?: boolean }) => image.default
@@ -92,75 +84,11 @@ export default function CarouselCustom({
               //   '/images/atividades/ar/ar-1.jpeg';
 
               return (
-                <div
-                  key={index}
-                  className="min-w-[85%] md:min-w-[30%] lg:min-w-[25%] 2xl:w-[25%] flex flex-col gap-1 cursor-pointer items-start md:mb-8"
-                  onClick={() => handleActivity(activity?.id)}
-                >
-                  <div className="relative z-10 overflow-hidden h-[225px] w-full md:w-[250px] hover:cursor-pointer rounded-md">
-                    <Image
-                      alt="Fotos da atividade"
-                      src={selectActivityImage(activity)}
-                      width={250}
-                      height={300}
-                      className="w-full md:w-[250px] h-[225px] object-cover"
-                    />
-                    {type !== 'parceiro' && activity?.favorite ? (
-                      <MyIcon
-                        name="full-heart"
-                        variant="circled"
-                        className="absolute top-3 right-3"
-                      />
-                    ) : (
-                      type !== 'parceiro' && (
-                        <MyIcon
-                          name="black-heart"
-                          variant="circled"
-                          className="absolute top-3 right-3"
-                        />
-                      )
-                    )}
-                  </div>
-
-                  <div className="mt-1 flex gap-2 items-center">
-                    <MyBadge variant="outline" className="p-1 text-nowrap">
-                      {handleNameActivity(activity?.typeAdventure)}
-                    </MyBadge>
-                    <StarRating rating={activity?.averageRating} />
-                  </div>
-
-                  <div className="flex gap-2 items-center mt-1">
-                    <Image
-                      alt="foto parceiro"
-                      src={activity?.partner?.logo ?? '/user.png'}
-                      width={40}
-                      height={40}
-                      className="rounded-full"
-                    />
-                    <MyTypography
-                      variant="body"
-                      weight="medium"
-                      className="mt-1 text-nowrap"
-                    >
-                      {activity?.partner?.fantasyName}
-                    </MyTypography>
-                  </div>
-
-                  <MyTypography variant="subtitle1" weight="bold">
-                    {activity?.title}
-                  </MyTypography>
-                  <MyTypography variant="body-big" className="md:pr-4">
-                    {activity?.description.slice(0, 105).concat('...')}
-                    <MyTypography
-                      variant="body-big"
-                      weight="bold"
-                      lightness={500}
-                      className="inline cursor-pointer"
-                    >
-                      Saiba Mais
-                    </MyTypography>
-                  </MyTypography>
-                </div>
+                <CarouselActivity
+                  activity={activity}
+                  favoriteList={favoriteList}
+                  type={type}
+                />
               );
             })
           : Array.from({ length: 4 }).map((_, index) => (
