@@ -7,7 +7,12 @@ import MyBadge from '../atoms/my-badge';
 import StarRating from '../molecules/my-stars';
 import MyTypography from '../atoms/my-typography';
 import { cn } from '@/utils/cn';
-import { getData, handleNameActivity, isDateInPast } from '@/utils/formatters';
+import {
+  getData,
+  handleNameActivity,
+  isDateInPast,
+  selectActivityImage,
+} from '@/utils/formatters';
 import MyButton from '../atoms/my-button';
 import { useRouter } from 'next/navigation';
 import PATHS from '@/utils/paths';
@@ -36,14 +41,6 @@ export default function ActivitiesDetails({
     } else {
       router.push(PATHS.visualizarAtividade(id));
     }
-  };
-
-  const selectActivityImage = (activity: Adventure) => {
-    if (activity.images.length === 0) {
-      return `/images/atividades/${activity.typeAdventure}/${activity.typeAdventure}-1.jpeg`;
-    }
-
-    return activity.images[0]?.url;
   };
 
   return (

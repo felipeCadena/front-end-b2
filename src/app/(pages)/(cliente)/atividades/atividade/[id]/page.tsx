@@ -11,7 +11,7 @@ import StarRating from '@/components/molecules/my-stars';
 import Image from 'next/image';
 import MyButton from '@/components/atoms/my-button';
 import PATHS from '@/utils/paths';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { adventures } from '@/services/api/adventures';
 import {
   formatDificultyTag,
@@ -27,11 +27,46 @@ export default function Atividade() {
   const router = useRouter();
   const { id } = useParams();
   const [favorite, setFavorite] = React.useState(false);
+  const query = useQueryClient();
 
   const { data: fetchedActivity } = useQuery({
     queryKey: ['this_activity'],
     queryFn: () => adventures.getAdventureById(Number(id)),
   });
+
+  const { data: favorites = [] } = useQuery({
+    queryKey: ['favorites'],
+    queryFn: async () => {
+      const response = await adventures.listFavorites();
+      const isFavorite = response.some(
+        (favorite) => Number(id) === favorite.adventure.id
+      );
+      setFavorite(isFavorite);
+
+      return response;
+    },
+  });
+
+  const handleFavorite = async () => {
+    const favoriteActivity = favorites.find(
+      (favorite) => favorite.adventure.id === Number(id)
+    );
+    try {
+      if (!favoriteActivity) {
+        await adventures.addFavorite(Number(id));
+        query.invalidateQueries();
+
+        setFavorite((prev) => !prev);
+      } else {
+        await adventures.removeFavorite(id as string, favoriteActivity?.id);
+        query.invalidateQueries();
+
+        setFavorite((prev) => !prev);
+      }
+    } catch (error) {
+      console.error('Erro ao favoritar');
+    }
+  };
 
   const parsedItems: string[] = JSON.parse(
     `${fetchedActivity?.itemsIncluded ?? '[]'}`
@@ -46,8 +81,6 @@ export default function Atividade() {
       toast.success('Atividade adicionada ao carrinho!');
     }
   };
-
-  console.log('AQUI', fetchedActivity);
 
   return (
     <section className="my-10">
@@ -135,7 +168,7 @@ export default function Atividade() {
 
         <div
           className="cursor-pointer md:border  rounded-full md:w-12 md:h-12 absolute z-50 top-8 right-8 flex items-center justify-center"
-          onClick={() => setFavorite(!favorite)}
+          onClick={handleFavorite}
         >
           <MyIcon
             name={favorite ? 'full-heart' : 'black-heart'}

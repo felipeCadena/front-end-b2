@@ -7,17 +7,17 @@ import SearchActivity from '@/components/organisms/search-activity';
 import CarouselCustom from '@/components/templates/second-section/carousel-custom';
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Adventure, adventures } from '@/services/api/adventures';
+import { adventures } from '@/services/api/adventures';
 
 export default function AtividadesTemplate() {
-  const { data: activities } = useQuery({
+  const { data: activities = [] } = useQuery({
     queryKey: ['activities'],
     queryFn: () => adventures.getAdventures({ limit: 30, skip: 0 }),
   });
 
   const filterActivity = (typeAdventure: string) => {
     return (
-      activities?.filter(
+      activities.filter(
         (activity) => activity.typeAdventure === typeAdventure
       ) ?? []
     );

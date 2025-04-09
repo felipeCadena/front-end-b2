@@ -1,3 +1,5 @@
+import { Adventure } from '@/services/api/adventures';
+
 export function getData(timestamp: string, year?: boolean) {
   const date = new Date(timestamp);
   const dia = String(date.getDate()).padStart(2, '0');
@@ -277,4 +279,12 @@ export const formatIconName = (name: string) => {
     .normalize('NFD')
     .replace(accentRegex, '');
   return firstLetter + name.slice(1);
+};
+
+export const selectActivityImage = (activity: Adventure) => {
+  if (activity.images.length === 0) {
+    return `/images/atividades/${activity.typeAdventure}/${activity.typeAdventure}-1.jpeg`;
+  }
+
+  return activity.images[0]?.url;
 };
