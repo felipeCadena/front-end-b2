@@ -49,8 +49,6 @@ export default function CarouselCustom({
     },
   });
 
-  console.log('FAV LIST', favoriteList);
-
   return (
     <section className="relative">
       <MyIcon
