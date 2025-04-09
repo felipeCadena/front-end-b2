@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { EditSection } from "./edit-activity";
 import MyTextInput from "../atoms/my-text-input";
 import MyTextarea from "../atoms/my-textarea";
@@ -57,6 +57,10 @@ const activities: {
 export function EditModal({ isOpen, section, data, onClose }: EditModalProps) {
   const [formData, setFormData] = useState(data);
 
+  useEffect(() => {
+    setFormData(data);
+  }, [data]);
+
   const renderForm = () => {
     switch (section) {
       case "basic":
@@ -69,13 +73,7 @@ export function EditModal({ isOpen, section, data, onClose }: EditModalProps) {
         );
 
       case "images":
-        return (
-          <UpdateImages
-            formData={formData}
-            setFormData={setFormData}
-            onClose={onClose}
-          />
-        );
+        return <UpdateImages formData={data} onClose={onClose} />;
 
       case "pricing":
         return (

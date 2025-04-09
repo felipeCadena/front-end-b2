@@ -86,19 +86,16 @@ export default function InformacoesAtividade({
   const tax = process.env.NEXT_PUBLIC_PERCENTAGE_TAX;
 
   const handleTaxDetails = () => {
-    const valorParceiro =
-      (Number(priceAdult) + Number(priceChildren)) * Number(personsLimit);
-
     const taxB2Percentage = Number(b2Tax) || 0;
     const taxPercentage = Number(tax) || 0;
 
-    const b2Fee = (valorParceiro * taxB2Percentage) / 100;
-    const taxTotal = (valorParceiro * taxPercentage) / 100;
+    const b2Fee = (Number(priceAdult) * taxB2Percentage) / 100;
+    const taxTotal = (Number(priceAdult) * taxPercentage) / 100;
 
-    const totalCliente = valorParceiro + b2Fee + taxTotal;
+    const totalCliente = Number(priceAdult) + b2Fee + taxTotal;
 
     return {
-      valorParceiro,
+      valorParceiro: priceAdult,
       b2Fee,
       tax: taxTotal,
       totalCliente,
@@ -443,10 +440,10 @@ export default function InformacoesAtividade({
           className="mt-2"
           noHintText
           leftIcon={<MyIcon name="small-group" className="ml-2 mt-6" />}
-          value={personsLimit}
+          value={isInGroup ? personsLimit : "1"}
           onChange={(e) =>
             setAdventureData({
-              personsLimit: Number(e.target.value),
+              personsLimit: isInGroup ? Number(e.target.value) : 1,
             })
           }
         />
@@ -483,7 +480,7 @@ export default function InformacoesAtividade({
       </div>
 
       <div className="flex flex-col my-8">
-        <div className="flex justify-between">
+        {/* <div className="flex justify-between">
           <MyTypography variant="label" weight="regular" className="mb-1">
             Custo Adultos
           </MyTypography>
@@ -500,14 +497,14 @@ export default function InformacoesAtividade({
               {priceChildren?.length > 0 ? priceChildren : "R$ 0,00"}
             </MyTypography>
           </div>
-        )}
+        )} */}
 
         <div className="flex justify-between mt-4">
           <MyTypography variant="label" weight="regular" className="mb-1">
             Valor do Parceiro
           </MyTypography>
           <MyTypography variant="label" weight="bold" className="mb-1">
-            R$ {handleTaxDetails().valorParceiro ?? "0,00"}
+            R$ {priceAdult ?? "0,00"}
           </MyTypography>
         </div>
 
@@ -545,6 +542,15 @@ export default function InformacoesAtividade({
             R$ {handleTaxDetails().totalCliente ?? "0,00"}
           </MyTypography>
         </div>
+
+        <MyTypography
+          variant="button"
+          weight="regular"
+          lightness={500}
+          className="my-2"
+        >
+          * Baseado no valor unitário adulto
+        </MyTypography>
       </div>
 
       <div className={cn("space-y-8 my-6")}>

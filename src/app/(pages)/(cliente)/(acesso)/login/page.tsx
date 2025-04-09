@@ -9,12 +9,12 @@ import MyTextInput from "@/components/atoms/my-text-input";
 import MyTypography from "@/components/atoms/my-typography";
 import PATHS, { DEFAULT_ROLE_PATHS } from "@/utils/paths";
 import { useRouter } from "next/navigation";
-import useLogin from "./login-store";
 import { toast } from "react-toastify";
 import { useAuthStore } from "@/store/useAuthStore";
 import GoogleLoginButton from "@/components/molecules/google-login-button";
 import { getSession, signIn, useSession } from "next-auth/react";
 import FacebookLoginButton from "@/components/molecules/facebook-login-button";
+import useLogin from "@/store/useLogin";
 
 export default function Login() {
   const router = useRouter();
@@ -60,11 +60,9 @@ export default function Login() {
           if (defaultPath) {
             console.log("Redirecionando para:", defaultPath);
             router.replace(defaultPath);
-            toast.success("Login realizado com sucesso!");
           }
         } catch (error) {
           console.error("Erro ao processar sessão:", error);
-          toast.error("Erro ao processar login");
         }
       }
     };

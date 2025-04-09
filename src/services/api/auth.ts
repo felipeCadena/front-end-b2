@@ -1,5 +1,6 @@
-import { api } from '@/libs/api';
-import { getSession, signIn, signOut } from 'next-auth/react';
+import { api } from "@/libs/api";
+import { getServerSession } from "next-auth";
+import { getSession, signIn, signOut } from "next-auth/react";
 
 export interface TokenResponse {
   access_token: string;
@@ -19,13 +20,13 @@ export const authService = {
   login: async (credentials: LoginCredentials) => {
     try {
       const response = await api.post<TokenResponse>(
-        '/auth/login',
+        "/auth/login",
         credentials
       );
 
       return response.data;
     } catch (error) {
-      console.error('Erro no login:', error);
+      console.error("Erro no login:", error);
       throw error;
     }
   },
@@ -38,20 +39,20 @@ export const authService = {
       });
 
       if (!response) {
-        console.error('Erro:', response);
+        console.error("Erro:", response);
         return null;
       }
 
       return response.data;
     } catch (error) {
-      console.error('Erro no login:', error);
+      console.error("Erro no login:", error);
       return null;
     }
   },
 
   // Recuperação de senha
   forgotPassword: async (email: string) => {
-    await api.post('/auth/request/reset-password', { email });
+    await api.post("/auth/request/reset-password", { email });
   },
 
   // Reset de senha
@@ -60,26 +61,26 @@ export const authService = {
   },
 
   // Refresh do token
-  refreshToken: async (): Promise<TokenResponse> => {
+  refreshToken: async (token: string): Promise<TokenResponse> => {
     try {
-      const response = await api.post<TokenResponse>('/auth/refresh');
+      // Faz a requisição de refresh
+      api.defaults.headers.common.Authorization = `Bearer ${token}`;
+      const response = await api.post<TokenResponse>("/auth/refresh");
 
       return response.data;
     } catch (error) {
-      console.error('Erro no refresh');
+      console.error("Erro no refresh");
       throw error;
     }
   },
 
   // Logout
-  logout: async () => {
+  logout: async (token: string) => {
     try {
-      await api.post('/auth/logout');
+      api.defaults.headers.common.Authorization = `Bearer ${token}`;
+      await api.post("/auth/logout");
     } catch (error) {
-      console.error('Erro no logout:', error);
-    } finally {
-      // Limpa a sessão do NextAuth
-      await signOut({ redirect: false });
+      console.error("Erro no logout:", error);
     }
   },
 

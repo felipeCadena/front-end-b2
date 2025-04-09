@@ -7,22 +7,19 @@ import LanguageDropdown from "./language-dropdown";
 import MyIcon from "../atoms/my-icon";
 import { usePathname, useRouter } from "next/navigation";
 import PATHS from "@/utils/paths";
-import useLogin from "@/app/(pages)/(cliente)/(acesso)/login/login-store";
 import Image from "next/image";
 import SideBarModal from "../molecules/side-bar-modal";
 import { cn } from "@/utils/cn";
 import { useAuthStore } from "@/store/useAuthStore";
-import { useQuery } from "@tanstack/react-query";
-import { users } from "@/services/api/users";
 import { useSession } from "next-auth/react";
-import { verifyAccessToken } from "@/utils/verifyAccessToken";
+import useLogin from "@/store/useLogin";
 
 export default function Header() {
   const router = useRouter();
   const pathname = usePathname();
   const { sideBarActive } = useLogin();
   const { data: session } = useSession();
-  const { user, setUser } = useAuthStore();
+  const { user } = useAuthStore();
 
   const withoutHeaderMobile = () => {
     return (
@@ -33,25 +30,6 @@ export default function Header() {
       pathname.includes("editar")
     );
   };
-
-  const { data: userData } = useQuery({
-    queryKey: ["user", user],
-    queryFn: async () => {
-      const user = await users.getUserLogged();
-      if (user) {
-        setUser(user);
-      }
-
-      return user;
-    },
-    enabled: Boolean(session?.user),
-  });
-
-  const { data: isTokenValid } = useQuery({
-    queryKey: ["validToken"],
-    queryFn: () => verifyAccessToken(session?.user.expiresAt as number),
-    enabled: Boolean(session?.user),
-  });
 
   return (
     <header
@@ -80,7 +58,7 @@ export default function Header() {
         <LanguageDropdown />
 
         <div className="max-sm:hidden">
-          {!isTokenValid ? (
+          {!session?.user ? (
             <button
               onClick={() => router.push(PATHS.login)}
               className="text-sm flex items-center font-semibold gap-1 px-2 md:px-4 py-1 text-[0.9rem] text-white bg-black rounded-full shadow-md"
@@ -93,7 +71,7 @@ export default function Header() {
               <div className="flex items-center gap-1 cursor-pointer">
                 <MyIcon name="chevron-down" />
                 <Image
-                  src={userData?.photo?.url ?? "/user.png"}
+                  src={user?.photo?.url ?? "/user.png"}
                   alt="Avatar"
                   width={50}
                   height={50}

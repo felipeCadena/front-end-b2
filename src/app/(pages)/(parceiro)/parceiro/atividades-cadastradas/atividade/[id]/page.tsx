@@ -283,8 +283,8 @@ export default function Atividade() {
         <div className="md:hidden">
           <CarouselImages images={activity?.images} />
         </div>
-        <div className="flex flex-col max-sm:items-center my-8">
-          <div className="flex max-sm:flex-col items-start justify-between gap-8 px-4">
+        <div className="flex flex-col max-sm:items-center my-4">
+          <div className="flex max-sm:flex-col items-start justify-between gap-8 max-sm:px-4">
             <div className="">
               <MyTypography variant="heading2" weight="bold" className="">
                 {activity?.title}
@@ -298,13 +298,40 @@ export default function Atividade() {
             </div>
           </div>
 
-          <div className="mt-4 max-sm:hidden">
-            <MyTypography variant="subtitle3" weight="bold" className="">
-              Descrição da atividade:
-            </MyTypography>
-            <MyTypography variant="body-big" weight="regular" className="mt-1">
-              {activity?.description}
-            </MyTypography>
+          <div className="flex flex-col gap-2 mt-4 max-sm:hidden">
+            <div className="flex items-center gap-2">
+              <Image
+                alt="avatar"
+                src={activity?.partner.logo ?? "/user.png"}
+                width={6}
+                height={6}
+                className="w-10 h-10 rounded-full object-contain"
+              />
+              <div>
+                <MyTypography variant="notification" weight="semibold">
+                  {activity?.partner.fantasyName}
+                </MyTypography>
+                <MyTypography
+                  variant="notification"
+                  weight="regular"
+                  lightness={400}
+                >
+                  Parceiro e Guia de atividades
+                </MyTypography>
+              </div>
+            </div>
+            <div className="">
+              <MyTypography variant="subtitle3" weight="bold" className="">
+                Descrição da atividade:
+              </MyTypography>
+              <MyTypography
+                variant="body-big"
+                weight="regular"
+                className="mt-1"
+              >
+                {activity?.description}
+              </MyTypography>
+            </div>
           </div>
         </div>
         <div className="max-sm:hidden grid grid-cols-4 grid-rows-2 gap-4">
@@ -322,7 +349,28 @@ export default function Atividade() {
           )}
         </div>
 
-        <div className="mx-6 mt-4 md:hidden">
+        <div className="mx-4 md:hidden">
+          <div className="flex items-center gap-2 mb-4">
+            <Image
+              alt="avatar"
+              src={activity?.partner.logo ?? "/user.png"}
+              width={6}
+              height={6}
+              className="w-10 h-10 rounded-full object-contain"
+            />
+            <div>
+              <MyTypography variant="notification" weight="semibold">
+                {activity?.partner.fantasyName}
+              </MyTypography>
+              <MyTypography
+                variant="notification"
+                weight="regular"
+                lightness={400}
+              >
+                Parceiro e Guia de atividades
+              </MyTypography>
+            </div>
+          </div>
           <MyTypography variant="subtitle3" weight="bold" className="">
             Descrição da atividade:
           </MyTypography>
@@ -419,54 +467,6 @@ export default function Atividade() {
                   </MyTypography>
                 </div>
               </div>
-
-              {schedules?.semanal && schedules.semanal.length > 0 && (
-                <div>
-                  <MyTypography
-                    variant="subtitle3"
-                    weight="bold"
-                    className="flex items-center gap-2"
-                  >
-                    <MyIcon name="calendar" />
-                    Dias e horários disponíveis
-                  </MyTypography>
-                  {schedules.semanal.length > 0 &&
-                    schedules.semanal.map((schedule, index) => (
-                      <div key={index} className="my-4">
-                        <MyTypography variant="body-big" weight="regular">
-                          • {schedule.dias.join(", ")}:{" "}
-                        </MyTypography>
-                        <MyTypography variant="body-big" weight="regular">
-                          {schedule.horarios.join(", ")}
-                        </MyTypography>
-                      </div>
-                    ))}
-                </div>
-              )}
-
-              {schedules?.mensal && schedules.mensal.length > 0 && (
-                <div>
-                  <MyTypography
-                    variant="subtitle3"
-                    weight="bold"
-                    className="flex items-center gap-2"
-                  >
-                    <MyIcon name="calendar" />
-                    Datas mensais e horários disponíveis
-                  </MyTypography>
-                  {schedules.mensal.length > 0 &&
-                    schedules.mensal.map((schedule, index) => (
-                      <div key={index} className="my-4">
-                        <MyTypography variant="body-big" weight="regular">
-                          • {schedule.dias.join(", ")}:{" "}
-                        </MyTypography>
-                        <MyTypography variant="body-big" weight="regular">
-                          {schedule.horarios.join(", ")}
-                        </MyTypography>
-                      </div>
-                    ))}
-                </div>
-              )}
             </div>
           </div>
 

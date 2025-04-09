@@ -1,8 +1,8 @@
 "use client";
 
 import React from "react";
-import useLogin from "../(cliente)/(acesso)/login/login-store";
 import MyTypography from "@/components/atoms/my-typography";
+import useLogin from "@/store/useLogin";
 
 export default function TermosCondicoes() {
   const { email } = useLogin();
