@@ -1,8 +1,9 @@
-import React from "react";
-import MyTypography from "../atoms/my-typography";
-import MyBadge from "../atoms/my-badge";
-import MyIcon from "../atoms/my-icon";
-import { getData, getHora } from "@/utils/formatters";
+import React from 'react';
+import MyTypography from '../atoms/my-typography';
+import MyBadge from '../atoms/my-badge';
+import MyIcon from '../atoms/my-icon';
+import { getData, getHora } from '@/utils/formatters';
+import { Adventure } from '@/services/api/adventures';
 
 export default function ShoppingDetails({ activityDetails }: any) {
   return (
@@ -62,8 +63,8 @@ export default function ShoppingDetails({ activityDetails }: any) {
             weight="regular"
             className="md:text-[0.9rem]"
           >
-            {activityDetails?.reserva.pessoas} adultos x{" "}
-            {new Intl.NumberFormat("pt-BR", {
+            {activityDetails?.reserva.pessoas} adultos x{' '}
+            {new Intl.NumberFormat('pt-BR', {
               minimumFractionDigits: 2,
               maximumFractionDigits: 2,
             }).format(
@@ -75,11 +76,11 @@ export default function ShoppingDetails({ activityDetails }: any) {
             weight="regular"
             className="md:text-[0.9rem]"
           >
-            {getData(activityDetails?.reserva.timestamp)} -{" "}
-            {getHora(activityDetails?.reserva.timestamp)}{" "}
-            {+getHora(activityDetails?.reserva.timestamp).split(":")[0] > 12
-              ? "tarde"
-              : "manhã"}
+            {getData(activityDetails?.reserva.timestamp)} -{' '}
+            {getHora(activityDetails?.reserva.timestamp)}{' '}
+            {+getHora(activityDetails?.reserva.timestamp).split(':')[0] > 12
+              ? 'tarde'
+              : 'manhã'}
           </MyTypography>
         </div>
 
@@ -96,9 +97,9 @@ export default function ShoppingDetails({ activityDetails }: any) {
             weight="bold"
             className="md:text-primary-600"
           >
-            {activityDetails?.reserva.total.toLocaleString("pt-BR", {
-              style: "currency",
-              currency: "BRL",
+            {activityDetails?.reserva.total.toLocaleString('pt-BR', {
+              style: 'currency',
+              currency: 'BRL',
             })}
           </MyTypography>
         </div>

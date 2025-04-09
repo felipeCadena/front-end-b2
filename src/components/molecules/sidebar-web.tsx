@@ -20,6 +20,7 @@ import {
   notificationsService,
 } from '@/services/api/notifications';
 import { useQuery } from '@tanstack/react-query';
+import { useCart } from '@/store/useCart';
 
 export default function SidebarMenuWeb({}) {
   const pathname = usePathname();
@@ -28,6 +29,9 @@ export default function SidebarMenuWeb({}) {
 
   const { user, clearUser } = useAuthStore();
   const { data: session } = useSession();
+  const { getCartSize } = useCart();
+
+  const cartSize = getCartSize();
 
   useEffect(() => {
     switch (session?.user?.role) {
@@ -112,7 +116,7 @@ export default function SidebarMenuWeb({}) {
 
                 {item.label == 'Carrinho de Compras' && (
                   <div className="absolute flex justify-center items-center bottom-4 left-3 bg-primary-600 h-[1.125rem] w-[1.125rem] rounded-full text-white text-xs font-bold">
-                    1
+                    {cartSize}
                   </div>
                 )}
 

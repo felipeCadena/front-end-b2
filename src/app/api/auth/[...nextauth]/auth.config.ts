@@ -183,7 +183,7 @@ export const authOptions: NextAuthOptions = {
         return token;
       }
 
-      const now = new Date().getTime();
+      const now = Date.now();
 
       if (now > token.expiresAt) {
         try {

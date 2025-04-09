@@ -20,6 +20,8 @@ import {
   handleNameActivity,
 } from '@/utils/formatters';
 import User from '@/components/atoms/my-icon/elements/user';
+import { useCart } from '@/store/useCart';
+import { toast } from 'react-toastify';
 
 export default function Atividade() {
   const router = useRouter();
@@ -35,15 +37,15 @@ export default function Atividade() {
     `${fetchedActivity?.itemsIncluded ?? '[]'}`
   );
 
-  console.log('ITEMS --> ', parsedItems);
-  const images = [
-    { url: '/images/atividades/montanha.webp' },
-    { url: '/images/atividades/paraquedas.webp' },
-    { url: '/images/atividades/mergulho.webp' },
-    { url: '/images/atividades/moto.webp' },
-    { url: '/images/atividades/parapente.webp' },
-    { url: '/images/atividades/canoagem.webp' },
-  ];
+  const { addToCart } = useCart();
+
+  const handleOrder = () => {
+    if (fetchedActivity) {
+      addToCart(fetchedActivity);
+      router.push(PATHS['finalizar-compra']);
+      toast.success('Atividade adicionada ao carrinho!');
+    }
+  };
 
   return (
     <section className="my-10">
@@ -352,7 +354,7 @@ export default function Atividade() {
                 size="lg"
                 borderRadius="squared"
                 rightIcon={<MyIcon name="seta-direita" className="ml-3" />}
-                onClick={() => router.push(PATHS['finalizar-compra'])}
+                onClick={handleOrder}
               >
                 Garantir sua vaga
               </MyButton>
