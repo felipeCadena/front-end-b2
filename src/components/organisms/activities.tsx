@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import MyBadge from "@/components/atoms/my-badge";
-import MyIcon from "@/components/atoms/my-icon";
-import MyTypography from "@/components/atoms/my-typography";
-import StarRating from "@/components/molecules/my-stars";
-import { cn } from "@/utils/cn";
-import PATHS from "@/utils/paths";
-import Image from "next/image";
-import { useRouter } from "next/navigation";
+import MyBadge from '@/components/atoms/my-badge';
+import MyIcon from '@/components/atoms/my-icon';
+import MyTypography from '@/components/atoms/my-typography';
+import StarRating from '@/components/molecules/my-stars';
+import { cn } from '@/utils/cn';
+import PATHS from '@/utils/paths';
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
 export default function Activities({
   activities,
@@ -23,9 +23,9 @@ export default function Activities({
   const router = useRouter();
 
   const handleActivity = (id: string) => {
-    if (type === "parceiro") {
+    if (type === 'parceiro') {
       return router.push(PATHS.visualizarAtividadeParceiro(id));
-    } else if (type === "admin") {
+    } else if (type === 'admin') {
       return router.push(`/admin/avaliacoes/atividade/${id}`);
     } else {
       router.push(PATHS.visualizarAtividade(id));
@@ -33,7 +33,7 @@ export default function Activities({
   };
 
   return (
-    <section className={cn("grid grid-cols-4 gap-6")}>
+    <section className={cn('grid grid-cols-4 gap-6')}>
       {activities.map((activity: any, index: number) => (
         <div
           key={index}
@@ -43,7 +43,7 @@ export default function Activities({
           <div className="relative z-10 overflow-hidden h-[265px] w-full hover:cursor-pointer rounded-md">
             <Image
               alt="sample_file"
-              src={activity.image ?? ""}
+              src={activity.image ?? ''}
               width={250}
               height={300}
               className="w-full h-[265px] object-cover"
@@ -80,7 +80,7 @@ export default function Activities({
             {activity.title}
           </MyTypography>
           <MyTypography variant="body-big" className="">
-            {activity.description.slice(0, 25).concat("...")}
+            {activity.description.slice(0, 25).concat('...')}
           </MyTypography>
         </div>
       ))}

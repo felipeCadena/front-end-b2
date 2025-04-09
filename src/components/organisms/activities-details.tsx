@@ -48,7 +48,7 @@ export default function ActivitiesDetails({
       {activities.map((activity: Adventure, index: number) => (
         <div key={index} className={cn('flex flex-col')}>
           <div
-            onClick={() => handleActivity(activity.id)}
+            onClick={() => handleActivity(activity.id.toString())}
             className={cn(
               'flex max-sm:max-h-[120px] max-sm:justify-around gap-2 cursor-pointer my-2',
               withDate && 'my-8 relative',
