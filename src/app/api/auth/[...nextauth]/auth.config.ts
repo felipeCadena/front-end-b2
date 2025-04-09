@@ -220,6 +220,8 @@ export const authOptions: NextAuthOptions = {
       };
     },
     async redirect({ url, baseUrl }) {
+      console.log(url);
+      console.log(baseUrl);
       return url;
     },
   },

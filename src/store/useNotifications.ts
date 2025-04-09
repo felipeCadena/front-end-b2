@@ -1,8 +1,8 @@
 import {
   Notification,
   notificationsService,
-} from '@/services/api/notifications';
-import { create } from 'zustand';
+} from "@/services/api/notifications";
+import { create } from "zustand";
 
 interface NotificationStore {
   notifications: Notification[];
@@ -24,7 +24,7 @@ const useNotifications = create<NotificationStore>((set) => {
   };
 
   // Initialize notifications when the store is created
-  initializeNotifications();
+  // initializeNotifications();
 
   return {
     notifications: [],

@@ -11,9 +11,9 @@ function fileToBase64(file: File): Promise<string> {
 }
 
 export interface Recurrence {
-  recurrenceWeekly?: string; // "1,3,5" (dias da semana: 1-7)
-  recurrenceMonthly?: string; // "15,30" (dias do mês: 1-31)
-  recurrenceHour: string; // "08:00,13:00,16:00"
+  recurrenceWeekly?: string;
+  recurrenceMonthly?: string;
+  recurrenceHour: string;
 }
 
 export interface SelectionBlock {
@@ -26,13 +26,11 @@ export interface SelectionBlock {
 export type TypeAdventure = "terra" | "ar" | "mar" | "";
 
 export interface AdventureState {
-  // Dados básicos
   title: string;
   description: string;
   typeAdventure: TypeAdventure;
 
-  // Endereço
-  address: string; // endereço completo pra persistir o valor
+  address: string;
   addressStreet: string;
   addressPostalCode: string;
   addressNumber: string;
@@ -44,7 +42,6 @@ export interface AdventureState {
   coordinates: { lat: number; lng: number } | null;
   pointRefAddress: string;
 
-  // Detalhes
   itemsIncluded: string[];
   duration: string;
   priceAdult: string;
@@ -60,7 +57,6 @@ export interface AdventureState {
   isChildrenAllowed: boolean;
   difficult: number;
 
-  // Agendamento
   hoursBeforeSchedule: number;
   hoursBeforeCancellation: number;
   isRepeatable: boolean;
@@ -68,16 +64,13 @@ export interface AdventureState {
 
   selectionBlocks: SelectionBlock[];
 
-  // Imagens temporárias (antes de enviar)
   tempImages: (string | File)[];
 
-  // Métodos
   setAdventureData: (data: Partial<AdventureState>) => void;
   addTempImage: (file: File) => void;
   removeTempImage: (index: number) => void;
   clearAdventure: () => void;
 
-  // Métodos para gerenciar os blocos
   setSelectionBlocks: (blocks: SelectionBlock[]) => void;
   addSelectionBlock: () => void;
   removeSelectionBlock: (id: number) => void;
@@ -179,6 +172,7 @@ export const useAdventureStore = create<AdventureState>()(
           }));
         });
       },
+
       removeTempImage: (index) =>
         set((state) => ({
           ...state,
@@ -187,9 +181,12 @@ export const useAdventureStore = create<AdventureState>()(
 
       clearAdventure: () => set(initialState),
     }),
-
     {
       name: "adventure-storage",
+      partialize: (state) => {
+        const { tempImages, ...rest } = state;
+        return rest;
+      },
     }
   )
 );

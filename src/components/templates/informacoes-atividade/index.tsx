@@ -24,10 +24,12 @@ export default function InformacoesAtividade({
   edit,
   onBack,
   step,
+  create = false,
 }: {
   edit?: boolean;
   step?: boolean;
   onBack?: () => void;
+  create?: boolean;
 }) {
   const router = useRouter();
   const {
@@ -80,17 +82,26 @@ export default function InformacoesAtividade({
     clearForm,
   } = useStepperStore();
 
-  const b2Tax = process.env.NEXT_PUBLIC_PERCENTAGE_TAX;
+  const b2Tax = process.env.NEXT_PUBLIC_PERCENTAGE_TAX_B2;
+  const tax = process.env.NEXT_PUBLIC_PERCENTAGE_TAX;
 
   const handleTaxDetails = () => {
-    const total = (Number(priceAdult) + Number(priceChildren)) * personsLimit;
-    const tax = (total * Number(b2Tax)) / 100;
-    const totalWithTax = total - tax;
+    const valorParceiro =
+      (Number(priceAdult) + Number(priceChildren)) * Number(personsLimit);
+
+    const taxB2Percentage = Number(b2Tax) || 0;
+    const taxPercentage = Number(tax) || 0;
+
+    const b2Fee = (valorParceiro * taxB2Percentage) / 100;
+    const taxTotal = (valorParceiro * taxPercentage) / 100;
+
+    const totalCliente = valorParceiro + b2Fee + taxTotal;
 
     return {
-      total,
-      tax: tax ?? "30%",
-      totalWithTax,
+      valorParceiro,
+      b2Fee,
+      tax: taxTotal,
+      totalCliente,
     };
   };
 
@@ -106,6 +117,7 @@ export default function InformacoesAtividade({
     return JSON.stringify(items);
   };
 
+  // Função pro fluxo de criação de parceiro + atividade
   const handleSubmit = async () => {
     try {
       // 1. Cria partner
@@ -151,8 +163,8 @@ export default function InformacoesAtividade({
         coordinates: coordinatesString,
         isInGroup,
         isChildrenAllowed,
-        priceAdult,
-        priceChildren,
+        priceAdult: priceAdult.length > 0 ? priceAdult : "0",
+        priceChildren: priceChildren.length > 0 ? priceChildren : "0",
         personsLimit,
         addressCity,
         addressNeighborhood,
@@ -254,6 +266,113 @@ export default function InformacoesAtividade({
     }
   };
 
+  // Função apenas pra criar atividade
+  const handleCreateAdventure = async () => {
+    try {
+      // 1. Cria a aventura
+
+      const adventure = {
+        title,
+        pointRefAddress,
+        typeAdventure: typeAdventure as "terra" | "ar" | "mar",
+        coordinates: coordinatesString,
+        isInGroup,
+        isChildrenAllowed,
+        priceAdult: priceAdult.length > 0 ? priceAdult : "0",
+        priceChildren: priceChildren.length > 0 ? priceChildren : "0",
+        personsLimit,
+        addressCity,
+        addressNeighborhood,
+        addressState,
+        addressStreet,
+        addressPostalCode,
+        addressNumber,
+        addressComplement,
+        addressCountry,
+        description,
+        difficult,
+        itemsIncluded: handleItemsIncluded(),
+        transportIncluded,
+        picturesIncluded,
+        duration,
+        hoursBeforeSchedule,
+        hoursBeforeCancellation,
+        isRepeatable,
+        recurrences,
+      };
+
+      // 2. Cria a aventura com o access_token
+      const adventureResponse = await adventures.createAdventure(adventure);
+
+      const adventureId = adventureResponse.id;
+
+      // 3. Converte base64 para Blob e cria estrutura dos arquivos
+      const files = await Promise.all(
+        tempImages.map(async (base64Image, index) => {
+          if (typeof base64Image !== "string") {
+            throw new Error(
+              "Esperado base64 string. Verifique o conteúdo de tempImages."
+            );
+          }
+
+          const res = await fetch(base64Image);
+          const arrayBuffer = await res.arrayBuffer();
+          const blob = new Blob([arrayBuffer], {
+            type: base64Image.substring(
+              base64Image.indexOf(":") + 1,
+              base64Image.indexOf(";")
+            ),
+          });
+
+          return {
+            filename: `image-${index}.${blob.type.split("/")[1]}`, // nome do arquivo
+            mimetype: blob.type,
+            file: blob,
+            isDefault: index === 0, // primeira imagem como default
+          };
+        })
+      );
+
+      // 4. Chama addMedia para obter os uploadUrls
+      const uploadMedias = await adventures.addMedia(
+        adventureId,
+        files.map(({ filename, mimetype, isDefault }) => ({
+          filename,
+          mimetype,
+          isDefault,
+        }))
+      );
+
+      // 5. Envia os blobs para os uploadUrls
+      await Promise.all(
+        uploadMedias.map((media, index) =>
+          fetch(media.uploadUrl, {
+            method: "PUT",
+            body: files[index].file,
+            headers: {
+              "Content-Type": files[index].mimetype,
+            },
+          }).then((res) => {
+            if (!res.ok) {
+              console.error(`Falha ao enviar imagem ${index}`, res);
+            }
+          })
+        )
+      );
+
+      // 6. Limpa o estado global
+      clearForm();
+      clearAdventure();
+
+      // 7. Redireciona para a página de visualização da atividade
+      router.push(PATHS.visualizarAtividadeParceiro(adventureId));
+
+      console.log("Aventura criada e imagens enviadas com sucesso!");
+    } catch (error) {
+      console.error("Erro ao criar aventura ou enviar imagens:", error);
+    }
+  };
+
   return (
     <main className="w-full max-w-md md:max-w-3xl mx-auto md:p-4">
       <div className={cn("relative md:hidden", edit && "hidden")}>
@@ -321,9 +440,9 @@ export default function InformacoesAtividade({
           label="Quantidade de pessoas"
           placeholder="Digite a quantidade de pessoas"
           classNameLabel="font-bold text-black"
-          className="mt-2 pl-12"
+          className="mt-2"
           noHintText
-          leftIcon={<MyIcon name="small-group" className="ml-5 mt-6" />}
+          leftIcon={<MyIcon name="small-group" className="ml-2 mt-6" />}
           value={personsLimit}
           onChange={(e) =>
             setAdventureData({
@@ -335,9 +454,9 @@ export default function InformacoesAtividade({
         <MyTextInput
           label="Valor por adulto"
           placeholder="R$ 200"
-          className="mt-2 pl-12"
+          className="mt-2"
           noHintText
-          leftIcon={<MyIcon name="dollar" className="ml-5 mt-5" />}
+          leftIcon={<MyIcon name="dollar" className="ml-2 mt-6" />}
           value={priceAdult}
           onChange={(e) =>
             setAdventureData({
@@ -346,19 +465,21 @@ export default function InformacoesAtividade({
           }
         />
 
-        <MyTextInput
-          label="Valor por criança"
-          placeholder="R$ 100"
-          className="mt-2 pl-12"
-          noHintText
-          leftIcon={<MyIcon name="dollar" className="ml-5 mt-5" />}
-          value={priceChildren}
-          onChange={(e) =>
-            setAdventureData({
-              priceChildren: e.target.value,
-            })
-          }
-        />
+        {isChildrenAllowed && (
+          <MyTextInput
+            label="Valor por criança"
+            placeholder="R$ 100"
+            className="mt-2 "
+            noHintText
+            leftIcon={<MyIcon name="dollar" className="ml-2 mt-6" />}
+            value={priceChildren}
+            onChange={(e) =>
+              setAdventureData({
+                priceChildren: e.target.value,
+              })
+            }
+          />
+        )}
       </div>
 
       <div className="flex flex-col my-8">
@@ -367,21 +488,41 @@ export default function InformacoesAtividade({
             Custo Adultos
           </MyTypography>
           <MyTypography variant="label" weight="bold" className="mb-1">
-            R$ {priceAdult ?? "0,00"}
+            {priceAdult?.length > 0 ? priceAdult : "R$ 0,00"}
           </MyTypography>
         </div>
-        <div className="flex justify-between">
+        {isChildrenAllowed && (
+          <div className="flex justify-between">
+            <MyTypography variant="label" weight="regular" className="mb-1">
+              Custo Crianças
+            </MyTypography>
+            <MyTypography variant="label" weight="bold" className="mb-1">
+              {priceChildren?.length > 0 ? priceChildren : "R$ 0,00"}
+            </MyTypography>
+          </div>
+        )}
+
+        <div className="flex justify-between mt-4">
           <MyTypography variant="label" weight="regular" className="mb-1">
-            Custo Crianças
+            Valor do Parceiro
           </MyTypography>
           <MyTypography variant="label" weight="bold" className="mb-1">
-            R$ {priceChildren ?? "0,00"}
+            R$ {handleTaxDetails().valorParceiro ?? "0,00"}
           </MyTypography>
         </div>
 
         <div className="flex justify-between">
           <MyTypography variant="label" weight="regular" className="mb-1">
             Tarifa B2
+          </MyTypography>
+          <MyTypography variant="label" weight="bold" className="mb-1">
+            R$ {handleTaxDetails().b2Fee ?? "0,00"}
+          </MyTypography>
+        </div>
+
+        <div className="flex justify-between">
+          <MyTypography variant="label" weight="regular" className="mb-1">
+            Imposto
           </MyTypography>
           <MyTypography variant="label" weight="bold" className="mb-1">
             R$ {handleTaxDetails().tax ?? "0,00"}
@@ -401,7 +542,7 @@ export default function InformacoesAtividade({
             weight="bold"
             className="text-primary-600"
           >
-            R$ {handleTaxDetails().total ?? "0,00"}
+            R$ {handleTaxDetails().totalCliente ?? "0,00"}
           </MyTypography>
         </div>
       </div>
@@ -419,29 +560,29 @@ export default function InformacoesAtividade({
             Voltar para etapa anterior
           </MyButton>
         )}
-        {/* {!edit && (
+        {create ? (
           <MyButton
-            variant="black-border"
+            variant="default"
             borderRadius="squared"
-            rightIcon={<MyIcon name="seta" className="ml-3" />}
-            className="w-full font-bold"
+            rightIcon={<MyIcon name="seta-direita" className="" />}
+            className="w-full"
             size="lg"
-            onClick={() => router.push(PATHS.visualizarAtividade(params))}
+            onClick={handleCreateAdventure}
           >
-            Visualizar atividade
+            Concluir atividade
           </MyButton>
-        )} */}
-
-        <MyButton
-          variant="default"
-          borderRadius="squared"
-          rightIcon={<MyIcon name="seta-direita" className="" />}
-          className="w-full"
-          size="lg"
-          onClick={handleSubmit}
-        >
-          {edit ? "Concluir edição" : "Concluir atividade"}
-        </MyButton>
+        ) : (
+          <MyButton
+            variant="default"
+            borderRadius="squared"
+            rightIcon={<MyIcon name="seta-direita" className="" />}
+            className="w-full"
+            size="lg"
+            onClick={handleSubmit}
+          >
+            {edit ? "Concluir edição" : "Concluir atividade"}
+          </MyButton>
+        )}
       </div>
     </main>
   );

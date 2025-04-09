@@ -98,9 +98,7 @@ export default function WebForm({
     addTempImage,
   } = useAdventureStore();
 
-  const [files, setFiles] = React.useState<File[] | null>(null);
   const inputRef = React.useRef<HTMLInputElement>(null);
-  const [address, setAddress] = useState<LocationData | null>(null);
 
   // Atualiza as datas para um bloco específico
   const handleDateChange = (blockId: number, dates: Date[]) => {
@@ -209,13 +207,6 @@ export default function WebForm({
     console.log("Location Data Received:", locationData);
 
     if (locationData.coordinates) {
-      // Atualiza o estado com as coordenadas
-      setAddress({
-        address: locationData.address,
-        coordinates: locationData.coordinates,
-        completeAddress: locationData.completeAddress,
-      });
-
       // Atualiza o store com o endereço
       setAdventureData({
         address: locationData.address,
@@ -239,6 +230,15 @@ export default function WebForm({
       addTempImage(file); // Usa o método do store que já converte para base64 e salva como string
     }
   };
+
+  // Somente para o cadastro isolado de atividade
+  const handleNextStepRegister = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    router.push(PATHS["informacoes-atividades"]);
+  };
+
+  console.log(typeAdventure);
 
   return (
     <main className="space-y-10 my-6">
@@ -628,13 +628,12 @@ export default function WebForm({
                     : "";
 
                 return file ? (
-                  <div key={index} className="relative">
+                  <div key={index} className="relative w-full h-[100px] ">
                     <Image
-                      width={100}
-                      height={100}
+                      fill
                       src={imageUrl}
                       alt={`Imagem ${index}`}
-                      className="w-full h-[100px] rounded-md object-cover"
+                      className=" rounded-md object-cover"
                     />
                     <MyIcon
                       name="x-red"
@@ -667,7 +666,7 @@ export default function WebForm({
               borderRadius="squared"
               className="w-1/2"
               rightIcon={<MyIcon name="seta-direita" />}
-              onClick={() => router.push(PATHS["informacoes-atividades"])}
+              onClick={handleNextStepRegister}
             >
               Próximo Passo
             </MyButton>
