@@ -93,7 +93,7 @@ export default function CarouselCustom({
               return (
                 <div
                   key={index}
-                  className="min-w-[85%] md:min-w-[30%] lg:min-w-[25%] flex flex-col gap-1 cursor-pointer items-start md:mb-8"
+                  className="min-w-[85%] md:min-w-[30%] lg:min-w-[25%] 2xl:w-[25%] flex flex-col gap-1 cursor-pointer items-start md:mb-8"
                   onClick={() => handleActivity(activity?.id)}
                 >
                   <div className="relative z-10 overflow-hidden h-[225px] w-full md:w-[250px] hover:cursor-pointer rounded-md">
