@@ -32,7 +32,9 @@ export default function Atividade() {
 
   console.log('ITEMS --> ', fetchedActivity?.itemsIncluded);
 
-  const parsedItems: string[] = JSON.parse(`${fetchedActivity?.itemsIncluded}`);
+  const parsedItems: string[] = JSON.parse(
+    `${fetchedActivity?.itemsIncluded ?? '[]'}`
+  );
 
   const images = [
     { url: '/images/atividades/montanha.webp' },
