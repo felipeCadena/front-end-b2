@@ -9,29 +9,28 @@ import { Adventure, adventures } from "@/services/api/adventures";
 import { cn } from "@/utils/cn";
 import { useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
-import React from "react";
+import React, { useEffect } from "react";
 import { toast } from "react-toastify";
 
 type UpdateImagesProps = {
   formData: Adventure; // Tipo da sua atividade
-  setFormData: React.Dispatch<React.SetStateAction<any>>;
   onClose: () => void;
 };
 
-export default function UpdateImages({
-  formData,
-  setFormData,
-  onClose,
-}: UpdateImagesProps) {
+export default function UpdateImages({ formData, onClose }: UpdateImagesProps) {
   const [isLoading, setIsLoading] = React.useState(false);
-  const [file, setFile] = React.useState<File | null>(null);
   const inputRefs = React.useRef(new Map<number, HTMLInputElement>());
   const queryClient = useQueryClient();
+  const [images, setImages] = React.useState(formData.images);
 
   const handleClickUpload = (id: number) => {
     const ref = inputRefs.current.get(id);
     if (ref) ref.click();
   };
+
+  useEffect(() => {
+    setImages(formData.images);
+  }, [formData.images]);
 
   const uploadImage = async (file: File, mediaId: string) => {
     if (file) {
@@ -55,7 +54,7 @@ export default function UpdateImages({
   return (
     <section className="space-y-16">
       <div className="max-sm:hidden grid grid-cols-4 grid-rows-2 gap-4">
-        {formData.images.map((image, index) => (
+        {images.map((image, index) => (
           <div
             className={cn(
               "relative h-full w-full",
@@ -102,6 +101,17 @@ export default function UpdateImages({
           size="lg"
           type="submit"
           variant="outline-neutral"
+          className="w-full"
+          onClick={onClose}
+          disabled={isLoading}
+        >
+          Cancelar
+        </MyButton>
+        <MyButton
+          borderRadius="squared"
+          size="lg"
+          type="submit"
+          variant="default"
           className="w-full"
           onClick={onClose}
           disabled={isLoading}

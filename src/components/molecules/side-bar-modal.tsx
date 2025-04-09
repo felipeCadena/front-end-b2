@@ -12,6 +12,7 @@ import MyIcon from "../atoms/my-icon";
 import { useAuthStore } from "@/store/useAuthStore";
 import { authService } from "@/services/api/auth";
 import { useRouter } from "next/navigation";
+import { signOut, useSession } from "next-auth/react";
 export default function SideBarModal({
   children,
   sideBar,
@@ -20,11 +21,11 @@ export default function SideBarModal({
   sideBar: any[];
 }) {
   const { clearUser } = useAuthStore();
-  const router = useRouter();
-
+  const { data: session } = useSession();
   const handleExit = async (item: any) => {
     if (item === "Sair") {
-      await authService.logout();
+      await authService.logout(session?.user.refreshToken ?? "");
+      await signOut();
       clearUser();
     }
   };

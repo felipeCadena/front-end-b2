@@ -12,7 +12,7 @@ import { album, mockAlbum } from "@/common/constants/mock";
 import Edit from "@/components/atoms/my-icon/elements/edit";
 import ModalAlert from "@/components/molecules/modal-alert";
 import { useAlert } from "@/hooks/useAlert";
-import { adventures } from "@/services/api/adventures";
+import { adventures, AdventureSchedule } from "@/services/api/adventures";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { formatAddress, handleNameActivity } from "@/utils/formatters";
 import { ActivityEditMenu } from "@/components/organisms/edit-activity";
@@ -103,13 +103,18 @@ export default function Atividade() {
   }, [activity, activity?.images]);
 
   if (!activity) {
-    return <div>Carregando...</div>;
+    return (
+      <div className="flex items-center justify-center">
+        <Image
+          src="/logo.png"
+          alt="B2 Adventure Logo"
+          width={250}
+          height={250}
+          className="object-contain animate-pulse"
+        />
+      </div>
+    );
   }
-
-  const includedItems =
-    typeof activity?.itemsIncluded === "string"
-      ? JSON.parse(activity?.itemsIncluded)
-      : [];
 
   const address = {
     addressState: activity?.addressState,
@@ -122,35 +127,89 @@ export default function Atividade() {
     addressCountry: activity?.addressCountry,
   };
 
-  const schedules = {
-    diasSemana:
-      activity?.recurrence
-        ?.filter((rec) => rec.type === "WEEKLY")
-        .map(
-          (rec) =>
-            [
-              "Domingo",
-              "Segunda",
-              "Terça",
-              "Quarta",
-              "Quinta",
-              "Sexta",
-              "Sábado",
-            ][rec.value]
-        ) || [],
-    horarios:
-      activity?.recurrence
-        ?.filter((rec) => rec.type === "HOUR")
-        .map((rec) => {
-          const hours = Math.floor(rec.value / 100);
-          const minutes = rec.value % 100;
-          return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}`;
-        }) || [],
-    datas:
-      activity?.recurrence
-        ?.filter((rec) => rec.type === "MONTHLY")
-        .map((rec) => rec.value) || [],
+  const agruparRecorrencias = (
+    recurrences: AdventureSchedule[] | undefined
+  ) => {
+    if (!recurrences) return { semanal: [], mensal: [] };
+
+    const diasSemana = [
+      "Domingo",
+      "Segunda",
+      "Terça",
+      "Quarta",
+      "Quinta",
+      "Sexta",
+      "Sábado",
+    ];
+
+    // Agrupar por groupId
+    const grupos = new Map<
+      string,
+      { weekly: number[]; monthly: number[]; hours: number[] }
+    >();
+
+    recurrences.forEach((rec) => {
+      const grupo = grupos.get(rec.groupId) || {
+        weekly: [],
+        monthly: [],
+        hours: [],
+      };
+
+      if (rec.type === "WEEKLY") {
+        grupo.weekly.push(rec.value);
+      } else if (rec.type === "MONTHLY") {
+        grupo.monthly.push(rec.value);
+      } else if (rec.type === "HOUR") {
+        grupo.hours.push(rec.value);
+      }
+
+      grupos.set(rec.groupId, grupo);
+    });
+
+    const semanal: {
+      tipo: "semanal";
+      dias: string[];
+      horarios: string[];
+    }[] = [];
+
+    const mensal: {
+      tipo: "mensal";
+      dias: number[];
+      horarios: string[];
+    }[] = [];
+
+    grupos.forEach(({ weekly, monthly, hours }) => {
+      const horariosFormatados = hours
+        .map((h) => {
+          const hora = Math.floor(h / 100);
+          const minuto = h % 100;
+          return `${hora.toString().padStart(2, "0")}:${minuto
+            .toString()
+            .padStart(2, "0")}`;
+        })
+        .sort();
+
+      if (weekly.length > 0) {
+        semanal.push({
+          tipo: "semanal",
+          dias: weekly.sort().map((d) => diasSemana[d - 1] ?? "Desconhecido"),
+          horarios: horariosFormatados,
+        });
+      }
+
+      if (monthly.length > 0) {
+        mensal.push({
+          tipo: "mensal",
+          dias: monthly.sort((a, b) => a - b),
+          horarios: horariosFormatados,
+        });
+      }
+    });
+
+    return { semanal, mensal };
   };
+
+  const schedules = agruparRecorrencias(activity?.recurrence);
 
   const formattedItemsIncluded = () => {
     const includedItems = [];
@@ -224,8 +283,8 @@ export default function Atividade() {
         <div className="md:hidden">
           <CarouselImages images={activity?.images} />
         </div>
-        <div className="flex flex-col max-sm:items-center my-8">
-          <div className="flex max-sm:flex-col items-start justify-between gap-8 px-4">
+        <div className="flex flex-col max-sm:items-center my-4">
+          <div className="flex max-sm:flex-col items-start justify-between gap-8 max-sm:px-4">
             <div className="">
               <MyTypography variant="heading2" weight="bold" className="">
                 {activity?.title}
@@ -239,13 +298,40 @@ export default function Atividade() {
             </div>
           </div>
 
-          <div className="mt-4 max-sm:hidden">
-            <MyTypography variant="subtitle3" weight="bold" className="">
-              Descrição da atividade:
-            </MyTypography>
-            <MyTypography variant="body-big" weight="regular" className="mt-1">
-              {activity?.description}
-            </MyTypography>
+          <div className="flex flex-col gap-2 mt-4 max-sm:hidden">
+            <div className="flex items-center gap-2">
+              <Image
+                alt="avatar"
+                src={activity?.partner.logo ?? "/user.png"}
+                width={6}
+                height={6}
+                className="w-10 h-10 rounded-full object-contain"
+              />
+              <div>
+                <MyTypography variant="notification" weight="semibold">
+                  {activity?.partner.fantasyName}
+                </MyTypography>
+                <MyTypography
+                  variant="notification"
+                  weight="regular"
+                  lightness={400}
+                >
+                  Parceiro e Guia de atividades
+                </MyTypography>
+              </div>
+            </div>
+            <div className="">
+              <MyTypography variant="subtitle3" weight="bold" className="">
+                Descrição da atividade:
+              </MyTypography>
+              <MyTypography
+                variant="body-big"
+                weight="regular"
+                className="mt-1"
+              >
+                {activity?.description}
+              </MyTypography>
+            </div>
           </div>
         </div>
         <div className="max-sm:hidden grid grid-cols-4 grid-rows-2 gap-4">
@@ -263,7 +349,28 @@ export default function Atividade() {
           )}
         </div>
 
-        <div className="mx-6 mt-4 md:hidden">
+        <div className="mx-4 md:hidden">
+          <div className="flex items-center gap-2 mb-4">
+            <Image
+              alt="avatar"
+              src={activity?.partner.logo ?? "/user.png"}
+              width={6}
+              height={6}
+              className="w-10 h-10 rounded-full object-contain"
+            />
+            <div>
+              <MyTypography variant="notification" weight="semibold">
+                {activity?.partner.fantasyName}
+              </MyTypography>
+              <MyTypography
+                variant="notification"
+                weight="regular"
+                lightness={400}
+              >
+                Parceiro e Guia de atividades
+              </MyTypography>
+            </div>
+          </div>
           <MyTypography variant="subtitle3" weight="bold" className="">
             Descrição da atividade:
           </MyTypography>
@@ -328,7 +435,7 @@ export default function Atividade() {
 
         <div className="md:grid md:grid-cols-2 gap-8">
           <div className="md:w-2/3">
-            <div className="my-6 flex items-center p-3 bg-[#F1F0F587] border border-primary-600/30 border-opacity-80 rounded-lg shadow-sm hover:bg-gray-100 relative">
+            <div className="max-sm:my-6 flex items-center p-3 bg-[#F1F0F587] border border-primary-600/30 border-opacity-80 rounded-lg shadow-sm hover:bg-gray-100 relative">
               <div className="absolute inset-y-0 left-0 w-3 bg-primary-900 rounded-l-lg"></div>
               <MyIcon
                 name="localizacaoRedonda"
@@ -360,71 +467,6 @@ export default function Atividade() {
                   </MyTypography>
                 </div>
               </div>
-
-              {schedules.diasSemana && (
-                <div className="flex items-center gap-2">
-                  <MyIcon name="calendar" />
-                  <div>
-                    <MyTypography variant="subtitle3" weight="bold">
-                      Dias disponíveis
-                    </MyTypography>
-                    {schedules.diasSemana.length > 0 && (
-                      <MyTypography variant="body-big" weight="regular">
-                        {schedules.diasSemana.map((dia, index) => (
-                          <span key={index}>
-                            {dia}
-                            {index < schedules.diasSemana.length - 1
-                              ? ", "
-                              : ""}
-                          </span>
-                        ))}
-                      </MyTypography>
-                    )}
-                  </div>
-                </div>
-              )}
-
-              {schedules.datas && schedules.datas.length > 0 && (
-                <div className="flex items-center gap-2">
-                  <MyIcon name="calendar" />
-                  <div>
-                    <MyTypography variant="subtitle3" weight="bold">
-                      Se repetem nas datas:
-                    </MyTypography>
-                    {
-                      <MyTypography variant="body-big" weight="regular">
-                        {schedules.datas.map((dia, index) => (
-                          <span key={index}>
-                            {dia}
-                            {index < schedules.datas.length - 1 ? ", " : ""}
-                          </span>
-                        ))}
-                      </MyTypography>
-                    }
-                  </div>
-                </div>
-              )}
-
-              {schedules.horarios && (
-                <div className="flex items-center gap-2">
-                  <MyIcon name="calendar" />
-                  <div>
-                    <MyTypography variant="subtitle3" weight="bold">
-                      Horários
-                    </MyTypography>
-                    {schedules.horarios.length > 0 && (
-                      <MyTypography variant="body-big" weight="regular">
-                        {schedules.horarios.map((dia, index) => (
-                          <span key={index}>
-                            {dia}
-                            {index < schedules.horarios.length - 1 ? ", " : ""}
-                          </span>
-                        ))}
-                      </MyTypography>
-                    )}
-                  </div>
-                </div>
-              )}
             </div>
           </div>
 

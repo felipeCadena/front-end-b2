@@ -16,8 +16,6 @@ api.interceptors.request.use(async (config) => {
   // Se for rota de logout ou refresh, usa refresh_token
   if (config.url?.includes('/auth/logout')) {
     config.headers.Authorization = `Bearer ${session?.user.refreshToken}`;
-  } else if (config.url?.includes('/auth/refresh')) {
-    config.headers.Authorization = `Bearer ${session?.user.refreshToken}`;
   } else {
     config.headers.Authorization = `Bearer ${session?.user.accessToken}`;
   }

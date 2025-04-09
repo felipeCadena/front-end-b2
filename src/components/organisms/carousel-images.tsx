@@ -61,7 +61,7 @@ export default function CarouselImages({
           >
             <Image
               alt="Imagens de atividades"
-              src={image ?? ''}
+              src={image.url ?? ''}
               width={250}
               height={300}
               className={cn(

@@ -18,8 +18,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useMemo } from "react";
 import { authService } from "@/services/api/auth";
-import useLogin from "@/app/(pages)/(cliente)/(acesso)/login/login-store";
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
+import useLogin from "@/store/useLogin";
 
 export default function SidebarMenu({
   closeSidebar,
@@ -47,7 +47,8 @@ export default function SidebarMenu({
   }, [user, session]);
 
   const handleLogout = async () => {
-    await authService.logout();
+    await authService.logout(session?.user.refreshToken ?? "");
+    await signOut();
     clearUser();
   };
 

@@ -71,6 +71,30 @@ export interface Partner {
   };
 }
 
+export interface UploadImage {
+  filename?: string;
+  mimetype: string;
+  title?: string;
+  description?: string;
+  isDefault?: boolean;
+}
+
+type Media = {
+  id: string;
+  url: string;
+  name: string;
+  title: string | null;
+  description: string | null;
+  mimetype: string;
+  adventureId: number;
+  scheduleId: number | null;
+  index: number | null;
+  isDefault: boolean;
+  createdAt: string; // ou Date, dependendo de como você lida com datas
+  updatedAt: string; // ou Date
+  uploadUrl: string;
+};
+
 export const partnerService = {
   getPartnerLogged: async (): Promise<Partner | null> => {
     try {
@@ -102,6 +126,36 @@ export const partnerService = {
     } catch (error) {
       console.error("Error updating partner:", error);
       return null;
+    }
+  },
+  addPartnerLogo: async (body: {
+    name?: string;
+    mimetype: string;
+    title?: string;
+    description?: string;
+    isDefault?: boolean;
+    file: Blob | Buffer;
+  }): Promise<any> => {
+    try {
+      const response = await api.post<Media>(`/partners/media`, body);
+
+      await fetch(response.data.uploadUrl, {
+        method: "PUT",
+        body: body.file,
+        headers: {
+          "Content-Type": body.mimetype,
+        },
+      }).then((res) => {
+        if (!res.ok) {
+          console.log("Failed to upload media", res);
+        }
+        return res;
+      });
+
+      return response.data.url;
+    } catch (error) {
+      console.error("Erro ao adicionar mídia:", error);
+      throw error;
     }
   },
   addMedia: async (partnerId: number, media: FormData): Promise<boolean> => {

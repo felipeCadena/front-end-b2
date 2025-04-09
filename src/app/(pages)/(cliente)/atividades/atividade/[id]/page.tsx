@@ -47,6 +47,8 @@ export default function Atividade() {
     }
   };
 
+  console.log('AQUI', fetchedActivity);
+
   return (
     <section className="my-10">
       <div className="relative">

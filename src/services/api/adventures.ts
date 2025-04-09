@@ -332,7 +332,7 @@ export const adventures = {
         }
       );
 
-      const { url } = await fetch(response.data.uploadUrl, {
+      await fetch(response.data.uploadUrl, {
         method: "PUT",
         body: body.file,
         headers: {
@@ -344,8 +344,8 @@ export const adventures = {
         }
         return res;
       });
-      console.log(url);
-      return url;
+      console.log(response);
+      return response.data.url;
     } catch (error) {
       console.error("Erro ao atualizar mídia:", error);
       throw error;

@@ -1,7 +1,5 @@
 'use client';
 
-import useLogin from '@/app/(pages)/(cliente)/(acesso)/login/login-store';
-
 import {
   sideBarAdmin,
   sideBarClient,
@@ -13,7 +11,7 @@ import { usePathname } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import MyIcon from '../atoms/my-icon';
 import { useAuthStore } from '@/store/useAuthStore';
-import { useSession } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
 import { authService } from '@/services/api/auth';
 import {
   Notification,
@@ -21,6 +19,7 @@ import {
 } from '@/services/api/notifications';
 import { useQuery } from '@tanstack/react-query';
 import { useCart } from '@/store/useCart';
+import useLogin from '@/store/useLogin';
 
 export default function SidebarMenuWeb({}) {
   const pathname = usePathname();
@@ -52,20 +51,20 @@ export default function SidebarMenuWeb({}) {
   useQuery({
     queryKey: ['notifications'],
     queryFn: async () => {
-      if (session?.user) {
-        const unreadNotifications =
-          await notificationsService.listNotifications({
-            limit: 30,
-            isRead: false,
-          });
+      const unreadNotifications = await notificationsService.listNotifications({
+        limit: 30,
+        isRead: false,
+      });
 
-        setNotifications(unreadNotifications);
-      }
+      setNotifications(unreadNotifications);
+      return unreadNotifications;
     },
+    enabled: Boolean(session?.user),
   });
 
   const handleLogout = async () => {
-    await authService.logout();
+    await authService.logout(session?.user.refreshToken ?? '');
+    await signOut();
     clearUser();
   };
 

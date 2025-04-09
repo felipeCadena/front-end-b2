@@ -1,9 +1,8 @@
 import {
   Notification,
   notificationsService,
-} from '@/services/api/notifications';
-
-import { create } from 'zustand';
+} from "@/services/api/notifications";
+import { create } from "zustand";
 
 // Encontrando problema ao utilizar o hook. Ao utilizar o hook, a store é criada fazendo um request para a API, mas se o usuário não possuir conta, gera um erro unauthorized.
 // Por conta disso, o hook está criado, mas não utilizado.
@@ -28,7 +27,7 @@ const useNotifications = create<NotificationStore>((set) => {
   };
 
   // Initialize notifications when the store is created
-  initializeNotifications();
+  // initializeNotifications();
 
   return {
     notifications: [],
