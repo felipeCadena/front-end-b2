@@ -1,29 +1,38 @@
 'use client';
 
-import { notifications } from '@/common/constants/mock';
 import MyButton from '@/components/atoms/my-button';
 import MyIcon from '@/components/atoms/my-icon';
 import MyTypography from '@/components/atoms/my-typography';
-import { notificationsService } from '@/services/api/notifications';
-import useNotifications from '@/store/useNotifications';
+import {
+  Notification,
+  notificationsService,
+} from '@/services/api/notifications';
+
 import { cn } from '@/utils/cn';
 import { formatDate, getData, getHora, isDateInPast } from '@/utils/formatters';
 import PATHS from '@/utils/paths';
 import { useQuery } from '@tanstack/react-query';
+import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import React from 'react';
+import React, { useState } from 'react';
 
 export default function Notificacoes() {
   const router = useRouter();
-  const { notifications, setNotifications } = useNotifications();
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+
+  const session = useSession();
 
   useQuery({
     queryKey: ['notifications'],
     queryFn: async () => {
-      const userNotifications = await notificationsService.listNotifications({
-        limit: 30,
-      });
-      setNotifications(userNotifications);
+      if (session.data?.user) {
+        const userNotifications = await notificationsService.listNotifications({
+          limit: 30,
+        });
+        setNotifications(userNotifications);
+      } else {
+        setNotifications([]);
+      }
     },
   });
 

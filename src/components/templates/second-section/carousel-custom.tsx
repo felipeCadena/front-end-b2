@@ -62,10 +62,10 @@ export default function CarouselCustom({
     <section className="relative">
       <MyIcon
         name="chevron-down-green"
-        className="absolute -left-0 top-[22%] rotate-90 z-20 hover:cursor-pointer"
+        className="absolute -left-0 top-[22%] rotate-90 z-20 hover:cursor-pointer w-[10px]"
         onClick={() => handleScroll("left")}
       />
-      <div className="absolute -left-0 bg-gradient-to-r from-white via-white/80 to-transparent z-[15] w-8 h-[98%]" />
+      <div className="absolute -left-0 bg-gradient-to-r from-white via-white/80 to-transparent z-[15] w-5 h-[98%]" />
       <div className="absolute -right-0 bg-gradient-to-l from-white via-white/80 to-transparent z-[15] w-8 h-[98%] " />
 
       <MyIcon
@@ -93,7 +93,7 @@ export default function CarouselCustom({
               return (
                 <div
                   key={index}
-                  className="min-w-[85%] md:min-w-[30%] lg:min-w-[25%] flex flex-col gap-1 cursor-pointer items-start md:mb-8"
+                  className="min-w-[85%] md:min-w-[30%] lg:min-w-[25%] 2xl:w-[25%] flex flex-col gap-1 cursor-pointer items-start md:mb-8"
                   onClick={() => handleActivity(activity?.id)}
                 >
                   <div className="relative z-10 overflow-hidden h-[225px] w-full md:w-[250px] hover:cursor-pointer rounded-md">
