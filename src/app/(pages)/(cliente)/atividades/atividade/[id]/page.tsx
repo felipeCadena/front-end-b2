@@ -14,9 +14,10 @@ import PATHS from '@/utils/paths';
 import { useQuery } from '@tanstack/react-query';
 import { adventures } from '@/services/api/adventures';
 import {
-  formatAdventureType,
   formatDificultyTag,
+  formatIconName,
   formatPrice,
+  handleNameActivity,
 } from '@/utils/formatters';
 import User from '@/components/atoms/my-icon/elements/user';
 
@@ -30,12 +31,11 @@ export default function Atividade() {
     queryFn: () => adventures.getAdventureById(Number(id)),
   });
 
-  console.log('ITEMS --> ', fetchedActivity?.itemsIncluded);
-
   const parsedItems: string[] = JSON.parse(
     `${fetchedActivity?.itemsIncluded ?? '[]'}`
   );
 
+  console.log('ITEMS --> ', parsedItems);
   const images = [
     { url: '/images/atividades/montanha.webp' },
     { url: '/images/atividades/paraquedas.webp' },
@@ -64,7 +64,7 @@ export default function Atividade() {
                 {fetchedActivity?.title}
               </MyTypography>
               <MyBadge variant="outline" className="p-1">
-                {formatAdventureType(fetchedActivity?.typeAdventure as string)}
+                {handleNameActivity(fetchedActivity?.typeAdventure as string)}
               </MyBadge>
             </div>
 
@@ -145,7 +145,7 @@ export default function Atividade() {
           </MyTypography>
           <div className="flex items-center justify-between">
             <MyBadge variant="outline" className="p-1">
-              {formatAdventureType(fetchedActivity?.typeAdventure as string)}
+              {handleNameActivity(fetchedActivity?.typeAdventure as string)}
             </MyBadge>
             <StarRating rating={fetchedActivity?.averageRating ?? 0} />
           </div>
@@ -197,7 +197,7 @@ export default function Atividade() {
                 </MyTypography>
               </div>
             )}
-
+            {/* 
             {fetchedActivity?.picturesIncluded && (
               <div className="flex items-center gap-2">
                 <MyIcon
@@ -208,14 +208,14 @@ export default function Atividade() {
                   Fotografia
                 </MyTypography>
               </div>
-            )}
+            )} */}
 
             {parsedItems.map(
               (item) =>
                 item && (
                   <div key={item} className="flex items-center gap-2">
                     <MyIcon
-                      name={item as any}
+                      name={formatIconName(item) as any}
                       className="p-2 bg-primary-900 rounded-md"
                     />
                     <MyTypography variant="body" weight="bold">
@@ -224,40 +224,6 @@ export default function Atividade() {
                   </div>
                 )
             )}
-
-            <div className="flex items-center gap-2">
-              <MyIcon
-                name="alimentacao"
-                className="p-2 bg-primary-900 rounded-md"
-              />
-              <MyTypography variant="body" weight="bold" className="">
-                Alimentação
-              </MyTypography>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <MyIcon name="agua" className="p-2 bg-primary-900 rounded-md" />
-              <MyTypography variant="body" weight="bold" className="">
-                Água
-              </MyTypography>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <MyIcon name="guia" className="p-2 bg-primary-900 rounded-md" />
-              <MyTypography variant="body" weight="bold" className="">
-                Guia
-              </MyTypography>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <MyIcon
-                name="combustivel"
-                className="p-2 bg-primary-900 rounded-md"
-              />
-              <MyTypography variant="body" weight="bold" className="">
-                Combustível
-              </MyTypography>
-            </div>
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:my-auto">
@@ -273,7 +239,9 @@ export default function Atividade() {
               </MyTypography>
             </div>
 
-            <div className="bg-primary-900 py-2 rounded-md mb-2 md:h-fit">
+            <div
+              className={`${fetchedActivity?.isChildrenAllowed ? 'bg-primary-900' : 'bg-orange-200'} py-2 rounded-md mb-2 md:h-fit`}
+            >
               <MyTypography
                 variant="body"
                 weight="bold"
