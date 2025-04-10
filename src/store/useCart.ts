@@ -1,6 +1,6 @@
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
-import { Adventure } from '@/services/api/adventures';
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
+import { Adventure } from "@/services/api/adventures";
 
 interface Cart {
   cart: Adventure[];
@@ -42,6 +42,6 @@ export const useCart = create<Cart>()(
         }));
       },
     }),
-    { name: 'cart-storage' }
+    { name: "cart-storage" }
   )
 );

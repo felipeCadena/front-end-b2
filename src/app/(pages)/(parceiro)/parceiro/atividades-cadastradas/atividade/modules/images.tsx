@@ -40,7 +40,7 @@ export default function UpdateImages({ formData, onClose }: UpdateImagesProps) {
         file: new Blob([arrayBuffer]),
       };
       try {
-        await adventures.updateMedia(formData.id, mediaId, image);
+        await adventures.updateMedia(String(formData.id), mediaId, image);
 
         queryClient.invalidateQueries({ queryKey: ["activity"] });
 

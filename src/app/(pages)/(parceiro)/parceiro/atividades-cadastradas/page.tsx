@@ -7,12 +7,19 @@ import Activities from "@/components/organisms/activities";
 import ActivitiesDetails from "@/components/organisms/activities-details";
 import ActivitiesFilter from "@/components/organisms/activities-filter";
 import SearchActivity from "@/components/organisms/search-activity";
+import { partnerService } from "@/services/api/partner";
 import PATHS from "@/utils/paths";
+import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import React from "react";
 
 export default function AtividadesCadastradas() {
   const router = useRouter();
+
+  const { data: partnerActivities } = useQuery({
+    queryKey: ["partnerActivities"],
+    queryFn: () => partnerService.getMyAdventures(),
+  });
 
   return (
     <main className="px-4 my-8 w-full space-y-8 md:space-y-12 overflow-x-hidden">
@@ -29,7 +36,10 @@ export default function AtividadesCadastradas() {
       </div>
 
       <div className="md:hidden">
-        <ActivitiesDetails activities={activities} type="parceiro" />
+        <ActivitiesDetails
+          activities={partnerActivities ? partnerActivities : []}
+          type="parceiro"
+        />
       </div>
 
       <div className="max-sm:hidden">

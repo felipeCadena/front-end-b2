@@ -7,7 +7,10 @@ import MyIcon from "@/components/atoms/my-icon";
 import MyTextarea from "@/components/atoms/my-textarea";
 import MyTypography from "@/components/atoms/my-typography";
 import StarRating from "@/components/molecules/my-stars";
+import { adventures } from "@/services/api/adventures";
 import { cn } from "@/utils/cn";
+import { handleNameActivity } from "@/utils/formatters";
+import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 import React from "react";
@@ -16,7 +19,10 @@ export default function AtividadeRealizada() {
   const router = useRouter();
   const { id } = useParams();
 
-  const activity = activities.find((activity) => activity.id === id);
+  const { data: activity } = useQuery({
+    queryKey: ["activity"],
+    queryFn: () => adventures.getAdventureById(Number(id)),
+  });
 
   return (
     <section className="mx-4 my-4">
@@ -33,13 +39,13 @@ export default function AtividadeRealizada() {
       <div className="md:flex md:gap-4">
         <div className="bg-gray-200 w-full md:w-1/4 h-[440px] rounded-lg mt-4">
           <Image
-            src={activity?.image ?? ""}
+            src={activity?.images[0].url ?? ""}
             alt="Imagem da atividade"
             width={342}
             height={100}
             className={cn(
               "w-full h-[250px] object-cover rounded-t-lg",
-              activity?.tag.includes("Terrestre")
+              activity?.typeAdventure.includes("terra")
                 ? "object-top"
                 : "object-bottom"
             )}
@@ -48,7 +54,7 @@ export default function AtividadeRealizada() {
           <div className="p-8 flex flex-col gap-2">
             <div>
               <MyBadge variant="outline" className="p-1">
-                {activity?.tag}
+                {handleNameActivity(activity?.typeAdventure ?? "")}
               </MyBadge>
             </div>
             <MyTypography variant="subtitle3" weight="bold" className="">
@@ -62,7 +68,7 @@ export default function AtividadeRealizada() {
 
         <div className="flex flex-col gap-4 md:w-3/4">
           <div className="bg-[#F1F0F5] h-[64px] md:w-1/3 rounded-lg mt-4 flex items-center justify-center">
-            <StarRating bigStars rating={activity?.stars ?? 5} />
+            <StarRating bigStars rating={activity?.averageRating ?? 5} />
           </div>
 
           <div className="mt-8 md:mt-4">

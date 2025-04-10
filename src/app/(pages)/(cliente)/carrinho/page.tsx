@@ -1,29 +1,36 @@
-'use client';
+"use client";
 
-import { activities } from '@/common/constants/mock';
-import MyButton from '@/components/atoms/my-button';
-import MyIcon from '@/components/atoms/my-icon';
-import MyTypography from '@/components/atoms/my-typography';
-import { MyDatePicker } from '@/components/molecules/my-date-picker';
-import TimePickerModal from '@/components/molecules/time-picker';
-import ActivitiesDetails from '@/components/organisms/activities-details';
-import PeopleSelector from '@/components/organisms/people-selector';
-import ShoppingDetails from '@/components/organisms/shopping-details';
-import PATHS from '@/utils/paths';
-import { useRouter } from 'next/navigation';
-import React from 'react';
+import { activities } from "@/common/constants/mock";
+import MyButton from "@/components/atoms/my-button";
+import MyIcon from "@/components/atoms/my-icon";
+import MyTypography from "@/components/atoms/my-typography";
+import { MyDatePicker } from "@/components/molecules/my-date-picker";
+import TimePickerModal from "@/components/molecules/time-picker";
+import ActivitiesDetails from "@/components/organisms/activities-details";
+import PeopleSelector from "@/components/organisms/people-selector";
+import ShoppingDetails from "@/components/organisms/shopping-details";
+import { adventures } from "@/services/api/adventures";
+import PATHS from "@/utils/paths";
+import { useQuery } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
+import React from "react";
 
 export default function Carrinho() {
   const router = useRouter();
   const [selectedDates, setSelectedDates] = React.useState<Date[]>([]); // Estado para armazenar as datas selecionadas
-  const [duration, setDuration] = React.useState('');
+  const [duration, setDuration] = React.useState("");
 
-  const activity = activities.filter((activity) =>
-    activity.title.includes('Atividade 2')
-  );
+  const { data: activity } = useQuery({
+    queryKey: ["activity"],
+    queryFn: () => adventures.getAdventureById(Number(activities[0].id)),
+  });
+
+  // const activity = activities.filter((activity) =>
+  //   activity.title.includes("Atividade 2")
+  // );
 
   const activityDetails = activities.find((activity) =>
-    activity.title.includes('Atividade 1')
+    activity.title.includes("Atividade 1")
   );
 
   return (
@@ -38,7 +45,7 @@ export default function Carrinho() {
           Carrinho de compras
         </MyTypography>
       </div>
-      <ActivitiesDetails activities={activity} />
+      <ActivitiesDetails activities={activity ? [activity] : []} />
 
       <div className="border-t-[1px] border-gray-400/30">
         <MyTypography variant="subtitle3" weight="bold" className="my-4">
@@ -74,7 +81,7 @@ export default function Carrinho() {
         borderRadius="squared"
         size="lg"
         className="w-full mt-6"
-        onClick={() => router.push(PATHS['finalizar-compra'])}
+        onClick={() => router.push(PATHS["finalizar-compra"])}
       >
         Finalizar Pedido
       </MyButton>

@@ -302,7 +302,7 @@ export default function Atividade() {
             <div className="flex items-center gap-2">
               <Image
                 alt="avatar"
-                src={activity?.partner.logo ?? "/user.png"}
+                src={activity?.partner.logo.url ?? "/user.png"}
                 width={6}
                 height={6}
                 className="w-10 h-10 rounded-full object-contain"
@@ -353,7 +353,7 @@ export default function Atividade() {
           <div className="flex items-center gap-2 mb-4">
             <Image
               alt="avatar"
-              src={activity?.partner.logo ?? "/user.png"}
+              src={activity?.partner.logo.url ?? "/user.png"}
               width={6}
               height={6}
               className="w-10 h-10 rounded-full object-contain"
