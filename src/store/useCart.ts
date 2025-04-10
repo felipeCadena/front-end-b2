@@ -3,6 +3,7 @@ import { persist } from 'zustand/middleware';
 import { Adventure } from '@/services/api/adventures';
 
 interface Cart {
+  userId: string;
   cart: Adventure[];
   addToCart: (data: Adventure) => void;
   removeFromCart: (id: string) => void;
@@ -11,7 +12,8 @@ interface Cart {
 }
 
 const initialState = {
-  cart: [],
+  userId: '',
+  cart: [] as Adventure[],
 };
 
 export const useCart = create<Cart>()(
@@ -27,7 +29,9 @@ export const useCart = create<Cart>()(
 
       removeFromCart: (id) => {
         set((state) => ({
-          cart: state.cart.filter((adventure) => adventure.id !== id),
+          cart: state.cart.filter(
+            (adventure) => adventure.id.toString() !== id
+          ),
         }));
       },
 

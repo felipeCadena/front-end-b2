@@ -4,11 +4,10 @@ import MyTypography from '@/components/atoms/my-typography';
 import ActivitiesFilter from '@/components/organisms/activities-filter';
 import React from 'react';
 import CarouselCustom from './carousel-custom';
-import { activities, newActivities } from '@/common/constants/mock';
 import { useQuery } from '@tanstack/react-query';
 import { adventures as adventuresService } from '@/services/api/adventures';
 import useAdventures from '@/store/useAdventure';
-import { formatSearchFilter } from '@/utils/formatters';
+import { handleNameActivity } from '@/utils/formatters';
 
 export default function SecondSection() {
   const [selected, setSelected] = React.useState<'ar' | 'terra' | 'mar' | ''>(
@@ -50,7 +49,7 @@ export default function SecondSection() {
           Conheça nossas atividades
         </MyTypography>
         <MyTypography variant="subtitle3" weight="regular" className="mt-1">
-          {formatSearchFilter(searchedAdventures)}
+          {handleNameActivity(searchedAdventures)}
         </MyTypography>
 
         <CarouselCustom
