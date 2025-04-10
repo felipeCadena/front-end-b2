@@ -18,7 +18,7 @@ export default function FirstSection() {
     { url: "/images/atividades/parapente.webp" },
     { url: "/images/atividades/escalada.webp" },
     { url: "/images/atividades/sup.webp" },
-  ];
+  ].map((image) => image.url);
 
   return (
     <section className="mt-10 md:relative max-sm:px-4">

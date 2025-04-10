@@ -11,9 +11,16 @@ import ActivitiesFilter from "@/components/organisms/activities-filter";
 import ActivitiesHistoric from "@/components/organisms/activities-historic";
 import FullActivitiesHistoric from "@/components/organisms/full-activities-historic";
 import SearchActivity from "@/components/organisms/search-activity";
+import { adventures } from "@/services/api/adventures";
+import { useQuery } from "@tanstack/react-query";
 import React from "react";
 
 export default function Historico() {
+  const { data: activitiesHistoric } = useQuery({
+    queryKey: ["activitiesHistoric"],
+    queryFn: () => adventures.getAdventures(),
+  });
+
   return (
     <section className="w-full">
       <div className="mx-4 space-y-8">

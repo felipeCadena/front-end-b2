@@ -221,7 +221,7 @@ export default function InformacoesAtividade({
 
       // 6. Chama addMedia para obter os uploadUrls
       const uploadMedias = await adventures.addMediaWithToken(
-        adventureId,
+        String(adventureId),
         files.map(({ filename, mimetype, isDefault }) => ({
           filename,
           mimetype,
@@ -332,7 +332,7 @@ export default function InformacoesAtividade({
 
       // 4. Chama addMedia para obter os uploadUrls
       const uploadMedias = await adventures.addMedia(
-        adventureId,
+        String(adventureId),
         files.map(({ filename, mimetype, isDefault }) => ({
           filename,
           mimetype,
