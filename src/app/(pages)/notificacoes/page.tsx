@@ -9,7 +9,13 @@ import {
 } from '@/services/api/notifications';
 
 import { cn } from '@/utils/cn';
-import { formatDate, getData, getHora, isDateInPast } from '@/utils/formatters';
+import {
+  formatDate,
+  formatNotificationText,
+  getData,
+  getHora,
+  isDateInPast,
+} from '@/utils/formatters';
 import PATHS from '@/utils/paths';
 import { useQuery } from '@tanstack/react-query';
 import { useSession } from 'next-auth/react';
@@ -30,8 +36,6 @@ export default function Notificacoes() {
           limit: 30,
         });
         setNotifications(userNotifications);
-      } else {
-        setNotifications([]);
       }
     },
   });
@@ -59,7 +63,7 @@ export default function Notificacoes() {
   const groupedNotifications = notifications.reduce<
     Record<string, typeof notifications>
   >((acc, notification) => {
-    const monthYear = getMonthName(notification.timestamp); // Exemplo: "Fevereiro"
+    const monthYear = getMonthName(notification.createdAt); // Exemplo: "Fevereiro"
 
     if (!acc[monthYear]) {
       acc[monthYear] = [];
@@ -105,8 +109,7 @@ export default function Notificacoes() {
                     <div
                       key={notification.id}
                       className={cn(
-                        'w-full flex flex-col gap-2 px-3 py-2 bg-[#F1F0F5] rounded-lg shadow-sm hover:bg-gray-100 relative cursor-pointer',
-                        notification.status == 'realizada' && 'opacity-70'
+                        'w-full flex flex-col gap-2 px-3 py-2 bg-[#F1F0F5] rounded-lg shadow-sm hover:bg-gray-100 relative cursor-pointer'
                       )}
                       onClick={() =>
                         router.push(
@@ -117,9 +120,9 @@ export default function Notificacoes() {
                       <div
                         className={cn(
                           'absolute inset-y-0 left-0 w-2 rounded-l-lg',
-                          notification.status == 'cancelada'
+                          notification.title.includes('Pedido Cancelado')
                             ? 'bg-[#FF7272] opacity-50'
-                            : notification.status == 'pendente'
+                            : notification.title.includes('Pedido Realizado')
                               ? 'bg-primary-900'
                               : 'bg-[#D6D6D6]'
                         )}
@@ -131,14 +134,14 @@ export default function Notificacoes() {
                           weight="semibold"
                           className="ml-1 mt-1 flex gap-2 items-center"
                         >
-                          {formatDate(notification.timestamp) ==
+                          {formatDate(notification.updatedAt) ==
                             'Agora pouco' && <MyIcon name="now" />}
-                          {formatDate(notification.timestamp)}
-                          {formatDate(notification.timestamp) !=
+                          {formatDate(notification.updatedAt)}
+                          {formatDate(notification.updatedAt) !=
                             'Agora pouco' &&
-                            ` - ${getHora(notification.timestamp)}`}
+                            ` - ${getHora(notification.updatedAt)}`}
                         </MyTypography>
-                        {formatDate(notification.timestamp) ==
+                        {formatDate(notification.updatedAt) ==
                           'Agora pouco' && (
                           <MyButton
                             className="ml-1"
@@ -154,18 +157,21 @@ export default function Notificacoes() {
                       <MyTypography
                         variant="label"
                         weight="semibold"
-                        className="ml-1"
+                        className="ml-1 flex justify-between items-center"
                       >
                         {index < 9 ? `0${index + 1}` : index} -{' '}
-                        {notification.title}
+                        {notification.title.slice(0, 33) + '...'}
+                        <MyIcon
+                          name={notification.isRead ? 'read' : 'unread'}
+                        />
                       </MyTypography>
+
                       <MyTypography
                         variant="notification"
                         weight="regular"
                         className="ml-1 flex justify-between"
                       >
-                        {notification.description.slice(0, 30) + '...'}
-                        <MyIcon name={notification.read ? 'read' : 'unread'} />
+                        {notification.text.slice(0, 47) + '...'}
                       </MyTypography>
                     </div>
                   ))}

@@ -289,3 +289,9 @@ export const selectActivityImage = (activity: Adventure) => {
   }
   return `/images/atividades/${activity.typeAdventure}/${activity.typeAdventure}-1.jpeg`;
 };
+
+export const formatNotificationText = (text: string) => {
+  const separateBRtags = text.split(/<br>/);
+
+  return separateBRtags;
+};

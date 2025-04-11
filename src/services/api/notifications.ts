@@ -1,19 +1,17 @@
 import { api } from '@/libs/api';
 
 export interface Notification {
-  id: number;
+  color: string;
+  createdAt: string;
+  fromUserId: any;
+  id: string;
+  isAdminNotify: boolean;
+  isRead: boolean;
+  link: string;
+  text: string;
   title: string;
-  timestamp: string;
-  duracao: number;
-  group: number;
-  reason: string;
-  read: boolean;
-  status: string;
-  description: string;
-  parceiro: {
-    avatar: string;
-    nome: string;
-  };
+  toUserId: string;
+  updatedAt: string;
 }
 
 export const notificationsService = {
