@@ -15,6 +15,7 @@ export default function CarouselImages({
   images,
   rounded = false,
 }: CarouselImagesProps) {
+  console.log(images);
   return (
     <div
       className={cn(
@@ -61,7 +62,7 @@ export default function CarouselImages({
           >
             <Image
               alt="Imagens de atividades"
-              src={image.url ?? ''}
+              src={image ?? ''}
               width={250}
               height={300}
               className={cn(

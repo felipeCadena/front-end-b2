@@ -1,23 +1,23 @@
-import MyButton from "@/components/atoms/my-button";
-import MyTypography from "@/components/atoms/my-typography";
-import CarouselImages from "@/components/organisms/carousel-images";
-import React from "react";
-import { Montserrat } from "next/font/google";
+import MyButton from '@/components/atoms/my-button';
+import MyTypography from '@/components/atoms/my-typography';
+import CarouselImages from '@/components/organisms/carousel-images';
+import React from 'react';
+import { Montserrat } from 'next/font/google';
 
 const montserrat = Montserrat({
-  subsets: ["latin"],
-  display: "swap",
-  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+  subsets: ['latin'],
+  display: 'swap',
+  weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
 });
 
 export default function FirstSection() {
   const images = [
-    { url: "/images/atividades/paraquedas.webp" },
-    { url: "/images/atividades/moto.webp" },
-    { url: "/images/atividades/cachoeira.webp" },
-    { url: "/images/atividades/parapente.webp" },
-    { url: "/images/atividades/escalada.webp" },
-    { url: "/images/atividades/sup.webp" },
+    { url: '/images/atividades/paraquedas.webp' },
+    { url: '/images/atividades/moto.webp' },
+    { url: '/images/atividades/cachoeira.webp' },
+    { url: '/images/atividades/parapente.webp' },
+    { url: '/images/atividades/escalada.webp' },
+    { url: '/images/atividades/sup.webp' },
   ].map((image) => image.url);
 
   return (
