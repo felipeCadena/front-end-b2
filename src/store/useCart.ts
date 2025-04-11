@@ -1,51 +1,106 @@
-import { create } from "zustand";
-import { persist } from "zustand/middleware";
-import { Adventure } from "@/services/api/adventures";
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
+import { Adventure } from '@/services/api/adventures';
 
-interface Cart {
+export interface UserCart {
   userId: string;
   cart: Adventure[];
-  addToCart: (data: Adventure) => void;
-  removeFromCart: (id: string) => void;
-  getCartSize: () => number;
-  clearCart: () => void;
+}
+
+interface CartStore {
+  carts: UserCart[];
+  addToCart: (adventure: Adventure, userId: string) => void;
+  removeFromCart: (id: string, userId: string) => void;
+  getCartSize: (userId: string) => number;
+  clearCart: (userId: string) => void;
 }
 
 const initialState = {
-  userId: '',
-  cart: [] as Adventure[],
+  carts: [] as UserCart[],
 };
 
-export const useCart = create<Cart>()(
+export const useCart = create<CartStore>()(
   persist(
     (set, get) => ({
       ...initialState,
 
-      addToCart: (data) => {
-        set((state) => ({
-          cart: [...state.cart, data],
-        }));
+      addToCart: (adventure, userId) => {
+        set((state) => {
+          const existingCartIndex = state.carts.findIndex(
+            (cart) => cart.userId === userId
+          );
+
+          if (existingCartIndex !== -1) {
+            const updatedState = [...state.carts];
+            const existingCart = updatedState[existingCartIndex];
+
+            updatedState[existingCartIndex] = {
+              userId,
+              cart: [...existingCart.cart, adventure],
+            };
+
+            return {
+              carts: updatedState,
+            };
+          }
+
+          return {
+            carts: [
+              ...state.carts,
+              {
+                userId,
+                cart: [adventure],
+              },
+            ],
+          };
+        });
       },
 
-      removeFromCart: (id) => {
-        set((state) => ({
-          cart: state.cart.filter(
-            (adventure) => adventure.id.toString() !== id
-          ),
-        }));
+      removeFromCart: (id, userId) => {
+        set((state) => {
+          const cartIndex = state.carts.findIndex(
+            (cart) => cart.userId === userId
+          );
+          const updatedState = [...state.carts];
+
+          const filteredCart = updatedState[cartIndex].cart.filter(
+            (adventure) => adventure.id !== id
+          );
+
+          updatedState[cartIndex] = {
+            userId,
+            cart: filteredCart,
+          };
+
+          return {
+            carts: updatedState,
+          };
+        });
       },
 
-      getCartSize: () => {
-        const cartSize = get().cart.length;
-        return cartSize;
+      getCartSize: (userId) => {
+        const cart = get().carts.find((cart) => cart.userId === userId);
+        return cart?.cart.length ?? 0;
       },
 
-      clearCart: () => {
-        set(() => ({
-          cart: [],
-        }));
+      clearCart: (userId) => {
+        set((state) => {
+          const cartIndex = state.carts.findIndex(
+            (cart) => cart.userId === userId
+          );
+          const updatedState = [...state.carts];
+
+          updatedState[cartIndex] = {
+            userId,
+            cart: [],
+          };
+
+          return {
+            carts: updatedState,
+          };
+        });
       },
     }),
-    { name: "cart-storage" }
+    { name: 'cart-storage' }
   )
 );

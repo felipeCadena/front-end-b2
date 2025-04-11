@@ -29,8 +29,9 @@ export default function SidebarMenuWeb({}) {
   const { user, clearUser } = useAuthStore();
   const { data: session } = useSession();
   const { getCartSize } = useCart();
+  const userId = session?.user.id;
 
-  const cartSize = getCartSize();
+  const cartSize = getCartSize(userId ?? '');
 
   useEffect(() => {
     switch (session?.user?.role) {

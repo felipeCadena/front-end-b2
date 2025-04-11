@@ -20,9 +20,10 @@ import ActivitiesDetails from '@/components/organisms/activities-details';
 import { Card } from '@/components/organisms/card';
 import PeopleSelector from '@/components/organisms/people-selector';
 import ShoppingDetails from '@/components/organisms/shopping-details';
-import { useCart } from '@/store/useCart';
+import { useCart, UserCart } from '@/store/useCart';
 import { cn } from '@/utils/cn';
 import PATHS from '@/utils/paths';
+import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 
@@ -32,7 +33,11 @@ export default function FinalizarCompra() {
   const [value, setValue] = React.useState<string>('');
   const [selectedDates, setSelectedDates] = React.useState<Date[]>([]); // Estado para armazenar as datas selecionadas
   const [duration, setDuration] = React.useState('');
-  const { cart } = useCart();
+  const { carts } = useCart();
+  const session = useSession();
+  const userId = session.data?.user.id ?? '';
+
+  const userCart = carts.find((cart) => cart.userId === userId);
 
   const activity = activities.filter((activity) =>
     activity.title.includes('Atividade 2')
@@ -83,7 +88,7 @@ export default function FinalizarCompra() {
 
       <div className="max-sm:hidden md:grid md:grid-cols-3 md:gap-2 lg:grid-cols-4">
         <div className="px-6 lg:col-span-2 ">
-          <ActivitiesDetails activities={cart} />
+          <ActivitiesDetails activities={userCart?.cart ?? []} />
           <div className="max-sm:border-t-[1px] max-sm:border-gray-400/30 md:mt-16">
             <MyTypography variant="subtitle3" weight="bold" className="my-4">
               Escolha o dia e horário para realizar a atividade.
