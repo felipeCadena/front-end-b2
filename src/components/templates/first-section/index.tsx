@@ -12,13 +12,13 @@ const montserrat = Montserrat({
 
 export default function FirstSection() {
   const images = [
-    { url: '/images/atividades/paraquedas.webp' },
-    { url: '/images/atividades/moto.webp' },
-    { url: '/images/atividades/cachoeira.webp' },
-    { url: '/images/atividades/parapente.webp' },
-    { url: '/images/atividades/escalada.webp' },
-    { url: '/images/atividades/sup.webp' },
-  ].map((image) => image.url);
+    '/images/atividades/paraquedas.webp',
+    '/images/atividades/moto.webp',
+    '/images/atividades/cachoeira.webp',
+    '/images/atividades/parapente.webp',
+    '/images/atividades/escalada.webp',
+    '/images/atividades/sup.webp',
+  ];
 
   return (
     <section className="mt-10 md:relative max-sm:px-4">

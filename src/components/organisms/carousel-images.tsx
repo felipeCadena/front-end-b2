@@ -15,7 +15,6 @@ export default function CarouselImages({
   images,
   rounded = false,
 }: CarouselImagesProps) {
-  console.log(images);
   return (
     <div
       className={cn(
