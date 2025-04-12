@@ -12,10 +12,9 @@ import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
 import { useAuthStore } from '@/store/useAuthStore';
 import GoogleLoginButton from '@/components/molecules/google-login-button';
-import { getSession, signIn, useSession } from 'next-auth/react';
+import { signIn, useSession } from 'next-auth/react';
 import FacebookLoginButton from '@/components/molecules/facebook-login-button';
 import useLogin from '@/store/useLogin';
-import { AxiosError } from 'axios';
 
 export default function Login() {
   const router = useRouter();

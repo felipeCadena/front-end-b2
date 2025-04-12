@@ -10,7 +10,6 @@ import {
   formatOrderStatus,
   getHora,
 } from '@/utils/formatters';
-import Image from 'next/image';
 import { useParams, useRouter } from 'next/navigation';
 import React from 'react';
 
@@ -82,7 +81,7 @@ export default function Notificacao() {
       <div className="flex gap-4 items-center">
         <MyIcon
           name="voltar-black"
-          className=""
+          className="hover:cursor-pointer"
           onClick={() => router.back()}
         />
         <MyTypography variant="subtitle1" weight="bold" className="">

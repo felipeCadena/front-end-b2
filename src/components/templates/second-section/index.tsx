@@ -30,6 +30,8 @@ export default function SecondSection() {
 
       setSearchedAdventures(selected);
       setAdventures(filterAdventures);
+
+      return filterAdventures;
     },
   });
 

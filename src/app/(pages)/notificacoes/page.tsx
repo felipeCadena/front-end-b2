@@ -21,12 +21,12 @@ import PATHS from '@/utils/paths';
 import { useQuery } from '@tanstack/react-query';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import React, { useState } from 'react';
+import React from 'react';
 
 export default function Notificacoes() {
   const router = useRouter();
-  const [notifications, setNotifications] = useState<Notification[]>([]);
-  const { setStoreNotifications } = useNotifications();
+
+  const { notifications, setStoreNotifications } = useNotifications();
 
   const session = useSession();
 
@@ -38,8 +38,11 @@ export default function Notificacoes() {
           limit: 30,
         });
         setStoreNotifications(userNotifications);
-        setNotifications(userNotifications);
+
+        return userNotifications;
       }
+
+      return [];
     },
   });
 
