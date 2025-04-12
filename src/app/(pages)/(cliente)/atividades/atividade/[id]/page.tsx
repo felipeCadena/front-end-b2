@@ -42,7 +42,7 @@ export default function Atividade() {
     queryFn: async () => {
       const response = await adventures.listFavorites();
       const isFavorite = response.some(
-        (favorite) => id === favorite.adventure.id
+        (favorite) => Number(id) === favorite.adventure.id
       );
       setFavorite(isFavorite);
 
@@ -50,10 +50,14 @@ export default function Atividade() {
     },
   });
 
+  console.log('ID', id);
+  console.log('FAV --> ', favorites);
+
   const handleFavorite = async () => {
     const favoriteActivity = favorites.find(
-      (favorite) => favorite.adventure.id === id
+      (favorite) => favorite.adventure.id === Number(id)
     );
+
     try {
       if (!favoriteActivity) {
         await adventures.addFavorite(Number(id));

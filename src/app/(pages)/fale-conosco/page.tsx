@@ -122,7 +122,7 @@ export default function FaleConosco() {
             variant="default"
             size="lg"
             borderRadius="squared"
-            className="px-16 lg:w-[175px] items-center"
+            className="px-16 lg:w-[175px] items-center mt-4"
           >
             {isLoading ? (
               <MySpinner className="w-full flex justify-center items-center" />
