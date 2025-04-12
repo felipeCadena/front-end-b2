@@ -1,33 +1,39 @@
-"use client";
+'use client';
 
-import { notifications } from "@/common/constants/mock";
-import MyIcon from "@/components/atoms/my-icon";
-import MyTypography from "@/components/atoms/my-typography";
-import { cn } from "@/utils/cn";
-import { formatDate, getHora } from "@/utils/formatters";
-import Image from "next/image";
-import { useParams, useRouter } from "next/navigation";
-import React, { useEffect } from "react";
+import MyIcon from '@/components/atoms/my-icon';
+import MyTypography from '@/components/atoms/my-typography';
+import useNotifications from '@/store/useNotifications';
+import { cn } from '@/utils/cn';
+import {
+  extractActivityPrice,
+  formatDate,
+  formatOrderStatus,
+  getHora,
+} from '@/utils/formatters';
+import Image from 'next/image';
+import { useParams, useRouter } from 'next/navigation';
+import React from 'react';
 
 export default function Notificacao() {
   const router = useRouter();
   const { id } = useParams();
-  const [notification, setNotification] = React.useState<any>();
 
-  useEffect(() => {
-    const index = notifications.findIndex(
-      (notification) => notification.id == Number(id)
-    );
+  const { notifications = [] } = useNotifications();
 
-    if (index !== -1) {
-      const notificationData = { ...notifications[index], index: index + 1 };
-      setNotification(notificationData);
-    }
-  }, [id]);
+  const notificationPosition = notifications.findIndex(
+    (notification) => notification.id === id
+  );
+
+  const notification = notifications[notificationPosition];
+
+  const notificationHeader = notification?.title.split('-');
+  const notificationTitle = notificationHeader[1];
+  const orderStatus = formatOrderStatus(notificationHeader[0].trim());
+  const activityPrice = extractActivityPrice(notification.text);
 
   const formatDescription = (status: string) => {
     switch (status) {
-      case "cancelada":
+      case 'cancelada':
         return (
           <div className="flex flex-col gap-4 ml-2 mt-2">
             <MyTypography variant="label" weight="regular">
@@ -40,11 +46,12 @@ export default function Notificacao() {
             </MyTypography>
           </div>
         );
-      case "pendente":
+      case 'pendente':
         return (
           <div className="flex flex-col gap-4 ml-2 mt-2">
             <MyTypography variant="label" weight="regular">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam,
+              quas
             </MyTypography>
             <MyTypography variant="label" weight="semibold">
               O valor debitado da atividade será estornado em sua conta em até 3
@@ -52,11 +59,12 @@ export default function Notificacao() {
             </MyTypography>
           </div>
         );
-      case "realizada":
+      case 'realizada':
         return (
           <div className="flex flex-col gap-4 ml-2 mt-2">
             <MyTypography variant="label" weight="regular">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quas
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam,
+              quas
             </MyTypography>
             <MyTypography variant="label" weight="semibold">
               O valor debitado da atividade será estornado em sua conta em até 3
@@ -65,7 +73,7 @@ export default function Notificacao() {
           </div>
         );
       default:
-        return "";
+        return '';
     }
   };
 
@@ -83,20 +91,20 @@ export default function Notificacao() {
       </div>
 
       <div
-        key={notification?.id}
+        key={notificationPosition}
         className={cn(
-          "w-full flex flex-col gap-3 p-4 mt-4 bg-[#F1F0F5] rounded-lg shadow-sm hover:bg-gray-100 relative",
-          notification?.status == "realizada" && "opacity-70"
+          'w-full flex flex-col gap-3 p-4 mt-4 bg-[#F1F0F5] rounded-lg shadow-sm hover:bg-gray-100 relative',
+          orderStatus === 'realizada' && 'opacity-70'
         )}
       >
         <div
           className={cn(
-            "absolute inset-y-0 left-0 w-2 rounded-l-lg",
-            notification?.status == "cancelada"
-              ? "bg-[#FF7272] opacity-50"
-              : notification?.status == "pendente"
-                ? "bg-primary-900 opacity-50"
-                : "bg-[#D6D6D6]"
+            'absolute inset-y-0 left-0 w-2 rounded-l-lg  border-2',
+            orderStatus === 'cancelada'
+              ? 'bg-[#FF7272] opacity-50'
+              : orderStatus === 'realizada'
+                ? 'bg-primary-900'
+                : 'bg-[#D6D6D6]'
           )}
         ></div>
 
@@ -105,47 +113,56 @@ export default function Notificacao() {
           weight="semibold"
           className="ml-2 flex gap-2 items-center"
         >
-          {formatDate(notification?.timestamp ?? "") == "Agora pouco" && (
+          {formatDate(notification?.updatedAt ?? '') == 'Agora pouco' && (
             <MyIcon name="now" className="" />
           )}
-          {formatDate(notification?.timestamp ?? "")}
-          {formatDate(notification?.timestamp ?? "") != "Agora pouco" &&
-            `- ${getHora(notification?.timestamp ?? "")}`}
+          {formatDate(notification?.updatedAt ?? '')}
+          {formatDate(notification?.updatedAt ?? '') != 'Agora pouco' &&
+            `- ${getHora(notification?.updatedAt ?? '')}`}
         </MyTypography>
         <MyTypography variant="subtitle3" weight="bold" className="ml-2">
-          {notification?.index < 9
-            ? `0${notification?.index}`
-            : notification?.index}{" "}
+          {notificationPosition < 9
+            ? `0${notificationPosition}`
+            : notificationPosition}{' '}
           - {notification?.title}
         </MyTypography>
-        <MyTypography variant="label" weight="regular" className="ml-2">
-          Sua atividade de{" "}
-          <span className="font-semibold">{notification?.title}</span> foi{" "}
-          {notification?.status}!
-        </MyTypography>
-        {formatDescription(notification?.status)}
+        <div className="flex justify-start items-center">
+          <MyTypography variant="label" weight="regular" className="ml-2">
+            Sua atividade de{' '}
+          </MyTypography>
+          <MyTypography variant="label" weight="semibold" className="ml-1">
+            {notificationTitle}
+          </MyTypography>
+
+          <MyTypography className="mx-1"> foi</MyTypography>
+
+          <MyTypography variant="label" weight="bold" className="underline">
+            {orderStatus}
+          </MyTypography>
+
+          <MyTypography variant="label" weight="regular">
+            !
+          </MyTypography>
+        </div>
+
         <MyTypography variant="label" weight="regular" className="ml-2 mt-4">
-          Valor da atividade <span className="font-bold">R$ 340,00</span>
+          Valor da atividade <span className="font-bold">{activityPrice}</span>
         </MyTypography>
       </div>
 
-      <div
+      {/* <div
         key={notification?.id}
         className={cn(
-          "w-full flex flex-col gap-3 p-4  bg-[#F1F0F5] rounded-lg shadow-sm hover:bg-gray-100 relative",
-          notification?.status == "realizada" && "opacity-70"
+          'w-full flex flex-col gap-3 p-4  bg-[#F1F0F5] rounded-lg shadow-sm hover:bg-gray-100 relative',
+          orderStatus === 'realizada' && 'opacity-70'
         )}
       >
         <div
           className={cn(
-            "absolute inset-y-0 left-0 w-2 rounded-l-lg bg-[#D6D6D6]"
+            'absolute inset-y-0 left-0 w-2 rounded-l-lg bg-[#D6D6D6]'
           )}
         ></div>
-        <MyTypography
-          variant="subtitle3"
-          weight="semibold"
-          className="ml-2"
-        >
+        <MyTypography variant="subtitle3" weight="semibold" className="ml-2">
           Justificativa de Cancelamento:
         </MyTypography>
         <MyTypography variant="label" weight="regular" className="ml-2 mt-2">
@@ -155,7 +172,7 @@ export default function Notificacao() {
         <div className="flex gap-2 mt-4">
           <Image
             alt="avatar"
-            src={notification?.parceiro?.avatar ?? ""}
+            src={notification?.parceiro?.avatar ?? ''}
             width={8}
             height={8}
             className="w-12 h-12 rounded-full object-contain"
@@ -169,7 +186,7 @@ export default function Notificacao() {
             </MyTypography>
           </div>
         </div>
-      </div>
+      </div> */}
     </section>
   );
 }

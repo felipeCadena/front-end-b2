@@ -295,3 +295,23 @@ export const formatNotificationText = (text: string) => {
 
   return separateBRtags;
 };
+
+export const extractActivityPrice = (notficationText: string) => {
+  return formatNotificationText(notficationText)
+    .filter((text) => text.includes('Valor total do pedido'))[0]
+    .split(':')[1]
+    .trim();
+};
+
+export const formatOrderStatus = (orderResponse: string) => {
+  switch (orderResponse) {
+    case 'Pedido Realizado':
+      return 'realizada';
+    case 'Pedido Cancelado':
+      return 'cancelada';
+    case 'Pedido Pendente':
+      return 'pendente';
+    default:
+      return '';
+  }
+};

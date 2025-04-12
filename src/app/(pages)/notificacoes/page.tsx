@@ -7,6 +7,7 @@ import {
   Notification,
   notificationsService,
 } from '@/services/api/notifications';
+import useNotifications from '@/store/useNotifications';
 
 import { cn } from '@/utils/cn';
 import {
@@ -25,6 +26,7 @@ import React, { useState } from 'react';
 export default function Notificacoes() {
   const router = useRouter();
   const [notifications, setNotifications] = useState<Notification[]>([]);
+  const { setStoreNotifications } = useNotifications();
 
   const session = useSession();
 
@@ -35,6 +37,7 @@ export default function Notificacoes() {
         const userNotifications = await notificationsService.listNotifications({
           limit: 30,
         });
+        setStoreNotifications(userNotifications);
         setNotifications(userNotifications);
       }
     },
@@ -107,7 +110,7 @@ export default function Notificacoes() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-x-4 gap-y-6">
                   {notifications.map((notification, index) => (
                     <div
-                      key={notification.id}
+                      key={index}
                       className={cn(
                         'w-full flex flex-col gap-2 px-3 py-2 bg-[#F1F0F5] rounded-lg shadow-sm hover:bg-gray-100 relative cursor-pointer'
                       )}
