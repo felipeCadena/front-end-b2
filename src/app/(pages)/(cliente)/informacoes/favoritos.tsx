@@ -17,7 +17,6 @@ export default function Favoritos() {
     queryFn: () => adventures.listFavorites(),
   });
 
-  console.log('FAV', favorites);
   return (
     <section className="mx-auto mb-15 max-sm:max-w-5xl">
       <div className="mx-4 space-y-8 md:space-y-16">

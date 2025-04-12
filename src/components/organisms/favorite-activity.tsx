@@ -6,10 +6,10 @@ import MyTypography from '@/components/atoms/my-typography';
 import StarRating from '@/components/molecules/my-stars';
 import { Adventure, adventures } from '@/services/api/adventures';
 import { handleNameActivity, selectActivityImage } from '@/utils/formatters';
+import PATHS from '@/utils/paths';
 import { useQueryClient } from '@tanstack/react-query';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
 
 type FavoriteActivityProps = {
@@ -40,7 +40,7 @@ export default function FavoriteActivity({
       className="min-w-[70%] md:min-w-[30%] lg:min-w-[20%] flex flex-col gap-1 md:mb-8"
     >
       <div className="relative z-10 overflow-hidden h-[265px] w-full  rounded-md">
-        <Link href="">
+        <Link href={PATHS.visualizarAtividade(id)}>
           <Image
             alt="sample_file"
             src={selectActivityImage(activity)}
@@ -68,7 +68,7 @@ export default function FavoriteActivity({
         <MyIcon name="shared-muted" className="cursor-pointer mx-2" />
       </div>
       <MyTypography variant="subtitle1" weight="bold" className="">
-        {activity.title}
+        {activity.title.slice(0, 23) + '...'}
       </MyTypography>
       <MyTypography variant="body-big" className="">
         {activity.description.slice(0, 25).concat('...')}
