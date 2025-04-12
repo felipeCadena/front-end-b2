@@ -1,15 +1,7 @@
 import { useEffect, useState } from "react";
 import { EditSection } from "./edit-activity";
 import MyTextInput from "../atoms/my-text-input";
-import MyTextarea from "../atoms/my-textarea";
-import {
-  MySelect,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../atoms/my-select";
-import { dificulties } from "@/common/constants/constants";
+import { MySelect, SelectItem } from "../atoms/my-select";
 import {
   DialogClose,
   DialogContent,
@@ -20,14 +12,12 @@ import {
 } from "../molecules/my-dialog";
 import MyButton from "../atoms/my-button";
 import MyIcon from "../atoms/my-icon";
-import {
-  getDifficultyDescription,
-  getDifficultyNumber,
-} from "@/utils/formatters";
-import ActivitiesFilter from "./activities-filter";
-import { TypeAdventure } from "@/store/useEditAdventureStore";
+
 import BasicInfo from "@/app/(pages)/(parceiro)/parceiro/atividades-cadastradas/atividade/modules/basic-info";
 import UpdateImages from "@/app/(pages)/(parceiro)/parceiro/atividades-cadastradas/atividade/modules/images";
+import Pricing from "@/app/(pages)/(parceiro)/parceiro/atividades-cadastradas/atividade/modules/pricing";
+import Schedules from "@/app/(pages)/(parceiro)/parceiro/atividades-cadastradas/atividade/modules/schedules";
+import Location from "@/app/(pages)/(parceiro)/parceiro/atividades-cadastradas/atividade/modules/location";
 
 interface EditModalProps {
   isOpen: boolean;
@@ -36,23 +26,11 @@ interface EditModalProps {
   onClose: () => void;
 }
 
-const activities: {
-  name: "ar" | "terra" | "mar";
-  title: string;
-}[] = [
-  {
-    name: "ar",
-    title: "Atividades Aéreas",
-  },
-  {
-    name: "terra",
-    title: "Atividades Terrestres",
-  },
-  {
-    name: "mar",
-    title: "Atividades Aquáticas",
-  },
-];
+export type ModalProps = {
+  formData: any;
+  setFormData: (data: any) => void;
+  onClose: () => void;
+};
 
 export function EditModal({ isOpen, section, data, onClose }: EditModalProps) {
   const [formData, setFormData] = useState(data);
@@ -77,109 +55,29 @@ export function EditModal({ isOpen, section, data, onClose }: EditModalProps) {
 
       case "pricing":
         return (
-          <>
-            <MyTextInput
-              label="Preço Adulto"
-              type="number"
-              value={formData.priceAdult}
-              onChange={(e) =>
-                setFormData({ ...formData, priceAdult: e.target.value })
-              }
-            />
-            <MyTextInput
-              label="Preço Criança"
-              type="number"
-              value={formData.priceChildren}
-              onChange={(e) =>
-                setFormData({ ...formData, priceChildren: e.target.value })
-              }
-            />
-            <MySelect
-              label="Permite Crianças"
-              value={formData.isChildrenAllowed ? "true" : "false"}
-              onValueChange={(value) =>
-                setFormData({
-                  ...formData,
-                  isChildrenAllowed: value === "true",
-                })
-              }
-            >
-              <SelectItem value="true">Sim</SelectItem>
-              <SelectItem value="false">Não</SelectItem>
-            </MySelect>
-          </>
+          <Pricing
+            formData={formData}
+            setFormData={setFormData}
+            onClose={onClose}
+          />
         );
 
       case "schedule":
         return (
-          <>
-            <MyTextInput
-              label="Antecedência para Agendamento (horas)"
-              type="number"
-              value={formData.hoursBeforeSchedule}
-              onChange={(e) =>
-                setFormData({
-                  ...formData,
-                  hoursBeforeSchedule: e.target.value,
-                })
-              }
-            />
-            <MyTextInput
-              label="Antecedência para Cancelamento (horas)"
-              type="number"
-              value={formData.hoursBeforeCancellation}
-              onChange={(e) =>
-                setFormData({
-                  ...formData,
-                  hoursBeforeCancellation: e.target.value,
-                })
-              }
-            />
-            <MyTextInput
-              label="Limite de Pessoas"
-              type="number"
-              value={formData.personsLimit}
-              onChange={(e) =>
-                setFormData({ ...formData, personsLimit: e.target.value })
-              }
-            />
-          </>
+          <Schedules
+            formData={formData}
+            setFormData={setFormData}
+            onClose={onClose}
+          />
         );
 
       case "location":
         return (
-          <>
-            <MyTextInput
-              label="Antecedência para Agendamento (horas)"
-              type="number"
-              value={formData.hoursBeforeSchedule}
-              onChange={(e) =>
-                setFormData({
-                  ...formData,
-                  hoursBeforeSchedule: e.target.value,
-                })
-              }
-            />
-            <MyTextInput
-              label="Antecedência para Cancelamento (horas)"
-              type="number"
-              value={formData.hoursBeforeCancellation}
-              onChange={(e) =>
-                setFormData({
-                  ...formData,
-                  hoursBeforeCancellation: e.target.value,
-                })
-              }
-            />
-            <MyTextInput
-              label="Limite de Pessoas"
-              type="number"
-              value={formData.personsLimit}
-              onChange={(e) =>
-                setFormData({ ...formData, personsLimit: e.target.value })
-              }
-            />
-          </>
+          <Location
+            formData={formData}
+            setFormData={setFormData}
+            onClose={onClose}
+          />
         );
       default:
         return null;

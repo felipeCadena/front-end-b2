@@ -1,6 +1,7 @@
 "use client";
 
 import { mockAlbum } from "@/common/constants/mock";
+import LoadingSpinner from "@/components/atoms/loading-spinner";
 import MyButton from "@/components/atoms/my-button";
 import MyIcon from "@/components/atoms/my-icon";
 import Edit from "@/components/atoms/my-icon/elements/edit";
@@ -34,6 +35,7 @@ export default function UpdateImages({ formData, onClose }: UpdateImagesProps) {
 
   const uploadImage = async (file: File, mediaId: string) => {
     if (file) {
+      setIsLoading(true);
       const arrayBuffer = await file.arrayBuffer();
       const image = {
         mimetype: file.type,
@@ -47,12 +49,13 @@ export default function UpdateImages({ formData, onClose }: UpdateImagesProps) {
         toast.success("Imagem alterada com sucesso!");
       } catch (error) {
         console.error("Erro ao enviar imagem", error);
+      } finally {
+        setIsLoading(false);
       }
     }
   };
-
   return (
-    <section className="space-y-16">
+    <section className="space-y-6">
       <div className="max-sm:hidden grid grid-cols-4 grid-rows-2 gap-4">
         {images.map((image, index) => (
           <div
@@ -63,7 +66,7 @@ export default function UpdateImages({ formData, onClose }: UpdateImagesProps) {
             key={index}
           >
             <Image
-              src={image.url ?? "/images/atividades/ar/ar-1.jpeg"}
+              src={`${image.url ?? "/images/atividades/ar/ar-1.jpeg"}?v=${image.updatedAt ?? image.id}`}
               alt="fotos da atividade"
               width={300}
               height={300}
@@ -95,13 +98,13 @@ export default function UpdateImages({ formData, onClose }: UpdateImagesProps) {
         ))}
       </div>
 
-      <div className="flex justify-center gap-2">
+      <div className="flex justify-end gap-2">
         <MyButton
           borderRadius="squared"
           size="lg"
           type="submit"
           variant="outline-neutral"
-          className="w-full"
+          className="max-sm:w-full"
           onClick={onClose}
           disabled={isLoading}
         >
@@ -112,11 +115,12 @@ export default function UpdateImages({ formData, onClose }: UpdateImagesProps) {
           size="lg"
           type="submit"
           variant="default"
-          className="w-full"
+          className="max-sm:w-full"
           onClick={onClose}
           disabled={isLoading}
+          leftIcon={isLoading && <LoadingSpinner />}
         >
-          Concluir
+          Salvar
         </MyButton>
       </div>
     </section>

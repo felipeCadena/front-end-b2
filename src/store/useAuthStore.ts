@@ -1,6 +1,5 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { authService } from "@/services/api/auth";
 
 export interface User {
   id?: string;

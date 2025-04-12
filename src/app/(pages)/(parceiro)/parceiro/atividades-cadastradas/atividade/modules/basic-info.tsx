@@ -11,26 +11,23 @@ import {
   SelectValue,
 } from "@/components/atoms/my-select";
 import {
+  convertToHours,
+  convertToTimeString,
   getDifficultyDescription,
   getDifficultyNumber,
 } from "@/utils/formatters";
-import { dificulties } from "@/common/constants/constants";
+import { days, dificulties } from "@/common/constants/constants";
 import MyButton from "@/components/atoms/my-button";
 import { adventures } from "@/services/api/adventures";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
-
-type BasicInfoProps = {
-  formData: any;
-  setFormData: (data: any) => void;
-  onClose: () => void;
-};
+import { ModalProps } from "@/components/organisms/edit-modal";
 
 export default function BasicInfo({
   formData,
   setFormData,
   onClose,
-}: BasicInfoProps) {
+}: ModalProps) {
   const [isLoading, setIsLoading] = React.useState(false);
   const queryClient = useQueryClient();
 
@@ -64,14 +61,13 @@ export default function BasicInfo({
 
   const data = {
     itemsIncluded: handleItemsIncluded(),
-    isInGroup: formData.isInGroup,
-    isChildrenAllowed: formData.isChildrenAllowed,
-    personsLimit: formData.personsLimit,
     difficult: formData.difficult,
     transportIncluded: formData.transportIncluded,
     picturesIncluded: formData.picturesIncluded,
     title: formData.title,
     description: formData.description,
+    hoursBeforeSchedule: formData.hoursBeforeSchedule,
+    hoursBeforeCancellation: formData.hoursBeforeCancellation,
   };
 
   const handleSubmit = async () => {
@@ -90,7 +86,7 @@ export default function BasicInfo({
     onClose();
   };
   return (
-    <section className="space-y-4">
+    <section className="space-y-6">
       <MyTextInput
         label="Título"
         value={formData.title}
@@ -107,55 +103,7 @@ export default function BasicInfo({
         }
       />
 
-      <div className="grid grid-cols-1 md:grid-cols-4 items-center gap-4">
-        <MySelect
-          label="Atividade em grupo"
-          className="text-base text-black"
-          value={formData.isInGroup ? "true" : "false"}
-          onValueChange={(value) =>
-            setFormData({
-              ...formData,
-              isInGroup: Boolean(value),
-            })
-          }
-        >
-          <SelectTrigger className="py-6 my-1">
-            <SelectValue placeholder="Selecione" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem key="Em grupo" value="true">
-              Em grupo
-            </SelectItem>
-            <SelectItem key="Individual" value="false">
-              Individual
-            </SelectItem>
-          </SelectContent>
-        </MySelect>
-
-        <MySelect
-          label="Permite Crianças"
-          className="text-base text-black"
-          value={formData.isChildrenAllowed ? "true" : "false"}
-          onValueChange={(value) =>
-            setFormData({
-              ...formData,
-              isChildrenAllowed: Boolean(value),
-            })
-          }
-        >
-          <SelectTrigger className="py-6 my-1">
-            <SelectValue placeholder="Selecione" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem key="Com crianças" value="true">
-              Com crianças
-            </SelectItem>
-            <SelectItem key="Sem crianças" value="false">
-              Sem crianças
-            </SelectItem>
-          </SelectContent>
-        </MySelect>
-
+      <div className="grid grid-cols-1 md:grid-cols-3 items-center gap-4">
         <MySelect
           label="Grau de Dificuldade"
           className="text-base text-black"
@@ -179,23 +127,6 @@ export default function BasicInfo({
           </SelectContent>
         </MySelect>
 
-        <MyTextInput
-          label="Quantidade de pessoas"
-          placeholder="Digite a quantidade de pessoas"
-          classNameLabel="font-bold text-black"
-          noHintText
-          className="mt-1"
-          value={formData.personsLimit}
-          onChange={(e) =>
-            setFormData({
-              ...formData,
-              personsLimit: Number(e.target.value),
-            })
-          }
-        />
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-4 items-center gap-4">
         <MySelect
           label="Transporte Incluso"
           className="text-base text-black"
@@ -318,6 +249,54 @@ export default function BasicInfo({
           <SelectContent>
             <SelectItem value="true">Sim</SelectItem>
             <SelectItem value="false">Não Oferecemos</SelectItem>
+          </SelectContent>
+        </MySelect>
+
+        <MySelect
+          label="Antecedência de Agendamento"
+          className="text-base text-black"
+          value={String(convertToTimeString(formData.hoursBeforeSchedule))}
+          onValueChange={(value) =>
+            setFormData({
+              ...formData,
+
+              hoursBeforeSchedule: convertToHours(value),
+            })
+          }
+        >
+          <SelectTrigger className="py-6 my-1">
+            <SelectValue placeholder="Selecione o número de dias" />
+          </SelectTrigger>
+          <SelectContent>
+            {days.map((day) => (
+              <SelectItem key={day} value={day}>
+                {day}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </MySelect>
+
+        <MySelect
+          name="daysBeforeCancellation"
+          label="Antecedência de Cancelamento"
+          className="text-base text-black"
+          value={String(convertToTimeString(formData.hoursBeforeCancellation))}
+          onValueChange={(value) =>
+            setFormData({
+              ...formData,
+              hoursBeforeCancellation: convertToHours(value),
+            })
+          }
+        >
+          <SelectTrigger className="py-6 my-1">
+            <SelectValue placeholder="Selecione o número de dias" />
+          </SelectTrigger>
+          <SelectContent>
+            {days.map((day) => (
+              <SelectItem key={day} value={day}>
+                {day}
+              </SelectItem>
+            ))}
           </SelectContent>
         </MySelect>
       </div>

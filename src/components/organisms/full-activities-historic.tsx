@@ -6,7 +6,7 @@ import MyBadge from "../atoms/my-badge";
 import StarRating from "../molecules/my-stars";
 import MyTypography from "../atoms/my-typography";
 import MyIcon from "../atoms/my-icon";
-import { getData, getHora } from "@/utils/formatters";
+import { getData, getHora, handleNameActivity } from "@/utils/formatters";
 import MyButton from "../atoms/my-button";
 import { usePathname, useRouter } from "next/navigation";
 import PATHS from "@/utils/paths";
@@ -77,7 +77,7 @@ export default function FullActivitiesHistoric({
             <div className="relative z-10 flex-shrink-0 overflow-hidden w-[265px] h-[265px] hover:cursor-pointer rounded-md">
               <Image
                 alt="sample_file"
-                src={activity.image ?? ""}
+                src={activity.image ?? "/images/atividades/paraquedas.webp"}
                 width={250}
                 height={300}
                 className="object-cover w-[265px] h-[265px]"
@@ -97,7 +97,7 @@ export default function FullActivitiesHistoric({
                 >
                   <div className="flex items-center gap-2">
                     <MyBadge className="font-medium p-1" variant="outline">
-                      {activity.tag}
+                      {handleNameActivity(activity.typeAdventure)}
                     </MyBadge>
                     <StarRating rating={activity.stars} />
 

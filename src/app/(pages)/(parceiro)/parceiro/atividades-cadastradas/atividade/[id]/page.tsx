@@ -34,6 +34,12 @@ export default function Atividade() {
   const queryClient = useQueryClient();
 
   const handleEdit = (section: EditSection) => {
+    // if (section == "location") {
+    //   router.push(
+    //     `/parceiro/atividades-cadastradas/atividade/${id}/localizacao`
+    //   );
+    //   return;
+    // }
     setEditingSection(section);
   };
 
@@ -47,6 +53,10 @@ export default function Atividade() {
   const formattedActivity = React.useMemo(() => {
     if (!activity) return null;
 
+    const today = new Date();
+    const baseYear = today.getFullYear();
+    const baseMonth = today.getMonth();
+
     return {
       id: activity.id,
       title: activity.title,
@@ -58,7 +68,19 @@ export default function Atividade() {
       addressCity: activity.addressCity,
       addressState: activity.addressState,
       addressCountry: activity.addressCountry,
-      coordinates: activity.coordinates,
+      address: formatAddress({
+        addressStreet: activity.addressStreet,
+        addressNumber: activity.addressNumber,
+        addressNeighborhood: activity.addressNeighborhood,
+        addressCity: activity.addressCity,
+        addressState: activity.addressState,
+        addressPostalCode: activity.addressPostalCode,
+        addressCountry: activity.addressCountry,
+      }),
+      coordinates: {
+        lat: Number(activity.coordinates.split(":")[0]),
+        lng: Number(activity.coordinates.split(":")[1]),
+      },
       pointRefAddress: activity.pointRefAddress,
       description: activity.description,
       itemsIncluded: activity.itemsIncluded,
@@ -78,26 +100,46 @@ export default function Atividade() {
       isRepeatable: activity.isRepeatable,
       images: activity.images,
       recurrences: activity.recurrence
-        ? {
-            recurrenceWeekly: activity.recurrence
-              .filter((rec) => rec.type === "WEEKLY")
-              .map((rec) => rec.value)
-              .join(","),
-            recurrenceMonthly: activity.recurrence
-              .filter((rec) => rec.type === "MONTHLY")
-              .map((rec) => rec.value)
-              .join(","),
-            recurrenceHour: activity.recurrence
-              .filter((rec) => rec.type === "HOUR")
-              .map((rec) => {
-                const hours = Math.floor(rec.value / 100);
-                const minutes = rec.value % 100;
-                return `${hours.toString().padStart(2, "0")}:${minutes
-                  .toString()
-                  .padStart(2, "0")}`;
-              })
-              .join(","),
-          }
+        ? Object.values(
+            activity.recurrence.reduce(
+              (acc, rec) => {
+                const group = acc[rec.groupId] || {
+                  groupId: rec.groupId,
+                  recurrenceWeekly: [],
+                  dates: [],
+                  recurrenceHour: [],
+                };
+
+                if (rec.type === "WEEKLY") {
+                  group.recurrenceWeekly.push(String(rec.value));
+                } else if (rec.type === "MONTHLY") {
+                  const day = Number(rec.value);
+                  const date = new Date(baseYear, baseMonth, day); // Converte para Date real
+                  group.dates.push(date);
+                } else if (rec.type === "HOUR") {
+                  const hours = Math.floor(rec.value / 100);
+                  const minutes = rec.value % 100;
+                  group.recurrenceHour.push(
+                    `${hours.toString().padStart(2, "0")}:${minutes
+                      .toString()
+                      .padStart(2, "0")}`
+                  );
+                }
+
+                acc[rec.groupId] = group;
+                return acc;
+              },
+              {} as Record<
+                string,
+                {
+                  dates: Date[];
+                  recurrenceHour: string[];
+                  recurrenceWeekly: string[];
+                  groupId: string;
+                }
+              >
+            )
+          )
         : null,
     };
   }, [activity, activity?.images]);
@@ -126,90 +168,6 @@ export default function Atividade() {
     addressPostalCode: activity?.addressPostalCode,
     addressCountry: activity?.addressCountry,
   };
-
-  const agruparRecorrencias = (
-    recurrences: AdventureSchedule[] | undefined
-  ) => {
-    if (!recurrences) return { semanal: [], mensal: [] };
-
-    const diasSemana = [
-      "Domingo",
-      "Segunda",
-      "Terça",
-      "Quarta",
-      "Quinta",
-      "Sexta",
-      "Sábado",
-    ];
-
-    // Agrupar por groupId
-    const grupos = new Map<
-      string,
-      { weekly: number[]; monthly: number[]; hours: number[] }
-    >();
-
-    recurrences.forEach((rec) => {
-      const grupo = grupos.get(rec.groupId) || {
-        weekly: [],
-        monthly: [],
-        hours: [],
-      };
-
-      if (rec.type === "WEEKLY") {
-        grupo.weekly.push(rec.value);
-      } else if (rec.type === "MONTHLY") {
-        grupo.monthly.push(rec.value);
-      } else if (rec.type === "HOUR") {
-        grupo.hours.push(rec.value);
-      }
-
-      grupos.set(rec.groupId, grupo);
-    });
-
-    const semanal: {
-      tipo: "semanal";
-      dias: string[];
-      horarios: string[];
-    }[] = [];
-
-    const mensal: {
-      tipo: "mensal";
-      dias: number[];
-      horarios: string[];
-    }[] = [];
-
-    grupos.forEach(({ weekly, monthly, hours }) => {
-      const horariosFormatados = hours
-        .map((h) => {
-          const hora = Math.floor(h / 100);
-          const minuto = h % 100;
-          return `${hora.toString().padStart(2, "0")}:${minuto
-            .toString()
-            .padStart(2, "0")}`;
-        })
-        .sort();
-
-      if (weekly.length > 0) {
-        semanal.push({
-          tipo: "semanal",
-          dias: weekly.sort().map((d) => diasSemana[d - 1] ?? "Desconhecido"),
-          horarios: horariosFormatados,
-        });
-      }
-
-      if (monthly.length > 0) {
-        mensal.push({
-          tipo: "mensal",
-          dias: monthly.sort((a, b) => a - b),
-          horarios: horariosFormatados,
-        });
-      }
-    });
-
-    return { semanal, mensal };
-  };
-
-  const schedules = agruparRecorrencias(activity?.recurrence);
 
   const formattedItemsIncluded = () => {
     const includedItems = [];
@@ -252,6 +210,11 @@ export default function Atividade() {
     return includedItems;
   };
 
+  const handleConclusion = () => {
+    setEditingSection(null);
+    queryClient.invalidateQueries({ queryKey: ["activity"] });
+  };
+
   return (
     <section className="my-10">
       <ModalAlert
@@ -269,7 +232,7 @@ export default function Atividade() {
           isOpen={true}
           section={editingSection}
           data={formattedActivity}
-          onClose={() => setEditingSection(null)}
+          onClose={handleConclusion}
         />
       )}
 
@@ -302,10 +265,10 @@ export default function Atividade() {
             <div className="flex items-center gap-2">
               <Image
                 alt="avatar"
-                src={activity?.partner.logo.url ?? "/user.png"}
+                src={activity?.partner?.logo?.url ?? "/user.png"}
                 width={6}
                 height={6}
-                className="w-10 h-10 rounded-full object-contain"
+                className="w-10 h-10 rounded-full object-cover"
               />
               <div>
                 <MyTypography variant="notification" weight="semibold">
@@ -335,32 +298,31 @@ export default function Atividade() {
           </div>
         </div>
         <div className="max-sm:hidden grid grid-cols-4 grid-rows-2 gap-4">
-          {(activity?.images?.length ? activity.images : mockAlbum).map(
-            (image, index) => (
+          {activity?.images?.length &&
+            activity.images.map((image, index) => (
               <Image
                 key={index}
-                src={image.url ?? "/images/atividades/ar/ar-1.jpeg"}
+                src={`${image.url ?? "/images/atividades/ar/ar-1.jpeg"}?v=${image.updatedAt ?? image.id}`}
                 alt="fotos da atividade"
                 width={300}
                 height={300}
                 className={`h-full w-full rounded-lg object-cover ${index === 0 ? "col-span-2 row-span-2 h-full" : ""}`}
               />
-            )
-          )}
+            ))}
         </div>
 
         <div className="mx-4 md:hidden">
           <div className="flex items-center gap-2 mb-4">
             <Image
               alt="avatar"
-              src={activity?.partner.logo.url ?? "/user.png"}
+              src={activity?.partner?.logo?.url ?? "/user.png"}
               width={6}
               height={6}
-              className="w-10 h-10 rounded-full object-contain"
+              className="w-10 h-10 rounded-full object-cover"
             />
             <div>
               <MyTypography variant="notification" weight="semibold">
-                {activity?.partner.fantasyName}
+                {activity?.partner?.fantasyName}
               </MyTypography>
               <MyTypography
                 variant="notification"
@@ -471,7 +433,7 @@ export default function Atividade() {
           </div>
 
           <div>
-            <div className="space-y-8 mt-4">
+            <div className="space-y-6 mt-4 md:mt-2">
               <div className="space-y-2">
                 <MyTypography variant="subtitle3" weight="bold">
                   Políticas da atividade
@@ -479,7 +441,7 @@ export default function Atividade() {
                 {activity?.hoursBeforeSchedule && (
                   <MyTypography variant="body-big" weight="regular">
                     • Antecedência mínima para agendamento:{" "}
-                    <span className="block">
+                    <span className="max-sm:block">
                       {activity?.hoursBeforeSchedule}h
                     </span>
                   </MyTypography>
@@ -487,7 +449,7 @@ export default function Atividade() {
                 {activity?.hoursBeforeCancellation && (
                   <MyTypography variant="body-big" weight="regular">
                     • Antecedência mínima para cancelamento:{" "}
-                    <span className="block">
+                    <span className="max-sm:block">
                       {activity?.hoursBeforeCancellation}h
                     </span>
                   </MyTypography>

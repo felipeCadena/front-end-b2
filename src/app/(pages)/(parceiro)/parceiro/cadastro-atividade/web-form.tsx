@@ -43,6 +43,7 @@ import {
   getDifficultyNumber,
 } from "@/utils/formatters";
 import AutocompleteCombobox from "@/components/organisms/google-autocomplete";
+import { toast } from "react-toastify";
 
 interface AddressData {
   addressStreet: string;
@@ -95,6 +96,7 @@ export default function WebForm({
     fuelIncluded,
     tempImages,
     coordinates,
+    address,
     addTempImage,
   } = useAdventureStore();
 
@@ -235,10 +237,28 @@ export default function WebForm({
   const handleNextStepRegister = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     e.stopPropagation();
+
+    if (
+      !typeAdventure ||
+      !title ||
+      !description ||
+      !hoursBeforeCancellation ||
+      !hoursBeforeSchedule ||
+      // !selectionBlocks.length ||
+      duration === "" ||
+      !tempImages.length ||
+      !address
+    ) {
+      toast.error("Preencha todos os campos.");
+      return;
+    }
+
+    if (tempImages.length < 5) {
+      toast.error("São necessárias 5 imagens.");
+      return;
+    }
     router.push(PATHS["informacoes-atividades"]);
   };
-
-  console.log(typeAdventure);
 
   return (
     <main className="space-y-10 my-6">
@@ -453,6 +473,8 @@ export default function WebForm({
                 </MyTypography>
                 <AutocompleteCombobox
                   onLocationSelected={handleLocationSelected}
+                  formData={address}
+                  setFormData={setAdventureData}
                 />
               </div>
               <MyTextInput
@@ -633,7 +655,7 @@ export default function WebForm({
                       fill
                       src={imageUrl}
                       alt={`Imagem ${index}`}
-                      className=" rounded-md object-cover"
+                      className="rounded-md object-cover"
                     />
                     <MyIcon
                       name="x-red"

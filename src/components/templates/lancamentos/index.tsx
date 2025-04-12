@@ -63,7 +63,7 @@ export default function Lancamentos({
           <div className="flex gap-4 max-sm:hidden">
             <MySelect defaultValue="receber">
               <SelectTrigger className="rounded-2xl w-[150px] text-[#848A9C] text-xs">
-                <SelectValue placeholder="A receber" />
+                <SelectValue placeholder="Selecione" />
               </SelectTrigger>
               <SelectContent className="rounded-lg">
                 <SelectItem value="receber">A receber</SelectItem>

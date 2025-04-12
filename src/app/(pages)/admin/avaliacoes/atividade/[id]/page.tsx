@@ -91,7 +91,7 @@ export default function AtividadeAdmin() {
         </div>
 
         <div className="md:hidden">
-          <CarouselImages images={images.map((image) => image.url)} />
+          <CarouselImages images={images} />
         </div>
         <div className="flex flex-col max-sm:items-center my-8">
           <div className="flex max-sm:flex-col items-start justify-between gap-8">
