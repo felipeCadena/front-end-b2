@@ -33,6 +33,18 @@ const menuItems = [
     description: "Título, descrição e tipo",
   },
   {
+    label: "Imagens",
+    icon: <Camera color="#8DC63F" />,
+    section: "images" as EditSection,
+    description: "Imagens",
+  },
+  {
+    label: "Valores",
+    icon: <Dollar fill="#8DC63F" />,
+    section: "pricing" as EditSection,
+    description: "Valores",
+  },
+  {
     label: "Horários",
     icon: <Calendar />,
     section: "schedule" as EditSection,
@@ -43,18 +55,6 @@ const menuItems = [
     icon: <LocationRounded />,
     section: "location" as EditSection,
     description: "Endereço e ponto de referência",
-  },
-  {
-    label: "Preços",
-    icon: <Dollar fill="#8DC63F" />,
-    section: "pricing" as EditSection,
-    description: "Valores",
-  },
-  {
-    label: "Imagens",
-    icon: <Camera color="#8DC63F" />,
-    section: "images" as EditSection,
-    description: "Imagens",
   },
 ];
 
@@ -75,7 +75,7 @@ export function ActivityEditMenu({ onEdit }: ActivityEditMenuProps) {
 
       <DropdownMenuPortal>
         <DropdownMenuContent
-          className="min-w-[300px] md:min-w-[220px] flex flex-col bg-white rounded-md shadow-lg p-0 z-50 border"
+          className="min-w-[300px] md:min-w-[220px] flex flex-col bg-white rounded-md shadow-lg p-0 z-40 border"
           sideOffset={5}
           align="center"
         >

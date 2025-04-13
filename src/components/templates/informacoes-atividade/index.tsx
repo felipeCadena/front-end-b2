@@ -19,6 +19,7 @@ import PATHS from "@/utils/paths";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import React from "react";
+import { toast } from "react-toastify";
 
 export default function InformacoesAtividade({
   edit,
@@ -116,6 +117,16 @@ export default function InformacoesAtividade({
 
   // Função pro fluxo de criação de parceiro + atividade
   const handleSubmit = async () => {
+    if (!isInGroup || !isChildrenAllowed || !priceAdult || !personsLimit) {
+      toast.error("Preencha todos os campos.");
+      return;
+    }
+
+    if (isChildrenAllowed && !priceChildren) {
+      toast.error("Preencha o valor por criança.");
+      return;
+    }
+
     try {
       // 1. Cria partner
 
@@ -254,7 +265,7 @@ export default function InformacoesAtividade({
       // 9. Faz o login no NextAuth + set Session + Redirect
       await signIn("credentials", {
         ...credentials,
-        callbackUrl: PATHS.visualizarAtividadeParceiro(adventureId),
+        callbackUrl: `${PATHS.visualizarAtividadeParceiro(adventureId)}?openModal=true`,
       });
 
       console.log("Aventura criada e imagens enviadas com sucesso!");
@@ -265,6 +276,16 @@ export default function InformacoesAtividade({
 
   // Função apenas pra criar atividade
   const handleCreateAdventure = async () => {
+    if (!priceAdult || !personsLimit) {
+      toast.error("Preencha todos os campos.");
+      return;
+    }
+
+    if (isChildrenAllowed && !priceChildren) {
+      toast.error("Preencha o valor por criança.");
+      return;
+    }
+
     try {
       // 1. Cria a aventura
 
@@ -362,7 +383,9 @@ export default function InformacoesAtividade({
       clearAdventure();
 
       // 7. Redireciona para a página de visualização da atividade
-      router.push(PATHS.visualizarAtividadeParceiro(adventureId));
+      router.push(
+        `${PATHS.visualizarAtividadeParceiro(adventureId)}?openModal=true`
+      );
 
       console.log("Aventura criada e imagens enviadas com sucesso!");
     } catch (error) {

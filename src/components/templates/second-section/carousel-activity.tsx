@@ -1,13 +1,13 @@
-import MyBadge from '@/components/atoms/my-badge';
-import MyIcon from '@/components/atoms/my-icon';
-import MyTypography from '@/components/atoms/my-typography';
-import StarRating from '@/components/molecules/my-stars';
-import { handleNameActivity, selectActivityImage } from '@/utils/formatters';
-import Image from 'next/image';
-import { Adventure } from '@/services/api/adventures';
-import React from 'react';
-import PATHS from '@/utils/paths';
-import { useRouter } from 'next/navigation';
+import MyBadge from "@/components/atoms/my-badge";
+import MyIcon from "@/components/atoms/my-icon";
+import MyTypography from "@/components/atoms/my-typography";
+import StarRating from "@/components/molecules/my-stars";
+import { handleNameActivity, selectActivityImage } from "@/utils/formatters";
+import Image from "next/image";
+import { Adventure } from "@/services/api/adventures";
+import React from "react";
+import PATHS from "@/utils/paths";
+import { useRouter } from "next/navigation";
 
 type CarouselActitityProps = {
   activity: Adventure;
@@ -25,7 +25,7 @@ const CarouselActivity = ({
 }: CarouselActitityProps) => {
   const router = useRouter();
   const handleActivity = (id: string) => {
-    if (type === 'parceiro') {
+    if (type === "parceiro") {
       return router.push(PATHS.visualizarAtividadeParceiro(id));
     } else {
       router.push(PATHS.visualizarAtividade(id));
@@ -49,14 +49,14 @@ const CarouselActivity = ({
           height={300}
           className="w-full md:w-[250px] h-[225px] object-cover"
         />
-        {type !== 'parceiro' && isFavorite ? (
+        {type !== "parceiro" && isFavorite ? (
           <MyIcon
             name="full-heart"
             variant="circled"
             className="absolute top-3 right-3"
           />
         ) : (
-          type !== 'parceiro' && (
+          type !== "parceiro" && (
             <MyIcon
               name="black-heart"
               variant="circled"
@@ -74,10 +74,10 @@ const CarouselActivity = ({
       <div className="flex gap-2 items-center mt-1">
         <Image
           alt="foto parceiro"
-          src={activity?.partner?.logo?.url ?? '/user.png'}
+          src={activity?.partner?.logo?.url ?? "/user.png"}
           width={40}
           height={40}
-          className="rounded-full"
+          className="rounded-full object-cover w-8 h-8"
         />
         <MyTypography
           variant="body"
@@ -91,7 +91,7 @@ const CarouselActivity = ({
         {activity?.title}
       </MyTypography>
       <MyTypography variant="body-big" className="md:pr-4">
-        {activity?.description.slice(0, 105).concat('...')}
+        {activity?.description.slice(0, 105).concat("...")}
         <MyTypography
           variant="body-big"
           weight="bold"

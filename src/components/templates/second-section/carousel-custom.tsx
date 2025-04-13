@@ -8,6 +8,7 @@ import { useRef, useState } from "react";
 import { useDraggable } from "react-use-draggable-scroll";
 import CarouselActivity from "./carousel-activity";
 import { useQuery } from "@tanstack/react-query";
+import { useSession } from "next-auth/react";
 
 export default function CarouselCustom({
   activities,
@@ -20,6 +21,7 @@ export default function CarouselCustom({
     useRef<HTMLDivElement>() as React.MutableRefObject<HTMLInputElement>;
 
   const { events } = useDraggable(ref);
+  const { data: session } = useSession();
 
   const [_scrollPosition, setScrollPosition] = useState(0);
 
@@ -47,6 +49,7 @@ export default function CarouselCustom({
 
       return favoritesIdList;
     },
+    enabled: !!session?.user,
   });
 
   return (

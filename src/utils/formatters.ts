@@ -1,9 +1,9 @@
-import { Adventure } from '@/services/api/adventures';
+import { Adventure, AdventureSchedule } from "@/services/api/adventures";
 
 export function getData(timestamp: string, year?: boolean) {
   const date = new Date(timestamp);
-  const dia = String(date.getDate()).padStart(2, '0');
-  const mes = String(date.getMonth() + 1).padStart(2, '0');
+  const dia = String(date.getDate()).padStart(2, "0");
+  const mes = String(date.getMonth() + 1).padStart(2, "0");
   const ano = String(date.getFullYear()); // Pegando os últimos dois dígitos do ano
 
   return year ? `${dia}/${mes}/${ano}` : `${dia}/${mes}`;
@@ -11,8 +11,8 @@ export function getData(timestamp: string, year?: boolean) {
 
 export function getHora(timestamp: string) {
   const date = new Date(timestamp);
-  const horas = String(date.getHours()).padStart(2, '0'); // Hora com 2 dígitos
-  const minutos = String(date.getMinutes()).padStart(2, '0'); // Minutos com 2 dígitos
+  const horas = String(date.getHours()).padStart(2, "0"); // Hora com 2 dígitos
+  const minutos = String(date.getMinutes()).padStart(2, "0"); // Minutos com 2 dígitos
   return `${horas}:${minutos}`; // Formato HH:mm
 }
 
@@ -24,7 +24,7 @@ export function getTimeInterval(
   const startDate = new Date(timestamp);
 
   // Função auxiliar para formatar números com dois dígitos
-  const pad = (n: number) => n.toString().padStart(2, '0');
+  const pad = (n: number) => n.toString().padStart(2, "0");
 
   // Obtém as horas e minutos iniciais
   const startHours = pad(startDate.getHours());
@@ -48,7 +48,7 @@ export function isDateInPast(timestamp: string) {
 }
 
 export function formatDate(timestamp: string, year?: boolean): string {
-  if (!timestamp) return '';
+  if (!timestamp) return "";
 
   const date = new Date(timestamp);
   const now = new Date();
@@ -56,7 +56,7 @@ export function formatDate(timestamp: string, year?: boolean): string {
   const diffMinutes = Math.floor(diffMs / 60000);
 
   if (diffMinutes <= 20) {
-    return 'Agora pouco';
+    return "Agora pouco";
   }
 
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
@@ -66,15 +66,15 @@ export function formatDate(timestamp: string, year?: boolean): string {
   dayBeforeYesterday.setDate(today.getDate() - 2);
 
   if (date >= today) {
-    return 'Hoje ';
+    return "Hoje ";
   } else if (date >= yesterday) {
-    return 'Ontem ';
+    return "Ontem ";
   } else if (date >= dayBeforeYesterday) {
-    return 'Anteontem ';
+    return "Anteontem ";
   }
 
-  const dia = String(date.getDate()).padStart(2, '0');
-  const mes = String(date.getMonth() + 1).padStart(2, '0');
+  const dia = String(date.getDate()).padStart(2, "0");
+  const mes = String(date.getMonth() + 1).padStart(2, "0");
   const ano = String(date.getFullYear()); // Pegando os últimos dois dígitos do ano
 
   return year ? `${dia}/${mes}/${ano}` : `${dia}/${mes}`;
@@ -82,36 +82,36 @@ export function formatDate(timestamp: string, year?: boolean): string {
 
 export const formatPhoneNumber = (phoneNumberString?: string) => {
   if (!phoneNumberString) {
-    return '';
+    return "";
   }
   return phoneNumberString
-    .replace(/\D/g, '')
-    .replace(/(\d{2})(\d)/, '($1) $2')
-    .replace(/(\d{5})(\d)/, '$1-$2')
-    .replace(/(-\d{4})\d+?$/, '$1');
+    .replace(/\D/g, "")
+    .replace(/(\d{2})(\d)/, "($1) $2")
+    .replace(/(\d{5})(\d)/, "$1-$2")
+    .replace(/(-\d{4})\d+?$/, "$1");
 };
 
 export const formatCPF = (value: string | null) => {
-  if (!value) return '';
+  if (!value) return "";
 
   const newValue = value
-    .replace(/\D/g, '')
-    .replace(/(\d{3})(\d)/, '$1.$2')
-    .replace(/(\d{3})(\d)/, '$1.$2')
-    .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+    .replace(/\D/g, "")
+    .replace(/(\d{3})(\d)/, "$1.$2")
+    .replace(/(\d{3})(\d)/, "$1.$2")
+    .replace(/(\d{3})(\d{1,2})$/, "$1-$2");
 
   return newValue;
 };
 
 export const formatCNPJ = (value?: string | null) => {
-  if (!value) return '';
+  if (!value) return "";
 
   const newValue = value
-    .replace(/\D/g, '')
-    .replace(/(\d{2})(\d)/, '$1.$2')
-    .replace(/(\d{3})(\d)/, '$1.$2')
-    .replace(/(\d{3})(\d)/, '$1/$2')
-    .replace(/(\d{4})(\d{1,2})$/, '$1-$2');
+    .replace(/\D/g, "")
+    .replace(/(\d{2})(\d)/, "$1.$2")
+    .replace(/(\d{3})(\d)/, "$1.$2")
+    .replace(/(\d{3})(\d)/, "$1/$2")
+    .replace(/(\d{4})(\d{1,2})$/, "$1-$2");
 
   return newValue;
 };
@@ -119,15 +119,15 @@ export const formatCNPJ = (value?: string | null) => {
 // Transforme minutos ou dias em horas
 export function convertToHours(timeString: string) {
   const mappings = {
-    '30 min': 0.5,
-    '1 hora': 1,
-    '3 horas': 3,
-    '5 horas': 5,
-    '12 horas': 12,
-    '24 horas': 24,
-    '48 horas': 48,
-    '72 horas': 72,
-    '5 dias': 5 * 24,
+    "30 min": 0.5,
+    "1 hora": 1,
+    "3 horas": 3,
+    "5 horas": 5,
+    "12 horas": 12,
+    "24 horas": 24,
+    "48 horas": 48,
+    "72 horas": 72,
+    "5 dias": 5 * 24,
   } as const;
 
   return mappings[timeString as keyof typeof mappings] ?? null;
@@ -135,15 +135,15 @@ export function convertToHours(timeString: string) {
 
 export function convertToTimeString(hours: number) {
   const mappings = {
-    '30 min': 0.5,
-    '1 hora': 1,
-    '3 horas': 3,
-    '5 horas': 5,
-    '12 horas': 12,
-    '24 horas': 24,
-    '48 horas': 48,
-    '72 horas': 72,
-    '5 dias': 5 * 24,
+    "30 min": 0.5,
+    "1 hora": 1,
+    "3 horas": 3,
+    "5 horas": 5,
+    "12 horas": 12,
+    "24 horas": 24,
+    "48 horas": 48,
+    "72 horas": 72,
+    "5 dias": 5 * 24,
   } as const;
 
   return (
@@ -155,11 +155,11 @@ export function convertToTimeString(hours: number) {
 
 export const getDifficultyDescription = (number: number) => {
   const dificulties = [
-    'Grau 1 - Iniciante / Muito Leve',
-    'Grau 2 - Leve',
-    'Grau 3 - Moderado / Intenso',
-    'Grau 4 - Avançado / Difícil',
-    'Grau 5 - Extremo / Muito Difícil',
+    "Grau 1 - Iniciante / Muito Leve",
+    "Grau 2 - Leve",
+    "Grau 3 - Moderado / Intenso",
+    "Grau 4 - Avançado / Difícil",
+    "Grau 5 - Extremo / Muito Difícil",
   ];
 
   return dificulties[number - 1] || null;
@@ -167,11 +167,11 @@ export const getDifficultyDescription = (number: number) => {
 
 export const getDifficultyNumber = (description: string) => {
   const dificulties = [
-    'Grau 1 - Iniciante / Muito Leve',
-    'Grau 2 - Leve',
-    'Grau 3 - Moderado / Intenso',
-    'Grau 4 - Avançado / Difícil',
-    'Grau 5 - Extremo / Muito Difícil',
+    "Grau 1 - Iniciante / Muito Leve",
+    "Grau 2 - Leve",
+    "Grau 3 - Moderado / Intenso",
+    "Grau 4 - Avançado / Difícil",
+    "Grau 5 - Extremo / Muito Difícil",
   ];
 
   const index = dificulties.indexOf(description);
@@ -180,14 +180,14 @@ export const getDifficultyNumber = (description: string) => {
 
 export const handleNameActivity = (name: string) => {
   switch (name) {
-    case 'ar':
-      return 'Atividades Aéreas';
-    case 'terra':
-      return 'Atividades Terrestres';
-    case 'mar':
-      return 'Atividades Aquáticas';
+    case "ar":
+      return "Atividades Aéreas";
+    case "terra":
+      return "Atividades Terrestres";
+    case "mar":
+      return "Atividades Aquáticas";
     default:
-      return '';
+      return "";
   }
 };
 
@@ -213,7 +213,7 @@ export function formatAddress(address: {
   } = address;
 
   const number =
-    addressNumber && addressNumber !== 'SN' ? addressNumber : 's/n';
+    addressNumber && addressNumber !== "SN" ? addressNumber : "s/n";
 
   const parts = [
     `${addressStreet}, ${number}`,
@@ -221,37 +221,37 @@ export function formatAddress(address: {
     addressNeighborhood,
     `${addressCity} - ${addressState}`,
     addressPostalCode,
-    addressCountry === 'BR' ? 'Brasil' : addressCountry,
+    addressCountry === "BR" ? "Brasil" : addressCountry,
   ];
 
   // Remove qualquer parte que esteja vazia, nula ou undefined
-  return parts.filter(Boolean).join(', ');
+  return parts.filter(Boolean).join(", ");
 }
 
 export const formatSearchFilter = (search: string) => {
-  if (search === 'ar') {
-    return 'Mostrando: Atividades aéreas';
+  if (search === "ar") {
+    return "Mostrando: Atividades aéreas";
   }
 
-  if (search === 'mar') {
-    return 'Mostrando: Atividades aquáticas';
+  if (search === "mar") {
+    return "Mostrando: Atividades aquáticas";
   }
 
-  if (search === 'terra') {
-    return 'Mostrando: Atividades terrestres';
+  if (search === "terra") {
+    return "Mostrando: Atividades terrestres";
   }
 
-  if (search === '') {
-    return 'Atividades recém adicionadas:';
+  if (search === "") {
+    return "Atividades recém adicionadas:";
   }
 
   return `Esses são os resultados da sua busca: ${search}`;
 };
 
 export const formatPrice = (price: string) => {
-  const formattedPrice = Number(price).toLocaleString('pt-BR', {
-    style: 'currency',
-    currency: 'BRL',
+  const formattedPrice = Number(price).toLocaleString("pt-BR", {
+    style: "currency",
+    currency: "BRL",
   });
 
   return formattedPrice;
@@ -259,25 +259,25 @@ export const formatPrice = (price: string) => {
 
 export const formatDificultyTag = (difficulty: number) => {
   if (difficulty >= 0 && difficulty < 3) {
-    return 'bg-primary-900';
+    return "bg-primary-900";
   }
   if (difficulty >= 3 && difficulty <= 4) {
-    return 'bg-orange-200';
+    return "bg-orange-200";
   }
 
-  return 'bg-red-200';
+  return "bg-red-200";
 };
 
 export const formatIconName = (name: string) => {
   const lowerName = name.toLowerCase();
-  if (lowerName === 'fotos' || lowerName === 'foto') {
-    return 'fotografia';
+  if (lowerName === "fotos" || lowerName === "foto") {
+    return "fotografia";
   }
   const accentRegex = /[\u0300-\u036f]/g;
   const firstLetter = lowerName
     .charAt(0)
-    .normalize('NFD')
-    .replace(accentRegex, '');
+    .normalize("NFD")
+    .replace(accentRegex, "");
   return firstLetter + name.slice(1);
 };
 
@@ -298,20 +298,102 @@ export const formatNotificationText = (text: string) => {
 
 export const extractActivityPrice = (notficationText: string) => {
   return formatNotificationText(notficationText)
-    .filter((text) => text.includes('Valor total do pedido'))[0]
-    .split(':')[1]
+    .filter((text) => text.includes("Valor total do pedido"))[0]
+    .split(":")[1]
     .trim();
 };
 
 export const formatOrderStatus = (orderResponse: string) => {
   switch (orderResponse) {
-    case 'Pedido Realizado':
-      return 'realizada';
-    case 'Pedido Cancelado':
-      return 'cancelada';
-    case 'Pedido Pendente':
-      return 'pendente';
+    case "Pedido Realizado":
+      return "realizada";
+    case "Pedido Cancelado":
+      return "cancelada";
+    case "Pedido Pendente":
+      return "pendente";
     default:
-      return '';
+      return "";
   }
+};
+
+export const agruparRecorrencias = (
+  recurrences: AdventureSchedule[] | undefined
+) => {
+  if (!recurrences) return { semanal: [], mensal: [] };
+
+  const diasSemana = [
+    "Domingo",
+    "Segunda",
+    "Terça",
+    "Quarta",
+    "Quinta",
+    "Sexta",
+    "Sábado",
+  ];
+
+  // Agrupar por groupId
+  const grupos = new Map<
+    string,
+    { weekly: number[]; monthly: number[]; hours: number[] }
+  >();
+
+  recurrences.forEach((rec) => {
+    const grupo = grupos.get(rec.groupId) || {
+      weekly: [],
+      monthly: [],
+      hours: [],
+    };
+
+    if (rec.type === "WEEKLY") {
+      grupo.weekly.push(rec.value);
+    } else if (rec.type === "MONTHLY") {
+      grupo.monthly.push(rec.value);
+    } else if (rec.type === "HOUR") {
+      grupo.hours.push(rec.value);
+    }
+
+    grupos.set(rec.groupId, grupo);
+  });
+
+  const semanal: {
+    tipo: "semanal";
+    dias: string[];
+    horarios: string[];
+  }[] = [];
+
+  const mensal: {
+    tipo: "mensal";
+    dias: number[];
+    horarios: string[];
+  }[] = [];
+
+  grupos.forEach(({ weekly, monthly, hours }) => {
+    const horariosFormatados = hours
+      .map((h) => {
+        const hora = Math.floor(h / 100);
+        const minuto = h % 100;
+        return `${hora.toString().padStart(2, "0")}:${minuto
+          .toString()
+          .padStart(2, "0")}`;
+      })
+      .sort();
+
+    if (weekly.length > 0) {
+      semanal.push({
+        tipo: "semanal",
+        dias: weekly.sort().map((d) => diasSemana[d - 1] ?? "Desconhecido"),
+        horarios: horariosFormatados,
+      });
+    }
+
+    if (monthly.length > 0) {
+      mensal.push({
+        tipo: "mensal",
+        dias: monthly.sort((a, b) => a - b),
+        horarios: horariosFormatados,
+      });
+    }
+  });
+
+  return { semanal, mensal };
 };

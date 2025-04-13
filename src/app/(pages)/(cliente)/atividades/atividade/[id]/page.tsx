@@ -49,6 +49,7 @@ export default function Atividade() {
 
       return response;
     },
+    enabled: !!session?.data?.user,
   });
 
   const handleFavorite = async () => {
@@ -99,7 +100,7 @@ export default function Atividade() {
         />
 
         <div className="md:hidden">
-          <CarouselImages images={fetchedActivity?.images ?? ['']} />
+          <CarouselImages images={fetchedActivity?.images ?? [{ url: '' }]} />
         </div>
         <div className="max-sm:hidden flex flex-col my-8">
           <div className="flex items-start gap-8">

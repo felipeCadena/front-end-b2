@@ -14,6 +14,8 @@ import Step4 from "@/components/organisms/steps/step-4";
 import Step5 from "@/components/organisms/steps/step-5";
 import Step6 from "@/components/organisms/steps/step-6";
 import InformacoesAtividade from "@/components/templates/informacoes-atividade";
+import { useAdventureStore } from "@/store/useAdventureStore";
+import { toast } from "react-toastify";
 
 const steps = [
   { label: "1" },
@@ -28,6 +30,20 @@ const steps = [
 export default function StepperComponent() {
   const [currentStep, setCurrentStep] = useState(0);
   const router = useRouter();
+  const {
+    typeAdventure,
+    description,
+    title,
+    hoursBeforeSchedule,
+    hoursBeforeCancellation,
+    selectionBlocks,
+    difficult,
+    duration,
+    address,
+    pointRefAddress,
+    tempImages,
+  } = useAdventureStore();
+
   const stepsPerPage = 3;
 
   const startIndex =
@@ -38,6 +54,50 @@ export default function StepperComponent() {
   const visibleSteps = steps.slice(startIndex, startIndex + stepsPerPage);
 
   const handleNextTo = () => {
+    const someDate = selectionBlocks.some(
+      (date) =>
+        (date.dates.length || date.recurrenceWeekly.length) &&
+        date.recurrenceHour.length
+    );
+
+    console.log(someDate);
+    if ((!typeAdventure || !description || !title) && currentStep == 0) {
+      toast.error("Preencha todos os campos.");
+      return;
+    }
+
+    if (
+      (!hoursBeforeCancellation || !hoursBeforeSchedule) &&
+      currentStep == 1
+    ) {
+      toast.error(
+        "Preencha os campos Antecêdencia de Agendamento e Antecedência de Cancelamento."
+      );
+      return;
+    }
+
+    if (!someDate && currentStep == 1) {
+      toast.error(
+        "Em repetir atividade, é necessário selecionar o dia da semana ou dias específicos. Os horários são obrigatórios."
+      );
+      return;
+    }
+
+    if ((!difficult || !duration) && currentStep == 2) {
+      toast.error("Preencha todos os campos.");
+      return;
+    }
+
+    if ((!address || !pointRefAddress) && currentStep == 3) {
+      toast.error("Preencha todos os campos.");
+      return;
+    }
+
+    if (tempImages.length < 5 && currentStep == 5) {
+      toast.error("São necessárias 5 imagens.");
+      return;
+    }
+
     if (currentStep < steps.length - 1) {
       setCurrentStep((prev) => prev + 1);
     } else {

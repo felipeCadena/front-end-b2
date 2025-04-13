@@ -28,8 +28,12 @@ interface LocationData {
 }
 
 export default function Step4() {
-  const { setAdventureData, pointRefAddress, coordinates } =
+  const { setAdventureData, pointRefAddress, coordinates, address } =
     useAdventureStore();
+
+  const formData = {
+    address,
+  };
 
   const handleLocationSelected = (locationData: LocationData) => {
     console.log("Location Data Received:", locationData);
@@ -58,7 +62,11 @@ export default function Step4() {
         <MyTypography variant="subtitle4" weight="bold" className="mb-2">
           Local
         </MyTypography>
-        <AutocompleteCombobox onLocationSelected={handleLocationSelected} />
+        <AutocompleteCombobox
+          formData={formData}
+          setFormData={setAdventureData}
+          onLocationSelected={handleLocationSelected}
+        />
       </div>
       <MyTextInput
         label="Ponto de referência"

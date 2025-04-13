@@ -44,7 +44,11 @@ export default function SearchInfoActivity() {
       </div>
       <div className="mx-auto space-y-5 p-4 max-sm:border max-sm:border-gray-300 rounded-lg">
         <div className="max-sm:mt-4">
-          <GoogleAutoComplete />
+          <GoogleAutoComplete
+            setFormData={setSelectedLocation}
+            formData={selectedLocation}
+            onLocationSelected={handleLocationSelected}
+          />
         </div>
 
         <OneDay />

@@ -5,7 +5,7 @@ import { Skeleton } from "../atoms/my-skeleton";
 
 export function ActivityCardSkeleton() {
   return (
-    <div className="mb-6 w-[20%] md:min-w-[30%] lg:min-w-[25%] flex flex-col gap-1 animate-pulse">
+    <div className="min-w-[85%] w-[25%] md:min-w-[25%] flex flex-col gap-1 cursor-pointer items-start md:mb-8 animate-pulse">
       {/* Imagem */}
       <div className="relative z-10 h-[225px] w-full md:w-[250px] bg-gray-400 rounded-md" />
 

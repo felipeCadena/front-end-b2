@@ -187,7 +187,6 @@ export const authOptions: NextAuthOptions = {
 
       if (now > token.expiresAt) {
         try {
-          console.log(token?.refreshToken);
           const dataAuth = await authService.refreshToken(token?.refreshToken);
 
           if (dataAuth?.access_token) {

@@ -40,27 +40,30 @@ export default function Step1({
         selected={typeAdventure}
       />
 
-      <MyTextInput
-        value={title}
-        onChange={(e) => setAdventureData({ title: e.target.value })}
-        label="Nome da atividade"
-        placeholder="Nome da atividade"
-        className="mt-2"
-      />
+      <div className="space-y-4">
+        <MyTextInput
+          value={title}
+          onChange={(e) => setAdventureData({ title: e.target.value })}
+          label="Nome da atividade"
+          placeholder="Nome da atividade"
+          classNameLabel="text-black text-base"
+          className="mt-2"
+        />
 
-      <MyTextarea
-        value={description}
-        onChange={(e) =>
-          setAdventureData({
-            description: e.target.value,
-          })
-        }
-        label="Descrição da atividade"
-        placeholder="Lorem ipsum dolor sit amet, consectetur di..."
-        classNameLabel="text-black text-base font-bold"
-        rows={5}
-        maxLength={2000}
-      />
+        <MyTextarea
+          value={description}
+          onChange={(e) =>
+            setAdventureData({
+              description: e.target.value,
+            })
+          }
+          label="Descrição da atividade"
+          placeholder="Lorem ipsum dolor sit amet, consectetur di..."
+          classNameLabel="text-black text-base font-bold"
+          rows={5}
+          maxLength={2000}
+        />
+      </div>
     </section>
   );
 }

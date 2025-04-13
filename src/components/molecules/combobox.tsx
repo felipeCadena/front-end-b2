@@ -54,7 +54,7 @@ export default function MultiSelect({
           className="w-full justify-between border border-gray-300"
         >
           {grid ? (
-            selected.length > 0 ? (
+            selected?.length > 0 ? (
               selected
                 .map((val) => options.find((o) => o.value === val)?.label)
                 .join(", ")
@@ -65,7 +65,7 @@ export default function MultiSelect({
                 {placeholder ?? "Selecione"}
               </span>
             )
-          ) : selected.length > 0 ? (
+          ) : selected?.length > 0 ? (
             selected
               .map((val) => daysMap[val])
               .join(", ")
@@ -90,7 +90,7 @@ export default function MultiSelect({
                     onSelect={() => toggleSelection(option.value)}
                     className={cn(
                       "flex items-center justify-center p-2 border rounded-md cursor-pointer",
-                      selected.includes(option.value) &&
+                      selected?.includes(option.value) &&
                         "bg-primary-600 text-white"
                     )}
                   >
@@ -105,7 +105,7 @@ export default function MultiSelect({
                   onSelect={() => toggleSelection(option.value)}
                   className={cn(
                     "flex justify-center",
-                    selected.includes(option.value) &&
+                    selected?.includes(option.value) &&
                       "bg-primary-600 text-white"
                   )}
                 >

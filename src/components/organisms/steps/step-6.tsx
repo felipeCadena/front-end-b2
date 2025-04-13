@@ -76,13 +76,12 @@ export default function Step6() {
               : "";
 
           return file ? (
-            <div key={index} className="relative">
+            <div key={index} className="relative w-full h-[100px]">
               <Image
-                width={100}
-                height={100}
+                fill
                 src={imageUrl}
                 alt={`Imagem ${index}`}
-                className="w-full h-[100px] rounded-md object-cover"
+                className="rounded-md object-cover"
               />
               <MyIcon
                 name="x-red"

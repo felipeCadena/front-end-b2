@@ -29,8 +29,6 @@ export default function Step2() {
     updateSelectionBlock,
   } = useAdventureStore();
 
-  const [selections, setSelections] = useState([{ id: Date.now() }]);
-
   // Atualiza as datas para um bloco específico
   const handleDateChange = (blockId: number, dates: Date[]) => {
     updateSelectionBlock(blockId, "dates", dates);
@@ -95,13 +93,12 @@ export default function Step2() {
   return (
     <section className="w-full space-y-6">
       <MySelect
-        name="daysBeforeCancellation"
-        label="Antecedência de Cancelamento"
+        label="Antecedência de Agendamento"
         className="text-base text-black"
-        value={String(convertToTimeString(hoursBeforeCancellation))}
+        value={String(convertToTimeString(hoursBeforeSchedule))}
         onValueChange={(value) =>
           setAdventureData({
-            hoursBeforeCancellation: convertToHours(value),
+            hoursBeforeSchedule: convertToHours(value),
           })
         }
       >

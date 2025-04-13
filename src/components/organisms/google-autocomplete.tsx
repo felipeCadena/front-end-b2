@@ -26,116 +26,103 @@ interface LocationData {
     lng: number;
   } | null;
 }
+function extractAddressComponents(data: any) {
+  const components = data.address_components;
+  const address: AddressData = {
+    addressStreet: "",
+    addressPostalCode: "",
+    addressNumber: "",
+    addressComplement: "",
+    addressNeighborhood: "",
+    addressCity: "",
+    addressState: "",
+    addressCountry: "",
+  };
+
+  components.forEach((comp: any) => {
+    if (comp.types.includes("street_number"))
+      address.addressNumber = comp.long_name;
+    if (comp.types.includes("route")) address.addressStreet = comp.long_name;
+    if (comp.types.includes("sublocality"))
+      address.addressNeighborhood = comp.long_name;
+    if (comp.types.includes("administrative_area_level_2"))
+      address.addressCity = comp.long_name;
+    if (comp.types.includes("administrative_area_level_1"))
+      address.addressState = comp.short_name;
+    if (comp.types.includes("country")) address.addressCountry = comp.long_name;
+    if (comp.types.includes("postal_code"))
+      address.addressPostalCode = comp.long_name;
+  });
+
+  return address;
+}
 
 export default function AutocompleteCombobox({
   edit,
   onLocationSelected,
+  setFormData,
+  formData,
 }: {
   edit?: boolean;
   onLocationSelected?: (location: LocationData) => void;
+  setFormData: (formData: any) => void;
+  formData: any;
 }) {
   const { isLoaded } = useGoogleMaps();
-  const { address, setAdventureData } = useAdventureStore();
-  const { addressEdit, setEditData } = useEditAdventureStore();
+  const [searchBoxRef, setSearchBoxRef] =
+    useState<google.maps.places.SearchBox | null>(null);
 
-  function extractAddressComponents(data: any) {
-    const components = data.address_components;
-    const address: AddressData = {
-      addressStreet: "",
-      addressPostalCode: "",
-      addressNumber: "",
-      addressComplement: "",
-      addressNeighborhood: "",
-      addressCity: "",
-      addressState: "",
-      addressCountry: "",
+  // Garantir que o componente só renderize quando o Google Maps estiver carregado
+  if (!isLoaded) return null;
+
+  const handlePlaceSelect = async (place: google.maps.places.PlaceResult) => {
+    if (!place.geometry || !place.geometry.location) return;
+
+    const addressComponents = extractAddressComponents(place);
+    const coordinates = {
+      lat: place.geometry.location.lat(),
+      lng: place.geometry.location.lng(),
     };
 
-    components.forEach((comp: any) => {
-      if (comp.types.includes("street_number"))
-        address.addressNumber = comp.long_name;
-      if (comp.types.includes("route")) address.addressStreet = comp.long_name;
-      if (comp.types.includes("sublocality"))
-        address.addressNeighborhood = comp.long_name;
-      if (comp.types.includes("administrative_area_level_2"))
-        address.addressCity = comp.long_name;
-      if (comp.types.includes("administrative_area_level_1"))
-        address.addressState = comp.short_name;
-      if (comp.types.includes("country"))
-        address.addressCountry = comp.long_name;
-      if (comp.types.includes("postal_code"))
-        address.addressPostalCode = comp.long_name;
+    // Atualizar o formulário
+    setFormData({
+      ...formData,
+      address: place.formatted_address,
     });
 
-    return address;
-  }
-
-  const handlePlaceSelect = async (prediction: any) => {
-    const addressComponents = extractAddressComponents(prediction);
-    const formattedAddress = prediction.formatted_address;
-
-    const { lat, lng } = prediction.geometry?.location;
-    const coordinates = { lat: lat(), lng: lng() };
-
-    if (edit) {
-      setEditData({
-        addressEdit: formattedAddress,
-      });
-
-      onLocationSelected?.({
-        address: prediction.formatted_address,
-        coordinates: coordinates,
-        completeAddress: addressComponents,
-      });
-    } else {
-      setAdventureData({
-        address: formattedAddress,
-      });
-
-      onLocationSelected?.({
-        address: prediction.formatted_address,
-        coordinates: coordinates,
-        completeAddress: addressComponents,
-      });
-    }
+    // Notificar o componente pai
+    onLocationSelected?.({
+      address: place.formatted_address || "",
+      coordinates: coordinates,
+      completeAddress: addressComponents,
+    });
   };
 
-  const inputref = React.useRef<google.maps.places.SearchBox | null>(null);
   return (
-    <div>
-      {isLoaded && (
-        <StandaloneSearchBox
-          onLoad={(ref) => (inputref.current = ref)}
-          onPlacesChanged={() => {
-            if (inputref.current) {
-              const places = inputref.current.getPlaces();
-              if (places) {
-                handlePlaceSelect(places[0] as any);
-              }
+    <div className="relative z-[9999]">
+      <StandaloneSearchBox
+        onLoad={(ref) => setSearchBoxRef(ref)}
+        onPlacesChanged={() => {
+          if (searchBoxRef) {
+            const places = searchBoxRef.getPlaces();
+            console.log("Places:", places);
+            if (places && places.length > 0) {
+              handlePlaceSelect(places[0]);
             }
-          }}
-        >
-          {edit ? (
-            <MyTextInput
-              type="text"
-              placeholder="Digite um endereço"
-              noHintText
-              leftIcon={<MyIcon name="localizacao" />}
-              value={addressEdit} // Exibe o endereço salvo
-              onChange={(e) => setEditData({ addressEdit: e.target.value })}
-            />
-          ) : (
-            <MyTextInput
-              type="text"
-              placeholder="Digite um endereço"
-              noHintText
-              leftIcon={<MyIcon name="localizacao" />}
-              value={address} // Exibe o endereço salvo
-              onChange={(e) => setAdventureData({ address: e.target.value })}
-            />
-          )}
-        </StandaloneSearchBox>
-      )}
+          }
+        }}
+      >
+        <MyTextInput
+          type="text"
+          placeholder="Digite um endereço"
+          noHintText
+          leftIcon={<MyIcon name="localizacao" />}
+          value={formData?.address}
+          onChange={(e) =>
+            setFormData({ ...formData, address: e.target.value })
+          }
+        />
+      </StandaloneSearchBox>
     </div>
   );
 }
