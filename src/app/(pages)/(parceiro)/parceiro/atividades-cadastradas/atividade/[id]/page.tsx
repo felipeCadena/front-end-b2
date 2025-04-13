@@ -17,6 +17,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { formatAddress, handleNameActivity } from "@/utils/formatters";
 import { ActivityEditMenu } from "@/components/organisms/edit-activity";
 import { EditModal } from "@/components/organisms/edit-modal";
+import PATHS from "@/utils/paths";
 
 export type EditSection =
   | "basic"
@@ -248,13 +249,20 @@ export default function Atividade() {
         </div>
         <div className="flex flex-col max-sm:items-center my-4">
           <div className="flex max-sm:flex-col items-start justify-between gap-8 max-sm:px-4">
-            <div className="">
-              <MyTypography variant="heading2" weight="bold" className="">
-                {activity?.title}
-              </MyTypography>
-              <MyBadge variant="outline" className="p-1 mt-2">
-                {handleNameActivity(activity?.typeAdventure ?? "")}
-              </MyBadge>
+            <div className="flex gap-4">
+              <MyIcon
+                name="voltar-black"
+                className="hover:cursor-pointer"
+                onClick={() => router.back()}
+              />
+              <div>
+                <MyTypography variant="heading2" weight="bold" className="">
+                  {activity?.title}
+                </MyTypography>
+                <MyBadge variant="outline" className="p-1 mt-2">
+                  {handleNameActivity(activity?.typeAdventure ?? "")}
+                </MyBadge>
+              </div>
             </div>
             <div className="max-sm:hidden">
               <ActivityEditMenu onEdit={handleEdit} />

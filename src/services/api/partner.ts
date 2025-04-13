@@ -235,9 +235,10 @@ export const partnerService = {
     params?: GetAdventuresParams
   ): Promise<Adventure[] | null> => {
     const queryString = new URLSearchParams(params).toString();
+    console.log(queryString);
     try {
       const { data } = await api.get<Adventure[]>(
-        `/adventures${queryString ? `?${queryString}` : ""}`
+        `/adventures/my-adventures${queryString ? `?${queryString}` : ""}`
       );
       return data;
     } catch (error) {

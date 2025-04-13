@@ -64,9 +64,7 @@ export default function AdminWeb() {
 
   return (
     <main>
-      <div className="max-sm:hidden md:my-10">
-        <SearchActivity />
-      </div>
+      <div className="max-sm:hidden md:my-10">{/* <SearchActivity /> */}</div>
 
       {
         <MyTabs defaultValue="pagamento" className="mb-10">

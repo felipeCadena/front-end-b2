@@ -13,7 +13,7 @@ import { useRouter } from "next/navigation";
 import { useAlert } from "@/hooks/useAlert";
 import { useQuery } from "@tanstack/react-query";
 import { partnerService } from "@/services/api/partner";
-import { adventures } from "@/services/api/adventures";
+import { Adventure, adventures } from "@/services/api/adventures";
 
 export default function SuasAtividades() {
   const router = useRouter();
@@ -21,17 +21,30 @@ export default function SuasAtividades() {
   const [selected, setSelected] = React.useState<"ar" | "terra" | "mar" | "">(
     ""
   );
+  const [partnerAdventures, setPartnerAdventures] =
+    React.useState<Adventure[]>();
 
   const params = selected !== "" ? { typeAdventure: selected } : undefined;
 
   const { data: myAdventures } = useQuery({
     queryKey: ["myAdventures", selected],
-    queryFn: () => partnerService.getMyAdventures(params),
+    queryFn: async () => {
+      const activities = await partnerService.getMyAdventures({
+        ...params,
+        orderBy: "averageRating desc",
+      });
+
+      if (activities) {
+        setPartnerAdventures(activities);
+      }
+      return activities;
+    },
   });
 
   const { data: allAdventures } = useQuery({
     queryKey: ["adventuresPartners"],
-    queryFn: () => adventures.getAdventures({ orderBy: "qntTotalSales desc" }),
+    queryFn: () =>
+      partnerService.getMyAdventures({ orderBy: "qntTotalSales desc" }),
   });
 
   return (
@@ -46,11 +59,14 @@ export default function SuasAtividades() {
       />
       <section className="px-4">
         <div className="md:hidden ">
-          <SearchActivity />
+          <SearchActivity setFormData={setPartnerAdventures} />
         </div>
 
         <div className="hidden md:flex items-center w-full gap-40">
-          <SearchActivity className="w-full" />
+          <SearchActivity
+            setFormData={setPartnerAdventures}
+            className="w-full"
+          />
           <MyButton
             variant="default"
             borderRadius="squared"
@@ -96,7 +112,15 @@ export default function SuasAtividades() {
             Suas atividades mais bem avaliadas!
           </MyTypography>
 
-          <CarouselCustom activities={myAdventures} type="parceiro" />
+          {partnerAdventures?.length == 0 ? (
+            <div className="w-full h-[225px] flex flex-col justify-center items-center">
+              <MyTypography variant="heading3">
+                Nenhuma atividade encontrada. Faça uma nova busca!
+              </MyTypography>
+            </div>
+          ) : (
+            <CarouselCustom activities={partnerAdventures} type="parceiro" />
+          )}
 
           <div className="border-2 border-gray-200 w-1/2 mx-auto rounded-md mb-6 md:hidden" />
 

@@ -17,7 +17,7 @@ export default function AvaliacoesMobile() {
 
   return (
     <section className="space-y-8 my-6">
-      <SearchActivity />
+      {/* <SearchActivity /> */}
 
       <ActivitiesFilter admin />
 

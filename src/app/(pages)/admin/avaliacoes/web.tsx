@@ -28,7 +28,7 @@ export default function AvaliacoesWeb() {
   return (
     <main>
       <div className="w-full mt-10 mb-16 flex justify-between gap-10 items-center">
-        <SearchActivity />
+        {/* <SearchActivity /> */}
 
         <div className="w-1/2 grid grid-cols-3 gap-4 ml-auto">
           <MySelect
@@ -103,12 +103,12 @@ export default function AvaliacoesWeb() {
                 Favoritos dos clientes
               </MyTypography>
 
-              <Activities
+              {/* <Activities
                 activities={activities.slice(0, 4)}
                 withoutHeart
                 withoutShared
                 type="admin"
-              />
+              /> */}
             </div>
           </TabsContent>
           <TabsContent value="procuradas">
@@ -116,12 +116,12 @@ export default function AvaliacoesWeb() {
               <MyTypography variant="subtitle3" weight="bold" className="my-4">
                 Atividades mais procuradas
               </MyTypography>
-              <Activities
+              {/* <Activities
                 activities={activities.slice(0, 4)}
                 withoutHeart
                 withoutShared
                 type="admin"
-              />
+              /> */}
             </div>
           </TabsContent>
           <TabsContent value="menor">
@@ -129,12 +129,12 @@ export default function AvaliacoesWeb() {
               <MyTypography variant="subtitle3" weight="bold" className="my-4">
                 Atividades com menores avaliações
               </MyTypography>
-              <Activities
+              {/* <Activities
                 activities={activities.slice(4, 6)}
                 withoutHeart
                 withoutShared
                 type="admin"
-              />
+              /> */}
             </div>
           </TabsContent>
         </MyTabs>
