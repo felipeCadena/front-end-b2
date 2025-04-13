@@ -1,19 +1,19 @@
-"use client";
+'use client';
 
-import React from "react";
+import React from 'react';
 import {
   MyDialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "@/components/molecules/my-dialog";
-import MyButton from "@/components/atoms/my-button";
-import MyIcon, { IconsMapTypes } from "@/components/atoms/my-icon";
-import { cn } from "@/utils/cn";
-import MyTextInput from "../atoms/my-text-input";
-import TimePickerModal from "../molecules/time-picker";
-import PeopleSelector from "./people-selector";
-import { MyDatePicker } from "../molecules/my-date-picker";
+} from '@/components/molecules/my-dialog';
+import MyButton from '@/components/atoms/my-button';
+import MyIcon, { IconsMapTypes } from '@/components/atoms/my-icon';
+import { cn } from '@/utils/cn';
+import MyTextInput from '../atoms/my-text-input';
+import TimePickerModal from '../molecules/time-picker';
+import PeopleSelector from './people-selector';
+import { MyDatePicker } from '../molecules/my-date-picker';
 
 interface AvailabilityModalProps {
   isOpen: boolean;
@@ -21,10 +21,10 @@ interface AvailabilityModalProps {
   onNext: () => void;
 }
 
-const categories = [
-  { id: "ar", icon: "ar", label: "Ar" },
-  { id: "terra", icon: "terra", label: "Terra" },
-  { id: "mar", icon: "mar", label: "Mar" },
+export const categories = [
+  { id: 'ar', icon: 'ar', label: 'Ar' },
+  { id: 'terra', icon: 'terra', label: 'Terra' },
+  { id: 'mar', icon: 'mar', label: 'Mar' },
 ];
 
 export default function AvailabilityModal({
@@ -36,7 +36,7 @@ export default function AvailabilityModal({
     null
   );
   const [selectedDates, setSelectedDates] = React.useState<Date[]>([]); // Estado para armazenar as datas selecionadas
-  const [duration, setDuration] = React.useState("");
+  const [duration, setDuration] = React.useState('');
 
   return (
     <MyDialog open={isOpen} onOpenChange={onClose}>
@@ -72,10 +72,10 @@ export default function AvailabilityModal({
                   key={category.id}
                   onClick={() => setSelectedCategory(category.id)}
                   className={cn(
-                    "flex items-center justify-center p-4 rounded-lg transition-colors",
-                    "border border-gray-200 hover:bg-gray-50",
+                    'flex items-center justify-center p-4 rounded-lg transition-colors',
+                    'border border-gray-200 hover:bg-gray-50',
                     selectedCategory === category.id &&
-                      "bg-gray-100 border-primary-500"
+                      'bg-gray-100 border-primary-500'
                   )}
                 >
                   <MyIcon name={category.icon as IconsMapTypes} />

@@ -4,7 +4,7 @@ import MyIcon from '@/components/atoms/my-icon';
 import MyTypography from '@/components/atoms/my-typography';
 import CarouselImages from '@/components/organisms/carousel-images';
 import { useParams, useRouter } from 'next/navigation';
-import React from 'react';
+import React, { useState } from 'react';
 import { album } from '@/common/constants/mock';
 import MyBadge from '@/components/atoms/my-badge';
 import StarRating from '@/components/molecules/my-stars';
@@ -27,7 +27,8 @@ import { useSession } from 'next-auth/react';
 export default function Atividade() {
   const router = useRouter();
   const { id } = useParams();
-  const [favorite, setFavorite] = React.useState(false);
+  const [favorite, setFavorite] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const query = useQueryClient();
   const session = useSession();
   const userId = session.data?.user.id;
@@ -49,9 +50,6 @@ export default function Atividade() {
       return response;
     },
   });
-
-  console.log('ID', id);
-  console.log('FAV --> ', favorites);
 
   const handleFavorite = async () => {
     const favoriteActivity = favorites.find(
@@ -243,18 +241,6 @@ export default function Atividade() {
                 </MyTypography>
               </div>
             )}
-            {/* 
-            {fetchedActivity?.picturesIncluded && (
-              <div className="flex items-center gap-2">
-                <MyIcon
-                  name="fotografia"
-                  className="p-2 bg-primary-900 rounded-md"
-                />
-                <MyTypography variant="body" weight="bold" className="">
-                  Fotografia
-                </MyTypography>
-              </div>
-            )} */}
 
             {parsedItems.map(
               (item) =>
@@ -398,7 +384,7 @@ export default function Atividade() {
                 size="lg"
                 borderRadius="squared"
                 rightIcon={<MyIcon name="seta-direita" className="ml-3" />}
-                onClick={handleOrder}
+                onClick={() => setIsModalOpen(true)}
               >
                 Garantir sua vaga
               </MyButton>
