@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import React, { useEffect, useRef, useState } from "react";
-import MyButton from "../atoms/my-button";
-import { Popover, PopoverContent, PopoverTrigger } from "../atoms/my-popover";
-import { cn } from "@/utils/cn";
-import MyTypography from "../atoms/my-typography";
-import { MyScrollArea } from "../atoms/my-scroll-area";
-import Time from "../atoms/my-icon/elements/time";
+import React, { useEffect, useRef, useState } from 'react';
+import MyButton from '../atoms/my-button';
+import { Popover, PopoverContent, PopoverTrigger } from '../atoms/my-popover';
+import { cn } from '@/utils/cn';
+import MyTypography from '../atoms/my-typography';
+import { MyScrollArea } from '../atoms/my-scroll-area';
+import Time from '../atoms/my-icon/elements/time';
 
 interface TimePickerModalProps {
   iconColor?: string;
@@ -23,12 +23,12 @@ export default function TimePickerModal({
 
   // Converte o valor (ex: "2h30") para hora e minuto
   const parseValue = (val: string) => {
-    if (!val) return { hour: "00", minute: "00" };
+    if (!val) return { hour: '00', minute: '00' };
     const match = val.match(/(\d+)h(?:(\d+))?/);
-    if (!match) return { hour: "00", minute: "00" };
+    if (!match) return { hour: '00', minute: '00' };
 
-    const hour = match[1].padStart(2, "0");
-    const minutes = (match[2] || "0").padStart(2, "0");
+    const hour = match[1].padStart(2, '0');
+    const minutes = (match[2] || '0').padStart(2, '0');
     return { hour, minute: minutes };
   };
 
@@ -40,10 +40,10 @@ export default function TimePickerModal({
   const minuteRef = useRef<HTMLDivElement>(null);
 
   const hours = Array.from({ length: 24 }, (_, i) =>
-    String(i).padStart(2, "0")
+    String(i).padStart(2, '0')
   );
   const minutes = Array.from({ length: 60 }, (_, i) =>
-    String(i).padStart(2, "0")
+    String(i).padStart(2, '0')
   );
 
   // Atualiza a seleção quando o valor externo muda
@@ -73,8 +73,8 @@ export default function TimePickerModal({
             `[data-value="${selectedHour}"]`
           );
           selectedElement?.scrollIntoView({
-            block: "center",
-            behavior: "smooth",
+            block: 'center',
+            behavior: 'smooth',
           });
         }
         if (minuteRef.current) {
@@ -82,8 +82,8 @@ export default function TimePickerModal({
             `[data-value="${selectedMinute}"]`
           );
           selectedElement?.scrollIntoView({
-            block: "center",
-            behavior: "smooth",
+            block: 'center',
+            behavior: 'smooth',
           });
         }
       }, 100);
@@ -98,7 +98,7 @@ export default function TimePickerModal({
           borderRadius="squared"
           className="w-full justify-start text-sm items-center gap-2 py-6 border-gray-300 md:bg-white"
         >
-          <Time fill={iconColor ?? "#8DC63F"} />
+          <Time fill={iconColor ?? '#8DC63F'} />
           {value ? (
             <span className="text-black">
               {parseInt(selectedMinute) > 0
@@ -111,8 +111,8 @@ export default function TimePickerModal({
               weight="regular"
               lightness={500}
               className={cn(
-                "text-sm",
-                iconColor ? `text-neutral-400` : "text-black"
+                'text-sm',
+                iconColor ? `text-neutral-400` : 'text-black'
               )}
             >
               Duração da Atividade
@@ -137,8 +137,8 @@ export default function TimePickerModal({
                   className={cn(
                     `text-center py-4 w-full cursor-pointer transition-all`,
                     selectedHour === hour
-                      ? "border border-primary-600 rounded-md"
-                      : "opacity-50"
+                      ? 'border border-primary-600 rounded-md'
+                      : 'opacity-50'
                   )}
                   onClick={() => setSelectedHour(hour)}
                 >
@@ -160,8 +160,8 @@ export default function TimePickerModal({
                   className={cn(
                     `text-center py-4 w-full cursor-pointer transition-all`,
                     selectedMinute === minute
-                      ? "border border-primary-600 rounded-md"
-                      : "opacity-50"
+                      ? 'border border-primary-600 rounded-md'
+                      : 'opacity-50'
                   )}
                   onClick={() => setSelectedMinute(minute)}
                 >

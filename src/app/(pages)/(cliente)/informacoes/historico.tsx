@@ -1,27 +1,25 @@
-import { activities } from "@/common/constants/mock";
+import { activities } from '@/common/constants/mock';
 import {
   MySelect,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/atoms/my-select";
-import MyTypography from "@/components/atoms/my-typography";
-import ActivitiesFilter from "@/components/organisms/activities-filter";
-import ActivitiesHistoric from "@/components/organisms/activities-historic";
-import FullActivitiesHistoric from "@/components/organisms/full-activities-historic";
-import SearchActivity from "@/components/organisms/search-activity";
-import { adventures } from "@/services/api/adventures";
-import { useQuery } from "@tanstack/react-query";
-import React from "react";
+} from '@/components/atoms/my-select';
+import MyTypography from '@/components/atoms/my-typography';
+import ActivitiesFilter from '@/components/organisms/activities-filter';
+import ActivitiesHistoric from '@/components/organisms/activities-historic';
+import FullActivitiesHistoric from '@/components/organisms/full-activities-historic';
+import SearchActivity from '@/components/organisms/search-activity';
+import { adventures } from '@/services/api/adventures';
+import { useQuery } from '@tanstack/react-query';
+import React from 'react';
 
 export default function Historico() {
   const { data: activitiesHistoric } = useQuery({
-    queryKey: ["activitiesHistoric"],
+    queryKey: ['activitiesHistoric'],
     queryFn: () => adventures.getAdventures(),
   });
-
-  console.log("HISTORICO", activitiesHistoric);
 
   return (
     <section className="w-full">
@@ -44,7 +42,7 @@ export default function Historico() {
               <SelectTrigger className="rounded-2xl text-[#848A9C] text-xs">
                 <SelectValue placeholder="Mensal" />
               </SelectTrigger>
-              <SelectContent className="rounded-lg">
+              <SelectContent className="rounded-lg border-2 border-red-500">
                 <SelectItem value="Mensal">Mensal</SelectItem>
                 <SelectItem value="Semanal">Semanal</SelectItem>
               </SelectContent>

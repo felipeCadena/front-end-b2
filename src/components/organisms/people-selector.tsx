@@ -1,25 +1,56 @@
-"use client";
+'use client';
 
-import React, { useState } from "react";
-import MyIcon from "../atoms/my-icon";
-import MyButton from "../atoms/my-button";
-import MyTypography from "../atoms/my-typography";
-import { Popover, PopoverContent, PopoverTrigger } from "../atoms/my-popover";
+import React, { useState } from 'react';
+import MyIcon from '../atoms/my-icon';
+import MyButton from '../atoms/my-button';
+import MyTypography from '../atoms/my-typography';
+import { Popover, PopoverContent, PopoverTrigger } from '../atoms/my-popover';
+import { ClientSchedule } from '@/services/api/adventures';
+import { useQuery } from '@tanstack/react-query';
+import { formatPrice } from '@/utils/formatters';
 
-export default function PeopleSelector() {
+type PeopleSelectorProps = {
+  schedule: ClientSchedule;
+  setSchedule: React.Dispatch<React.SetStateAction<ClientSchedule>>;
+  price: {
+    adult: string | undefined;
+    children: string | undefined;
+  };
+  isChildrenAllowed: boolean;
+};
+
+export default function PeopleSelector({
+  schedule,
+  setSchedule,
+  price,
+  isChildrenAllowed,
+}: PeopleSelectorProps) {
   const [open, setOpen] = useState(false);
-  const [adults, setAdults] = useState(0);
+  const [adults, setAdults] = useState(1);
   const [children, setChildren] = useState(0);
 
+  useQuery({
+    queryKey: ['schedule', adults, children],
+    queryFn: () => {
+      const updated = {
+        ...schedule,
+        qntAdults: adults,
+        qntChildren: children,
+      };
+      setSchedule(updated);
+      return updated;
+    },
+  });
+
   // Função para incrementar ou decrementar valores
-  const handleChange = (type: string, action: "increase" | "decrease") => {
-    if (type === "adult") {
+  const handleChange = (type: string, action: 'increase' | 'decrease') => {
+    if (type === 'adult') {
       setAdults((prev) =>
-        action === "increase" ? prev + 1 : Math.max(0, prev - 1)
+        action === 'increase' ? prev + 1 : Math.max(0, prev - 1)
       );
-    } else if (type === "child") {
+    } else if (type === 'child') {
       setChildren((prev) =>
-        action === "increase" ? prev + 1 : Math.max(0, prev - 1)
+        action === 'increase' ? prev + 1 : Math.max(0, prev - 1)
       );
     }
   };
@@ -35,8 +66,8 @@ export default function PeopleSelector() {
           <MyIcon name="pessoas" />
           {adults || children ? (
             <MyTypography variant="label" weight="medium">
-              {" "}
-              Adultos: {adults} {children != 0 && `+ Crianças: ${children}`}`{" "}
+              {' '}
+              Adultos: {adults} {children != 0 && `+ Crianças: ${children}`}{' '}
             </MyTypography>
           ) : (
             <MyTypography variant="body" weight="regular" className="text-sm">
@@ -55,53 +86,55 @@ export default function PeopleSelector() {
           <div className="w-full flex justify-between gap-12 items-center">
             <div>
               <MyTypography variant="body-big" weight="semibold">
-                Adultos - R$ 181,50
+                {`Adultos - ${formatPrice(price?.adult ?? '0')}`}
               </MyTypography>
               <MyTypography variant="body-big" weight="regular">
-                Idade: 13 - 99
+                Idade: acima de 13 anos.
               </MyTypography>
             </div>
             <div className="flex items-center gap-4">
               <button
-                onClick={() => handleChange("adult", "decrease")}
+                onClick={() => handleChange('adult', 'decrease')}
                 disabled={adults === 0}
               >
                 <MyIcon
-                  name={adults > 0 ? "subtracao" : "subtracaoDesativada"}
+                  name={adults > 0 ? 'subtracao' : 'subtracaoDesativada'}
                 />
               </button>
               <span>{adults}</span>
-              <button onClick={() => handleChange("adult", "increase")}>
+              <button onClick={() => handleChange('adult', 'increase')}>
                 <MyIcon name="soma" />
               </button>
             </div>
           </div>
 
           {/* Crianças */}
-          <div className="w-full flex justify-between gap-12 items-center">
-            <div>
-              <MyTypography variant="body-big" weight="semibold">
-                Crianças - R$ 90,00
-              </MyTypography>
-              <MyTypography variant="body-big" weight="regular">
-                Idade: 4 - 12
-              </MyTypography>
+          {isChildrenAllowed && (
+            <div className="w-full flex justify-between gap-12 items-center">
+              <div>
+                <MyTypography variant="body-big" weight="semibold">
+                  {`Crianças - ${formatPrice(price?.children ?? '0')}`}
+                </MyTypography>
+                <MyTypography variant="body-big" weight="regular">
+                  Idade: de 4 a 12 anos
+                </MyTypography>
+              </div>
+              <div className="flex items-center gap-4">
+                <button
+                  onClick={() => handleChange('child', 'decrease')}
+                  disabled={children === 0}
+                >
+                  <MyIcon
+                    name={children > 0 ? 'subtracao' : 'subtracaoDesativada'}
+                  />
+                </button>
+                <span>{children}</span>
+                <button onClick={() => handleChange('child', 'increase')}>
+                  <MyIcon name="soma" />
+                </button>
+              </div>
             </div>
-            <div className="flex items-center gap-4">
-              <button
-                onClick={() => handleChange("child", "decrease")}
-                disabled={children === 0}
-              >
-                <MyIcon
-                  name={children > 0 ? "subtracao" : "subtracaoDesativada"}
-                />
-              </button>
-              <span>{children}</span>
-              <button onClick={() => handleChange("child", "increase")}>
-                <MyIcon name="soma" />
-              </button>
-            </div>
-          </div>
+          )}
 
           {/* Botão Salvar */}
           <MyButton

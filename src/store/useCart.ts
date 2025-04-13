@@ -1,16 +1,16 @@
-import { create } from "zustand";
-import { persist } from "zustand/middleware";
-import { Adventure } from "@/services/api/adventures";
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
+import { AddToCartAdventure, Adventure } from '@/services/api/adventures';
 
 export interface UserCart {
   userId: string;
-  cart: Adventure[];
+  cart: AddToCartAdventure[];
 }
 
 interface CartStore {
   carts: UserCart[];
-  addToCart: (adventure: Adventure, userId: string) => void;
-  removeFromCart: (id: string, userId: string) => void;
+  addToCart: (adventure: AddToCartAdventure, userId: string) => void;
+  removeFromCart: (id: number, userId: string) => void;
   getCartSize: (userId: string) => number;
   clearCart: (userId: string) => void;
 }
@@ -64,7 +64,7 @@ export const useCart = create<CartStore>()(
           const updatedState = [...state.carts];
 
           const filteredCart = updatedState[cartIndex].cart.filter(
-            (adventure) => String(adventure.id) !== id
+            (adventure) => adventure.adventure.id !== id
           );
 
           updatedState[cartIndex] = {
@@ -101,6 +101,6 @@ export const useCart = create<CartStore>()(
         });
       },
     }),
-    { name: "cart-storage" }
+    { name: 'cart-storage' }
   )
 );

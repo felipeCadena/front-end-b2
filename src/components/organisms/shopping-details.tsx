@@ -2,19 +2,47 @@ import React from 'react';
 import MyTypography from '../atoms/my-typography';
 import MyBadge from '../atoms/my-badge';
 import MyIcon from '../atoms/my-icon';
-import { getData, getHora } from '@/utils/formatters';
-import { Adventure } from '@/services/api/adventures';
+import {
+  formatAddress,
+  formatPrice,
+  formatTime,
+  getData,
+  getHora,
+  handleNameActivity,
+} from '@/utils/formatters';
+import { AddToCartAdventure, Adventure } from '@/services/api/adventures';
 
-export default function ShoppingDetails({ activityDetails }: any) {
+type ShoppingDetailsProps = {
+  activity: AddToCartAdventure;
+};
+
+export default function ShoppingDetails({ activity }: ShoppingDetailsProps) {
+  const { adventure, schedule } = activity;
+
+  const address = {
+    addressStreet: adventure.addressStreet,
+    addressNumber: adventure.addressNumber,
+    addressComplement: adventure.addressComplement,
+    addressNeighborhood: adventure.addressNeighborhood,
+    addressCity: adventure.addressCity,
+    addressState: adventure.addressState,
+    addressPostalCode: adventure.addressPostalCode,
+    addressCountry: adventure.addressCountry,
+  };
+
+  const totalPrice =
+    schedule.qntAdults * Number(schedule.pricePerAdult) +
+    schedule.qntChildren * Number(schedule.pricePerChildren);
+
   return (
     <section className="border border-gray-300 md:border-gray-100 rounded-lg my-8 md:my-4">
       <div className="space-y-6">
         <div className="px-6 my-6">
           <MyBadge variant="outline" className="p-1">
-            {activityDetails?.tag}
+            {handleNameActivity(adventure.typeAdventure)}
           </MyBadge>
           <MyTypography variant="subtitle3" weight="bold" className="mt-4">
-            {activityDetails?.title}
+            {adventure?.title}
           </MyTypography>
         </div>
 
@@ -28,7 +56,7 @@ export default function ShoppingDetails({ activityDetails }: any) {
             weight="regular"
             className="text-center"
           >
-            {activityDetails?.localizacao}
+            {formatAddress(address)}
           </MyTypography>
         </div>
 
@@ -49,7 +77,7 @@ export default function ShoppingDetails({ activityDetails }: any) {
               Duração da atividade
             </MyTypography>
             <MyTypography variant="body" weight="regular">
-              4 horas
+              {adventure?.duration}
             </MyTypography>
           </div>
         </div>
@@ -63,24 +91,16 @@ export default function ShoppingDetails({ activityDetails }: any) {
             weight="regular"
             className="md:text-[0.9rem]"
           >
-            {activityDetails?.reserva.pessoas} adultos x{' '}
-            {new Intl.NumberFormat('pt-BR', {
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2,
-            }).format(
-              activityDetails?.reserva.total / activityDetails?.reserva.pessoas
-            )}
+            {schedule.qntAdults} {schedule.qntAdults > 1 ? 'Adultos' : 'Adulto'}{' '}
+            x {formatPrice(schedule.pricePerAdult)}
           </MyTypography>
           <MyTypography
             variant="body-big"
             weight="regular"
             className="md:text-[0.9rem]"
           >
-            {getData(activityDetails?.reserva.timestamp)} -{' '}
-            {getHora(activityDetails?.reserva.timestamp)}{' '}
-            {+getHora(activityDetails?.reserva.timestamp).split(':')[0] > 12
-              ? 'tarde'
-              : 'manhã'}
+            {getData(schedule.scheduleDate.toString())} -{' '}
+            {formatTime(schedule.scheduleTime)}
           </MyTypography>
         </div>
 
@@ -97,10 +117,7 @@ export default function ShoppingDetails({ activityDetails }: any) {
             weight="bold"
             className="md:text-primary-600"
           >
-            {activityDetails?.reserva.total.toLocaleString('pt-BR', {
-              style: 'currency',
-              currency: 'BRL',
-            })}
+            {formatPrice(totalPrice)}
           </MyTypography>
         </div>
       </div>

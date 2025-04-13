@@ -12,23 +12,34 @@ import Image from 'next/image';
 import MyButton from '@/components/atoms/my-button';
 import PATHS from '@/utils/paths';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { adventures } from '@/services/api/adventures';
-import {
-  formatDificultyTag,
-  formatIconName,
-  formatPrice,
-  handleNameActivity,
-} from '@/utils/formatters';
-import User from '@/components/atoms/my-icon/elements/user';
+import { adventures, ClientSchedule } from '@/services/api/adventures';
+import { handleNameActivity } from '@/utils/formatters';
 import { useCart } from '@/store/useCart';
 import { toast } from 'react-toastify';
 import { useSession } from 'next-auth/react';
+import ActivityCancelationPolicy from '@/components/organisms/activity-cancelation-policy';
+import ActivityDatePicker from '@/components/organisms/activity-date-picker';
+import ActivityIncludedItems from '@/components/organisms/activity-included-items';
+import ActivityTags from '@/components/organisms/actitity-tags';
+import ActivityHeader from '@/components/organisms/activity-header';
+
+const initialScheduleState = {
+  qntAdults: 0,
+  qntChildren: 0,
+  qntBabies: 0,
+  scheduleDate: new Date(),
+  scheduleTime: '',
+  pricePerAdult: '',
+  pricePerChildren: '',
+};
 
 export default function Atividade() {
   const router = useRouter();
   const { id } = useParams();
   const [favorite, setFavorite] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [schedule, setSchedule] =
+    useState<ClientSchedule>(initialScheduleState);
+
   const query = useQueryClient();
   const session = useSession();
   const userId = session.data?.user.id;
@@ -37,6 +48,11 @@ export default function Atividade() {
     queryKey: ['this_activity'],
     queryFn: () => adventures.getAdventureById(Number(id)),
   });
+
+  const price = {
+    adult: fetchedActivity?.priceAdult,
+    children: fetchedActivity?.priceChildren,
+  };
 
   const { data: favorites = [] } = useQuery({
     queryKey: ['favorites'],
@@ -82,8 +98,16 @@ export default function Atividade() {
 
   const handleOrder = () => {
     if (fetchedActivity) {
+      const adventureOrder = {
+        adventure: fetchedActivity,
+        schedule: {
+          ...schedule,
+          pricePerAdult: fetchedActivity.priceAdult,
+          pricePerChildren: fetchedActivity.priceChildren,
+        },
+      };
       if (userId) {
-        addToCart(fetchedActivity, userId);
+        addToCart(adventureOrder, userId);
         router.push(PATHS['finalizar-compra']);
         toast.success('Atividade adicionada ao carrinho!');
       }
@@ -102,55 +126,7 @@ export default function Atividade() {
         <div className="md:hidden">
           <CarouselImages images={fetchedActivity?.images ?? [{ url: '' }]} />
         </div>
-        <div className="max-sm:hidden flex flex-col my-8">
-          <div className="flex items-start gap-8">
-            <div>
-              <MyTypography variant="heading2" weight="bold" className="">
-                {fetchedActivity?.title}
-              </MyTypography>
-              <MyBadge variant="outline" className="p-1">
-                {handleNameActivity(fetchedActivity?.typeAdventure as string)}
-              </MyBadge>
-            </div>
-
-            <div className="space-y-4">
-              <StarRating rating={fetchedActivity?.averageRating ?? 0} />
-            </div>
-          </div>
-          <div className="flex gap-4 mt-4 max-sm:hidden">
-            {fetchedActivity?.partner.logo ? (
-              <Image
-                alt="avatar"
-                src={fetchedActivity?.partner.logo.url ?? '/user.png'}
-                width={8}
-                height={8}
-                className="w-12 h-12 rounded-full object-contain"
-              />
-            ) : (
-              <div className="flex justify-center items-center rounded-full bg-primary-900 w-10">
-                <User fill="#000" />
-              </div>
-            )}
-
-            <div>
-              <MyTypography variant="label" weight="semibold">
-                {fetchedActivity?.partner.fantasyName}
-              </MyTypography>
-              <MyTypography variant="label" weight="regular" lightness={400}>
-                Parceiro e Guia de atividades
-              </MyTypography>
-            </div>
-          </div>
-
-          <div className="mt-4">
-            <MyTypography variant="subtitle3" weight="bold" className="">
-              Descrição da atividade:
-            </MyTypography>
-            <MyTypography variant="body-big" weight="regular" className="mt-1">
-              {fetchedActivity?.description}
-            </MyTypography>
-          </div>
-        </div>
+        <ActivityHeader activity={fetchedActivity} />
         <div className="max-sm:hidden grid grid-cols-4 grid-rows-2 gap-4">
           {album.slice(0, 5).map((image, index) => (
             <Image
@@ -229,167 +205,50 @@ export default function Atividade() {
       </div>
 
       <div className="mx-6">
-        <div className="md:grid md:grid-cols-2 md:gap-8">
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-x-8 gap-y-4 my-10">
-            {fetchedActivity?.transportIncluded && (
-              <div className="flex items-center gap-2">
-                <MyIcon
-                  name="transporte"
-                  className="p-2 bg-primary-900 rounded-md"
-                />
-                <MyTypography variant="body" weight="bold" className="">
-                  Transporte
-                </MyTypography>
-              </div>
-            )}
+        <div className="md:grid md:grid-cols-2 md:gap-8 md:my-4">
+          <ActivityIncludedItems
+            transportIncluded={fetchedActivity?.transportIncluded ?? false}
+            itemsIncluded={parsedItems}
+          />
 
-            {parsedItems.map(
-              (item) =>
-                item && (
-                  <div key={item} className="flex items-center gap-2">
-                    <MyIcon
-                      name={formatIconName(item) as any}
-                      className="p-2 bg-primary-900 rounded-md"
-                    />
-                    <MyTypography variant="body" weight="bold">
-                      {item.charAt(0).toUpperCase() + item.slice(1)}
-                    </MyTypography>
-                  </div>
-                )
-            )}
-          </div>
-
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:my-auto">
-            <div className="bg-primary-900 py-2 rounded-md mb-2 md:h-fit">
-              <MyTypography
-                variant="body"
-                weight="bold"
-                className="text-center"
-              >
-                {fetchedActivity?.isInGroup
-                  ? 'Atividade em grupo'
-                  : 'Atividade individual'}
-              </MyTypography>
-            </div>
-
-            <div
-              className={`${fetchedActivity?.isChildrenAllowed ? 'bg-primary-900' : 'bg-orange-200'} py-2 rounded-md mb-2 md:h-fit`}
-            >
-              <MyTypography
-                variant="body"
-                weight="bold"
-                className="text-center"
-              >
-                {fetchedActivity?.isChildrenAllowed
-                  ? 'Permitido crianças'
-                  : 'Proibido crianças'}
-              </MyTypography>
-            </div>
-
-            <div
-              className={`${formatDificultyTag(fetchedActivity?.difficult as number)} py-2 rounded-md mb-2 md:h-fit`}
-            >
-              <MyTypography
-                variant="body"
-                weight="bold"
-                className="text-center"
-              >
-                {`Grau de dificuldade: ${fetchedActivity?.difficult}`}
-              </MyTypography>
-            </div>
-          </div>
+          <ActivityTags
+            isChildrenAllowed={fetchedActivity?.isChildrenAllowed ?? false}
+            isInGroup={fetchedActivity?.isInGroup ?? false}
+            activityDifficulty={fetchedActivity?.difficult}
+          />
         </div>
 
         <div className="md:grid md:grid-cols-2 gap-8">
-          <div className="md:w-2/3">
-            <div className="my-10 flex items-center p-3 bg-[#F1F0F587] border border-primary-600/30 border-opacity-80 rounded-lg shadow-sm hover:bg-gray-100 relative">
-              <div className="absolute inset-y-0 left-0 w-3 bg-primary-900 rounded-l-lg"></div>
-              <MyIcon
-                name="localizacaoRedonda"
-                className="w-6 h-6 text-primary-900 ml-3"
-              />
-              <div className="ml-3">
-                <MyTypography
-                  variant="body-big"
-                  weight="regular"
-                  className="text-center"
-                >
-                  {fetchedActivity?.addressNeighborhood}
-                </MyTypography>
-              </div>
-            </div>
+          <ActivityCancelationPolicy priceAdult={fetchedActivity?.priceAdult} />
 
-            <div className="flex justify-between my-10">
-              <div className="flex items-center gap-2">
-                <MyIcon name="duracao" />
-                <div>
-                  <MyTypography variant="subtitle3" weight="bold" className="">
-                    Duração da atividade
-                  </MyTypography>
-                  <MyTypography
-                    variant="body-big"
-                    weight="regular"
-                    className="md:text-[1rem]"
-                  >
-                    {fetchedActivity?.duration}
-                  </MyTypography>
-                </div>
-              </div>
-              <MyIcon name="compartilhar" className="cursor-pointer" />
-            </div>
-          </div>
+          <div className="md:flex md:flex-col md:items-center">
+            <ActivityDatePicker
+              isChildrenAllowed={fetchedActivity?.isChildrenAllowed ?? false}
+              price={price}
+              schedule={schedule}
+              setSchedule={setSchedule}
+            />
+            <MyButton
+              variant="default"
+              className="mt-4 w-full md:hidden"
+              size="lg"
+              borderRadius="squared"
+              rightIcon={<MyIcon name="seta-direita" className="ml-3" />}
+              onClick={() => router.push(PATHS.carrinho)}
+            >
+              Garantir sua vaga
+            </MyButton>
 
-          <div>
-            <div className="my-8">
-              <MyTypography variant="subtitle3" weight="bold" className="">
-                Política de cancelamento
-              </MyTypography>
-              <MyTypography
-                variant="body-big"
-                weight="regular"
-                className="mt-1"
-              >
-                Este agendamento só será reembolsado se cancelado até 3 dias
-                antes da data confirmada.
-              </MyTypography>
-            </div>
-
-            <div>
-              <div className="flex justify-between items-center mt-1">
-                <MyTypography variant="subtitle3" weight="bold" className="">
-                  Valor da atividade:
-                </MyTypography>
-                <MyTypography
-                  variant="heading2"
-                  weight="extrabold"
-                  className="text-primary-600"
-                >
-                  {formatPrice(fetchedActivity?.priceAdult as string)}
-                </MyTypography>
-              </div>
-
-              <MyButton
-                variant="default"
-                className="mt-4 w-full md:hidden"
-                size="lg"
-                borderRadius="squared"
-                rightIcon={<MyIcon name="seta-direita" className="ml-3" />}
-                onClick={() => router.push(PATHS.carrinho)}
-              >
-                Garantir sua vaga
-              </MyButton>
-
-              <MyButton
-                variant="default"
-                className="mt-4 w-full max-sm:hidden"
-                size="lg"
-                borderRadius="squared"
-                rightIcon={<MyIcon name="seta-direita" className="ml-3" />}
-                onClick={() => setIsModalOpen(true)}
-              >
-                Garantir sua vaga
-              </MyButton>
-            </div>
+            <MyButton
+              variant="default"
+              className="mt-4 w-full max-sm:hidden"
+              size="lg"
+              borderRadius="squared"
+              onClick={handleOrder}
+              rightIcon={<MyIcon name="seta-direita" className="ml-3" />}
+            >
+              Garantir sua vaga
+            </MyButton>
           </div>
         </div>
       </div>
