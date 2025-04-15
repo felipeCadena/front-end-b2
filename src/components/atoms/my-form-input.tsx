@@ -33,6 +33,7 @@ type Props<T extends FieldValues> = {
   readonly isLoading?: boolean;
   readonly disabled?: boolean;
   readonly type?: HTMLInputTypeAttribute;
+  readonly inputPadding?: string;
 };
 
 export default function MyFormInput<T extends FieldValues>({
@@ -50,6 +51,7 @@ export default function MyFormInput<T extends FieldValues>({
   placeholder = label ?? '',
   isLoading = false,
   disabled = false,
+  inputPadding = 'pl-4',
 }: Props<T>) {
   const [showPassword, setShowPassword] = useState(false);
 
@@ -107,6 +109,7 @@ export default function MyFormInput<T extends FieldValues>({
                   type={showPassword ? 'text' : type}
                   placeholder={placeholder}
                   disabled={disabled}
+                  inputPadding={inputPadding}
                   label={label}
                   className="mt-2"
                 />

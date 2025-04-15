@@ -85,11 +85,11 @@ const ActivitiesOrderSummary = ({
                     </div>
                   </div>
                   <MyButton
-                    variant="outline-neutral"
+                    variant="ghost"
                     className="z-10 ml-auto"
                     onClick={() => handleRemoveActivity(adventure.id)}
                   >
-                    <MyIcon name="x-red" className="hover:cursor-pointer" />
+                    <MyIcon name="trash" className="hover:cursor-pointer" />
                   </MyButton>
                 </div>
 

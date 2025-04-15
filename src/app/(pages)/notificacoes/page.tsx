@@ -124,14 +124,7 @@ export default function Notificacoes() {
                       }
                     >
                       <div
-                        className={cn(
-                          'absolute inset-y-0 left-0 w-2 rounded-l-lg',
-                          notification.title.includes('Pedido Cancelado')
-                            ? 'bg-[#FF7272] opacity-50'
-                            : notification.title.includes('Pedido Realizado')
-                              ? 'bg-primary-900'
-                              : 'bg-[#D6D6D6]'
-                        )}
+                        className={`absolute inset-y-0 left-0 w-2 rounded-l-lg bg-[${notification.color}]`}
                       />
 
                       <div className="flex items-center justify-between w-full">
@@ -140,14 +133,14 @@ export default function Notificacoes() {
                           weight="semibold"
                           className="ml-1 mt-1 flex gap-2 items-center"
                         >
-                          {formatDate(notification.updatedAt) ==
+                          {formatDate(notification.createdAt) ==
                             'Agora pouco' && <MyIcon name="now" />}
-                          {formatDate(notification.updatedAt)}
-                          {formatDate(notification.updatedAt) !=
+                          {formatDate(notification.createdAt)}
+                          {formatDate(notification.createdAt) !=
                             'Agora pouco' &&
-                            ` - ${getHora(notification.updatedAt)}`}
+                            ` - ${getHora(notification.createdAt)}`}
                         </MyTypography>
-                        {formatDate(notification.updatedAt) ==
+                        {formatDate(notification.createdAt) ==
                           'Agora pouco' && (
                           <MyButton
                             className="ml-1"
@@ -177,7 +170,7 @@ export default function Notificacoes() {
                         weight="regular"
                         className="ml-1 flex justify-between"
                       >
-                        {notification.text.slice(0, 47) + '...'}
+                        {notification.text?.slice(0, 47) + '...'}
                       </MyTypography>
                     </div>
                   ))}

@@ -3,27 +3,75 @@
 import MyButton from '@/components/atoms/my-button';
 import MyCheckbox from '@/components/atoms/my-checkbox';
 import MyIcon, { IconsMapTypes } from '@/components/atoms/my-icon';
-import {
-  MySelect,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/atoms/my-select';
-import MyTextInput from '@/components/atoms/my-text-input';
 import MyTypography from '@/components/atoms/my-typography';
-
-import ActivitiesDetails from '@/components/organisms/activities-details';
 import ActivitiesOrderSummary from '@/components/organisms/activities-order-summary';
-import { Card } from '@/components/organisms/card';
-
-import ShoppingDetails from '@/components/organisms/shopping-details';
+import CardPaymentOption from '@/components/organisms/card-payment-option';
+import PixOrBankSlipPaymentOption from '@/components/organisms/pix-bankslip-payment-option';
 import { useCart } from '@/store/useCart';
 import { cn } from '@/utils/cn';
 import PATHS from '@/utils/paths';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { MyForm } from '@/components/atoms/my-form';
+
+const formSchema = z.object({
+  paymentMethod: z.string(),
+  installmentCount: z.string(),
+  creditCard: z.object({
+    holderName: z.string(),
+    number: z.string(),
+    expiryMonth: z.string(),
+    expiryYear: z.string(),
+    ccv: z.string(),
+  }),
+  creditCardHolderInfo: z.object({
+    name: z.string(),
+    email: z.string(),
+    cpfCnpj: z.string(),
+    postalCode: z.string(),
+    addressNumber: z.string(),
+    addressComplement: z.string(),
+    phone: z.string(),
+    mobilePhone: z.string(),
+  }),
+  adventures: z.array(
+    z.object({
+      adventureId: z.number(),
+      scheduleDate: z.date(),
+      qntAdults: z.number(),
+      qntChildren: z.number(),
+      qntBabies: z.number(),
+    })
+  ),
+});
+
+const paymentDefaultValues = {
+  paymentMethod: '',
+  installmentCount: '0',
+  creditCard: {
+    holderName: '',
+    number: '',
+    expiryMonth: '',
+    expiryYear: '',
+    ccv: '',
+  },
+  creditCardHolderInfo: {
+    name: '',
+    email: '',
+    cpfCnpj: '',
+    postalCode: '',
+    addressNumber: '',
+    addressComplement: '',
+    phone: '',
+    mobilePhone: '',
+  },
+};
+
+export type FormData = z.infer<typeof formSchema>;
 
 export default function FinalizarCompra() {
   const router = useRouter();
@@ -36,27 +84,58 @@ export default function FinalizarCompra() {
 
   const userCart = carts.find((cart) => cart.userId === userId);
 
-  const payments: { name: string; icon: IconsMapTypes }[] = [
+  const purchaseOrder = userCart?.cart.map((item) => {
+    const formatOrder = {
+      adventureId: item.adventure.id,
+      scheduleDate: item.schedule.scheduleDate,
+      qntAdults: item.schedule.qntAdults,
+      qntChildren: item.schedule.qntChildren,
+      qntBabies: item.schedule.qntBabies,
+    };
+
+    return formatOrder;
+  });
+
+  const payments: { name: string; label: string; icon: IconsMapTypes }[] = [
     {
-      name: 'Pix',
+      name: 'PIX',
+      label: 'Pix',
       icon: 'pix',
     },
     {
-      name: 'Boleto',
+      name: 'BOLETO',
+      label: 'Boleto',
       icon: 'boleto',
     },
     {
-      name: 'Cartão de crédito',
+      name: 'CREDIT_CARD',
+      label: 'Cartão de crédito',
       icon: 'card',
     },
   ];
+
+  const form = useForm<FormData>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      ...paymentDefaultValues,
+    },
+  });
+
+  useEffect(() => {
+    if (purchaseOrder) {
+      form.reset({
+        ...paymentDefaultValues,
+        adventures: purchaseOrder,
+      });
+    }
+  }, [userId]);
 
   return (
     <section className="px-4">
       <div className="flex gap-4 items-center max-sm:hidden">
         <MyIcon
           name="voltar-black"
-          className="-ml-2"
+          className="-ml-2 cursor-pointer"
           onClick={() => router.back()}
         />
         <MyTypography variant="subtitle1" weight="bold" className="">
@@ -131,143 +210,71 @@ export default function FinalizarCompra() {
           Método de pagamento
         </MyTypography>
 
-        <div
-          className={cn(
-            'md:grid md:items-center',
-            selectedPayment?.includes('Cartão')
-              ? 'md:grid-cols-3 md:gap-6'
-              : 'md:grid-cols-2 md:gap-8'
-          )}
-        >
-          <div className={cn('flex flex-col space-y-8 mt-4')}>
-            {payments.map((payment) => (
-              <MyButton
-                key={payment.name}
-                variant="payment"
-                borderRadius="squared"
-                className={cn(
-                  'flex justify-between',
-                  selectedPayment === payment.name &&
-                    'bg-primary-900 opacity-100 border border-primary-600'
-                )}
-                size="md"
-                value={selectedPayment}
-                rightIcon={<MyIcon name={payment.icon} />}
-                onClick={() => setSelectedPayment(payment.name)}
-              >
-                {payment.name}
-              </MyButton>
-            ))}
-          </div>
-
-          {selectedPayment?.includes('Cartão') ? (
-            <div className="max-sm:mt-8 md:flex md:flex-row-reverse md:items-center md:gap-8 md:col-span-2">
-              <Card />
-
-              <div className="max-sm:mt-4 space-y-4 md:w-[90%]">
-                <MyTextInput
-                  label="Nome impresso no cartão"
-                  placeholder="Seu nome"
-                  className="mt-2"
-                  noHintText
-                />
-
-                <MyTextInput
-                  label="Número do cartão"
-                  placeholder="XXXX XXXX XXXX XXXX"
-                  className="mt-2"
-                  noHintText
-                  rightIcon={<MyIcon name="master" className="-ml-4 mt-5" />}
-                />
-
-                <MySelect value={value} onValueChange={setValue}>
-                  <SelectTrigger className="py-6">
-                    <SelectValue placeholder="Selecione o número de parcelas" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {Array.from({ length: 4 }, (_, i) => (
-                      <SelectItem key={i} value={String(i + 1)}>
-                        {i + 1}x
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </MySelect>
-
-                <div className="flex gap-4">
-                  <MyTextInput
-                    label="Vencimento"
-                    placeholder="XX/XXXX"
-                    className="mt-1"
-                    noHintText
-                  />
-
-                  <MyTextInput
-                    label="Código"
-                    placeholder="XXX"
-                    className="mt-1"
-                    noHintText
-                  />
-                </div>
-              </div>
+        <MyForm {...form}>
+          <form
+            className={cn(
+              'md:grid md:items-start',
+              selectedPayment?.includes('CREDIT_CARD')
+                ? 'md:grid-cols-3 md:gap-6'
+                : 'md:grid-cols-2 md:gap-8'
+            )}
+          >
+            <div className={cn('flex flex-col space-y-11 mt-9')}>
+              {payments.map((payment) => (
+                <MyButton
+                  key={payment.name}
+                  variant="payment"
+                  type="button"
+                  borderRadius="squared"
+                  className={cn(
+                    'flex justify-between max-w-[330px]',
+                    selectedPayment === payment.name &&
+                      'bg-primary-900 opacity-100 border border-primary-600'
+                  )}
+                  size="md"
+                  value={selectedPayment}
+                  rightIcon={<MyIcon name={payment.icon} />}
+                  onClick={() => setSelectedPayment(payment.name)}
+                >
+                  {payment.label}
+                </MyButton>
+              ))}
             </div>
-          ) : (
-            selectedPayment && (
-              <div className="space-y-4 max-sm:my-10 md:w-full">
-                <MyTextInput
-                  label="Nome Completo"
-                  placeholder="Seu nome"
-                  className="mt-2"
-                  noHintText
-                />
 
-                <MyTextInput
-                  label="E-mail"
-                  placeholder="b2adventure@gmail.com"
-                  className="mt-2"
-                  noHintText
-                />
-                <div className="flex max-sm:flex-col gap-4 md:mt-4">
-                  <MyTextInput
-                    label="Telefone"
-                    placeholder="(XX) XXXXX-XXXX"
-                    className="mt-2"
-                    noHintText
-                  />
-
-                  <MyTextInput
-                    label="CPF"
-                    placeholder="XXX.XXX.XXX-XX"
-                    className="mt-2"
-                    noHintText
-                  />
-                </div>
-              </div>
-            )
-          )}
-          {selectedPayment && (
-            <div
-              className={cn(
-                'mt-6 md:mt-4 col-start-2',
-                selectedPayment === 'Cartão de crédito' &&
-                  'md:col-span-2 md:col-start-2'
-              )}
-            >
-              <MyCheckbox
-                className=""
-                label="Salvar os dados para a próxima compra"
+            {selectedPayment === 'CREDIT_CARD' ? (
+              <CardPaymentOption
+                instalments={value}
+                form={form}
+                setInstalments={setValue}
               />
-              <MyButton
-                variant="default"
-                borderRadius="squared"
-                size="lg"
-                className="my-4 w-full"
-                onClick={() => {}}
+            ) : (
+              selectedPayment && <PixOrBankSlipPaymentOption form={form} />
+            )}
+            {selectedPayment && (
+              <div
+                className={cn(
+                  'mt-6 md:mt-4 col-start-2',
+                  selectedPayment === 'CREDIT_CARD' &&
+                    'md:col-span-2 md:col-start-2'
+                )}
               >
-                Finalizar compra
-              </MyButton>
-            </div>
-          )}
-        </div>
+                <MyCheckbox
+                  className=""
+                  label="Salvar os dados para a próxima compra"
+                />
+                <MyButton
+                  variant="default"
+                  borderRadius="squared"
+                  size="lg"
+                  className="my-4 w-full"
+                  onClick={() => {}}
+                >
+                  Finalizar compra
+                </MyButton>
+              </div>
+            )}
+          </form>
+        </MyForm>
       </div>
     </section>
   );
