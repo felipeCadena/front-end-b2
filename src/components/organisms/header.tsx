@@ -32,8 +32,8 @@ export default function Header() {
       pathname === PATHS["sobre-a-empresa"] ||
       pathname === PATHS["cadastro-parceiro"] ||
       pathname === PATHS["informacoes-atividades"] ||
-      pathname === PATHS["cadastro-atividade"] ||
-      pathname.includes("editar")
+      pathname === PATHS["cadastro-atividade"]
+      // pathname.includes("editar")
     );
   };
 

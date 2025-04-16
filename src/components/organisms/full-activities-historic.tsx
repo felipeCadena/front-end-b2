@@ -21,6 +21,7 @@ export default function FullActivitiesHistoric({
   activities,
   withDate,
   withOptions,
+  partner = false,
 }: any) {
   const router = useRouter();
   const pathname = usePathname();
@@ -68,21 +69,22 @@ export default function FullActivitiesHistoric({
                 ) : (
                   <MyIcon name="clock" className="mr-2" />
                 )}
-                {withDate
-                  ? getData(activity.reserva.timestamp)
-                  : "Refazer atividade"}
+                {withDate ? getData(activity?.datetime) : "Refazer atividade"}
               </MyButton>
             )}
 
             <div className="relative z-10 flex-shrink-0 overflow-hidden w-[265px] h-[265px] hover:cursor-pointer rounded-md">
               <Image
-                alt="sample_file"
-                src={activity.image ?? "/images/atividades/paraquedas.webp"}
+                alt="Imagem da atividade"
+                src={
+                  activity?.adventure?.images[0]?.url ??
+                  "/images/atividades/paraquedas.webp"
+                }
                 width={250}
                 height={300}
                 className="object-cover w-[265px] h-[265px]"
                 onClick={() =>
-                  router.push(PATHS.atividadeRealizada(activity.id))
+                  router.push(PATHS.atividadeRealizada(activity?.adventure?.id))
                 }
               />
             </div>
@@ -92,38 +94,44 @@ export default function FullActivitiesHistoric({
                 <div
                   className="flex flex-col gap-2 cursor-pointer"
                   onClick={() =>
-                    router.push(PATHS.atividadeRealizada(activity.id))
+                    router.push(
+                      PATHS.atividadeRealizada(activity?.adventure?.id)
+                    )
                   }
                 >
                   <div className="flex items-center gap-2">
                     <MyBadge className="font-medium p-1" variant="outline">
-                      {handleNameActivity(activity.typeAdventure)}
+                      {handleNameActivity(activity?.adventure?.typeAdventure)}
                     </MyBadge>
-                    <StarRating rating={activity.stars} />
+                    <StarRating rating={activity?.adventure?.averageRating} />
 
-                    <div className="flex gap-2 items-center">
-                      <Image
-                        alt="foto parceiro"
-                        src={activity.parceiro.avatar}
-                        width={40}
-                        height={40}
-                        className="rounded-full"
-                      />
-                      <MyTypography
-                        variant="body"
-                        weight="medium"
-                        className="mt-1 text-nowrap"
-                      >
-                        {activity.parceiro.nome}
-                      </MyTypography>
-                    </div>
+                    {!partner && (
+                      <div className="flex gap-2 items-center">
+                        <Image
+                          alt="foto parceiro"
+                          src={activity?.partner?.logo ?? "user.png"}
+                          width={40}
+                          height={40}
+                          className="rounded-full"
+                        />
+                        <MyTypography
+                          variant="body"
+                          weight="medium"
+                          className="mt-1 text-nowrap"
+                        >
+                          {activity?.partner?.name ?? "John Doe"}
+                        </MyTypography>
+                      </div>
+                    )}
                   </div>
                   <MyTypography variant="subtitle3" weight="bold" className="">
-                    {activity.title}
+                    {activity?.adventure?.title}
                   </MyTypography>
 
                   <MyTypography variant="label" className="">
-                    {activity.description.slice(0, 40).concat("...")}
+                    {activity?.adventure?.description
+                      ?.slice(0, 40)
+                      .concat("...")}
                   </MyTypography>
                 </div>
 
@@ -142,6 +150,7 @@ export default function FullActivitiesHistoric({
                 {withOptions && (
                   <div className="absolute top-0 right-3 cursor-pointer z-20">
                     <PopupActivity
+                      reservation
                       onDuplicar={() => console.log("Duplicar")}
                       onCancelar={() => handleCancel(activity.id)}
                       onEditar={() => handleEdit(activity.id)}
@@ -183,9 +192,9 @@ export default function FullActivitiesHistoric({
                     weight="regular"
                     className="ml-3"
                   >
-                    {getData(activity.reserva.timestamp)} -{" "}
-                    {getHora(activity.reserva.timestamp)}{" "}
-                    {+getHora(activity.reserva.timestamp).split(":")[0] > 12
+                    {getData(activity?.datetime)} -{" "}
+                    {getHora(activity?.datetime)}{" "}
+                    {+getHora(activity?.datetime).split(":")[0] > 12
                       ? "tarde"
                       : "manhã"}
                   </MyTypography>
@@ -197,7 +206,7 @@ export default function FullActivitiesHistoric({
                       Duração da atividade
                     </MyTypography>
                     <MyTypography variant="body" weight="regular" className="">
-                      4 horas
+                      {activity?.adventure?.duration ?? "3"} horas
                     </MyTypography>
                   </div>
                 </div>
@@ -211,13 +220,13 @@ export default function FullActivitiesHistoric({
                     weight="regular"
                     className="ml-3"
                   >
-                    {activity.reserva.pessoas} adultos x{" "}
-                    {new Intl.NumberFormat("pt-BR", {
+                    {activity?.qntConfirmedPersons} adultos x{" "}
+                    {/* {new Intl.NumberFormat("pt-BR", {
                       minimumFractionDigits: 2,
                       maximumFractionDigits: 2,
                     }).format(
-                      activity.reserva.total / activity.reserva.pessoas
-                    )}
+                      activity.reserva.total / activity?.qntConfirmedPersons
+                    )} */}
                   </MyTypography>
                 </div>
 
@@ -229,12 +238,12 @@ export default function FullActivitiesHistoric({
                   >
                     Total:
                   </MyTypography>
-                  <MyTypography variant="body" weight="bold" className="">
+                  {/* <MyTypography variant="body" weight="bold" className="">
                     {activity.reserva.total.toLocaleString("pt-BR", {
                       style: "currency",
                       currency: "BRL",
                     })}
-                  </MyTypography>
+                  </MyTypography> */}
                 </div>
               </div>
 

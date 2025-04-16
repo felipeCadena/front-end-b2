@@ -4,7 +4,7 @@ import MyIcon from "@/components/atoms/my-icon";
 import MyTypography from "@/components/atoms/my-typography";
 import { MyFullCalendar } from "@/components/molecules/my-full-calendar";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useEffect } from "react";
 import { ptBR } from "date-fns/locale/pt-BR";
 import MyButton from "@/components/atoms/my-button";
 import Hide from "@/components/atoms/my-icon/elements/hide";
@@ -14,12 +14,40 @@ import { activities, notificationActivities } from "@/common/constants/mock";
 import FullActivitiesHistoric from "@/components/organisms/full-activities-historic";
 import ModalAlert from "@/components/molecules/modal-alert";
 import { useAlert } from "@/hooks/useAlert";
+import { useQuery } from "@tanstack/react-query";
+import { schedules } from "@/services/api/schedules";
+import { parseISO } from "date-fns";
+import { MyCalendar } from "@/components/molecules/my-calendar";
+import { MyFullCalendarMultiple } from "@/components/molecules/my-full-calendar-multiple";
 
 export default function Reservas() {
   const router = useRouter();
-  const [date, setDate] = React.useState<Date>();
+  const [date, setDate] = React.useState<Date>(new Date());
+  const [dates, setDates] = React.useState<Date[]>([]);
 
   const { handleClose, isModalOpen } = useAlert();
+
+  const { data: allSchedules } = useQuery({
+    queryKey: ["schedules"],
+    queryFn: async () => {
+      const reservations = await schedules.getSchedules({ isCanceled: false });
+      if (reservations) {
+        const bookedDates = reservations.data.map((item: any) =>
+          parseISO(item.datetime)
+        );
+
+        setDates(bookedDates);
+      }
+      return reservations;
+    },
+  });
+
+  useEffect(() => {
+    const bookedDates = allSchedules?.data.map((item: any) =>
+      parseISO(item.datetime)
+    );
+    setDates(bookedDates);
+  }, []);
 
   return (
     <main className="my-6">
@@ -45,7 +73,7 @@ export default function Reservas() {
             onClick={() => router.push(PATHS["cadastro-atividade"])}
             className="w-1/4"
           >
-            Novo Evento
+            Nova atividade
           </MyButton>
 
           <MyButton
@@ -62,12 +90,14 @@ export default function Reservas() {
       </div>
 
       <div className="relative px-2">
-        <MyFullCalendar
-          mode="single"
+        <MyFullCalendarMultiple
+          // mode="single"
           selected={date}
           onSelect={setDate}
+          markedDates={dates}
           locale={ptBR}
           className="capitalize"
+          required
         />
       </div>
       <div className="h-1 w-1/3 mx-auto bg-gray-200 rounded-xl my-6" />
@@ -109,7 +139,12 @@ export default function Reservas() {
         <ActivitiesHidden notifications={notificationActivities} />
       </div>
       <div className="hidden md:block">
-        <FullActivitiesHistoric activities={activities} withDate withOptions />
+        <FullActivitiesHistoric
+          activities={allSchedules?.data}
+          withDate
+          withOptions
+          partner
+        />
       </div>
     </main>
   );

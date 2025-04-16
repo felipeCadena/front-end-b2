@@ -135,7 +135,7 @@ export const sideBarPartnet: any[] = [
   },
   {
     label: "Notificações",
-    link: "/notificacoes",
+    link: "/parceiro/notificacoes",
     icon: "notificacoes",
     web: true,
   },

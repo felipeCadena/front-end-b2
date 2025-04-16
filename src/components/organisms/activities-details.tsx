@@ -1,23 +1,23 @@
-'use client';
+"use client";
 
-import Image from 'next/image';
-import React from 'react';
-import MyIcon from '../atoms/my-icon';
-import MyBadge from '../atoms/my-badge';
-import StarRating from '../molecules/my-stars';
-import MyTypography from '../atoms/my-typography';
-import { cn } from '@/utils/cn';
+import Image from "next/image";
+import React from "react";
+import MyIcon from "../atoms/my-icon";
+import MyBadge from "../atoms/my-badge";
+import StarRating from "../molecules/my-stars";
+import MyTypography from "../atoms/my-typography";
+import { cn } from "@/utils/cn";
 import {
   getData,
   handleNameActivity,
   isDateInPast,
   selectActivityImage,
-} from '@/utils/formatters';
-import MyButton from '../atoms/my-button';
-import { useRouter } from 'next/navigation';
-import PATHS from '@/utils/paths';
-import { AddToCartAdventure, Adventure } from '@/services/api/adventures';
-import { ActivityCardSkeleton } from './activities-skeleton';
+} from "@/utils/formatters";
+import MyButton from "../atoms/my-button";
+import { useRouter } from "next/navigation";
+import PATHS from "@/utils/paths";
+import { AddToCartAdventure, Adventure } from "@/services/api/adventures";
+import { ActivityCardSkeleton } from "./activities-skeleton";
 
 type ActivitiesDetailsProps = {
   activities: AddToCartAdventure[];
@@ -35,9 +35,9 @@ export default function ActivitiesDetails({
   const router = useRouter();
 
   const handleActivity = (id: string) => {
-    if (type === 'parceiro') {
+    if (type === "parceiro") {
       return router.push(PATHS.visualizarAtividadeParceiro(id));
-    } else if (type === 'admin') {
+    } else if (type === "admin") {
       return router.push(`/admin/avaliacoes/atividade/${id}`);
     } else {
       router.push(PATHS.visualizarAtividade(id));
@@ -45,17 +45,17 @@ export default function ActivitiesDetails({
   };
 
   return (
-    <section className={cn(withDate && 'mx-4 ')}>
+    <section className={cn(withDate && "mx-4 ")}>
       {activities
         ? activities?.map(
             ({ adventure }: AddToCartAdventure, index: number) => (
-              <div key={index} className={cn('flex flex-col')}>
+              <div key={index} className={cn("flex flex-col")}>
                 <div
                   onClick={() => handleActivity(adventure.id.toString())}
                   className={cn(
-                    'flex max-sm:max-h-[120px] max-sm:justify-around gap-2 cursor-pointer my-2',
-                    withDate && 'my-8 relative',
-                    adventure.averageRating <= 2 && 'max-sm:max-h-[160px]'
+                    "flex max-sm:max-h-[120px] max-sm:justify-around gap-2 cursor-pointer my-2",
+                    withDate && "my-8 relative",
+                    adventure?.averageRating <= 2 && "max-sm:max-h-[160px]"
                   )}
                 >
                   {withDate && (
@@ -68,11 +68,11 @@ export default function ActivitiesDetails({
                   {withDate && (
                     <div
                       className={cn(
-                        'flex flex-col items-center justify-center',
-                        isDateInPast('2025-03-12T08:00:00') && 'opacity-70'
+                        "flex flex-col items-center justify-center",
+                        isDateInPast("2025-03-12T08:00:00") && "opacity-70"
                       )}
                     >
-                      {isDateInPast('2025-03-12T08:00:00') ? (
+                      {isDateInPast("2025-03-12T08:00:00") ? (
                         <MyIcon name="calendar-opacity" />
                       ) : (
                         <MyIcon name="calendar" />
@@ -81,21 +81,21 @@ export default function ActivitiesDetails({
                         variant="body"
                         weight="semibold"
                         className={cn(
-                          'text-primary-600',
-                          isDateInPast('2025-03-12T08:00:00') &&
-                            'text-[#c0c0c0]'
+                          "text-primary-600",
+                          isDateInPast("2025-03-12T08:00:00") &&
+                            "text-[#c0c0c0]"
                         )}
                       >
-                        {getData('2025-03-12T08:00:00')}
+                        {getData("2025-03-12T08:00:00")}
                       </MyTypography>
                     </div>
                   )}
                   <div
                     className={cn(
-                      'relative z-10 overflow-hidden w-[6.625rem] h-[6.625rem] hover:cursor-pointer rounded-md flex-shrink-0',
+                      "relative z-10 overflow-hidden w-[6.625rem] h-[6.625rem] hover:cursor-pointer rounded-md flex-shrink-0",
                       withDate
-                        ? 'w-[7.5rem] h-[7.5rem]'
-                        : 'w-[6.625rem] h-[6.625rem]'
+                        ? "w-[7.5rem] h-[7.5rem]"
+                        : "w-[6.625rem] h-[6.625rem]"
                     )}
                   >
                     <Image
@@ -104,10 +104,10 @@ export default function ActivitiesDetails({
                       width={250}
                       height={300}
                       className={cn(
-                        'object-cover',
+                        "object-cover",
                         withDate
-                          ? 'w-[7.5rem] h-[7.5rem]'
-                          : 'w-[6.625rem] h-[6.625rem]'
+                          ? "w-[7.5rem] h-[7.5rem]"
+                          : "w-[6.625rem] h-[6.625rem]"
                       )}
                     />
                   </div>
@@ -117,39 +117,39 @@ export default function ActivitiesDetails({
                         className="font-medium flex-shrink-0 w-fit"
                         variant="outline"
                       >
-                        {handleNameActivity(adventure.typeAdventure)}
+                        {handleNameActivity(adventure?.typeAdventure)}
                       </MyBadge>
 
                       {!withDate && (
-                        <StarRating rating={adventure.averageRating} />
+                        <StarRating rating={adventure?.averageRating} />
                       )}
                     </div>
 
                     <MyTypography
                       variant="body-big"
                       weight="bold"
-                      className={cn(withDate ? 'mt-4' : 'mt-2')}
+                      className={cn(withDate ? "mt-4" : "mt-2")}
                     >
-                      {adventure.title}
+                      {adventure?.title}
                     </MyTypography>
                     <MyTypography
                       variant="notification"
-                      className={cn(withDate && 'w-1/2')}
+                      className={cn(withDate && "w-1/2")}
                     >
                       {withDate
-                        ? adventure.description.slice(0, 30).concat('...')
-                        : adventure.description.slice(0, 25).concat('...')}
+                        ? adventure?.description.slice(0, 30).concat("...")
+                        : adventure?.description.slice(0, 25).concat("...")}
                     </MyTypography>
                     <MyIcon
                       name="shared-muted"
                       className={cn(
-                        'absolute z-50 right-0 top-1/2 cursor-pointer',
-                        !withDate && 'hidden'
+                        "absolute z-50 right-0 top-1/2 cursor-pointer",
+                        !withDate && "hidden"
                       )}
                     />
                   </div>
                 </div>
-                {lowRating && adventure.averageRating <= 2 && (
+                {lowRating && adventure?.averageRating <= 2 && (
                   <MyButton
                     variant="black-border"
                     borderRadius="squared"

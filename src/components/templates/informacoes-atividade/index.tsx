@@ -91,15 +91,18 @@ export default function InformacoesAtividade({
     const taxPercentage = Number(tax) || 0;
 
     const b2Fee = (Number(priceAdult) * taxB2Percentage) / 100;
-    const taxTotal = (Number(priceAdult) * taxPercentage) / 100;
+    const taxTotal = (Number(b2Fee) * taxPercentage) / 100;
 
-    const totalCliente = Number(priceAdult) + b2Fee + taxTotal;
+    const realTax = (taxTotal * taxPercentage) / 100;
 
+    const totalCliente = Number(priceAdult) + b2Fee + taxTotal + realTax;
+
+    const allTax = taxTotal + realTax;
     return {
       valorParceiro: priceAdult,
       b2Fee,
-      tax: taxTotal,
-      totalCliente,
+      tax: Math.round(allTax),
+      totalCliente: Math.round(totalCliente),
     };
   };
 

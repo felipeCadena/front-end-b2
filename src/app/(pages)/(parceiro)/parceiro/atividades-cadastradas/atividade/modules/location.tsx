@@ -1,13 +1,17 @@
 "use client";
 
 import MyButton from "@/components/atoms/my-button";
+import MyIcon from "@/components/atoms/my-icon";
 import MyTextInput from "@/components/atoms/my-text-input";
 import MyTypography from "@/components/atoms/my-typography";
-import { ModalProps } from "@/components/organisms/edit-modal";
+import { ModalProps } from "@/components/organisms/edit-activity";
 import AutocompleteCombobox from "@/components/organisms/google-autocomplete";
 import GoogleMaps from "@/components/organisms/google-maps";
+import { adventures } from "@/services/api/adventures";
 import { formatAddress } from "@/utils/formatters";
+import { useQueryClient } from "@tanstack/react-query";
 import React, { useEffect } from "react";
+import { toast } from "react-toastify";
 
 interface AddressData {
   addressStreet: string;
@@ -38,6 +42,8 @@ export default function Location({
     lat: formData.coordinates?.lat ?? -22.9519,
     lng: formData.coordinates?.lng ?? 43.2105,
   });
+  const queryClient = useQueryClient();
+  const [isLoading, setIsLoading] = React.useState(false);
 
   const handleLocationSelected = (locationData: LocationData) => {
     console.log("Location Data Received:", locationData);
@@ -63,8 +69,45 @@ export default function Location({
     }
   };
 
+  const handleSubmit = async () => {
+    const data = {
+      addressStreet: formData.addressStreet,
+      coordinates: `${formattedCoordinates?.lat}:${formattedCoordinates?.lng}`,
+      addressPostalCode: formData.addressPostalCode,
+      addressNumber: formData.addressNumber,
+      addressNeighborhood: formData.addressNeighborhood,
+      addressCity: formData.addressCity,
+      addressState: formData.addressState,
+      addressCountry: formData.addressCountry,
+      pointRefAddress: formData.pointRefAddress,
+    };
+
+    setIsLoading(true);
+
+    try {
+      await adventures.updateAdventureById(formData.id, data);
+
+      queryClient.invalidateQueries({ queryKey: ["activity"] });
+      toast.success("Atividade atualizada com sucesso!");
+    } catch (error) {
+      toast.error("Erro ao atualizar atividade");
+      console.error("Error updating adventure:", error);
+    }
+    setIsLoading(false);
+    onClose();
+
+    console.log("Form Data Updated:", data);
+  };
+
   return (
-    <section className="space-y-8">
+    <section className="space-y-12">
+      <div className="flex gap-4 items-center mb-8">
+        <MyIcon name="voltar-black" className="-ml-2" onClick={onClose} />
+        <MyTypography variant="subtitle1" weight="bold" className="">
+          Editar Localização
+        </MyTypography>
+      </div>
+
       <div className="space-y-4">
         <div className="space-y-4">
           <div className="">
@@ -100,24 +143,14 @@ export default function Location({
         />
       </div>
 
-      <div className="flex justify-end gap-2">
-        <MyButton
-          borderRadius="squared"
-          size="lg"
-          variant="outline-neutral"
-          className="max-sm:w-full"
-          onClick={onClose}
-          //   disabled={isLoading}
-        >
-          Cancelar
-        </MyButton>
+      <div className="md:w-1/2 md:mx-auto">
         <MyButton
           type="submit"
           borderRadius="squared"
           size="lg"
-          className="max-sm:w-full"
-          //   onClick={handleSubmit}
-          //   isLoading={isLoading}
+          className="w-full"
+          onClick={handleSubmit}
+          isLoading={isLoading}
         >
           Salvar
         </MyButton>

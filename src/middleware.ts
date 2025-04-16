@@ -5,7 +5,7 @@ import { PATHS_CONFIG } from "./utils/paths";
 
 // Verifica se a rota começa com alguma das listadas
 const isPathMatch = (path: string, list: string[]) =>
-  list.some((p) => path === p);
+  list.some((p) => path === p || path.startsWith(p));
 
 export async function middleware(req: NextRequest) {
   const token = await getToken({ req });

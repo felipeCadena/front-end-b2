@@ -15,8 +15,7 @@ import { useAlert } from "@/hooks/useAlert";
 import { adventures, AdventureSchedule } from "@/services/api/adventures";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { formatAddress, handleNameActivity } from "@/utils/formatters";
-import { ActivityEditMenu } from "@/components/organisms/edit-activity";
-import { EditModal } from "@/components/organisms/edit-modal";
+import { ActivityEditMenu } from "@/components/organisms/edit-activity-menu";
 import PATHS from "@/utils/paths";
 
 export type EditSection =
@@ -35,13 +34,9 @@ export default function Atividade() {
   const queryClient = useQueryClient();
 
   const handleEdit = (section: EditSection) => {
-    // if (section == "location") {
-    //   router.push(
-    //     `/parceiro/atividades-cadastradas/atividade/${id}/localizacao`
-    //   );
-    //   return;
-    // }
-    setEditingSection(section);
+    router.push(
+      `/parceiro/atividades-cadastradas/atividade/${id}/editar?section=${section}`
+    );
   };
 
   const { handleClose, isModalOpen } = useAlert();
@@ -226,17 +221,6 @@ export default function Atividade() {
         descrition="Parabéns! Sua nova atividade já foi cadastrada e já pode ser visualizada pelos nossos clientes."
         button="Voltar ao início"
       />
-
-      {/* Modal de edição */}
-      {editingSection && (
-        <EditModal
-          isOpen={true}
-          section={editingSection}
-          data={formattedActivity}
-          onClose={handleConclusion}
-        />
-      )}
-
       <div className="relative">
         <MyIcon
           name="voltar-black"
@@ -252,7 +236,7 @@ export default function Atividade() {
             <div className="flex gap-4">
               <MyIcon
                 name="voltar-black"
-                className="hover:cursor-pointer"
+                className="hover:cursor-pointer max-sm:hidden"
                 onClick={() => router.back()}
               />
               <div>

@@ -16,6 +16,11 @@ export interface Recurrence {
   recurrenceHour: string;
 }
 
+export interface DateOption {
+  datetime: Date;
+  isAvailable: boolean;
+}
+
 export interface SelectionBlock {
   id: number;
   recurrenceWeekly: string[];

@@ -1,6 +1,5 @@
-import { Notification } from '@/services/api/notifications';
-import { persist } from 'zustand/middleware';
-import { create } from 'zustand';
+import { Notification } from "@/services/api/notifications";
+import { create } from "zustand";
 
 interface NotificationStore {
   notifications: Notification[];
@@ -11,18 +10,13 @@ const initialState = {
   notifications: [],
 };
 
-const useNotifications = create<NotificationStore>()(
-  persist(
-    (set) => ({
-      ...initialState,
-      setStoreNotifications: (notifications) => {
-        set(() => ({
-          notifications,
-        }));
-      },
-    }),
-    { name: 'notifications-storage' }
-  )
-);
+const useNotifications = create<NotificationStore>()((set) => ({
+  ...initialState,
+  setStoreNotifications: (notifications) => {
+    set(() => ({
+      notifications,
+    }));
+  },
+}));
 
 export default useNotifications;

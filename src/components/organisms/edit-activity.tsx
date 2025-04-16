@@ -1,98 +1,101 @@
-import {
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuPortal,
-  DropdownMenuTrigger,
-  MyDropdownMenu,
-} from "../atoms/my-drop-menu";
-import MyIcon, { IconsMapTypes } from "@/components/atoms/my-icon";
-import MyTypography from "@/components/atoms/my-typography";
-import MyButton from "../atoms/my-button";
-import Edit from "../atoms/my-icon/elements/edit";
-import Calendar from "../atoms/my-icon/elements/calendar";
-import LocationRounded from "../atoms/my-icon/elements/location-rounded";
-import Dollar from "../atoms/my-icon/elements/dollar";
-import Camera from "../atoms/my-icon/elements/camera";
+"use client";
 
-export type EditSection =
-  | "basic" // título, descrição, tipo
-  | "schedule" // horários
-  | "location" // localização
-  | "pricing" // preços
-  | "images"; // imagens
+import { useEffect, useState } from "react";
+import { EditSection } from "./edit-activity-menu";
+import BasicInfo from "@/app/(pages)/(parceiro)/parceiro/atividades-cadastradas/atividade/modules/basic-info";
+import UpdateImages from "@/app/(pages)/(parceiro)/parceiro/atividades-cadastradas/atividade/modules/images";
+import Pricing from "@/app/(pages)/(parceiro)/parceiro/atividades-cadastradas/atividade/modules/pricing";
+import Schedules from "@/app/(pages)/(parceiro)/parceiro/atividades-cadastradas/atividade/modules/schedules";
+import Location from "@/app/(pages)/(parceiro)/parceiro/atividades-cadastradas/atividade/modules/location";
+import { MyFullCalendarMultiple } from "../molecules/my-full-calendar-multiple";
+import { useQuery } from "@tanstack/react-query";
+import { schedules } from "@/services/api/schedules";
+import { parseISO } from "date-fns";
+import { CalendarAvailability } from "./calendar-availability";
+import MyIcon from "../atoms/my-icon";
+import MyTypography from "../atoms/my-typography";
 
-interface ActivityEditMenuProps {
-  onEdit: (section: EditSection) => void;
+interface EditModalProps {
+  section: EditSection;
+  data: any; // Tipo da sua atividade
+  onClose: () => void;
 }
 
-const menuItems = [
-  {
-    label: "Informações Gerais",
-    icon: <Edit fill="#8DC63F" />,
-    section: "basic" as EditSection,
-    description: "Título, descrição e tipo",
-  },
-  {
-    label: "Imagens",
-    icon: <Camera color="#8DC63F" />,
-    section: "images" as EditSection,
-    description: "Imagens",
-  },
-  {
-    label: "Valores",
-    icon: <Dollar fill="#8DC63F" />,
-    section: "pricing" as EditSection,
-    description: "Valores",
-  },
-  {
-    label: "Horários",
-    icon: <Calendar />,
-    section: "schedule" as EditSection,
-    description: "Dias e horários disponíveis",
-  },
-  {
-    label: "Localização",
-    icon: <LocationRounded />,
-    section: "location" as EditSection,
-    description: "Endereço e ponto de referência",
-  },
-];
+export type ModalProps = {
+  formData: any;
+  setFormData: (data: any) => void;
+  onClose: () => void;
+};
 
-export function ActivityEditMenu({ onEdit }: ActivityEditMenuProps) {
-  return (
-    <MyDropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <MyButton
-          variant="default"
-          size="lg"
-          className="max-sm:w-full"
-          borderRadius="squared"
-          leftIcon={<Edit fill="#fff" />}
-        >
-          Editar Atividade
-        </MyButton>
-      </DropdownMenuTrigger>
+export function EditarAtividadeTemplate({
+  section,
+  data,
+  onClose,
+}: EditModalProps) {
+  const [formData, setFormData] = useState(data);
 
-      <DropdownMenuPortal>
-        <DropdownMenuContent
-          className="min-w-[300px] md:min-w-[220px] flex flex-col bg-white rounded-md shadow-lg p-0 z-40 border"
-          sideOffset={5}
-          align="center"
-        >
-          {menuItems.map((item) => (
-            <DropdownMenuItem
-              key={item.section}
-              className="flex items-center gap-2 px-2 py-4 cursor-pointer hover:bg-gray-200"
-              onSelect={() => onEdit(item.section)}
-            >
-              {item.icon}
-              <MyTypography variant="body-big" weight="medium">
-                {item.label}
+  useEffect(() => {
+    setFormData(data);
+  }, [data]);
+
+  const renderForm = () => {
+    switch (section) {
+      case "basic":
+        return (
+          <BasicInfo
+            formData={formData}
+            setFormData={setFormData}
+            onClose={onClose}
+          />
+        );
+
+      case "images":
+        return <UpdateImages formData={data} onClose={onClose} />;
+
+      case "pricing":
+        return (
+          <Pricing
+            formData={formData}
+            setFormData={setFormData}
+            onClose={onClose}
+          />
+        );
+
+      case "schedule":
+        return (
+          <Schedules
+            formData={formData}
+            setFormData={setFormData}
+            onClose={onClose}
+          />
+        );
+
+      case "location":
+        return (
+          <Location
+            formData={formData}
+            setFormData={setFormData}
+            onClose={onClose}
+          />
+        );
+      case "availability":
+        return (
+          <div className="flex flex-col gap-4">
+            <div className="flex gap-4 items-center mb-8">
+              <MyIcon name="voltar-black" className="-ml-2" onClick={onClose} />
+              <MyTypography variant="subtitle1" weight="bold" className="">
+                Atualizar Disponibilidade
               </MyTypography>
-            </DropdownMenuItem>
-          ))}
-        </DropdownMenuContent>
-      </DropdownMenuPortal>
-    </MyDropdownMenu>
-  );
+            </div>
+            <div className="relative">
+              <CalendarAvailability />
+            </div>
+          </div>
+        );
+      default:
+        return null;
+    }
+  };
+
+  return <div className="px-4 mb-4">{renderForm()}</div>;
 }

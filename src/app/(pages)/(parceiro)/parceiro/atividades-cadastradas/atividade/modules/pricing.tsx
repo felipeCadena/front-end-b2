@@ -13,7 +13,9 @@ import { adventures } from "@/services/api/adventures";
 import { toast } from "react-toastify";
 import { useQueryClient } from "@tanstack/react-query";
 import MyButton from "@/components/atoms/my-button";
-import { ModalProps } from "@/components/organisms/edit-modal";
+import { ModalProps } from "@/components/organisms/edit-activity";
+import MyIcon from "@/components/atoms/my-icon";
+import MyTypography from "@/components/atoms/my-typography";
 
 export default function Pricing({
   formData,
@@ -50,6 +52,12 @@ export default function Pricing({
 
   return (
     <section>
+      <div className="flex gap-4 items-center mb-8">
+        <MyIcon name="voltar-black" className="-ml-2" onClick={onClose} />
+        <MyTypography variant="subtitle1" weight="bold" className="">
+          Editar Valores
+        </MyTypography>
+      </div>
       <div className="grid grid-cols-1 md:grid-cols-2 items-center gap-4">
         <MySelect
           label="Atividade em grupo"
@@ -147,22 +155,13 @@ export default function Pricing({
           />
         )}
       </div>
-      <div className="flex justify-end gap-2 mt-4">
-        <MyButton
-          borderRadius="squared"
-          size="lg"
-          variant="outline-neutral"
-          className="max-sm:w-full"
-          onClick={onClose}
-          disabled={isLoading}
-        >
-          Cancelar
-        </MyButton>
+
+      <div className="md:w-1/2 md:mx-auto mt-12 ">
         <MyButton
           type="submit"
           borderRadius="squared"
           size="lg"
-          className="max-sm:w-full"
+          className="w-full"
           onClick={handleSubmit}
           isLoading={isLoading}
         >

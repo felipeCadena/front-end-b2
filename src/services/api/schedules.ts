@@ -1,8 +1,9 @@
 import { api } from "@/libs/api";
 
 export const schedules = {
-  getSchedules: async (params: {
+  getSchedules: async (params?: {
     isAvailable?: boolean;
+    isCanceled?: boolean;
     startDate?: string;
     endDate?: string;
     limit?: number;

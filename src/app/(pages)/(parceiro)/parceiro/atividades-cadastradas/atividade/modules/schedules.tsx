@@ -6,7 +6,7 @@ import MyIcon from "@/components/atoms/my-icon";
 import MyTypography from "@/components/atoms/my-typography";
 import MultiSelect from "@/components/molecules/combobox";
 import { MyDatePicker } from "@/components/molecules/my-date-picker";
-import { ModalProps } from "@/components/organisms/edit-modal";
+import { ModalProps } from "@/components/organisms/edit-activity";
 import { adventures } from "@/services/api/adventures";
 import {
   Recurrence,
@@ -154,15 +154,20 @@ export default function Schedules({
   //     addSelectionBlock();
   //   };
 
-  console.log(formData.recurrences);
-
   return (
-    <div className="space-y-4 flex flex-col items-center">
+    <div className="flex flex-col gap-4">
+      <div className="flex gap-4 items-center mb-8">
+        <MyIcon name="voltar-black" className="-ml-2" onClick={onClose} />
+        <MyTypography variant="subtitle1" weight="bold" className="">
+          Editar Datas e Horários
+        </MyTypography>
+      </div>
+
       {formData?.recurrences &&
         formData?.recurrences.map((block: any, index: number) => (
           <div
             key={index}
-            className="w-full border px-6 first:py-4 py-8 rounded-lg space-y-4 relative"
+            className="w-full md:w-2/3 md:mx-auto border px-6 first:py-4 py-8 rounded-lg space-y-4 relative"
           >
             <MultiSelect
               placeholder="Selecione dias da semana"
@@ -212,22 +217,11 @@ export default function Schedules({
         Adicionar outro conjunto
       </MyButton> */}
 
-      <div className="flex justify-end gap-2">
+      <div className="w-full md:w-1/2 md:mx-auto mt-12">
         <MyButton
           borderRadius="squared"
           size="lg"
-          variant="outline-neutral"
-          className="max-sm:w-full"
-          onClick={onClose}
-          //   disabled={isLoading}
-        >
-          Cancelar
-        </MyButton>
-        <MyButton
-          type="submit"
-          borderRadius="squared"
-          size="lg"
-          className="max-sm:w-full"
+          className="w-full"
           onClick={handleSubmit}
           //   isLoading={isLoading}
         >

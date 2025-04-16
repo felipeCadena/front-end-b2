@@ -87,6 +87,9 @@ const RELATORIO_ATIVIDADE_PARCEIRO = (slug: number | string) =>
 const RELATORIO_ADMIN_FINANCEIRO = (slug: number | string) =>
   `/admin/financeiro/relatorio/${slug}`;
 
+const VISUALIZAR_NOTIFICACAO_PARCEIRO = (slug: number | string) =>
+  `/parceiro/notificacoes/notificacao/${slug}`;
+
 // ==========================================
 // * Dynamic encode routes
 // const PROPOSTA_PERSONALIZADO = (slug: string) => `/proposta/personalizado/${encodeUrl(slug)}`;
@@ -136,6 +139,7 @@ const PATHS = {
   cancelarAtividade: CANCELAR_ATIVIDADE_PARCEIRO,
   relatorioAtividade: RELATORIO_ATIVIDADE_PARCEIRO,
   editarAtividadeInfo: EDITAR_ATIVIDADE_INFO_PARCEIRO,
+  visualizarNotificacaoParceiro: VISUALIZAR_NOTIFICACAO_PARCEIRO,
 };
 
 export const PATHS_CONFIG: PathsConfig = {

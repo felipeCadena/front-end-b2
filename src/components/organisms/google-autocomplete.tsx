@@ -99,7 +99,7 @@ export default function AutocompleteCombobox({
   };
 
   return (
-    <div className="relative z-[9999]">
+    <div className="relative">
       <StandaloneSearchBox
         onLoad={(ref) => setSearchBoxRef(ref)}
         onPlacesChanged={() => {

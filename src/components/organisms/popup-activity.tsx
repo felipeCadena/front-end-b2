@@ -9,6 +9,7 @@ import {
 } from "@/components/atoms/my-popover";
 import Pessoas from "../atoms/my-icon/elements/pessoas";
 import Options from "../atoms/my-icon/elements/options";
+import ChatWeb from "../atoms/my-icon/elements/chat-web";
 
 interface PopupAtividadesProps {
   onDuplicar: () => void;
@@ -17,6 +18,7 @@ interface PopupAtividadesProps {
   onOcultar: () => void;
   onExcluir: () => void;
   onCustomer: () => void;
+  reservation?: boolean;
 }
 
 const PopupActivity: React.FC<PopupAtividadesProps> = ({
@@ -26,6 +28,7 @@ const PopupActivity: React.FC<PopupAtividadesProps> = ({
   onOcultar,
   onExcluir,
   onCustomer,
+  reservation = false,
 }) => {
   return (
     <Popover>
@@ -49,11 +52,11 @@ const PopupActivity: React.FC<PopupAtividadesProps> = ({
 
           <MyButton
             variant="text-muted"
-            leftIcon={<MyIcon name="duplicate" />}
-            onClick={onDuplicar}
+            leftIcon={<ChatWeb fill="#9F9F9F" />}
+            onClick={onCustomer}
             className="px-3 py-2 hover:bg-gray-100 rounded-md transition-colors w-full justify-start"
           >
-            Duplicar
+            Chat
           </MyButton>
 
           <MyButton
@@ -65,32 +68,42 @@ const PopupActivity: React.FC<PopupAtividadesProps> = ({
             Cancelar
           </MyButton>
 
-          <MyButton
-            variant="text-muted"
-            leftIcon={<MyIcon name="edit" />}
-            onClick={onEditar}
-            className="px-3 py-2 hover:bg-gray-100 rounded-md transition-colors w-full justify-start"
-          >
-            Editar
-          </MyButton>
-
-          <MyButton
-            variant="text-muted"
-            leftIcon={<Hide iconColor="#9F9F9F" />}
-            onClick={onOcultar}
-            className="px-3 py-2 hover:bg-gray-100 rounded-md transition-colors w-full justify-start"
-          >
-            Ocultar
-          </MyButton>
-
-          <MyButton
-            variant="text-muted"
-            leftIcon={<MyIcon name="trash" />}
-            onClick={onExcluir}
-            className="px-3 py-2 text-red-500 hover:bg-gray-100 rounded-md transition-colors w-full justify-start"
-          >
-            Excluir
-          </MyButton>
+          {!reservation && (
+            <>
+              <MyButton
+                variant="text-muted"
+                leftIcon={<MyIcon name="duplicate" />}
+                onClick={onDuplicar}
+                className="px-3 py-2 hover:bg-gray-100 rounded-md transition-colors w-full justify-start"
+              >
+                Duplicar
+              </MyButton>
+              <MyButton
+                variant="text-muted"
+                leftIcon={<MyIcon name="edit" />}
+                onClick={onEditar}
+                className="px-3 py-2 hover:bg-gray-100 rounded-md transition-colors w-full justify-start"
+              >
+                Editar
+              </MyButton>
+              <MyButton
+                variant="text-muted"
+                leftIcon={<Hide iconColor="#9F9F9F" />}
+                onClick={onOcultar}
+                className="px-3 py-2 hover:bg-gray-100 rounded-md transition-colors w-full justify-start"
+              >
+                Ocultar
+              </MyButton>
+              <MyButton
+                variant="text-muted"
+                leftIcon={<MyIcon name="trash" />}
+                onClick={onExcluir}
+                className="px-3 py-2 text-red-500 hover:bg-gray-100 rounded-md transition-colors w-full justify-start"
+              >
+                Excluir
+              </MyButton>
+            </>
+          )}
         </div>
       </PopoverContent>
     </Popover>

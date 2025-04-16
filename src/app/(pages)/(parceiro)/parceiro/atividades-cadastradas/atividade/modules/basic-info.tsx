@@ -21,7 +21,9 @@ import MyButton from "@/components/atoms/my-button";
 import { adventures } from "@/services/api/adventures";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
-import { ModalProps } from "@/components/organisms/edit-modal";
+import { ModalProps } from "@/components/organisms/edit-activity";
+import MyIcon from "@/components/atoms/my-icon";
+import MyTypography from "@/components/atoms/my-typography";
 
 export default function BasicInfo({
   formData,
@@ -86,24 +88,34 @@ export default function BasicInfo({
     onClose();
   };
   return (
-    <section className="space-y-6">
-      <MyTextInput
-        label="Título"
-        value={formData.title}
-        onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-      />
-      <MyTextarea
-        label="Descrição"
-        rows={5}
-        className="rezize-y"
-        maxLength={2000}
-        value={formData.description}
-        onChange={(e) =>
-          setFormData({ ...formData, description: e.target.value })
-        }
-      />
+    <section className="">
+      <div className="flex gap-4 items-center mb-8">
+        <MyIcon name="voltar-black" className="-ml-2" onClick={onClose} />
+        <MyTypography variant="subtitle1" weight="bold" className="">
+          Editar Informações Gerais
+        </MyTypography>
+      </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 items-center gap-4">
+      <div className="space-y-6">
+        <MyTextInput
+          label="Título"
+          value={formData.title}
+          className="mt-1"
+          onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+        />
+        <MyTextarea
+          label="Descrição"
+          rows={5}
+          className="rezize-y"
+          maxLength={2000}
+          value={formData.description}
+          onChange={(e) =>
+            setFormData({ ...formData, description: e.target.value })
+          }
+        />
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 items-center gap-4 space-y-6">
         <MySelect
           label="Grau de Dificuldade"
           className="text-base text-black"
@@ -301,22 +313,12 @@ export default function BasicInfo({
         </MySelect>
       </div>
 
-      <div className="flex justify-end gap-2">
-        <MyButton
-          borderRadius="squared"
-          size="lg"
-          variant="outline-neutral"
-          className="max-sm:w-full"
-          onClick={onClose}
-          disabled={isLoading}
-        >
-          Cancelar
-        </MyButton>
+      <div className="md:w-1/2 md:mx-auto mt-12">
         <MyButton
           type="submit"
           borderRadius="squared"
           size="lg"
-          className="max-sm:w-full"
+          className="w-full"
           onClick={handleSubmit}
           isLoading={isLoading}
         >

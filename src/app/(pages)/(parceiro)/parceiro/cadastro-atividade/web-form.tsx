@@ -97,6 +97,7 @@ export default function WebForm({
     tempImages,
     coordinates,
     address,
+    isRepeatable,
     addTempImage,
   } = useAdventureStore();
 
@@ -204,6 +205,8 @@ export default function WebForm({
 
     return `${hour}h`;
   };
+
+  console.log(isRepeatable);
 
   const handleLocationSelected = (locationData: LocationData) => {
     console.log("Location Data Received:", locationData);
@@ -355,68 +358,134 @@ export default function WebForm({
           </div>
           <div className="space-y-10 mt-6">
             <div>
-              <MyTypography variant="subtitle3" weight="bold" className="mb-3">
+              {/* <MyTypography variant="subtitle3" weight="bold" className="mb-3">
                 Repetir a atividade
-              </MyTypography>
+              </MyTypography> */}
+              <MySelect
+                label="Calendário da atividade"
+                className="text-base text-black"
+                value={isRepeatable == true ? "true" : "false"}
+                onValueChange={(value) =>
+                  setAdventureData({
+                    isRepeatable: value === "true",
+                  })
+                }
+              >
+                <SelectTrigger className="py-6 my-1">
+                  <SelectValue placeholder="Selecione" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="true">Repetir a atividade</SelectItem>
+                  <SelectItem value="false">Datas específicas</SelectItem>
+                </SelectContent>
+              </MySelect>
 
-              <div className="space-y-4 flex flex-col items-center">
-                {selectionBlocks.map((block, index) => (
-                  <div
-                    key={block.id}
-                    className="w-full border px-6 first:py-4 py-8 rounded-lg space-y-4 relative"
-                  >
-                    <MultiSelect
-                      placeholder="Selecione dias da semana"
-                      options={daysOfWeek}
-                      selected={block.recurrenceWeekly}
-                      setSelected={(value) =>
-                        updateSelectionBlock(
-                          block.id,
-                          "recurrenceWeekly",
-                          value
-                        )
-                      }
-                    />
-
-                    <MyDatePicker
-                      withlabel="Selecione dias específicos"
-                      selectedDates={block.dates}
-                      setSelectedDates={(dates) =>
-                        handleDateChange(block.id, dates)
-                      }
-                    />
-
-                    <MultiSelect
-                      grid
-                      placeholder="Selecione os horários"
-                      options={hours}
-                      selected={block.recurrenceHour}
-                      setSelected={(value) =>
-                        updateSelectionBlock(block.id, "recurrenceHour", value)
-                      }
-                    />
-                    {index > 0 && (
-                      <MyIcon
-                        name="subtracao"
-                        title="Remover"
-                        className="absolute -top-3 right-1"
-                        onClick={() => removeSelectionBlock(block.id)}
+              {isRepeatable ? (
+                <div className="space-y-8 flex flex-col items-center mt-8">
+                  {selectionBlocks.map((block, index) => (
+                    <div
+                      key={block.id}
+                      className="w-full border px-6 first:py-4 py-8 rounded-lg space-y-4 relative"
+                    >
+                      <MultiSelect
+                        placeholder="Selecione dias da semana"
+                        options={daysOfWeek}
+                        selected={block.recurrenceWeekly}
+                        setSelected={(value) =>
+                          updateSelectionBlock(
+                            block.id,
+                            "recurrenceWeekly",
+                            value
+                          )
+                        }
                       />
-                    )}
-                  </div>
-                ))}
 
-                <MyButton
-                  variant="secondary"
-                  borderRadius="squared"
-                  size="lg"
-                  className="w-1/2 mx-auto"
-                  onClick={(e) => handleAddSelectionBlock(e)}
-                  leftIcon={<MyIcon name="soma" />}
-                >
-                  Adicionar outro conjunto
-                </MyButton>
-              </div>
+                      <MultiSelect
+                        grid
+                        placeholder="Selecione os horários"
+                        options={hours}
+                        selected={block.recurrenceHour}
+                        setSelected={(value) =>
+                          updateSelectionBlock(
+                            block.id,
+                            "recurrenceHour",
+                            value
+                          )
+                        }
+                      />
+                      {index > 0 && (
+                        <MyIcon
+                          name="subtracao"
+                          title="Remover"
+                          className="absolute -top-3 right-1"
+                          onClick={() => removeSelectionBlock(block.id)}
+                        />
+                      )}
+                    </div>
+                  ))}
+
+                  <MyButton
+                    variant="secondary"
+                    borderRadius="squared"
+                    size="lg"
+                    className="w-1/2 mx-auto"
+                    onClick={(e) => handleAddSelectionBlock(e)}
+                    leftIcon={<MyIcon name="soma" />}
+                  >
+                    Adicionar outro conjunto
+                  </MyButton>
+                </div>
+              ) : (
+                <div className="space-y-8 flex flex-col items-center mt-8">
+                  {selectionBlocks.map((block, index) => (
+                    <div
+                      key={block.id}
+                      className="w-full border px-6 first:py-4 py-8 rounded-lg space-y-4 relative"
+                    >
+                      <MyDatePicker
+                        withlabel="Selecione dias específicos"
+                        selectedDates={block.dates}
+                        setSelectedDates={(dates) =>
+                          handleDateChange(block.id, dates)
+                        }
+                      />
+
+                      <MultiSelect
+                        grid
+                        placeholder="Selecione os horários"
+                        options={hours}
+                        selected={block.recurrenceHour}
+                        setSelected={(value) =>
+                          updateSelectionBlock(
+                            block.id,
+                            "recurrenceHour",
+                            value
+                          )
+                        }
+                      />
+                      {index > 0 && (
+                        <MyIcon
+                          name="subtracao"
+                          title="Remover"
+                          className="absolute -top-3 right-1"
+                          onClick={() => removeSelectionBlock(block.id)}
+                        />
+                      )}
+                    </div>
+                  ))}
+
+                  <MyButton
+                    variant="secondary"
+                    borderRadius="squared"
+                    size="lg"
+                    className="w-1/2 mx-auto mt-4"
+                    onClick={(e) => handleAddSelectionBlock(e)}
+                    leftIcon={<MyIcon name="soma" />}
+                  >
+                    Adicionar outro conjunto
+                  </MyButton>
+                </div>
+              )}
             </div>
             <div className="grid grid-cols-2 items-center gap-8">
               <MySelect
