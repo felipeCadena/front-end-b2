@@ -25,6 +25,8 @@ export default function Notificacao() {
 
   const notification = notifications[notificationPosition];
 
+  console.log(notification);
+
   const notificationHeader = notification?.title.split('-');
   const notificationTitle = notificationHeader[1];
   const orderStatus = formatOrderStatus(notificationHeader[0].trim());
