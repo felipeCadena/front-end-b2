@@ -1,10 +1,18 @@
 import React, { useState } from 'react';
 import MyTypography from '../atoms/my-typography';
-import { MyDatePicker } from '../molecules/my-date-picker';
 import TimePickerModal from '../molecules/time-picker';
 import PeopleSelector from './people-selector';
 import { ClientSchedule } from '@/services/api/adventures';
 import { useQuery } from '@tanstack/react-query';
+import { MyActivityDatePicker } from '../molecules/my-activity-date-picker';
+
+export type Recurrence = {
+  adventureId: number;
+  groupId: string;
+  id: string;
+  type: string;
+  value: number;
+};
 
 type ActivityDatePickerProps = {
   schedule: ClientSchedule;
@@ -14,6 +22,7 @@ type ActivityDatePickerProps = {
     children: string | undefined;
   };
   isChildrenAllowed: boolean;
+  activityRecurrence: Recurrence[];
 };
 
 const ActivityDatePicker = ({
@@ -21,22 +30,23 @@ const ActivityDatePicker = ({
   setSchedule,
   price,
   isChildrenAllowed,
+  activityRecurrence,
 }: ActivityDatePickerProps) => {
-  const [selectedDates, setSelectedDates] = useState<Date[]>([]);
+  const [selectedDate, setSelectedDate] = useState<Date>();
   const [duration, setDuration] = useState('');
 
   useQuery({
-    queryKey: ['schedule', selectedDates[0], duration],
+    queryKey: ['schedule', selectedDate, duration],
     queryFn: () => {
       const updated = {
         ...schedule,
-        scheduleDate: selectedDates[0],
+        scheduleDate: selectedDate,
         scheduleTime: duration,
       };
       setSchedule(updated);
       return updated;
     },
-    enabled: !!selectedDates[0] && !!duration,
+    enabled: !!selectedDate && !!duration,
   });
 
   return (
@@ -47,9 +57,10 @@ const ActivityDatePicker = ({
             Escolha o dia e horário para realizar a atividade.
           </MyTypography>
           <div className="border space-y-6 border-gray-300 rounded-lg py-8 md:space-y-10 md:py-9 px-5 mt-8">
-            <MyDatePicker
-              selectedDates={selectedDates}
-              setSelectedDates={setSelectedDates}
+            <MyActivityDatePicker
+              selectedDate={selectedDate}
+              setSelectedDates={setSelectedDate}
+              activityRecurrences={activityRecurrence}
             />
             <TimePickerModal value={duration} onChange={setDuration} />
             <PeopleSelector

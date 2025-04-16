@@ -1,39 +1,112 @@
 import { formatPrice } from '@/utils/formatters';
 import React from 'react';
 import MyTypography from '../atoms/my-typography';
+import MyIcon from '../atoms/my-icon';
+import { WhatsappShareButton } from 'react-share';
+import { useParams } from 'next/navigation';
 
 type ActivityCancelationPolicyProps = {
-  priceAdult: string | undefined;
+  price: {
+    adult: string | undefined;
+    children: string | undefined;
+  };
+  hoursBeforeCancelation: number | undefined;
+  addressNeighborhood: string | undefined;
+  addressState: string | undefined;
+  duration: string | undefined;
 };
 
 const ActivityCancelationPolicy = ({
-  priceAdult,
+  price,
+  hoursBeforeCancelation,
+  addressNeighborhood,
+  addressState,
+  duration,
 }: ActivityCancelationPolicyProps) => {
+  const { id } = useParams();
+  const hoursToDays = hoursBeforeCancelation ? hoursBeforeCancelation / 24 : 3;
+  const frontBaseURL =
+    process.env.NEXT_PUBLIC_PROD_URL ?? 'http://localhost:3000';
+
+  const uniteAddress = (
+    neighborhood: string | undefined,
+    state: string | undefined
+  ) => {
+    if (!neighborhood || !state) {
+      return 'Carregando...';
+    }
+
+    return `${addressNeighborhood} - ${addressState}`;
+  };
+
   return (
-    <div>
-      <div className="my-4">
+    <div className="flex flex-col justify-between">
+      <div className="">
+        <div>
+          <div className="flex justify-start items-center mt-4 bg-slate-100 border-[1px] border-primary-900 rounded-lg  w-fit py-2 px-6">
+            <MyIcon name="localizacaoRedonda" />
+            <MyTypography className="ml-2">
+              {uniteAddress(addressNeighborhood, addressState)}
+            </MyTypography>
+          </div>
+          <div className="flex justify-between items-center mt-4">
+            <div className="flex justify-start items-center">
+              <MyIcon name="duracao" className="mr-2" />
+              <div className="my-8">
+                <MyTypography variant="subtitle4" weight="semibold">
+                  Duração da atividade:
+                </MyTypography>
+                <MyTypography>{duration}</MyTypography>
+              </div>
+            </div>
+            <WhatsappShareButton
+              url={`${frontBaseURL}/atividades/atividade/${id}`}
+              title="Olha essa atividade que achei na B2 Adventure:"
+            >
+              <MyIcon name="compartilhar" />
+            </WhatsappShareButton>
+          </div>
+        </div>
+      </div>
+      <div>
         <MyTypography variant="subtitle3" weight="bold" className="">
           Política de cancelamento
         </MyTypography>
         <MyTypography variant="body-big" weight="regular" className="mt-1">
-          Este agendamento só será reembolsado se cancelado até 3 dias antes da
+          {`
+            Este agendamento só será reembolsado se cancelado até ${hoursToDays > 1 ? `${hoursToDays} dias` : `${hoursToDays} dia`} antes da
           data confirmada.
+          `}
         </MyTypography>
       </div>
 
-      <div>
+      <div className="mt-16">
         <div className="flex justify-between items-center mt-1">
           <MyTypography variant="subtitle3" weight="bold" className="">
-            Valor da atividade:
+            Valor da atividade por adulto:
           </MyTypography>
           <MyTypography
             variant="heading2"
             weight="extrabold"
             className="text-primary-600"
           >
-            {formatPrice(priceAdult ?? '')}
+            {formatPrice(price?.adult ?? '')}
           </MyTypography>
         </div>
+        {price.children !== '0' && (
+          <div className="flex justify-between items-center mt-4">
+            <MyTypography variant="subtitle4" weight="bold" className="">
+              Crianças de 4 a 12 anos:
+            </MyTypography>
+            <MyTypography
+              variant="heading2"
+              weight="extrabold"
+              className="text-primary-600"
+            >
+              {formatPrice(price?.children ?? '')}
+            </MyTypography>
+          </div>
+        )}
       </div>
     </div>
   );

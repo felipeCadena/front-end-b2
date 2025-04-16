@@ -25,7 +25,9 @@ const ActivityTags = ({
         className={`${isChildrenAllowed ? 'bg-primary-900' : 'bg-orange-200'} py-2 rounded-md mb-2 md:h-fit`}
       >
         <MyTypography variant="body" weight="bold" className="text-center">
-          {isChildrenAllowed ? 'Permitido crianças' : 'Proibido crianças'}
+          {isChildrenAllowed
+            ? 'Permitido crianças'
+            : 'Não é permitido crianças'}
         </MyTypography>
       </div>
 

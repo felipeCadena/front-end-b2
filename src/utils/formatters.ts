@@ -1,3 +1,4 @@
+import { Recurrence } from "@/components/organisms/activity-date-picker";
 import { Adventure, AdventureSchedule } from "@/services/api/adventures";
 
 export function getData(timestamp: string, year?: boolean) {
@@ -409,4 +410,77 @@ export const agruparRecorrencias = (
   });
 
   return { semanal, mensal };
+};
+
+export const formatRecurrencesToDates = (
+  recurrences: Recurrence[],
+  type?: "weekly" | "monthly"
+) => {
+  const reducedRecur = recurrences
+    ? Object.values(
+        recurrences.reduce(
+          (acc, rec) => {
+            const group = acc[rec.groupId] || {
+              groupId: rec.groupId,
+              recurrenceWeekly: [],
+              dates: [],
+              recurrenceHour: [],
+            };
+
+            const baseMonth = new Date().getMonth();
+            const baseYear = new Date().getFullYear();
+
+            if (rec.type === "WEEKLY") {
+              const date = new Date(baseYear, baseMonth, 1);
+              while (date.getFullYear() === baseYear) {
+                if (rec.value === date.getDay()) {
+                  group.recurrenceWeekly.push(new Date(date));
+                }
+                date.setDate(date.getDate() + 1);
+              }
+            } else if (rec.type === "MONTHLY") {
+              const day = Number(rec.value);
+
+              for (let i = baseMonth; i < 12; i += 1) {
+                const date = new Date(baseYear, i, day);
+                group.dates.push(date);
+              }
+            } else if (rec.type === "HOUR") {
+              const hours = Math.floor(rec.value / 100);
+              const minutes = rec.value % 100;
+              group.recurrenceHour.push(
+                `${hours.toString().padStart(2, "0")}:${minutes
+                  .toString()
+                  .padStart(2, "0")}`
+              );
+            }
+
+            acc[rec.groupId] = group;
+            return acc;
+          },
+          {} as Record<
+            string,
+            {
+              dates: Date[];
+              recurrenceHour: string[];
+              recurrenceWeekly: Date[];
+              groupId: string;
+            }
+          >
+        )
+      )
+    : [];
+
+  if (type === "monthly") {
+    const monthlyRecurrences = reducedRecur
+      ?.filter((rec) => rec.dates.length > 0)
+      .map(({ dates }) => dates)[0];
+    return monthlyRecurrences;
+  }
+
+  const weeklyRecurrences = reducedRecur
+    ?.filter((rec) => rec.dates.length === 0)
+    .map((rec) => rec.recurrenceWeekly)[0];
+
+  return weeklyRecurrences;
 };

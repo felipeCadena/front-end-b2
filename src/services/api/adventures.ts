@@ -74,7 +74,7 @@ export interface ClientSchedule {
   qntAdults: number;
   qntChildren: number;
   qntBabies: number;
-  scheduleDate: Date;
+  scheduleDate: Date | undefined;
   scheduleTime: string;
   pricePerAdult: string;
   pricePerChildren?: string;

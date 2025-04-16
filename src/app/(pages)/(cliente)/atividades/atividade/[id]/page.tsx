@@ -175,7 +175,7 @@ export default function Atividade() {
         <div className="mx-6 flex items-center gap-2 md:hidden">
           <Image
             alt="avatar"
-            src={fetchedActivity?.partner.logo.url ?? "/user.png"}
+            src={fetchedActivity?.partner?.logo?.url ?? "/user.png"}
             width={6}
             height={6}
             className="w-10 h-10 rounded-full object-contain"
@@ -219,7 +219,13 @@ export default function Atividade() {
         </div>
 
         <div className="md:grid md:grid-cols-2 gap-8">
-          <ActivityCancelationPolicy priceAdult={fetchedActivity?.priceAdult} />
+          <ActivityCancelationPolicy
+            addressNeighborhood={fetchedActivity?.addressNeighborhood}
+            addressState={fetchedActivity?.addressState}
+            duration={fetchedActivity?.duration}
+            hoursBeforeCancelation={fetchedActivity?.hoursBeforeCancellation}
+            price={price}
+          />
 
           <div className="md:flex md:flex-col md:items-center">
             <ActivityDatePicker
@@ -227,6 +233,7 @@ export default function Atividade() {
               price={price}
               schedule={schedule}
               setSchedule={setSchedule}
+              activityRecurrence={fetchedActivity?.recurrence ?? []}
             />
             <MyButton
               variant="default"
