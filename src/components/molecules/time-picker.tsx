@@ -23,6 +23,7 @@ export default function TimePickerModal({
   availableActivityTimes,
 }: TimePickerModalProps) {
   const [open, setOpen] = useState(false);
+  const [initialTime, setInitialTime] = useState('');
 
   const timeRef = useRef<HTMLDivElement>(null);
 
@@ -45,6 +46,14 @@ export default function TimePickerModal({
 
   useEffect(() => {
     if (availableActivityTimes.length > 0 && selectedTime === '') {
+      setInitialTime(availableActivityTimes[0]);
+      setSelectedTime(availableActivityTimes[0]);
+    }
+    if (
+      availableActivityTimes.length > 0 &&
+      availableActivityTimes[0] !== initialTime
+    ) {
+      setInitialTime(availableActivityTimes[0]);
       setSelectedTime(availableActivityTimes[0]);
     }
   }, [availableActivityTimes, selectedTime]);
@@ -60,7 +69,9 @@ export default function TimePickerModal({
         >
           <Time fill={iconColor ?? '#8DC63F'} />
           {availableActivityTimes.length !== 0 ? (
-            <span className="text-black">{selectedTime}</span>
+            <span className="text-black">
+              {selectedTime !== initialTime ? selectedTime : initialTime}
+            </span>
           ) : (
             <MyTypography
               variant="body"
@@ -77,7 +88,7 @@ export default function TimePickerModal({
         </MyButton>
       </PopoverTrigger>
       <PopoverContent
-        className="w-full bg-white flex flex-col items-center"
+        className="bg-white flex flex-col items-center max-w-[240px]"
         align="center"
       >
         <div className="flex justify-center items-center w-full">
@@ -85,13 +96,13 @@ export default function TimePickerModal({
             ref={timeRef}
             className="h-48 w-36 flex items-center justify-center rounded-lg overflow-hidden"
           >
-            <div className="flex flex-col items-center w-full">
+            <div className="flex flex-col justify-center items-center min-h-48 w-full ">
               {availableActivityTimes.map((time) => (
                 <div
                   key={time}
                   data-value={time}
                   className={cn(
-                    `text-center py-4 w-full cursor-pointer transition-all`,
+                    `text-center py-[9px] w-full cursor-pointer transition-all`,
                     selectedTime === time
                       ? 'border border-primary-600 rounded-md'
                       : 'opacity-50'
