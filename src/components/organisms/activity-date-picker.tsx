@@ -54,22 +54,6 @@ const ActivityDatePicker = ({
 
   const groupedRecurrences = agruparRecorrencias(activityRecurrence);
 
-  console.log('GROUPED', groupedRecurrences);
-
-  const getWeekly = (
-    selected: Date | undefined,
-    recurrenceGroup: GroupedRecurrences
-  ) => {
-    const selectedWeekDay = selected?.getDay();
-    const selectedWeekDayActivityTime = recurrenceGroup?.semanal?.filter(
-      (rec) => rec?.dias.some((day) => day === selectedWeekDay)
-    )[0];
-
-    return selectedWeekDayActivityTime?.horarios ?? [];
-  };
-
-  console.log('WEEKLY TIMES', getWeekly(selectedDate, groupedRecurrences));
-
   const selectedDateTimes = getWeeklyRecurrenceTime(
     selectedDate,
     groupedRecurrences
