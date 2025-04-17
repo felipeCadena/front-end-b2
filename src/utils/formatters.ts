@@ -1,4 +1,7 @@
-import { Recurrence } from '@/components/organisms/activity-date-picker';
+import {
+  GroupedRecurrences,
+  Recurrence,
+} from '@/components/organisms/activity-date-picker';
 import { Adventure, AdventureSchedule } from '@/services/api/adventures';
 
 export function getData(timestamp: string, year?: boolean) {
@@ -368,7 +371,7 @@ export const agruparRecorrencias = (
 
   const semanal: {
     tipo: 'semanal';
-    dias: string[];
+    dias: number[];
     horarios: string[];
   }[] = [];
 
@@ -392,7 +395,7 @@ export const agruparRecorrencias = (
     if (weekly.length > 0) {
       semanal.push({
         tipo: 'semanal',
-        dias: weekly.sort().map((d) => diasSemana[d - 1] ?? 'Desconhecido'),
+        dias: weekly.sort(),
         horarios: horariosFormatados,
       });
     }
@@ -426,9 +429,10 @@ export const formatRecurrencesToDates = (
 
             const baseMonth = new Date().getMonth();
             const baseYear = new Date().getFullYear();
+            const baseDay = new Date().getDate();
 
             if (rec.type === 'WEEKLY') {
-              const date = new Date(baseYear, baseMonth, 1);
+              const date = new Date(baseYear, baseMonth, baseDay);
               while (date.getFullYear() === baseYear) {
                 if (rec.value === date.getDay()) {
                   group.recurrenceWeekly.push(new Date(date));
@@ -471,13 +475,27 @@ export const formatRecurrencesToDates = (
   if (type === 'monthly') {
     const monthlyRecurrences = reducedRecur
       ?.filter((rec) => rec.dates.length > 0)
-      .map(({ dates }) => dates)[0];
+      .map(({ dates }) => dates)
+      .flat();
     return monthlyRecurrences;
   }
 
   const weeklyRecurrences = reducedRecur
     ?.filter((rec) => rec.dates.length === 0)
-    .map((rec) => rec.recurrenceWeekly)[0];
+    .map(({ recurrenceWeekly }) => recurrenceWeekly)
+    .flat();
 
   return weeklyRecurrences;
+};
+
+export const getWeeklyRecurrenceTime = (
+  selected: Date | undefined,
+  recurrenceGroup: GroupedRecurrences
+) => {
+  const selectedWeekDay = selected?.getDay();
+  const selectedWeekDayActivityTime = recurrenceGroup?.semanal?.filter((rec) =>
+    rec?.dias.some((day) => day === selectedWeekDay)
+  )[0];
+
+  return selectedWeekDayActivityTime?.horarios ?? [];
 };

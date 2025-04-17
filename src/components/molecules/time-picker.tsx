@@ -7,79 +7,32 @@ import { cn } from '@/utils/cn';
 import MyTypography from '../atoms/my-typography';
 import { MyScrollArea } from '../atoms/my-scroll-area';
 import Time from '../atoms/my-icon/elements/time';
+import { useQuery } from '@tanstack/react-query';
 
 interface TimePickerModalProps {
   iconColor?: string;
-  value: string;
-  onChange: (time: string) => void;
+  selectedTime: string;
+  setSelectedTime: (time: string) => void;
+  availableActivityTimes: string[];
 }
 
 export default function TimePickerModal({
   iconColor,
-  value,
-  onChange,
+  selectedTime,
+  setSelectedTime,
+  availableActivityTimes,
 }: TimePickerModalProps) {
   const [open, setOpen] = useState(false);
 
-  // Converte o valor (ex: "2h30") para hora e minuto
-  const parseValue = (val: string) => {
-    if (!val) return { hour: '00', minute: '00' };
-    const match = val.match(/(\d+)h(?:(\d+))?/);
-    if (!match) return { hour: '00', minute: '00' };
-
-    const hour = match[1].padStart(2, '0');
-    const minutes = (match[2] || '0').padStart(2, '0');
-    return { hour, minute: minutes };
-  };
-
-  const { hour: initialHour, minute: initialMinute } = parseValue(value);
-  const [selectedHour, setSelectedHour] = useState(initialHour);
-  const [selectedMinute, setSelectedMinute] = useState(initialMinute);
-
-  const hourRef = useRef<HTMLDivElement>(null);
-  const minuteRef = useRef<HTMLDivElement>(null);
-
-  const hours = Array.from({ length: 24 }, (_, i) =>
-    String(i).padStart(2, '0')
-  );
-  const minutes = Array.from({ length: 60 }, (_, i) =>
-    String(i).padStart(2, '0')
-  );
-
-  // Atualiza a seleção quando o valor externo muda
-  useEffect(() => {
-    const { hour, minute } = parseValue(value);
-    setSelectedHour(hour);
-    setSelectedMinute(minute);
-  }, [value]);
-
-  // Formata e envia o valor quando a seleção muda
-  useEffect(() => {
-    if (selectedHour && selectedMinute) {
-      const hour = parseInt(selectedHour);
-      const minute = parseInt(selectedMinute);
-      // Só inclui os minutos se forem maiores que zero
-      const formattedValue = minute > 0 ? `${hour}h${minute}` : `${hour}h`;
-      onChange(formattedValue);
-    }
-  }, [selectedHour, selectedMinute]);
+  const timeRef = useRef<HTMLDivElement>(null);
 
   // Scroll para a seleção atual quando o popover abre
   useEffect(() => {
     if (open) {
       setTimeout(() => {
-        if (hourRef.current) {
-          const selectedElement = hourRef.current.querySelector(
-            `[data-value="${selectedHour}"]`
-          );
-          selectedElement?.scrollIntoView({
-            block: 'center',
-            behavior: 'smooth',
-          });
-        }
-        if (minuteRef.current) {
-          const selectedElement = minuteRef.current.querySelector(
-            `[data-value="${selectedMinute}"]`
+        if (timeRef.current) {
+          const selectedElement = timeRef.current.querySelector(
+            `[data-value="${selectedTime}"]`
           );
           selectedElement?.scrollIntoView({
             block: 'center',
@@ -88,7 +41,13 @@ export default function TimePickerModal({
         }
       }, 100);
     }
-  }, [open, selectedHour, selectedMinute]);
+  }, [open, selectedTime]);
+
+  useEffect(() => {
+    if (availableActivityTimes.length > 0 && selectedTime === '') {
+      setSelectedTime(availableActivityTimes[0]);
+    }
+  }, [availableActivityTimes, selectedTime]);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -96,15 +55,12 @@ export default function TimePickerModal({
         <MyButton
           variant="date"
           borderRadius="squared"
-          className="w-full justify-start text-sm items-center gap-2 py-6 border-gray-300 md:bg-white"
+          className="w-full justify-start text-sm items-center gap-2 py-6 border-gray-300 md:bg-white disabled:bg-slate-100"
+          disabled={availableActivityTimes.length === 0}
         >
           <Time fill={iconColor ?? '#8DC63F'} />
-          {value ? (
-            <span className="text-black">
-              {parseInt(selectedMinute) > 0
-                ? `${parseInt(selectedHour)}h${selectedMinute}`
-                : `${parseInt(selectedHour)}h`}
-            </span>
+          {availableActivityTimes.length !== 0 ? (
+            <span className="text-black">{selectedTime}</span>
           ) : (
             <MyTypography
               variant="body"
@@ -115,7 +71,7 @@ export default function TimePickerModal({
                 iconColor ? `text-neutral-400` : 'text-black'
               )}
             >
-              Duração da Atividade
+              Escolha o dia da atividade
             </MyTypography>
           )}
         </MyButton>
@@ -126,46 +82,23 @@ export default function TimePickerModal({
       >
         <div className="flex justify-center items-center w-full">
           <MyScrollArea
-            ref={hourRef}
+            ref={timeRef}
             className="h-48 w-36 flex items-center justify-center rounded-lg overflow-hidden"
           >
             <div className="flex flex-col items-center w-full">
-              {hours.map((hour) => (
+              {availableActivityTimes.map((time) => (
                 <div
-                  key={hour}
-                  data-value={hour}
+                  key={time}
+                  data-value={time}
                   className={cn(
                     `text-center py-4 w-full cursor-pointer transition-all`,
-                    selectedHour === hour
+                    selectedTime === time
                       ? 'border border-primary-600 rounded-md'
                       : 'opacity-50'
                   )}
-                  onClick={() => setSelectedHour(hour)}
+                  onClick={() => setSelectedTime(time)}
                 >
-                  {hour}
-                </div>
-              ))}
-            </div>
-          </MyScrollArea>
-          <span className="text-2xl mx-3">:</span>
-          <MyScrollArea
-            ref={minuteRef}
-            className="h-48 w-36 flex items-center justify-center rounded-lg overflow-hidden"
-          >
-            <div className="flex flex-col items-center w-full">
-              {minutes.map((minute) => (
-                <div
-                  key={minute}
-                  data-value={minute}
-                  className={cn(
-                    `text-center py-4 w-full cursor-pointer transition-all`,
-                    selectedMinute === minute
-                      ? 'border border-primary-600 rounded-md'
-                      : 'opacity-50'
-                  )}
-                  onClick={() => setSelectedMinute(minute)}
-                >
-                  {minute}
+                  {time}
                 </div>
               ))}
             </div>

@@ -5,6 +5,10 @@ import PeopleSelector from './people-selector';
 import { ClientSchedule } from '@/services/api/adventures';
 import { useQuery } from '@tanstack/react-query';
 import { MyActivityDatePicker } from '../molecules/my-activity-date-picker';
+import {
+  agruparRecorrencias,
+  getWeeklyRecurrenceTime,
+} from '@/utils/formatters';
 
 export type Recurrence = {
   adventureId: number;
@@ -12,6 +16,19 @@ export type Recurrence = {
   id: string;
   type: string;
   value: number;
+};
+
+export type GroupedRecurrences = {
+  semanal: {
+    tipo: 'semanal';
+    dias: number[];
+    horarios: string[];
+  }[];
+  mensal: {
+    tipo: 'mensal';
+    dias: number[];
+    horarios: string[];
+  }[];
 };
 
 type ActivityDatePickerProps = {
@@ -33,20 +50,27 @@ const ActivityDatePicker = ({
   activityRecurrence,
 }: ActivityDatePickerProps) => {
   const [selectedDate, setSelectedDate] = useState<Date>();
-  const [duration, setDuration] = useState('');
+  const [selectedTime, setSelectedTime] = useState('');
+
+  const groupedRecurrences = agruparRecorrencias(activityRecurrence);
+
+  const selectedDateTimes = getWeeklyRecurrenceTime(
+    selectedDate,
+    groupedRecurrences
+  );
 
   useQuery({
-    queryKey: ['schedule', selectedDate, duration],
+    queryKey: ['schedule', selectedDate, selectedTime],
     queryFn: () => {
       const updated = {
         ...schedule,
         scheduleDate: selectedDate,
-        scheduleTime: duration,
+        scheduleTime: selectedTime,
       };
       setSchedule(updated);
       return updated;
     },
-    enabled: !!selectedDate && !!duration,
+    enabled: !!selectedDate && !!selectedTime,
   });
 
   return (
@@ -62,7 +86,11 @@ const ActivityDatePicker = ({
               setSelectedDates={setSelectedDate}
               activityRecurrences={activityRecurrence}
             />
-            <TimePickerModal value={duration} onChange={setDuration} />
+            <TimePickerModal
+              availableActivityTimes={selectedDateTimes}
+              selectedTime={selectedTime}
+              setSelectedTime={setSelectedTime}
+            />
             <PeopleSelector
               isChildrenAllowed={isChildrenAllowed}
               price={price}
