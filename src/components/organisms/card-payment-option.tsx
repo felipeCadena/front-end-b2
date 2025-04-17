@@ -1,29 +1,22 @@
-import {
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem,
-} from '@radix-ui/react-select';
-import React, { Dispatch, SetStateAction } from 'react';
-import MyIcon from '../atoms/my-icon';
-import { MySelect } from '../atoms/my-select';
-import MyTextInput from '../atoms/my-text-input';
+import React from 'react';
+
 import { Card } from './card';
 import { FormData } from '@/app/(pages)/(cliente)/finalizar-compra/page';
 import { UseFormReturn } from 'react-hook-form';
 import MyFormInput from '../atoms/my-form-input';
+import MyFormSelect from '../atoms/my-form-select';
 
 type CardPaymentOptionProps = {
-  instalments: string;
-  setInstalments: Dispatch<SetStateAction<string>>;
   form: UseFormReturn<FormData>;
 };
 
-const CardPaymentOption = ({
-  instalments,
-  setInstalments,
-  form,
-}: CardPaymentOptionProps) => {
+const CardPaymentOption = ({ form }: CardPaymentOptionProps) => {
+  const instalmentOptions = [
+    { value: '1', label: '1x' },
+    { value: '2', label: '2x' },
+    { value: '3', label: '3x' },
+    { value: '4', label: '4x' },
+  ];
   return (
     <div className="max-sm:mt-8 md:flex md:flex-row-reverse md:items-center md:gap-8 md:col-span-2">
       <Card />
@@ -45,18 +38,12 @@ const CardPaymentOption = ({
           form={form}
         />
 
-        <MySelect value={instalments} onValueChange={setInstalments}>
-          <SelectTrigger className="py-6">
-            <SelectValue placeholder="Selecione o número de parcelas" />
-          </SelectTrigger>
-          <SelectContent>
-            {Array.from({ length: 4 }, (_, i) => (
-              <SelectItem key={i} value={String(i + 1)}>
-                {i + 1}x
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </MySelect>
+        <MyFormSelect
+          form={form}
+          label="Parcelas"
+          name="installmentCount"
+          options={instalmentOptions}
+        />
 
         <div className="flex gap-2">
           <MyFormInput
