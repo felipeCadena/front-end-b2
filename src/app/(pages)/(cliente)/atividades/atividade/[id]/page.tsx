@@ -40,6 +40,8 @@ export default function Atividade() {
   const [schedule, setSchedule] =
     useState<ClientSchedule>(initialScheduleState);
 
+  console.log('SCHEDULE', schedule);
+
   const query = useQueryClient();
   const session = useSession();
   const userId = session.data?.user.id;

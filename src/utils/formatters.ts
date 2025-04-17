@@ -262,11 +262,9 @@ export const formatPrice = (price: string | number) => {
 };
 
 export const formatTime = (scheduleTime: string) => {
-  const splitTime = scheduleTime.split('h');
-  const formatMinutes = splitTime[1].trim() === '' ? '00' : splitTime[1];
+  const splitTime = scheduleTime.split(':');
   const timeOfDay = Number(splitTime[0]) > 12 ? ' da tarde.' : ' da manhã.';
-  const formattedTime =
-    scheduleTime.replace('h', ':') + formatMinutes + timeOfDay;
+  const formattedTime = scheduleTime + timeOfDay;
 
   return formattedTime;
 };
