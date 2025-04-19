@@ -52,6 +52,7 @@ import Guia from './elements/guia';
 import MobileDuracao from './elements/mobile-duracao';
 import Duracao from './elements/duracao';
 import Compartilhar from './elements/compartilhar';
+import MobileCompartilhar from './elements/mobile-compartilhar';
 import SetaDireita from './elements/seta-direita';
 import Perfil from './elements/perfil';
 import Notificacoes from './elements/notificacoes';
@@ -183,6 +184,7 @@ const IconsMap = {
   duracao: <Duracao />,
   mobileDuracao: <MobileDuracao />,
   compartilhar: <Compartilhar />,
+  mobileCompartilhar: <MobileCompartilhar />,
   'seta-direita': <SetaDireita />,
   perfil: <Perfil />,
   notificacoes: <Notificacoes />,

@@ -63,7 +63,8 @@ const ActivityCancelationPolicy = ({
               url={`${frontBaseURL}/atividades/atividade/${id}`}
               title="Olha essa atividade que achei na B2 Adventure:"
             >
-              <MyIcon name="compartilhar" />
+              <MyIcon name="compartilhar" className="hidden md:block" />
+              <MyIcon name="mobileCompartilhar" className="md:hidden" />
             </WhatsappShareButton>
           </div>
         </div>
@@ -82,26 +83,35 @@ const ActivityCancelationPolicy = ({
 
       <div className="mt-16">
         <div className="flex justify-between items-center mt-1">
-          <MyTypography variant="subtitle3" weight="bold" className="">
+          <MyTypography
+            variant="subtitle3"
+            weight="bold"
+            className="text-sm md:text-md"
+          >
             Valor da atividade por adulto:
           </MyTypography>
+
           <MyTypography
             variant="heading2"
             weight="extrabold"
-            className="text-primary-600"
+            className="text-primary-600 text-lg md:text-2xl"
           >
             {formatPrice(price?.adult ?? '')}
           </MyTypography>
         </div>
         {price.children !== '0' && (
           <div className="flex justify-between items-center mt-4">
-            <MyTypography variant="subtitle4" weight="bold" className="">
+            <MyTypography
+              variant="subtitle3"
+              weight="bold"
+              className="text-sm md:text-md"
+            >
               Crianças de 4 a 12 anos:
             </MyTypography>
             <MyTypography
               variant="heading2"
               weight="extrabold"
-              className="text-primary-600"
+              className="text-primary-600 text-lg md:text-2xl"
             >
               {formatPrice(price?.children ?? '')}
             </MyTypography>

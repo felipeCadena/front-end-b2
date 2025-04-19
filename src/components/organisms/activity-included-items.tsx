@@ -12,8 +12,13 @@ const ActivityIncludedItems = ({
   transportIncluded,
   itemsIncluded,
 }: ActivityIncludedItemsProps) => {
+  console.log(
+    formatIconName(itemsIncluded[0]),
+    formatIconName(itemsIncluded[1]),
+    formatIconName(itemsIncluded[2])
+  );
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 gap-x-8 gap-y-4 ">
+    <div className="grid grid-cols-2 md:grid-cols-3 gap-x-8 gap-y-4 mb-4 md:mb-0">
       {transportIncluded && (
         <div className="flex items-center gap-2">
           <MyIcon name="transporte" className="p-2 bg-primary-900 rounded-md" />
@@ -25,7 +30,8 @@ const ActivityIncludedItems = ({
 
       {itemsIncluded.map(
         (item) =>
-          item && (
+          item &&
+          item !== 'Transporte' && (
             <div key={item} className="flex items-center gap-2">
               <MyIcon
                 name={formatIconName(item) as any}

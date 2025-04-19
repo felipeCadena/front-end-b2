@@ -12,8 +12,12 @@ import Image from 'next/image';
 import MyButton from '@/components/atoms/my-button';
 import PATHS from '@/utils/paths';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { adventures, ClientSchedule } from '@/services/api/adventures';
-import { handleNameActivity } from '@/utils/formatters';
+import {
+  Adventure,
+  adventures,
+  ClientSchedule,
+} from '@/services/api/adventures';
+import { handleActivityImages, handleNameActivity } from '@/utils/formatters';
 import { useCart } from '@/store/useCart';
 import { toast } from 'react-toastify';
 import { useSession } from 'next-auth/react';
@@ -39,8 +43,6 @@ export default function Atividade() {
   const [favorite, setFavorite] = useState(false);
   const [schedule, setSchedule] =
     useState<ClientSchedule>(initialScheduleState);
-
-  console.log('SCHEDULE', schedule);
 
   const query = useQueryClient();
   const session = useSession();
@@ -134,6 +136,8 @@ export default function Atividade() {
     }
   };
 
+  const images = handleActivityImages(fetchedActivity);
+
   return (
     <section className="my-10">
       <div className="relative">
@@ -144,7 +148,7 @@ export default function Atividade() {
         />
 
         <div className="md:hidden">
-          <CarouselImages images={fetchedActivity?.images ?? [{ url: '' }]} />
+          <CarouselImages images={images} />
         </div>
         <ActivityHeader activity={fetchedActivity} />
         <div className="max-sm:hidden grid grid-cols-4 grid-rows-2 gap-4">
@@ -198,7 +202,7 @@ export default function Atividade() {
             src={fetchedActivity?.partner?.logo?.url ?? '/user.png'}
             width={6}
             height={6}
-            className="w-10 h-10 rounded-full object-contain"
+            className="w-10 h-10 rounded-full object-cover"
           />
           <div>
             <MyTypography variant="notification" weight="semibold">
@@ -214,7 +218,7 @@ export default function Atividade() {
           </div>
         </div>
 
-        <div className="mx-6 mt-4 md:hidden">
+        <div className="mx-6 my-4 mt-4 md:hidden">
           <MyTypography variant="subtitle3" weight="bold" className="">
             Descrição da atividade:
           </MyTypography>
@@ -225,7 +229,7 @@ export default function Atividade() {
       </div>
 
       <div className="mx-6">
-        <div className="md:grid md:grid-cols-2 md:gap-8 md:my-4">
+        <div className="md:grid md:grid-cols-2 md:gap-8 my-4">
           <ActivityIncludedItems
             transportIncluded={fetchedActivity?.transportIncluded ?? false}
             itemsIncluded={parsedItems}
@@ -257,7 +261,7 @@ export default function Atividade() {
             />
             <MyButton
               variant="default"
-              className="mt-4 w-full md:hidden"
+              className="mt-8 w-full md:hidden"
               size="lg"
               borderRadius="squared"
               rightIcon={<MyIcon name="seta-direita" className="ml-3" />}

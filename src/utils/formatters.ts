@@ -286,11 +286,7 @@ export const formatIconName = (name: string) => {
     return 'fotografia';
   }
   const accentRegex = /[\u0300-\u036f]/g;
-  const firstLetter = lowerName
-    .charAt(0)
-    .normalize('NFD')
-    .replace(accentRegex, '');
-  return firstLetter + name.slice(1);
+  return lowerName.normalize('NFD').replace(accentRegex, '');
 };
 
 export const selectActivityImage = (activity: Adventure) => {
@@ -300,6 +296,24 @@ export const selectActivityImage = (activity: Adventure) => {
     }
   }
   return `/images/atividades/${activity.typeAdventure}/${activity.typeAdventure}-1.jpeg`;
+};
+
+export const handleActivityImages = (activity: Adventure | undefined) => {
+  if (!activity?.images || activity.images.length === 0) {
+    return [
+      {
+        url: `/images/atividades/${activity?.typeAdventure}/${activity?.typeAdventure}-1.jpeg`,
+      },
+      {
+        url: `/images/atividades/${activity?.typeAdventure}/${activity?.typeAdventure}-2.jpeg`,
+      },
+      {
+        url: `/images/atividades/${activity?.typeAdventure}/${activity?.typeAdventure}-3.jpeg`,
+      },
+    ];
+  }
+
+  return activity.images;
 };
 
 export const formatNotificationText = (text: string) => {

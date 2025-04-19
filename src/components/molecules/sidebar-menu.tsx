@@ -1,25 +1,29 @@
-"use client";
+'use client';
 
-import { useAuthStore } from "@/store/useAuthStore";
-import { notifications } from "@/common/constants/mock";
+import { useAuthStore } from '@/store/useAuthStore';
 import {
   sideBarAdmin,
   sideBarClient,
   sideBarLp,
   sideBarPartnet,
-} from "@/common/constants/sideBar";
-import MyIcon from "@/components/atoms/my-icon";
+} from '@/common/constants/sideBar';
+import MyIcon from '@/components/atoms/my-icon';
 import {
   MyToggleGroup,
   ToggleGroupItem,
-} from "@/components/molecules/my-toggle-group";
-import { cn } from "@/utils/cn";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import React, { useEffect, useMemo } from "react";
-import { authService } from "@/services/api/auth";
-import { signOut, useSession } from "next-auth/react";
-import useLogin from "@/store/useLogin";
+} from '@/components/molecules/my-toggle-group';
+import { cn } from '@/utils/cn';
+import Link from 'next/link';
+import React, { useEffect, useMemo, useState } from 'react';
+import { authService } from '@/services/api/auth';
+import { signOut, useSession } from 'next-auth/react';
+import useLogin from '@/store/useLogin';
+import { useQuery } from '@tanstack/react-query';
+import { useCart } from '@/store/useCart';
+import {
+  Notification,
+  notificationsService,
+} from '@/services/api/notifications';
 
 export default function SidebarMenu({
   closeSidebar,
@@ -29,16 +33,17 @@ export default function SidebarMenu({
   const { user, clearUser } = useAuthStore();
   const { data: session } = useSession();
   const { setSideBarActive, sideBarActive } = useLogin();
+  const [notifications, setNotifications] = useState<Notification[]>([]);
 
   useEffect(() => {
     switch (session?.user?.role) {
-      case "admin":
+      case 'admin':
         setSideBarActive(sideBarAdmin);
         break;
-      case "partner":
+      case 'partner':
         setSideBarActive(sideBarPartnet);
         break;
-      case "customer":
+      case 'customer':
         setSideBarActive(sideBarClient);
         break;
       default:
@@ -47,7 +52,7 @@ export default function SidebarMenu({
   }, [user, session]);
 
   const handleLogout = async () => {
-    await authService.logout(session?.user.refreshToken ?? "");
+    await authService.logout(session?.user.refreshToken ?? '');
     await signOut();
     clearUser();
   };
@@ -56,6 +61,26 @@ export default function SidebarMenu({
     event.stopPropagation();
     closeSidebar();
   };
+
+  const { getCartSize } = useCart();
+
+  const userId = session?.user.id;
+
+  const cartSize = getCartSize(userId ?? '');
+
+  useQuery({
+    queryKey: ['notifications'],
+    queryFn: async () => {
+      const unreadNotifications = await notificationsService.listNotifications({
+        limit: 30,
+        isRead: false,
+      });
+
+      setNotifications(unreadNotifications ?? []);
+      return unreadNotifications;
+    },
+    enabled: Boolean(session?.user),
+  });
 
   return (
     <div className="relative">
@@ -71,11 +96,11 @@ export default function SidebarMenu({
             className="flex w-full items-center justify-start gap-2 rounded-md border-none bg-white p-8 text-start font-normal hover:bg-gray-100 data-[state=on]:text-black data-[state=on]:bg-gray-100"
           >
             <Link
-              href={`${item.link}${item.tab ? `?tab=${item.tab}` : ""}`}
-              className={cn("flex justify-between")}
+              href={`${item.link}${item.tab ? `?tab=${item.tab}` : ''}`}
+              className={cn('flex justify-between')}
               onClick={(e) => {
                 handleCloseSidebar(e);
-                item.label === "Sair" && handleLogout();
+                item.label === 'Sair' && handleLogout();
               }}
             >
               <div className="flex gap-1 items-center">
@@ -83,15 +108,17 @@ export default function SidebarMenu({
                 {item.label}
               </div>
 
-              {item.label === "Notificações" && (
-                <span className="flex items-center justify-center bg-red-400 h-[1.1rem] w-[1.1rem] rounded-full text-white text-xs font-bold">
-                  {notifications?.length ?? 0}
+              {item.label === 'Notificações' && (
+                <span
+                  className={`flex items-center justify-center ${notifications.length > 0 ? 'bg-red-400' : 'bg-slate-300'} h-[1.1rem] w-[1.1rem] rounded-full text-white text-xs font-bold`}
+                >
+                  {notifications.length}
                 </span>
               )}
 
-              {item.label === "Carrinho de Compras" && (
+              {item.label === 'Carrinho de Compras' && (
                 <span className="flex items-center justify-center bg-primary-600 h-[1.1rem] w-[1.1rem] rounded-full text-white text-xs font-bold">
-                  1
+                  {cartSize ?? 0}
                 </span>
               )}
             </Link>

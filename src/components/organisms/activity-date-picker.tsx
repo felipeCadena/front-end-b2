@@ -75,7 +75,7 @@ const ActivityDatePicker = ({
   });
 
   return (
-    <div className="md:w-2/3">
+    <div className="md:w-2/3 mt-8 md:mt-0">
       <div className="px-6 lg:col-span-2 ">
         <div className="max-sm:border-t-[1px] max-sm:border-gray-400/30">
           <MyTypography variant="subtitle3" weight="bold" className="my-4">
