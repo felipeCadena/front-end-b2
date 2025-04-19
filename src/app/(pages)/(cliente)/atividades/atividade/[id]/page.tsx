@@ -116,6 +116,24 @@ export default function Atividade() {
     }
   };
 
+  const handleMobileOrder = () => {
+    if (fetchedActivity) {
+      const adventureOrder = {
+        adventure: fetchedActivity,
+        schedule: {
+          ...schedule,
+          pricePerAdult: fetchedActivity.priceAdult,
+          pricePerChildren: fetchedActivity.priceChildren,
+        },
+      };
+      if (userId) {
+        addToCart(adventureOrder, userId);
+        router.push(PATHS['carrinho']);
+        toast.success('Atividade adicionada ao carrinho!');
+      }
+    }
+  };
+
   return (
     <section className="my-10">
       <div className="relative">
@@ -243,7 +261,7 @@ export default function Atividade() {
               size="lg"
               borderRadius="squared"
               rightIcon={<MyIcon name="seta-direita" className="ml-3" />}
-              onClick={() => router.push(PATHS.carrinho)}
+              onClick={handleMobileOrder}
             >
               Garantir sua vaga
             </MyButton>

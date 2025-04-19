@@ -129,7 +129,7 @@ const MobileActivitiesOrderSummary = ({
                       </div>
                     </div>
                   </div>
-                  <div className="flex flex-col py-4">
+                  <div className="flex flex-col gap-1 py-4">
                     <MyTypography
                       variant="label"
                       weight="bold"
@@ -147,8 +147,8 @@ const MobileActivitiesOrderSummary = ({
                       {formatPrice(schedule.pricePerAdult)}
                     </MyTypography>
                     {schedule.qntChildren > 0 && (
-                      <>
-                        <hr className="w-[20%]" />
+                      <div className="gap-1 w-fit flex flex-col items-center">
+                        <hr className="my-1 w-[50%]" />
                         <MyTypography
                           variant="body"
                           weight="regular"
@@ -158,7 +158,7 @@ const MobileActivitiesOrderSummary = ({
                           {schedule.qntChildren > 1 ? 'Crianças' : 'Criança'} x{' '}
                           {formatPrice(schedule.pricePerChildren ?? '0')}
                         </MyTypography>
-                      </>
+                      </div>
                     )}
                   </div>
 
