@@ -49,6 +49,7 @@ import Agua from './elements/agua';
 import Combustivel from './elements/combustivel';
 import Alimentacao from './elements/alimentacao';
 import Guia from './elements/guia';
+import MobileDuracao from './elements/mobile-duracao';
 import Duracao from './elements/duracao';
 import Compartilhar from './elements/compartilhar';
 import SetaDireita from './elements/seta-direita';
@@ -180,6 +181,7 @@ const IconsMap = {
   alimentacao: <Alimentacao />,
   guia: <Guia />,
   duracao: <Duracao />,
+  mobileDuracao: <MobileDuracao />,
   compartilhar: <Compartilhar />,
   'seta-direita': <SetaDireita />,
   perfil: <Perfil />,

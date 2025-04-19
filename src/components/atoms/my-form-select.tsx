@@ -20,11 +20,13 @@ type Props<T extends FieldValues> = {
   readonly name: Path<T>;
   readonly options: { value: string; label: string }[];
   readonly label?: string;
+  readonly disabled?: boolean;
 };
 
 const MyFormSelect = <T extends FieldValues>({
   form,
   name,
+  disabled = false,
   label = '',
   options,
 }: Props<T>) => {
@@ -40,8 +42,8 @@ const MyFormSelect = <T extends FieldValues>({
             defaultValue={field.value.toString()}
           >
             <FormControl>
-              <SelectTrigger className="w-[80px]">
-                <SelectValue defaultValue="1x" />
+              <SelectTrigger disabled={disabled} className="w-[200px]">
+                <SelectValue defaultValue={`1x de ${options[0]}`} />
               </SelectTrigger>
             </FormControl>
             <SelectContent>

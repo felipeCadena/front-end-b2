@@ -5,17 +5,28 @@ import { FormData } from '@/app/(pages)/(cliente)/finalizar-compra/page';
 import { UseFormReturn } from 'react-hook-form';
 import MyFormInput from '../atoms/my-form-input';
 import MyFormSelect from '../atoms/my-form-select';
+import { formatPrice } from '@/utils/formatters';
+import { AddToCartAdventure } from '@/services/api/adventures';
 
 type CardPaymentOptionProps = {
   form: UseFormReturn<FormData>;
+  userCart: AddToCartAdventure[];
 };
 
-const CardPaymentOption = ({ form }: CardPaymentOptionProps) => {
+const CardPaymentOption = ({ form, userCart }: CardPaymentOptionProps) => {
+  const activityPrice = userCart.map(
+    (act) =>
+      Number(act.schedule.pricePerAdult) * act.schedule.qntAdults +
+      Number(act.schedule.pricePerChildren) * act.schedule.qntChildren
+  );
+
+  const totalPrice = activityPrice.reduce((acc, price) => acc + price, 0);
+
   const instalmentOptions = [
-    { value: '1', label: '1x' },
-    { value: '2', label: '2x' },
-    { value: '3', label: '3x' },
-    { value: '4', label: '4x' },
+    { value: '1', label: `1x de ${formatPrice(totalPrice)}` },
+    { value: '2', label: `2x de ${formatPrice(Number(totalPrice) / 2)}` },
+    { value: '3', label: `3x de ${formatPrice(Number(totalPrice) / 3)}` },
+    { value: '4', label: `4x de ${formatPrice(Number(totalPrice) / 4)}` },
   ];
   return (
     <div className="max-sm:mt-8 md:flex md:flex-row-reverse md:items-center md:gap-8 md:col-span-2">
@@ -40,6 +51,7 @@ const CardPaymentOption = ({ form }: CardPaymentOptionProps) => {
 
         <MyFormSelect
           form={form}
+          disabled={userCart.length > 1}
           label="Parcelas"
           name="installmentCount"
           options={instalmentOptions}

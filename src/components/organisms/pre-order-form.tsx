@@ -3,13 +3,11 @@ import MyFormInput from '../atoms/my-form-input';
 import { UseFormReturn } from 'react-hook-form';
 import { FormData } from '@/app/(pages)/(cliente)/finalizar-compra/page';
 
-type PixOrBankSlipPaymentOptionProps = {
+type PreOrderFormProps = {
   form: UseFormReturn<FormData>;
 };
 
-const PixOrBankSlipPaymentOption = ({
-  form,
-}: PixOrBankSlipPaymentOptionProps) => {
+const PreOrderForm = ({ form }: PreOrderFormProps) => {
   return (
     <div className="space-y-4 max-sm:my-10 md:w-full">
       <div className="flex max-sm:flex-col gap-4 md:mt-4">
@@ -57,4 +55,4 @@ const PixOrBankSlipPaymentOption = ({
   );
 };
 
-export default PixOrBankSlipPaymentOption;
+export default PreOrderForm;

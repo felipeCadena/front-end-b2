@@ -46,27 +46,29 @@ const ActivitiesOrderSummary = ({
     <section>
       {activities &&
         activities.map(({ adventure, schedule }, index: number) => (
-          <div className="grid grid-cols-4 gap-4 mt-8 mb-16" key={index}>
-            <div className="col-span-1 relative z-10 overflow-hidden min-w-[8rem] min-h-full hover:cursor-pointer rounded-md">
+          <div className="md:grid md:grid-cols-4 gap-4 mt-8 mb-16" key={index}>
+            <div className="md:col-span-1 relative z-10 overflow-hidden md:min-w-[8rem] md:min-h-full hover:cursor-pointer rounded-md md:flex">
               <Image
                 alt="sample_file"
                 src={selectActivityImage(adventure)}
                 width={265}
                 height={265}
-                className="w-[265px] h-[265px] object-cover"
+                className="md:w-[265px] md:h-[265px] w-[114px] h-[106px] object-cover"
               />
             </div>
             <div className="col-span-3 flex flex-col justify-between gap-2">
               <div className="w-full flex flex-col">
-                <div className="flex justify-between items-center w-full mr-4 mb-1">
-                  <div className="flex items-center gap-4 ">
-                    <MyBadge
-                      className="font-medium text-nowrap p-1"
-                      variant="outline"
-                    >
-                      {handleNameActivity(adventure.typeAdventure)}
-                    </MyBadge>
-                    <StarRating rating={adventure.averageRating} />
+                <div className="flex justify-between md:items-center items-start w-full mr-4 mb-1">
+                  <div className="flex md:flex-row flex-col md:items-center gap-4 ">
+                    <div className="flex justify-start">
+                      <MyBadge
+                        className="font-medium text-nowrap p-1 mr-2"
+                        variant="outline"
+                      >
+                        {handleNameActivity(adventure.typeAdventure)}
+                      </MyBadge>
+                      <StarRating rating={adventure.averageRating} />
+                    </div>
                     <div className="flex gap-2 items-center my-1">
                       <Image
                         alt="foto parceiro"
@@ -108,7 +110,7 @@ const ActivitiesOrderSummary = ({
               >
                 <div className="absolute inset-y-0 left-0 w-3 bg-primary-900 rounded-l-lg"></div>
 
-                <div className="w-full flex items-center justify-between gap-1 text-nowrap">
+                <div className="w-full flex md:flex-row flex-col md:items-center justify-between gap-1 text-nowrap">
                   <div className="flex flex-col">
                     <MyTypography
                       variant="label"
@@ -122,7 +124,7 @@ const ActivitiesOrderSummary = ({
                       weight="regular"
                       className="ml-3"
                     >
-                      {getData(schedule.scheduleDate.toString())} -{' '}
+                      {getData(schedule.scheduleDate?.toString() as string)} -{' '}
                       {formatTime(schedule.scheduleTime)}
                     </MyTypography>
                   </div>

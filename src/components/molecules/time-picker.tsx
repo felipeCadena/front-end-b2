@@ -7,7 +7,6 @@ import { cn } from '@/utils/cn';
 import MyTypography from '../atoms/my-typography';
 import { MyScrollArea } from '../atoms/my-scroll-area';
 import Time from '../atoms/my-icon/elements/time';
-import { useQuery } from '@tanstack/react-query';
 
 interface TimePickerModalProps {
   iconColor?: string;
@@ -20,7 +19,7 @@ export default function TimePickerModal({
   iconColor,
   selectedTime,
   setSelectedTime,
-  availableActivityTimes,
+  availableActivityTimes = [],
 }: TimePickerModalProps) {
   const [open, setOpen] = useState(false);
   const [initialTime, setInitialTime] = useState('');
@@ -97,7 +96,7 @@ export default function TimePickerModal({
             className="h-48 w-36 flex items-center justify-center rounded-lg overflow-hidden"
           >
             <div className="flex flex-col justify-center items-center min-h-48 w-full ">
-              {availableActivityTimes.map((time) => (
+              {availableActivityTimes?.map((time) => (
                 <div
                   key={time}
                   data-value={time}

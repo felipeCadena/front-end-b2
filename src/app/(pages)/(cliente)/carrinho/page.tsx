@@ -1,37 +1,34 @@
-"use client";
+'use client';
 
-import { activities } from "@/common/constants/mock";
-import MyButton from "@/components/atoms/my-button";
-import MyIcon from "@/components/atoms/my-icon";
-import MyTypography from "@/components/atoms/my-typography";
-import { MyDatePicker } from "@/components/molecules/my-date-picker";
-import TimePickerModal from "@/components/molecules/time-picker";
-import ActivitiesDetails from "@/components/organisms/activities-details";
-import PeopleSelector from "@/components/organisms/people-selector";
-import ShoppingDetails from "@/components/organisms/shopping-details";
-import { adventures } from "@/services/api/adventures";
-import PATHS from "@/utils/paths";
-import { useQuery } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
-import React from "react";
+import { activities } from '@/common/constants/mock';
+import MyButton from '@/components/atoms/my-button';
+import MyIcon from '@/components/atoms/my-icon';
+import MyTypography from '@/components/atoms/my-typography';
+import { MyDatePicker } from '@/components/molecules/my-date-picker';
+import TimePickerModal from '@/components/molecules/time-picker';
+import ActivitiesDetails from '@/components/organisms/activities-details';
+import ActivitiesOrderSummary from '@/components/organisms/activities-order-summary';
+import MobileActivitiesOrderSummary from '@/components/organisms/mobile-activity-order-summary';
+import PeopleSelector from '@/components/organisms/people-selector';
+import ShoppingDetails from '@/components/organisms/shopping-details';
+import { adventures } from '@/services/api/adventures';
+import { useCart } from '@/store/useCart';
+import PATHS from '@/utils/paths';
+import { useQuery } from '@tanstack/react-query';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import React from 'react';
 
 export default function Carrinho() {
   const router = useRouter();
-  const [selectedDates, setSelectedDates] = React.useState<Date[]>([]); // Estado para armazenar as datas selecionadas
-  const [duration, setDuration] = React.useState("");
+  const session = useSession();
 
-  const { data: activity } = useQuery({
-    queryKey: ["activity"],
-    queryFn: () => adventures.getAdventureById(Number(activities[0].id)),
-  });
+  const userId = session.data?.user.id;
 
-  // const activity = activities.filter((activity) =>
-  //   activity.title.includes("Atividade 2")
-  // );
+  const { carts } = useCart();
+  const userCart = carts.find((cart) => cart.userId === userId);
 
-  const activityDetails = activities.find((activity) =>
-    activity.title.includes("Atividade 1")
-  );
+  console.log(userCart);
 
   return (
     <section className="mx-4 my-4 -z-10 md:hidden">
@@ -45,27 +42,7 @@ export default function Carrinho() {
           Carrinho de compras
         </MyTypography>
       </div>
-      <ActivitiesDetails activities={activity ? [activity] : []} />
-
-      <div className="border-t-[1px] border-gray-400/30">
-        <MyTypography variant="subtitle3" weight="bold" className="my-4">
-          Escolha o dia e horário para realizar a atividade.
-        </MyTypography>
-
-        <div className="border space-y-6 border-gray-300 rounded-lg py-8 px-5">
-          <MyDatePicker
-            selectedDates={selectedDates}
-            setSelectedDates={setSelectedDates}
-          />
-
-          <TimePickerModal value={duration} onChange={setDuration} />
-
-          <PeopleSelector />
-        </div>
-      </div>
-
-      <ShoppingDetails activityDetails={activityDetails} />
-
+      <MobileActivitiesOrderSummary activities={userCart?.cart ?? []} />
       <MyButton
         variant="outline-neutral"
         borderRadius="squared"
@@ -81,7 +58,7 @@ export default function Carrinho() {
         borderRadius="squared"
         size="lg"
         className="w-full mt-6"
-        onClick={() => router.push(PATHS["finalizar-compra"])}
+        onClick={() => router.push(PATHS['finalizar-compra'])}
       >
         Finalizar Pedido
       </MyButton>

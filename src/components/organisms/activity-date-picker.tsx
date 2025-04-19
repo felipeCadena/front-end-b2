@@ -9,6 +9,7 @@ import {
   agruparRecorrencias,
   getWeeklyRecurrenceTime,
 } from '@/utils/formatters';
+import { useSession } from 'next-auth/react';
 
 export type Recurrence = {
   adventureId: number;
@@ -47,7 +48,7 @@ const ActivityDatePicker = ({
   setSchedule,
   price,
   isChildrenAllowed,
-  activityRecurrence,
+  activityRecurrence = [],
 }: ActivityDatePickerProps) => {
   const [selectedDate, setSelectedDate] = useState<Date>();
   const [selectedTime, setSelectedTime] = useState('');

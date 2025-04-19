@@ -1,8 +1,21 @@
 import { api } from '@/libs/api';
 const axios = require('axios');
 
+export type LoggedUser = {
+  cpf: string;
+  email: string;
+  id: string;
+  name: string;
+  phone: string;
+  photo: {
+    mimetype: string;
+    url: string;
+  };
+  role: string;
+};
+
 export const users = {
-  getUserLogged: async () => {
+  getUserLogged: async (): Promise<LoggedUser> => {
     try {
       const response = await api.get('/users');
       return response.data;
