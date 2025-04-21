@@ -281,12 +281,12 @@ export const formatDificultyTag = (difficulty: number) => {
 };
 
 export const formatIconName = (name: string) => {
-  const lowerName = name.toLowerCase();
+  const lowerName = name?.toLowerCase();
   if (lowerName === 'fotos' || lowerName === 'foto') {
     return 'fotografia';
   }
   const accentRegex = /[\u0300-\u036f]/g;
-  return lowerName.normalize('NFD').replace(accentRegex, '');
+  return lowerName?.normalize('NFD').replace(accentRegex, '');
 };
 
 export const selectActivityImage = (activity: Adventure) => {
@@ -299,7 +299,14 @@ export const selectActivityImage = (activity: Adventure) => {
 };
 
 export const handleActivityImages = (activity: Adventure | undefined) => {
-  if (!activity?.images || activity.images.length === 0) {
+  if (!activity) {
+    return [
+      {
+        url: `/images/atividades/ar/ar-1.jpeg`,
+      },
+    ];
+  }
+  if (!activity?.images || activity?.images.length === 0) {
     return [
       {
         url: `/images/atividades/${activity?.typeAdventure}/${activity?.typeAdventure}-1.jpeg`,

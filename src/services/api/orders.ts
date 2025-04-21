@@ -1,12 +1,12 @@
-import { api } from "@/libs/api";
+import { api } from '@/libs/api';
 
 export const ordersAdventuresService = {
   getAll: async () => {
     try {
-      const response = await api.get("/ordersAdventures");
+      const response = await api.get('/ordersAdventures');
       return response.data;
     } catch (error) {
-      console.error("Error fetching all orders:", error);
+      console.error('Error fetching all orders:', error);
       throw error;
     }
   },
@@ -21,12 +21,13 @@ export const ordersAdventuresService = {
     }
   },
 
-  create: async (data: any) => {
+  create: async (data: any, userIP: string) => {
     try {
-      const response = await api.post("/ordersAdventures", data);
+      api.defaults.headers.common['x-user-ip'] = userIP;
+      const response = await api.post('/ordersAdventures', data);
       return response.data;
     } catch (error) {
-      console.error("Error creating order:", error);
+      console.error('Error creating order:', error);
       throw error;
     }
   },

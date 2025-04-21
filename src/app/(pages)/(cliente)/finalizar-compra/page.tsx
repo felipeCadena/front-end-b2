@@ -20,6 +20,7 @@ import { ordersAdventuresService } from '@/services/api/orders';
 import { toast } from 'react-toastify';
 import { useQuery } from '@tanstack/react-query';
 import { users } from '@/services/api/users';
+import { AxiosError } from 'axios';
 
 const formSchema = z.object({
   paymentMethod: z.string().optional(),
@@ -74,7 +75,7 @@ const paymentDefaultValues = {
     cpfCnpj: '',
     postalCode: '',
     addressNumber: '000',
-    addressComplement: '',
+    addressComplement: null,
     phone: '4738010919',
     mobilePhone: '',
   },
@@ -87,11 +88,16 @@ export default function FinalizarCompra() {
   const [selectedPayment, setSelectedPayment] = useState<string>('');
   const [isReadyToPay, setIsReadyToPay] = useState(false);
 
-  const { carts } = useCart();
+  const { carts, clearCart } = useCart();
 
   const { data: loggedUser } = useQuery({
     queryKey: ['logged_user'],
     queryFn: () => users.getUserLogged(),
+  });
+
+  const { data: userIP = '' } = useQuery({
+    queryKey: ['user_ip_address'],
+    queryFn: () => users.getIP(),
   });
 
   const userId = loggedUser?.id ?? '';
@@ -100,9 +106,14 @@ export default function FinalizarCompra() {
 
   const purchaseOrder = userCart?.cart.map((item) => {
     if (item) {
+      const [hour, minute] = item.schedule.scheduleTime.split(':');
+      const scheduleDate = new Date(item.schedule.scheduleDate as Date);
+      scheduleDate.setUTCHours(Number(hour));
+      scheduleDate.setUTCMinutes(Number(minute));
+
       const formatOrder = {
         adventureId: item.adventure.id,
-        scheduleDate: new Date(item.schedule.scheduleDate as Date),
+        scheduleDate,
         qntAdults: item.schedule.qntAdults,
         qntChildren: item.schedule.qntChildren,
         qntBabies: item.schedule.qntBabies,
@@ -142,6 +153,7 @@ export default function FinalizarCompra() {
       form.reset({
         ...paymentDefaultValues,
         creditCardHolderInfo: {
+          ...paymentDefaultValues.creditCardHolderInfo,
           name: loggedUser.name,
           email: loggedUser.email,
           phone: loggedUser.phone,
@@ -154,15 +166,47 @@ export default function FinalizarCompra() {
   }, [userId]);
 
   const handleSubmit = async (formData: FormData) => {
+    const formattedOrder = {
+      ...formData,
+      installmentCount: Number(formData.installmentCount),
+      creditCard: {
+        ...formData.creditCard,
+        number: formData.creditCard?.number?.replaceAll(' ', ''),
+      },
+      creditCardHolderInfo: {
+        ...formData.creditCardHolderInfo,
+        cpfCnpj: formData.creditCardHolderInfo?.cpfCnpj
+          .replaceAll('-', '')
+          .replaceAll('/', '')
+          .replaceAll('.', ''),
+        postalCode: formData.creditCardHolderInfo?.postalCode.replaceAll(
+          '.',
+          ''
+        ),
+      },
+    };
+    console.log('ORDER-->', formattedOrder);
     try {
       if (selectedPayment === 'BOLETO' || selectedPayment === 'PIX') {
-        await ordersAdventuresService.create(purchaseOrder);
-        toast.success('Pedido enviado!');
-        return console.log('Enviado');
+        const { data } = await ordersAdventuresService.create(
+          formattedOrder,
+          userIP
+        );
+        toast.success('Pedido enviado com sucesso!');
+        return data;
       }
 
-      await ordersAdventuresService.create(formData);
+      await ordersAdventuresService.create(formattedOrder, userIP);
+      toast.success('Pedido enviado com sucesso!');
+      clearCart(userId);
+      router.push(PATHS.atividades);
     } catch (error) {
+      if (error instanceof AxiosError) {
+        if (error.status === 400) {
+          toast.error('Todos os campos devem ser preenchidos!');
+          return;
+        }
+      }
       toast.error('Um erro inesperado ocorreu!');
       console.error(error);
     }

@@ -1,5 +1,5 @@
 import { api } from '@/libs/api';
-const axios = require('axios');
+import axios from 'axios';
 
 export type LoggedUser = {
   cpf: string;
@@ -85,6 +85,16 @@ export const users = {
       return response.data;
     } catch (error) {
       console.error('Error deleting media:', error);
+      throw error;
+    }
+  },
+  getIP: async () => {
+    try {
+      const { data } = await axios.get('https://api.ipify.org?format=json');
+
+      return data.ip;
+    } catch (error) {
+      console.error('Failed to fetch IP address', error);
       throw error;
     }
   },
