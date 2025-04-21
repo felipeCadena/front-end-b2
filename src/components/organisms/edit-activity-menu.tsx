@@ -25,6 +25,7 @@ export type EditSection =
 
 interface ActivityEditMenuProps {
   onEdit: (section: EditSection) => void;
+  isRepeatable?: boolean;
 }
 
 const menuItems = [
@@ -66,7 +67,10 @@ const menuItems = [
   },
 ];
 
-export function ActivityEditMenu({ onEdit }: ActivityEditMenuProps) {
+export function ActivityEditMenu({
+  onEdit,
+  isRepeatable = false,
+}: ActivityEditMenuProps) {
   return (
     <MyDropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -87,18 +91,20 @@ export function ActivityEditMenu({ onEdit }: ActivityEditMenuProps) {
           sideOffset={5}
           align="center"
         >
-          {menuItems.map((item) => (
-            <DropdownMenuItem
-              key={item.section}
-              className="flex items-center gap-2 px-2 py-4 cursor-pointer hover:bg-gray-200"
-              onSelect={() => onEdit(item.section)}
-            >
-              {item.icon}
-              <MyTypography variant="body-big" weight="medium">
-                {item.label}
-              </MyTypography>
-            </DropdownMenuItem>
-          ))}
+          {menuItems
+            .filter((menu) => (isRepeatable ? menu.label != "Horários" : menu))
+            .map((item) => (
+              <DropdownMenuItem
+                key={item.section}
+                className="flex items-center gap-2 px-2 py-4 cursor-pointer hover:bg-gray-200"
+                onSelect={() => onEdit(item.section)}
+              >
+                {item.icon}
+                <MyTypography variant="body-big" weight="medium">
+                  {item.label}
+                </MyTypography>
+              </DropdownMenuItem>
+            ))}
         </DropdownMenuContent>
       </DropdownMenuPortal>
     </MyDropdownMenu>

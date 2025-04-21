@@ -4,28 +4,57 @@ import * as React from "react";
 import { DayPicker } from "react-day-picker";
 import type { DayPickerProps } from "react-day-picker";
 import { cn } from "@/utils/cn";
-import { ptBR } from "react-day-picker/locale";
-import { format, parseISO } from "date-fns";
+import { ptBR, se } from "react-day-picker/locale";
+import { format, isSameDay, parseISO } from "date-fns";
 import { Dispatch, SetStateAction } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { schedules } from "@/services/api/schedules";
+import { toast } from "react-toastify";
+import { partnerService } from "@/services/api/partner";
+import { useParams } from "next/navigation";
+import {
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  MyDropdownMenu,
+} from "../atoms/my-drop-menu";
+import {
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  MyDialog,
+} from "../molecules/my-dialog";
+import MyButton from "../atoms/my-button";
 
 type CalendarProps = {
   markedDates?: Date[];
+  formData: any;
   className?: string;
 } & Omit<DayPickerProps, "mode" | "selected" | "onSelect">;
 
 function CalendarAvailability({
+  formData,
   showOutsideDays = true,
   classNames,
   className,
   ...props
 }: CalendarProps) {
   const [isDesktop, setIsDesktop] = React.useState<boolean>(false);
+  const { id } = useParams();
+
+  const allDates = formData?.schedules
+    .flatMap((item) => item?.dates || [])
+    .filter(Boolean);
 
   const [selected, setSelected] = React.useState<Date | undefined>(undefined);
-  const [date, setDate] = React.useState<Date>(new Date());
-  const [dates, setDates] = React.useState<Date[]>([]);
+  const [dates, setDates] = React.useState<Date[]>(allDates ?? []);
+
+  const [selectedDate, setSelectedDate] = React.useState<Date | undefined>(
+    undefined
+  );
+  const [isDialogOpen, setIsDialogOpen] = React.useState(false);
+  const [dateAvailable, setDateAvailable] = React.useState(false);
 
   React.useEffect(() => {
     const checkScreenSize = () => {
@@ -39,27 +68,61 @@ function CalendarAvailability({
   }, []);
 
   useQuery({
-    queryKey: ["schedules"],
+    queryKey: ["allSchedulesByActivity"],
     queryFn: async () => {
-      const reservations = await schedules.getSchedules({ isCanceled: false });
+      const reservations = await partnerService.getMySchedules({
+        adventureId: id as string,
+      });
+      console.log(reservations);
       if (reservations) {
-        const bookedDates = reservations.data.map((item: any) =>
+        const bookedDates = reservations.map((item: any) =>
           parseISO(item.datetime)
         );
-
         setDates(bookedDates);
       }
+      return reservations ?? [];
     },
   });
 
-  const handleDayClick = (date: Date, modifiers: any) => {
-    if (modifiers.booked) {
-      setSelected(date);
+  console.log(allDates);
+  console.log(formData);
+
+  const isDateAvailable = (date: Date) => {
+    return dates.some(
+      (d) => format(d, "yyyy-MM-dd") === format(date, "yyyy-MM-dd")
+    );
+  };
+
+  const handleAvailabilityChange = async (selected: any) => {
+    if (!selected) {
+      toast.error("Selecione uma data disponível");
+      return;
     }
+
+    const isAvailable = !isDateAvailable(selected);
+    console.log("selected", selected);
+    console.log("isAvailable", isAvailable);
+
+    const schedule = {
+      datetime: selected.toISOString(),
+      isAvailable: true,
+    };
+
+    console.log(schedule);
+
+    // const avaliable = await partnerService.createSchedule(Number(id), schedule);
+  };
+
+  const handleDayClick = (date: Date, modifiers: any, e: React.MouseEvent) => {
+    e.preventDefault();
+    setSelected(date);
+    setSelectedDate(date);
+    setDateAvailable(modifiers.booked || false);
+    setIsDialogOpen(true);
   };
 
   return (
-    <div>
+    <div className="">
       <DayPicker
         mode="single"
         selected={selected}
@@ -74,7 +137,7 @@ function CalendarAvailability({
               weekday: "long",
             });
             return isDesktop
-              ? fullName.replace("-feira", "").split(" ")[0]
+              ? fullName.replace("-feira", "")
               : fullName.substring(0, 3);
           },
           formatCaption: (month) => {
@@ -87,15 +150,22 @@ function CalendarAvailability({
         }}
         modifiers={{
           booked: dates.map((act) => act),
+          // selected: selected,
+          // disabled: (date) => !isDateAvailable(date),
         }}
         modifiersClassNames={{
-          booked:
-            "bg-primary-800 rounded-lg border border-primary-600 text-primary-600 relative after:content-[''] after:w-2 after:h-2 after:border-2 after:border-secondary-600 after:rounded-full after:absolute after:top-1/4 after:left-2 md:after:top-1/3 md:after:left-20",
+          booked: "rounded-lg bg-primary-600 text-white relative",
+          selected: "rounded-lg bg-primary-800 text-primary-600 relative",
         }}
         styles={{
-          months: { display: "flex", justifyContent: "center", width: "100%" },
+          months: {
+            display: "flex",
+            justifyContent: "center",
+            width: "100%",
+            textTransform: "capitalize",
+          },
           day: { width: "40px", height: "40px" },
-          weekday: { width: "40px" },
+          weekday: { width: "40px", textTransform: "capitalize" },
           caption: { width: "100%" },
           table: {
             width: "100%",
@@ -160,6 +230,49 @@ function CalendarAvailability({
         }}
         {...props}
       />
+
+      <MyDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="max-w-sm">
+          <DialogHeader>
+            <DialogTitle>
+              <p className="mt-2 text-gray-600">
+                {isDateAvailable(selectedDate || new Date())
+                  ? "Deseja tornar esta data indisponível?"
+                  : "Deseja tornar esta data disponível?"}
+              </p>
+            </DialogTitle>
+          </DialogHeader>
+
+          <div className="py-4">
+            <p className="text-gray-700">
+              Data: {format(selectedDate || new Date(), "dd/MM/yyyy")}
+            </p>
+          </div>
+
+          <DialogFooter>
+            <div className="flex gap-2 w-full">
+              <MyButton
+                variant="outline-neutral"
+                borderRadius="squared"
+                size="lg"
+                className="w-full"
+                onClick={() => setIsDialogOpen(false)}
+              >
+                Cancelar
+              </MyButton>
+              <MyButton
+                variant="default"
+                borderRadius="squared"
+                size="lg"
+                className="w-full"
+                onClick={() => handleAvailabilityChange(selectedDate)}
+              >
+                Confirmar
+              </MyButton>
+            </div>
+          </DialogFooter>
+        </DialogContent>
+      </MyDialog>
     </div>
   );
 }

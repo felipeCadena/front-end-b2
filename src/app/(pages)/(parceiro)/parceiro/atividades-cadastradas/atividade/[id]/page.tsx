@@ -4,26 +4,23 @@ import MyIcon, { IconsMapTypes } from "@/components/atoms/my-icon";
 import MyTypography from "@/components/atoms/my-typography";
 import CarouselImages from "@/components/organisms/carousel-images";
 import { useParams, useRouter } from "next/navigation";
-import React, { useEffect } from "react";
+import React from "react";
 import MyBadge from "@/components/atoms/my-badge";
 import Image from "next/image";
-import MyButton from "@/components/atoms/my-button";
-import { album, mockAlbum } from "@/common/constants/mock";
-import Edit from "@/components/atoms/my-icon/elements/edit";
 import ModalAlert from "@/components/molecules/modal-alert";
 import { useAlert } from "@/hooks/useAlert";
-import { adventures, AdventureSchedule } from "@/services/api/adventures";
+import { adventures } from "@/services/api/adventures";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { formatAddress, handleNameActivity } from "@/utils/formatters";
 import { ActivityEditMenu } from "@/components/organisms/edit-activity-menu";
-import PATHS from "@/utils/paths";
 
 export type EditSection =
   | "basic"
   | "schedule"
   | "location"
   | "pricing"
-  | "images";
+  | "images"
+  | "availability";
 
 export default function Atividade() {
   const router = useRouter();
@@ -95,6 +92,7 @@ export default function Atividade() {
       hoursBeforeCancellation: activity.hoursBeforeCancellation,
       isRepeatable: activity.isRepeatable,
       images: activity.images,
+      schedules: activity.schedules,
       recurrences: activity.recurrence
         ? Object.values(
             activity.recurrence.reduce(
@@ -249,7 +247,10 @@ export default function Atividade() {
               </div>
             </div>
             <div className="max-sm:hidden">
-              <ActivityEditMenu onEdit={handleEdit} />
+              <ActivityEditMenu
+                onEdit={handleEdit}
+                isRepeatable={activity?.isRepeatable}
+              />
             </div>
           </div>
 

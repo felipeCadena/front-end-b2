@@ -45,9 +45,8 @@ const CarouselActivity = ({
         <Image
           alt="Fotos da atividade"
           src={selectActivityImage(activity)}
-          width={250}
-          height={300}
-          className="w-full md:w-[250px] h-[225px] object-cover"
+          fill
+          className="object-cover"
         />
         {type !== "parceiro" && isFavorite ? (
           <MyIcon

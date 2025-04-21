@@ -12,12 +12,11 @@ function fileToBase64(file: File): Promise<string> {
 
 export interface Recurrence {
   recurrenceWeekly?: string;
-  recurrenceMonthly?: string;
   recurrenceHour: string;
 }
 
 export interface DateOption {
-  datetime: Date;
+  datetime: string;
   isAvailable: boolean;
 }
 
@@ -66,6 +65,8 @@ export interface AdventureState {
   hoursBeforeCancellation: number;
   isRepeatable: boolean;
   recurrences: Recurrence[];
+
+  availableDates: DateOption[] | null;
 
   selectionBlocks: SelectionBlock[];
 
@@ -117,6 +118,7 @@ const initialState = {
   hoursBeforeCancellation: 1,
   isRepeatable: false,
   recurrences: [],
+  availableDates: [],
   tempImages: [],
   address: "",
 

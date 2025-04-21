@@ -64,6 +64,7 @@ export default function InformacoesAtividade({
     title,
     typeAdventure,
     coordinates,
+    availableDates,
     setAdventureData,
     clearAdventure,
   } = useAdventureStore();
@@ -327,6 +328,10 @@ export default function InformacoesAtividade({
 
       const adventureId = adventureResponse.id;
 
+      // Se a atividade não for repetida, cria os horários
+      if (!isRepeatable && availableDates) {
+        await partnerService.createMoreSchedule(adventureId, availableDates);
+      }
       // 3. Converte base64 para Blob e cria estrutura dos arquivos
       const files = await Promise.all(
         tempImages.map(async (base64Image, index) => {

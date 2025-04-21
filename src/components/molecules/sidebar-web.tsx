@@ -23,7 +23,7 @@ import useLogin from '@/store/useLogin';
 
 export default function SidebarMenuWeb({}) {
   const pathname = usePathname();
-  const { email, setSideBarActive, sideBarActive } = useLogin();
+  const { setSideBarActive, sideBarActive } = useLogin();
   const [notifications, setNotifications] = useState<Notification[]>([]);
 
   const { user, clearUser } = useAuthStore();

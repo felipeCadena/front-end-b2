@@ -7,6 +7,7 @@ import MyTextInput from "../atoms/my-text-input";
 import MyIcon from "../atoms/my-icon";
 import { useAdventureStore } from "@/store/useAdventureStore";
 import { useEditAdventureStore } from "@/store/useEditAdventureStore";
+import { toast } from "react-toastify";
 
 interface AddressData {
   addressStreet: string;
@@ -27,7 +28,6 @@ interface LocationData {
   } | null;
 }
 function extractAddressComponents(data: any) {
-  const components = data.address_components;
   const address: AddressData = {
     addressStreet: "",
     addressPostalCode: "",
@@ -38,6 +38,13 @@ function extractAddressComponents(data: any) {
     addressState: "",
     addressCountry: "",
   };
+
+  if (!data.address_components) {
+    console.error("No address components found");
+    toast.error("Endereço não encontrado. Preencha o endereço completo.");
+    return address;
+  }
+  const components = data.address_components;
 
   components.forEach((comp: any) => {
     if (comp.types.includes("street_number"))

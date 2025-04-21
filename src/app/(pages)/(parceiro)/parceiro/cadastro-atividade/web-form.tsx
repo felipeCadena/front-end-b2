@@ -31,6 +31,7 @@ import { cn } from "@/utils/cn";
 import { format } from "date-fns";
 import {
   AdventureState,
+  DateOption,
   Recurrence,
   TypeAdventure,
   useAdventureStore,
@@ -44,6 +45,7 @@ import {
 } from "@/utils/formatters";
 import AutocompleteCombobox from "@/components/organisms/google-autocomplete";
 import { toast } from "react-toastify";
+import { MySingleDatePicker } from "@/components/molecules/my-single-date-picker";
 
 interface AddressData {
   addressStreet: string;
@@ -98,10 +100,15 @@ export default function WebForm({
     coordinates,
     address,
     isRepeatable,
+    recurrences,
+    availableDates,
     addTempImage,
   } = useAdventureStore();
 
   const inputRef = React.useRef<HTMLInputElement>(null);
+
+  console.log(recurrences);
+  console.log(availableDates);
 
   // Atualiza as datas para um bloco específico
   const handleDateChange = (blockId: number, dates: Date[]) => {
@@ -129,16 +136,16 @@ export default function WebForm({
         }
 
         // Adiciona dias do mês se existirem
-        if (block.dates.length > 0) {
-          recurrence.recurrenceMonthly = block.dates
-            .map((date) => format(date, "dd"))
-            .map((day) => parseInt(day))
-            .sort((a, b) => a - b)
-            .join(",");
-        }
+        // if (block.dates.length > 0) {
+        //   recurrence.recurrenceMonthly = block.dates
+        //     .map((date) => format(date, "dd"))
+        //     .map((day) => parseInt(day))
+        //     .sort((a, b) => a - b)
+        //     .join(",");
+        // }
 
         // Só adiciona a recorrência se tiver pelo menos um tipo de recorrência
-        if (recurrence.recurrenceWeekly || recurrence.recurrenceMonthly) {
+        if (recurrence.recurrenceWeekly) {
           formattedRecurrences.push(recurrence);
         }
       }
@@ -147,17 +154,48 @@ export default function WebForm({
     return formattedRecurrences;
   };
 
-  // Atualiza o store quando necessário
-  useEffect(() => {
-    const formattedRecurrences = formatRecurrences();
-    console.log("Blocos de seleção:", selectionBlocks);
-    console.log("Recorrências formatadas:", formattedRecurrences);
+  const formatAvailableDates = (): DateOption[] => {
+    const availableDates: DateOption[] = [];
 
-    setAdventureData({
-      isRepeatable: formattedRecurrences.length > 0,
-      recurrences: formattedRecurrences, // Agora salvamos as recorrências já formatadas
+    selectionBlocks.forEach((block) => {
+      block.dates.forEach((date) => {
+        block.recurrenceHour.forEach((hourStr) => {
+          const [hour, minute] = hourStr.split(":").map(Number);
+
+          const newDate = new Date(date);
+          newDate.setHours(hour);
+          newDate.setMinutes(minute);
+          newDate.setSeconds(0);
+          newDate.setMilliseconds(0);
+
+          availableDates.push({
+            datetime: format(newDate, "yyyy-MM-dd'T'HH:mm:ss"),
+            isAvailable: true,
+          });
+        });
+      });
     });
-  }, [selectionBlocks]);
+
+    return availableDates;
+  };
+
+  useEffect(() => {
+    if (isRepeatable) {
+      const formattedRecurrences = formatRecurrences();
+
+      setAdventureData({
+        recurrences: formattedRecurrences,
+        availableDates: [],
+      });
+    } else {
+      const formattedDates = formatAvailableDates();
+
+      setAdventureData({
+        recurrences: [],
+        availableDates: formattedDates,
+      });
+    }
+  }, [selectionBlocks, isRepeatable]);
 
   const handleClickUpload = () => {
     inputRef.current?.click();
@@ -205,8 +243,6 @@ export default function WebForm({
 
     return `${hour}h`;
   };
-
-  console.log(isRepeatable);
 
   const handleLocationSelected = (locationData: LocationData) => {
     console.log("Location Data Received:", locationData);
@@ -442,7 +478,15 @@ export default function WebForm({
                       key={block.id}
                       className="w-full border px-6 first:py-4 py-8 rounded-lg space-y-4 relative"
                     >
-                      <MyDatePicker
+                      {/* <MyDatePicker
+                        withlabel="Selecione dias específicos"
+                        selectedDates={block.dates}
+                        setSelectedDates={(dates) =>
+                          handleDateChange(block.id, dates)
+                        }
+                      /> */}
+
+                      <MySingleDatePicker
                         withlabel="Selecione dias específicos"
                         selectedDates={block.dates}
                         setSelectedDates={(dates) =>

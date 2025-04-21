@@ -7,10 +7,6 @@ import UpdateImages from "@/app/(pages)/(parceiro)/parceiro/atividades-cadastrad
 import Pricing from "@/app/(pages)/(parceiro)/parceiro/atividades-cadastradas/atividade/modules/pricing";
 import Schedules from "@/app/(pages)/(parceiro)/parceiro/atividades-cadastradas/atividade/modules/schedules";
 import Location from "@/app/(pages)/(parceiro)/parceiro/atividades-cadastradas/atividade/modules/location";
-import { MyFullCalendarMultiple } from "../molecules/my-full-calendar-multiple";
-import { useQuery } from "@tanstack/react-query";
-import { schedules } from "@/services/api/schedules";
-import { parseISO } from "date-fns";
 import { CalendarAvailability } from "./calendar-availability";
 import MyIcon from "../atoms/my-icon";
 import MyTypography from "../atoms/my-typography";
@@ -81,14 +77,14 @@ export function EditarAtividadeTemplate({
       case "availability":
         return (
           <div className="flex flex-col gap-4">
-            <div className="flex gap-4 items-center mb-8">
+            <div className="flex gap-4 items-center mb-4">
               <MyIcon name="voltar-black" className="-ml-2" onClick={onClose} />
               <MyTypography variant="subtitle1" weight="bold" className="">
                 Atualizar Disponibilidade
               </MyTypography>
             </div>
-            <div className="relative">
-              <CalendarAvailability />
+            <div className="relative mb-10">
+              <CalendarAvailability formData={formData} />
             </div>
           </div>
         );

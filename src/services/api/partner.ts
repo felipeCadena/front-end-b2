@@ -5,6 +5,7 @@ import {
   GetAdventuresResponse,
 } from "./adventures";
 import { clearObject } from "@/utils/clear-object";
+import { DateOption } from "@/store/useAdventureStore";
 
 export interface CreatePartner {
   companyName: string;
@@ -185,14 +186,41 @@ export const partnerService = {
   // Schedules
   createSchedule: async (
     adventureId: number,
-    schedule: { datetime: string; isAvailable: boolean }
-  ): Promise<boolean> => {
+    schedule: DateOption
+  ): Promise<any> => {
     try {
       await api.post(`/schedules/adventure/${adventureId}`, schedule);
       return true;
     } catch (error) {
       console.error("Error creating schedule:", error);
       return false;
+    }
+  },
+
+  createMoreSchedule: async (
+    adventureId: number,
+    schedule: DateOption[]
+  ): Promise<any> => {
+    try {
+      await api.post(`/schedules/adventure/${adventureId}`, schedule);
+      return true;
+    } catch (error) {
+      console.error("Error creating schedule:", error);
+      return false;
+    }
+  },
+
+  getMySchedules: async (
+    params?: GetAdventuresParams
+  ): Promise<any[] | null> => {
+    try {
+      const { data } = await api.get<Adventure[]>(`/schedules/partner`, {
+        params,
+      });
+      return data;
+    } catch (error) {
+      console.error("Error fetching adventures:", error);
+      return null;
     }
   },
 
@@ -235,7 +263,6 @@ export const partnerService = {
     params?: GetAdventuresParams
   ): Promise<Adventure[] | null> => {
     const queryString = new URLSearchParams(params).toString();
-    console.log(queryString);
     try {
       const { data } = await api.get<Adventure[]>(
         `/adventures/my-adventures${queryString ? `?${queryString}` : ""}`

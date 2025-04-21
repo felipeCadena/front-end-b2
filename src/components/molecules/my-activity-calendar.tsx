@@ -20,7 +20,7 @@ export function MyActivityCalendar({
   selected,
   onSelect,
   markedDates = [],
-  markedDays,
+  markedDays = [],
   showOutsideDays = true,
   classNames,
   className,
@@ -83,7 +83,7 @@ export function MyActivityCalendar({
         }}
         modifiers={{
           booked: markedDates.map((act) => act),
-          bookedDays: markedDays?.map((act) => act),
+          bookedDays: markedDays.map((act) => act),
         }}
         modifiersClassNames={{
           booked: 'text-primary-600 relative md:after:top-1/3 md:after:left-20',

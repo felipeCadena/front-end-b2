@@ -1,29 +1,33 @@
-import {
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem,
-} from '@radix-ui/react-select';
-import React, { Dispatch, SetStateAction } from 'react';
-import MyIcon from '../atoms/my-icon';
-import { MySelect } from '../atoms/my-select';
-import MyTextInput from '../atoms/my-text-input';
+import React from 'react';
+
 import { Card } from './card';
 import { FormData } from '@/app/(pages)/(cliente)/finalizar-compra/page';
 import { UseFormReturn } from 'react-hook-form';
 import MyFormInput from '../atoms/my-form-input';
+import MyFormSelect from '../atoms/my-form-select';
+import { formatPrice } from '@/utils/formatters';
+import { AddToCartAdventure } from '@/services/api/adventures';
 
 type CardPaymentOptionProps = {
-  instalments: string;
-  setInstalments: Dispatch<SetStateAction<string>>;
   form: UseFormReturn<FormData>;
+  userCart: AddToCartAdventure[];
 };
 
-const CardPaymentOption = ({
-  instalments,
-  setInstalments,
-  form,
-}: CardPaymentOptionProps) => {
+const CardPaymentOption = ({ form, userCart }: CardPaymentOptionProps) => {
+  const activityPrice = userCart.map(
+    (act) =>
+      Number(act.schedule.pricePerAdult) * act.schedule.qntAdults +
+      Number(act.schedule.pricePerChildren) * act.schedule.qntChildren
+  );
+
+  const totalPrice = activityPrice.reduce((acc, price) => acc + price, 0);
+
+  const instalmentOptions = [
+    { value: '1', label: `1x de ${formatPrice(totalPrice)}` },
+    { value: '2', label: `2x de ${formatPrice(Number(totalPrice) / 2)}` },
+    { value: '3', label: `3x de ${formatPrice(Number(totalPrice) / 3)}` },
+    { value: '4', label: `4x de ${formatPrice(Number(totalPrice) / 4)}` },
+  ];
   return (
     <div className="max-sm:mt-8 md:flex md:flex-row-reverse md:items-center md:gap-8 md:col-span-2">
       <Card />
@@ -45,18 +49,13 @@ const CardPaymentOption = ({
           form={form}
         />
 
-        <MySelect value={instalments} onValueChange={setInstalments}>
-          <SelectTrigger className="py-6">
-            <SelectValue placeholder="Selecione o número de parcelas" />
-          </SelectTrigger>
-          <SelectContent>
-            {Array.from({ length: 4 }, (_, i) => (
-              <SelectItem key={i} value={String(i + 1)}>
-                {i + 1}x
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </MySelect>
+        <MyFormSelect
+          form={form}
+          disabled={userCart.length > 1}
+          label="Parcelas"
+          name="installmentCount"
+          options={instalmentOptions}
+        />
 
         <div className="flex gap-2">
           <MyFormInput

@@ -1,5 +1,9 @@
-import { Recurrence } from "@/components/organisms/activity-date-picker";
-import { Adventure, AdventureSchedule } from "@/services/api/adventures";
+import {
+  GroupedRecurrences,
+  Recurrence,
+} from '@/components/organisms/activity-date-picker';
+import { Adventure, AdventureSchedule } from '@/services/api/adventures';
+
 
 export function getData(timestamp: string, year?: boolean) {
   const date = new Date(timestamp);
@@ -259,11 +263,9 @@ export const formatPrice = (price: string | number) => {
 };
 
 export const formatTime = (scheduleTime: string) => {
-  const splitTime = scheduleTime.split("h");
-  const formatMinutes = splitTime[1].trim() === "" ? "00" : splitTime[1];
-  const timeOfDay = Number(splitTime[0]) > 12 ? " da tarde." : " da manhã.";
-  const formattedTime =
-    scheduleTime.replace("h", ":") + formatMinutes + timeOfDay;
+  const splitTime = scheduleTime.split(':');
+  const timeOfDay = Number(splitTime[0]) > 12 ? ' da tarde.' : ' da manhã.';
+  const formattedTime = scheduleTime + timeOfDay;
 
   return formattedTime;
 };
@@ -285,11 +287,8 @@ export const formatIconName = (name: string) => {
     return "fotografia";
   }
   const accentRegex = /[\u0300-\u036f]/g;
-  const firstLetter = lowerName
-    .charAt(0)
-    .normalize("NFD")
-    .replace(accentRegex, "");
-  return firstLetter + name.slice(1);
+
+  return lowerName.normalize('NFD').replace(accentRegex, '');
 };
 
 export const selectActivityImage = (activity: Adventure) => {
@@ -299,6 +298,24 @@ export const selectActivityImage = (activity: Adventure) => {
     }
   }
   return `/images/atividades/${activity?.typeAdventure}/${activity?.typeAdventure}-1.jpeg`;
+};
+
+export const handleActivityImages = (activity: Adventure | undefined) => {
+  if (!activity?.images || activity.images.length === 0) {
+    return [
+      {
+        url: `/images/atividades/${activity?.typeAdventure}/${activity?.typeAdventure}-1.jpeg`,
+      },
+      {
+        url: `/images/atividades/${activity?.typeAdventure}/${activity?.typeAdventure}-2.jpeg`,
+      },
+      {
+        url: `/images/atividades/${activity?.typeAdventure}/${activity?.typeAdventure}-3.jpeg`,
+      },
+    ];
+  }
+
+  return activity.images;
 };
 
 export const formatNotificationText = (text: string) => {
@@ -370,8 +387,9 @@ export const agruparRecorrencias = (
   });
 
   const semanal: {
-    tipo: "semanal";
-    dias: string[];
+
+    tipo: 'semanal';
+    dias: number[];
     horarios: string[];
   }[] = [];
 
@@ -394,8 +412,9 @@ export const agruparRecorrencias = (
 
     if (weekly.length > 0) {
       semanal.push({
-        tipo: "semanal",
-        dias: weekly.sort().map((d) => diasSemana[d - 1] ?? "Desconhecido"),
+
+        tipo: 'semanal',
+        dias: weekly.sort(),
         horarios: horariosFormatados,
       });
     }
@@ -429,9 +448,13 @@ export const formatRecurrencesToDates = (
 
             const baseMonth = new Date().getMonth();
             const baseYear = new Date().getFullYear();
+            const baseDay = new Date().getDate();
 
             if (rec.type === "WEEKLY") {
               const date = new Date(baseYear, baseMonth, 1);
+
+            if (rec.type === 'WEEKLY') {
+              const date = new Date(baseYear, baseMonth, baseDay);
               while (date.getFullYear() === baseYear) {
                 if (rec.value === date.getDay()) {
                   group.recurrenceWeekly.push(new Date(date));
@@ -474,13 +497,27 @@ export const formatRecurrencesToDates = (
   if (type === "monthly") {
     const monthlyRecurrences = reducedRecur
       ?.filter((rec) => rec.dates.length > 0)
-      .map(({ dates }) => dates)[0];
+      .map(({ dates }) => dates)
+      .flat();
     return monthlyRecurrences;
   }
 
   const weeklyRecurrences = reducedRecur
     ?.filter((rec) => rec.dates.length === 0)
-    .map((rec) => rec.recurrenceWeekly)[0];
+    .map(({ recurrenceWeekly }) => recurrenceWeekly)
+    .flat();
 
   return weeklyRecurrences;
+};
+
+export const getWeeklyRecurrenceTime = (
+  selected: Date | undefined,
+  recurrenceGroup: GroupedRecurrences
+) => {
+  const selectedWeekDay = selected?.getDay();
+  const selectedWeekDayActivityTime = recurrenceGroup?.semanal?.filter((rec) =>
+    rec?.dias.some((day) => day === selectedWeekDay)
+  )[0];
+
+  return selectedWeekDayActivityTime?.horarios ?? [];
 };
