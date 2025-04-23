@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { AddToCartAdventure, Adventure } from '@/services/api/adventures';
+import { AddToCartAdventure } from '@/services/api/adventures';
 
 export interface UserCart {
   userId: string;

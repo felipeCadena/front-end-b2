@@ -189,6 +189,7 @@ const MobileActivitiesOrderSummary = ({
               <MyButton
                 variant="ghost"
                 className="underline text-slate-400 decoration-dotted p-0 w-fit h-fit"
+                onClick={() => handleRemoveActivity(adventure.id)}
               >
                 Remover atividade
               </MyButton>

@@ -272,7 +272,7 @@ export default function Atividade() {
 
             <MyButton
               variant="default"
-              className="mt-4 w-full max-sm:hidden"
+              className="mt-4 w-[280px] max-sm:hidden"
               size="lg"
               borderRadius="squared"
               onClick={handleOrder}

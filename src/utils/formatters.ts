@@ -516,5 +516,13 @@ export const getWeeklyRecurrenceTime = (
     rec?.dias.some((day) => day === selectedWeekDay)
   )[0];
 
+  if (!selectedWeekDayActivityTime?.horarios) {
+    const selectedMonthlyDay = recurrenceGroup.mensal.filter((rec) =>
+      rec.dias.some((day) => day === selected?.getDate())
+    )[0];
+
+    return selectedMonthlyDay?.horarios ?? [];
+  }
+
   return selectedWeekDayActivityTime?.horarios ?? [];
 };

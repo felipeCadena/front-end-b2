@@ -55,7 +55,7 @@ export default function ActivitiesDetails({
                   className={cn(
                     'flex max-sm:max-h-[120px] max-sm:justify-around gap-2 cursor-pointer my-2',
                     withDate && 'my-8 relative',
-                    adventure.averageRating <= 2 && 'max-sm:max-h-[160px]'
+                    adventure?.averageRating <= 2 && 'max-sm:max-h-[160px]'
                   )}
                 >
                   {withDate && (

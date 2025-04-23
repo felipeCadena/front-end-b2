@@ -25,7 +25,7 @@ export const ordersAdventuresService = {
     try {
       api.defaults.headers.common['x-user-ip'] = userIP;
       const response = await api.post('/ordersAdventures', data);
-      return response.data;
+      return response;
     } catch (error) {
       console.error('Error creating order:', error);
       throw error;

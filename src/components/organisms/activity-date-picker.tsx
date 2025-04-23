@@ -9,7 +9,6 @@ import {
   agruparRecorrencias,
   getWeeklyRecurrenceTime,
 } from '@/utils/formatters';
-import { useSession } from 'next-auth/react';
 
 export type Recurrence = {
   adventureId: number;

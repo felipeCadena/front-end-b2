@@ -18,9 +18,11 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { MyForm } from '@/components/atoms/my-form';
 import { ordersAdventuresService } from '@/services/api/orders';
 import { toast } from 'react-toastify';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { users } from '@/services/api/users';
 import { AxiosError } from 'axios';
+import MySpinner from '@/components/atoms/my-spinner';
+import { useFinishPayment } from '@/store/useFinishPayment';
 
 const formSchema = z.object({
   paymentMethod: z.string().optional(),
@@ -60,7 +62,7 @@ const formSchema = z.object({
 });
 
 const paymentDefaultValues = {
-  paymentMethod: '',
+  paymentMethod: 'PIX',
   installmentCount: '1',
   creditCard: {
     holderName: '',
@@ -85,8 +87,11 @@ export type FormData = z.infer<typeof formSchema>;
 
 export default function FinalizarCompra() {
   const router = useRouter();
-  const [selectedPayment, setSelectedPayment] = useState<string>('');
+  const [selectedPayment, setSelectedPayment] = useState<string>('PIX');
+  const [isLoading, setIsLoading] = useState(false);
   const [isReadyToPay, setIsReadyToPay] = useState(false);
+  const { addToPaymentStore } = useFinishPayment();
+  const queryClient = useQueryClient();
 
   const { carts, clearCart } = useCart();
 
@@ -108,8 +113,8 @@ export default function FinalizarCompra() {
     if (item) {
       const [hour, minute] = item.schedule.scheduleTime.split(':');
       const scheduleDate = new Date(item.schedule.scheduleDate as Date);
-      scheduleDate.setUTCHours(Number(hour));
-      scheduleDate.setUTCMinutes(Number(minute));
+      scheduleDate.setHours(Number(hour));
+      scheduleDate.setMinutes(Number(minute));
 
       const formatOrder = {
         adventureId: item.adventure.id,
@@ -166,6 +171,7 @@ export default function FinalizarCompra() {
   }, [userId]);
 
   const handleSubmit = async (formData: FormData) => {
+    setIsLoading(true);
     const formattedOrder = {
       ...formData,
       installmentCount: Number(formData.installmentCount),
@@ -178,37 +184,72 @@ export default function FinalizarCompra() {
         cpfCnpj: formData.creditCardHolderInfo?.cpfCnpj
           .replaceAll('-', '')
           .replaceAll('/', '')
-          .replaceAll('.', ''),
+          .replaceAll('.', '')
+          .replaceAll(' ', ''),
         postalCode: formData.creditCardHolderInfo?.postalCode.replaceAll(
           '.',
           ''
         ),
       },
     };
-    console.log('ORDER-->', formattedOrder);
+
     try {
       if (selectedPayment === 'BOLETO' || selectedPayment === 'PIX') {
         const { data } = await ordersAdventuresService.create(
           formattedOrder,
           userIP
         );
+        queryClient.invalidateQueries({
+          queryKey: ['notifications'],
+        });
+        if (selectedPayment === 'PIX') {
+          addToPaymentStore({
+            id: data.db.id,
+            paymentMethod: data.db.paymentMethod,
+            paymentStatus: data.db.paymentStatus,
+            bankSlipUrl: data.db.bankSlipUrl,
+            dueDate: data.db.dueDate,
+            pixDueDate: data.pixResponse.expirationDate,
+            qrCode: data.pixResponse.encodedImage,
+            pixCopyPaste: data.pixResponse.payload,
+          });
+        }
+        if (selectedPayment === 'BOLETO') {
+          addToPaymentStore({
+            id: data.db.id,
+            paymentMethod: data.db.paymentMethod,
+            paymentStatus: data.db.paymentStatus,
+            bankSlipUrl: data.db.bankSlipUrl,
+            dueDate: data.db.dueDate,
+          });
+        }
         toast.success('Pedido enviado com sucesso!');
+        router.push(`/finalizar-compra/${data.db.id}`);
         return data;
       }
 
       await ordersAdventuresService.create(formattedOrder, userIP);
       toast.success('Pedido enviado com sucesso!');
       clearCart(userId);
+      queryClient.invalidateQueries({
+        queryKey: ['notifications'],
+      });
       router.push(PATHS.atividades);
     } catch (error) {
       if (error instanceof AxiosError) {
         if (error.status === 400) {
-          toast.error('Todos os campos devem ser preenchidos!');
+          toast.error(error.response?.data.message);
+          return;
+        }
+        if (error.status === 401) {
+          toast.error('Token inválido ou expirado. Faça login novamente.');
           return;
         }
       }
       toast.error('Um erro inesperado ocorreu!');
       console.error(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -216,8 +257,6 @@ export default function FinalizarCompra() {
     setSelectedPayment(paymentName);
     form.setValue('paymentMethod', paymentName);
   };
-
-  console.log(form.formState.errors);
 
   return (
     <section className="px-4 mb-8">
@@ -352,15 +391,28 @@ export default function FinalizarCompra() {
                     className=""
                     label="Salvar os dados para a próxima compra"
                   />
-                  <MyButton
-                    variant="default"
-                    borderRadius="squared"
-                    size="lg"
-                    type="submit"
-                    className="my-4 w-full"
-                  >
-                    Finalizar compra
-                  </MyButton>
+
+                  {isLoading ? (
+                    <MyButton
+                      variant="default"
+                      borderRadius="squared"
+                      size="lg"
+                      type="button"
+                      className="my-4 w-full flex justify-center items-center"
+                    >
+                      <MySpinner />
+                    </MyButton>
+                  ) : (
+                    <MyButton
+                      variant="default"
+                      borderRadius="squared"
+                      size="lg"
+                      type="submit"
+                      className="my-4 w-full"
+                    >
+                      Finalizar compra
+                    </MyButton>
+                  )}
                 </div>
               )}
             </form>

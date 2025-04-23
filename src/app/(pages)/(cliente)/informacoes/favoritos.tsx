@@ -1,12 +1,8 @@
 'use client';
 
-import { activities } from '@/common/constants/mock';
 import MyTypography from '@/components/atoms/my-typography';
-import Activities from '@/components/organisms/activities';
-import ActivitiesDetails from '@/components/organisms/activities-details';
 import ActivitiesFilter from '@/components/organisms/activities-filter';
 import FavoriteActivity from '@/components/organisms/favorite-activity';
-import SearchActivity from '@/components/organisms/search-activity';
 import { adventures } from '@/services/api/adventures';
 import { cn } from '@/utils/cn';
 import { useQuery } from '@tanstack/react-query';

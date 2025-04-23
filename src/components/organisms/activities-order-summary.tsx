@@ -119,6 +119,7 @@ const ActivitiesOrderSummary = ({
                     >
                       Data da Atividade
                     </MyTypography>
+
                     <MyTypography
                       variant="body"
                       weight="regular"
@@ -130,7 +131,6 @@ const ActivitiesOrderSummary = ({
                   </div>
 
                   <div className="flex items-center gap-1">
-                    <MyIcon name="duracao" />
                     <div>
                       <MyTypography variant="label" weight="bold" className="">
                         Duração da atividade
@@ -138,8 +138,9 @@ const ActivitiesOrderSummary = ({
                       <MyTypography
                         variant="body"
                         weight="regular"
-                        className=""
+                        className="flex items-center"
                       >
+                        <MyIcon name="mobileDuracao" />
                         {adventure.duration}
                       </MyTypography>
                     </div>
@@ -150,16 +151,32 @@ const ActivitiesOrderSummary = ({
                       weight="bold"
                       className="ml-3"
                     >
-                      Quant. de pessoas
+                      Quant. de Adultos
                     </MyTypography>
                     <MyTypography
                       variant="body"
                       weight="regular"
                       className="ml-3"
                     >
-                      {schedule.qntAdults}{' '}
-                      {schedule.qntAdults > 1 ? 'Adultos' : 'Adulto'} x{' '}
+                      {schedule.qntAdults} x{' '}
                       {formatPrice(schedule.pricePerAdult)}
+                    </MyTypography>
+                  </div>
+                  <div className="flex flex-col">
+                    <MyTypography
+                      variant="label"
+                      weight="bold"
+                      className="ml-3"
+                    >
+                      Quant. de Crianças
+                    </MyTypography>
+                    <MyTypography
+                      variant="body"
+                      weight="regular"
+                      className="ml-3"
+                    >
+                      {schedule.qntChildren} x{' '}
+                      {formatPrice(schedule.pricePerChildren ?? '0')}
                     </MyTypography>
                   </div>
 
