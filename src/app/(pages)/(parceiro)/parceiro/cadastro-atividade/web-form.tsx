@@ -6,7 +6,7 @@ import MyTextInput from "@/components/atoms/my-text-input";
 import MyTypography from "@/components/atoms/my-typography";
 import ActivitiesFilter from "@/components/organisms/activities-filter";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import {
   MySelect,
   SelectContent,
@@ -21,8 +21,6 @@ import {
   hours,
 } from "@/common/constants/constants";
 import MultiSelect from "@/components/molecules/combobox";
-import { MyDatePicker } from "@/components/molecules/my-date-picker";
-import TimePickerModal from "@/components/molecules/time-picker";
 import GoogleMaps from "@/components/organisms/google-maps";
 import { Dropzone } from "@/components/molecules/drop-zone";
 import Image from "next/image";
@@ -30,7 +28,6 @@ import PATHS from "@/utils/paths";
 import { cn } from "@/utils/cn";
 import { format } from "date-fns";
 import {
-  AdventureState,
   DateOption,
   Recurrence,
   TypeAdventure,
@@ -46,6 +43,7 @@ import {
 import AutocompleteCombobox from "@/components/organisms/google-autocomplete";
 import { toast } from "react-toastify";
 import { MySingleDatePicker } from "@/components/molecules/my-single-date-picker";
+import Duration from "@/components/molecules/duration";
 
 interface AddressData {
   addressStreet: string;
@@ -563,10 +561,10 @@ export default function WebForm({
                   Duração
                 </MyTypography>
 
-                <TimePickerModal
+                <Duration
                   iconColor="black"
-                  value={duration}
-                  onChange={(time) =>
+                  selectedTime={duration}
+                  setSelectedTime={(time) =>
                     setAdventureData({ duration: formatDuration(time) })
                   }
                 />

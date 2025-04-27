@@ -36,21 +36,21 @@ export default function Schedules({
   setFormData,
   onClose,
 }: ModalProps) {
-  //   const addSelectionBlock = () => {
-  //     const newBlock: SelectionBlock = {
-  //       id: crypto.randomUUID(),
-  //       recurrenceWeekly: [],
-  //       recurrenceHour: [],
-  //       dates: [],
-  //     };
+  const addSelectionBlock = () => {
+    const newBlock: SelectionBlock = {
+      id: crypto.randomUUID(),
+      recurrenceWeekly: [],
+      recurrenceHour: [],
+      dates: [],
+    };
 
-  //     const updatedRecurrences = [
-  //       ...formData.recurrences,
-  //       { ...newBlock, index: formData.recurrences.length },
-  //     ];
+    const updatedRecurrences = [
+      ...formData.recurrences,
+      { ...newBlock, index: formData.recurrences.length },
+    ];
 
-  //     setFormData({ ...formData, recurrences: updatedRecurrences });
-  //   };
+    setFormData({ ...formData, recurrences: updatedRecurrences });
+  };
 
   const removeSelectionBlock = (id: string) => {
     const updatedRecurrences = formData.recurrences
@@ -121,12 +121,14 @@ export default function Schedules({
   };
 
   const queryClient = useQueryClient();
+  const formattedRecurrences = formatRecurrences();
+  console.log("formattedRecurrences", formattedRecurrences);
 
   const handleSubmit = async () => {
     const formattedRecurrences = formatRecurrences();
 
     const data = {
-      //   isRepeatable: formattedRecurrences.length > 0,
+      isRepeatable: formattedRecurrences.length > 0,
       recurrences: formattedRecurrences,
     };
 
@@ -149,21 +151,21 @@ export default function Schedules({
     updateSelectionBlock(blockId, "dates", dates);
   };
 
-  //   const handleAddSelectionBlock = (e: React.MouseEvent<HTMLButtonElement>) => {
-  //     e.preventDefault();
-  //     addSelectionBlock();
-  //   };
+  const handleAddSelectionBlock = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    addSelectionBlock();
+  };
 
   return (
     <div className="flex flex-col gap-4">
       <div className="flex gap-4 items-center mb-8">
         <MyIcon name="voltar-black" className="-ml-2" onClick={onClose} />
         <MyTypography variant="subtitle1" weight="bold" className="">
-          Editar Datas e Horários
+          Editar Horários - Repetição
         </MyTypography>
       </div>
 
-      {formData?.recurrences &&
+      {formData?.recurrences && formData?.recurrences.length > 0 ? (
         formData?.recurrences.map((block: any, index: number) => (
           <div
             key={index}
@@ -178,14 +180,6 @@ export default function Schedules({
               }
             />
 
-            <MyDatePicker
-              withlabel="Selecione dias específicos"
-              selectedDates={block?.dates}
-              setSelectedDates={(dates) =>
-                handleDateChange(block.groupId, dates)
-              }
-            />
-
             <MultiSelect
               grid
               placeholder="Selecione os horários"
@@ -195,18 +189,27 @@ export default function Schedules({
                 updateSelectionBlock(block.groupId, "recurrenceHour", value)
               }
             />
-            {index > 0 && (
+            {
               <MyIcon
                 name="subtracao"
                 title="Remover"
                 className="absolute -top-3 right-1"
                 onClick={() => removeSelectionBlock(block?.groupId)}
               />
-            )}
+            }
           </div>
-        ))}
+        ))
+      ) : (
+        <MyTypography
+          variant="subtitle3"
+          weight="bold"
+          className="text-center my-2"
+        >
+          Esta atividade não se repete!
+        </MyTypography>
+      )}
 
-      {/* <MyButton
+      <MyButton
         variant="secondary"
         borderRadius="squared"
         size="lg"
@@ -214,8 +217,10 @@ export default function Schedules({
         onClick={(e) => handleAddSelectionBlock(e)}
         leftIcon={<MyIcon name="soma" />}
       >
-        Adicionar outro conjunto
-      </MyButton> */}
+        {formData?.recurrences && formData?.recurrences.length == 0
+          ? "Adicionar repeticão"
+          : "Adicionar outro conjunto"}
+      </MyButton>
 
       <div className="w-full md:w-1/2 md:mx-auto mt-12">
         <MyButton

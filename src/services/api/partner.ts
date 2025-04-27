@@ -1,8 +1,10 @@
 import { api } from "@/libs/api";
 import {
+  AddToCartAdventure,
   Adventure,
   GetAdventuresParams,
   GetAdventuresResponse,
+  Schedules,
 } from "./adventures";
 import { clearObject } from "@/utils/clear-object";
 import { DateOption } from "@/store/useAdventureStore";
@@ -95,6 +97,15 @@ type Media = {
   updatedAt: string; // ou Date
   uploadUrl: string;
 };
+
+export interface MySchedule {
+  data: Schedules[];
+  totalCount: number;
+  limit: number;
+  skipped: number;
+  startDate: string;
+  endDate: string;
+}
 
 export const partnerService = {
   getPartnerLogged: async (): Promise<Partner | null> => {
@@ -212,9 +223,9 @@ export const partnerService = {
 
   getMySchedules: async (
     params?: GetAdventuresParams
-  ): Promise<any[] | null> => {
+  ): Promise<MySchedule | null> => {
     try {
-      const { data } = await api.get<Adventure[]>(`/schedules/partner`, {
+      const { data } = await api.get<MySchedule>(`/schedules/partner`, {
         params,
       });
       return data;
@@ -224,9 +235,30 @@ export const partnerService = {
     }
   },
 
-  cancelSchedule: async (id: number, adventureId: number): Promise<boolean> => {
+  async listPartnerSchedules(params?: {
+    startDate?: string;
+    adventureStatus?: string;
+  }) {
     try {
-      await api.post(`/schedules/cancel/${id}/adventure/${adventureId}`);
+      const response = await api.get(
+        `/ordersAdventures/orderSchedule/partner`,
+        { params }
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error listing partner schedules:", error);
+      throw error;
+    }
+  },
+
+  cancelSchedule: async (
+    scheduleId: string,
+    adventureId: string
+  ): Promise<boolean> => {
+    try {
+      await api.post(
+        `/schedules/cancel/${scheduleId}/adventure/${adventureId}`
+      );
       return true;
     } catch (error) {
       console.error("Error canceling schedule:", error);
@@ -262,11 +294,10 @@ export const partnerService = {
   getMyAdventures: async (
     params?: GetAdventuresParams
   ): Promise<Adventure[] | null> => {
-    const queryString = new URLSearchParams(params).toString();
     try {
-      const { data } = await api.get<Adventure[]>(
-        `/adventures/my-adventures${queryString ? `?${queryString}` : ""}`
-      );
+      const { data } = await api.get<Adventure[]>(`/adventures/my-adventures`, {
+        params,
+      });
       return data;
     } catch (error) {
       console.error("Error fetching adventures:", error);

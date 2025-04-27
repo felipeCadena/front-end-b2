@@ -9,6 +9,7 @@ import {
   SelectValue,
 } from "@/components/atoms/my-select";
 import MyTypography from "@/components/atoms/my-typography";
+import Duration from "@/components/molecules/duration";
 import TimePickerModal from "@/components/molecules/time-picker";
 import { useAdventureStore } from "@/store/useAdventureStore";
 import {
@@ -68,10 +69,10 @@ export default function Step3() {
         <MyTypography variant="subtitle3" weight="bold" className="mb-1">
           Duração da atividade
         </MyTypography>
-        <TimePickerModal
+        <Duration
           iconColor="black"
-          value={duration}
-          onChange={(time) =>
+          selectedTime={duration}
+          setSelectedTime={(time) =>
             setAdventureData({ duration: formatDuration(time) })
           }
         />

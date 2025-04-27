@@ -4,11 +4,19 @@ import { activities } from "@/common/constants/mock";
 import MyIcon from "@/components/atoms/my-icon";
 import MyTypography from "@/components/atoms/my-typography";
 import ActivitiesPhotos from "@/components/organisms/activities-photos";
+import { partnerService } from "@/services/api/partner";
+import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import React from "react";
 
 export default function FotosDePasseios() {
   const router = useRouter();
+
+  const { data: partnerOrders } = useQuery({
+    queryKey: ["partnerOrders"],
+    queryFn: () =>
+      partnerService.listPartnerSchedules({ adventureStatus: "realizado" }),
+  });
 
   return (
     <main className="px-4">

@@ -18,5 +18,5 @@ export function useAlert() {
     clear();
   };
 
-  return { handleClose, isModalOpen };
+  return { handleClose, isModalOpen, setIsModalOpen };
 }

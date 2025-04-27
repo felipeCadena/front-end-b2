@@ -1,6 +1,6 @@
 import { api } from "@/libs/api";
-import { getServerSession } from "next-auth";
-import { getSession, signIn, signOut } from "next-auth/react";
+import axios from "axios";
+import { getSession } from "next-auth/react";
 
 export interface TokenResponse {
   access_token: string;
@@ -63,13 +63,18 @@ export const authService = {
   // Refresh do token
   refreshToken: async (token: string): Promise<TokenResponse> => {
     try {
-      // Faz a requisição de refresh
-      api.defaults.headers.common.Authorization = `Bearer ${token}`;
-      const response = await api.post<TokenResponse>("/auth/refresh");
+      const response = await axios.post<TokenResponse>(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/refresh`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       return response.data;
     } catch (error) {
-      console.error("Erro no refresh");
       throw error;
     }
   },
@@ -77,8 +82,15 @@ export const authService = {
   // Logout
   logout: async (token: string) => {
     try {
-      api.defaults.headers.common.Authorization = `Bearer ${token}`;
-      await api.post("/auth/logout");
+      await axios.post(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/logout`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
     } catch (error) {
       console.error("Erro no logout:", error);
     }
@@ -98,6 +110,7 @@ export const authService = {
     return {
       access_token: session.user.accessToken,
       refresh_token: session.user.refreshToken,
+      expiresAt: session.user.expiresAt,
     };
   },
 };

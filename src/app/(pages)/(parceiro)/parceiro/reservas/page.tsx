@@ -10,14 +10,13 @@ import MyButton from "@/components/atoms/my-button";
 import Hide from "@/components/atoms/my-icon/elements/hide";
 import PATHS from "@/utils/paths";
 import ActivitiesHidden from "@/components/organisms/activities-hidden";
-import { activities, notificationActivities } from "@/common/constants/mock";
+import { notificationActivities } from "@/common/constants/mock";
 import FullActivitiesHistoric from "@/components/organisms/full-activities-historic";
 import ModalAlert from "@/components/molecules/modal-alert";
 import { useAlert } from "@/hooks/useAlert";
 import { useQuery } from "@tanstack/react-query";
 import { schedules } from "@/services/api/schedules";
 import { parseISO } from "date-fns";
-import { MyCalendar } from "@/components/molecules/my-calendar";
 import { MyFullCalendarMultiple } from "@/components/molecules/my-full-calendar-multiple";
 
 export default function Reservas() {
@@ -30,7 +29,7 @@ export default function Reservas() {
   const { data: allSchedules } = useQuery({
     queryKey: ["schedules"],
     queryFn: async () => {
-      const reservations = await schedules.getSchedules({ isCanceled: false });
+      const reservations = await schedules.getSchedules();
       if (reservations) {
         const bookedDates = reservations.data.map((item: any) =>
           parseISO(item.datetime)

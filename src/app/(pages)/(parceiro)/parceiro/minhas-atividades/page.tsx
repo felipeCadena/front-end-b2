@@ -24,13 +24,11 @@ export default function SuasAtividades() {
   const [partnerAdventures, setPartnerAdventures] =
     React.useState<Adventure[]>();
 
-  const params = selected !== "" ? { typeAdventure: selected } : undefined;
-
-  const { data: myAdventures } = useQuery({
+  useQuery({
     queryKey: ["myAdventures", selected],
     queryFn: async () => {
       const activities = await partnerService.getMyAdventures({
-        ...params,
+        typeAdventure: selected ? selected : undefined,
         orderBy: "averageRating desc",
       });
 

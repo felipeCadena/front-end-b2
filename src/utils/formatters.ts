@@ -1,9 +1,8 @@
 import {
   GroupedRecurrences,
   Recurrence,
-} from '@/components/organisms/activity-date-picker';
-import { Adventure, AdventureSchedule } from '@/services/api/adventures';
-
+} from "@/components/organisms/activity-date-picker";
+import { Adventure, AdventureSchedule } from "@/services/api/adventures";
 
 export function getData(timestamp: string, year?: boolean) {
   const date = new Date(timestamp);
@@ -263,8 +262,8 @@ export const formatPrice = (price: string | number) => {
 };
 
 export const formatTime = (scheduleTime: string) => {
-  const splitTime = scheduleTime.split(':');
-  const timeOfDay = Number(splitTime[0]) > 12 ? ' da tarde.' : ' da manhã.';
+  const splitTime = scheduleTime.split(":");
+  const timeOfDay = Number(splitTime[0]) > 12 ? " da tarde." : " da manhã.";
   const formattedTime = scheduleTime + timeOfDay;
 
   return formattedTime;
@@ -288,7 +287,7 @@ export const formatIconName = (name: string) => {
   }
   const accentRegex = /[\u0300-\u036f]/g;
 
-  return lowerName.normalize('NFD').replace(accentRegex, '');
+  return lowerName.normalize("NFD").replace(accentRegex, "");
 };
 
 export const selectActivityImage = (activity: Adventure) => {
@@ -387,8 +386,7 @@ export const agruparRecorrencias = (
   });
 
   const semanal: {
-
-    tipo: 'semanal';
+    tipo: "semanal";
     dias: number[];
     horarios: string[];
   }[] = [];
@@ -412,8 +410,7 @@ export const agruparRecorrencias = (
 
     if (weekly.length > 0) {
       semanal.push({
-
-        tipo: 'semanal',
+        tipo: "semanal",
         dias: weekly.sort(),
         horarios: horariosFormatados,
       });
@@ -453,33 +450,34 @@ export const formatRecurrencesToDates = (
             if (rec.type === "WEEKLY") {
               const date = new Date(baseYear, baseMonth, 1);
 
-            if (rec.type === 'WEEKLY') {
-              const date = new Date(baseYear, baseMonth, baseDay);
-              while (date.getFullYear() === baseYear) {
-                if (rec.value === date.getDay()) {
-                  group.recurrenceWeekly.push(new Date(date));
+              if (rec.type === "WEEKLY") {
+                const date = new Date(baseYear, baseMonth, baseDay);
+                while (date.getFullYear() === baseYear) {
+                  if (rec.value === date.getDay()) {
+                    group.recurrenceWeekly.push(new Date(date));
+                  }
+                  date.setDate(date.getDate() + 1);
                 }
-                date.setDate(date.getDate() + 1);
-              }
-            } else if (rec.type === "MONTHLY") {
-              const day = Number(rec.value);
+              } else if (rec.type === "MONTHLY") {
+                const day = Number(rec.value);
 
-              for (let i = baseMonth; i < 12; i += 1) {
-                const date = new Date(baseYear, i, day);
-                group.dates.push(date);
+                for (let i = baseMonth; i < 12; i += 1) {
+                  const date = new Date(baseYear, i, day);
+                  group.dates.push(date);
+                }
+              } else if (rec.type === "HOUR") {
+                const hours = Math.floor(rec.value / 100);
+                const minutes = rec.value % 100;
+                group.recurrenceHour.push(
+                  `${hours.toString().padStart(2, "0")}:${minutes
+                    .toString()
+                    .padStart(2, "0")}`
+                );
               }
-            } else if (rec.type === "HOUR") {
-              const hours = Math.floor(rec.value / 100);
-              const minutes = rec.value % 100;
-              group.recurrenceHour.push(
-                `${hours.toString().padStart(2, "0")}:${minutes
-                  .toString()
-                  .padStart(2, "0")}`
-              );
+
+              acc[rec.groupId] = group;
+              return acc;
             }
-
-            acc[rec.groupId] = group;
-            return acc;
           },
           {} as Record<
             string,

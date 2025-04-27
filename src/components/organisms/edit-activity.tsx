@@ -7,9 +7,8 @@ import UpdateImages from "@/app/(pages)/(parceiro)/parceiro/atividades-cadastrad
 import Pricing from "@/app/(pages)/(parceiro)/parceiro/atividades-cadastradas/atividade/modules/pricing";
 import Schedules from "@/app/(pages)/(parceiro)/parceiro/atividades-cadastradas/atividade/modules/schedules";
 import Location from "@/app/(pages)/(parceiro)/parceiro/atividades-cadastradas/atividade/modules/location";
-import { CalendarAvailability } from "./calendar-availability";
-import MyIcon from "../atoms/my-icon";
-import MyTypography from "../atoms/my-typography";
+import Agenda from "@/app/(pages)/(parceiro)/parceiro/atividades-cadastradas/atividade/modules/agenda";
+import ModalAlert from "../molecules/modal-alert";
 
 interface EditModalProps {
   section: EditSection;
@@ -76,17 +75,31 @@ export function EditarAtividadeTemplate({
         );
       case "availability":
         return (
-          <div className="flex flex-col gap-4">
-            <div className="flex gap-4 items-center mb-4">
-              <MyIcon name="voltar-black" className="-ml-2" onClick={onClose} />
-              <MyTypography variant="subtitle1" weight="bold" className="">
-                Atualizar Disponibilidade
-              </MyTypography>
-            </div>
-            <div className="relative mb-10">
-              <CalendarAvailability formData={formData} />
-            </div>
-          </div>
+          <Agenda
+            formData={formData}
+            setFormData={setFormData}
+            onClose={onClose}
+          />
+        );
+      case "hide":
+        return (
+          // <Agenda
+          //   formData={formData}
+          //   setFormData={setFormData}
+          //   onClose={onClose}
+          // />
+          <></>
+        );
+      case "cancel":
+        return (
+          <ModalAlert
+            open={isModalOpen}
+            onClose={handleClose}
+            iconName="warning"
+            title="Atividade cancelada"
+            descrition="A atividade já foi cancelada e em breve seu cliente receberá uma mensagem explicando isso."
+            button="Voltar ao início"
+          />
         );
       default:
         return null;

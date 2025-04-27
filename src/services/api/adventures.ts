@@ -31,6 +31,8 @@ export interface GetAdventuresParams {
   skip?: number;
   typeAdventure?: string;
   orderBy?: string;
+  adventureId?: string;
+  isAvailable?: boolean;
   [key: string]: any; // For dynamic search parameters
 }
 
@@ -94,6 +96,7 @@ export interface ClientSchedule {
   pricePerAdult: string;
   pricePerChildren?: string;
 }
+
 export interface Adventure {
   id: number;
   title: string;
@@ -167,12 +170,13 @@ export interface CreateAdventureBody {
   hoursBeforeSchedule: number;
   hoursBeforeCancellation: number;
   isRepeatable: boolean;
-  schedules: DateOption[];
+  schedules?: DateOption[];
   recurrences?: {
     recurrenceWeekly?: string; // e.g., "1,3,5"
     recurrenceMonthly?: string; // e.g., "15,30"
     recurrenceHour: string; // e.g., "08:00,13:00,16:00"
   }[];
+  onSite?: boolean;
 }
 
 export const adventures = {
@@ -215,7 +219,7 @@ export const adventures = {
   },
   getAdventures: async (params?: GetAdventuresParams): Promise<Adventure[]> => {
     try {
-      const { data } = await api.get<Adventure[]>(`/adventures`);
+      const { data } = await api.get<Adventure[]>(`/adventures`, { params });
 
       return data;
     } catch (error) {

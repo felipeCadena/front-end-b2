@@ -91,7 +91,7 @@ const MyButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
         className={cn(
           leftIcon && "flex gap-2",
           rightIcon && "flex gap-2",
-          isLoading && "flex-center",
+          isLoading && "flex-center w-full",
           buttonVariants({ variant, size, borderRadius }),
           className
         )}
@@ -100,7 +100,10 @@ const MyButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
         {...props}
       >
         {isLoading ? (
-          <MySpinner />
+          <>
+            <MySpinner />
+            <p>Aguarde...</p>
+          </>
         ) : (
           <>
             {leftIcon ?? leftIcon}

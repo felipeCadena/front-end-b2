@@ -47,7 +47,7 @@ export default function ActivitiesPhotos({
               >
                 <Image
                   alt="sample_file"
-                  src={activity.image ?? ""}
+                  src={activity.image ?? "/images/atividades/ar/ar-1.jpeg"}
                   width={250}
                   height={300}
                   className={cn(

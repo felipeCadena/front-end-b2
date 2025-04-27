@@ -1,49 +1,11 @@
 "use client";
 import { EditarAtividadeTemplate } from "@/components/organisms/edit-activity";
+import { EditSection } from "@/components/organisms/edit-activity-menu";
 import { adventures } from "@/services/api/adventures";
 import { formatAddress } from "@/utils/formatters";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import React from "react";
-import { format, parseISO } from "date-fns";
-import { SelectionBlock } from "@/store/useAdventureStore";
-
-function groupSchedulesByDate(schedules: any[]): SelectionBlock[] {
-  const grouped: Record<string, SelectionBlock> = {};
-
-  schedules.forEach((schedule) => {
-    const date = format(parseISO(schedule.datetime), "yyyy-MM-dd");
-    const time = format(parseISO(schedule.datetime), "HH:mm");
-
-    if (!grouped[date]) {
-      grouped[date] = {
-        id: schedule.id, // pode usar crypto.randomUUID() se quiser
-        recurrenceWeekly: [],
-        recurrenceHour: [],
-        dates: [parseISO(schedule.datetime)],
-      };
-    }
-
-    const existing = grouped[date];
-
-    // Garante que a data está setada corretamente
-    existing.dates = [parseISO(schedule.datetime)];
-
-    // Adiciona o horário (sem duplicatas)
-    if (!existing.recurrenceHour.includes(time)) {
-      existing.recurrenceHour.push(time);
-    }
-  });
-
-  return Object.values(grouped);
-}
-
-export type EditSection =
-  | "basic" // título, descrição, tipo
-  | "schedule" // horários
-  | "location" // localização
-  | "pricing" // preços
-  | "images"; // imagens
 
 export default function EditarAtividade() {
   const params = useSearchParams();
@@ -106,7 +68,7 @@ export default function EditarAtividade() {
       hoursBeforeCancellation: activity.hoursBeforeCancellation,
       isRepeatable: activity.isRepeatable,
       images: activity.images,
-      schedules: groupSchedulesByDate(activity?.schedules || []),
+      schedules: activity?.schedules ?? [],
       recurrences: activity.recurrence
         ? Object.values(
             activity.recurrence.reduce(

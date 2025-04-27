@@ -1,3 +1,5 @@
+"use client";
+
 import {
   DropdownMenuContent,
   DropdownMenuItem,
@@ -14,6 +16,10 @@ import LocationRounded from "../atoms/my-icon/elements/location-rounded";
 import Dollar from "../atoms/my-icon/elements/dollar";
 import Camera from "../atoms/my-icon/elements/camera";
 import Time from "../atoms/my-icon/elements/time";
+import Eye from "../atoms/my-icon/elements/eye";
+import { useQuery } from "@tanstack/react-query";
+import { partnerService } from "@/services/api/partner";
+import { useParams } from "next/navigation";
 
 export type EditSection =
   | "basic" // título, descrição, tipo
@@ -21,11 +27,14 @@ export type EditSection =
   | "location" // localização
   | "pricing" // preços
   | "images" // imagens
-  | "availability"; // disponibilidade
+  | "availability" // disponibilidade
+  | "hide" // ocultar atividade
+  | "cancel"; // cancelar atividade
 
 interface ActivityEditMenuProps {
   onEdit: (section: EditSection) => void;
-  isRepeatable?: boolean;
+  hasClient?: boolean;
+  isOcult?: boolean;
 }
 
 const menuItems = [
@@ -48,7 +57,7 @@ const menuItems = [
     description: "Valores",
   },
   {
-    label: "Horários",
+    label: "Horários - Repetição",
     icon: <Time />,
     section: "schedule" as EditSection,
     description: "Dias e horários disponíveis",
@@ -60,16 +69,29 @@ const menuItems = [
     description: "Endereço e ponto de referência",
   },
   {
-    label: "Disponibilidade",
+    label: "Datas específicas",
     icon: <Calendar />,
     section: "availability" as EditSection,
     description: "Disponibilidade",
+  },
+  {
+    label: "Ocultar atividade",
+    icon: <Eye />,
+    section: "hide" as EditSection,
+    description: "Ocultar atividad",
+  },
+  {
+    label: "Cancelar atividade",
+    icon: <Calendar />,
+    section: "cancel" as EditSection,
+    description: "Cancelar atividade",
   },
 ];
 
 export function ActivityEditMenu({
   onEdit,
-  isRepeatable = false,
+  hasClient,
+  isOcult,
 }: ActivityEditMenuProps) {
   return (
     <MyDropdownMenu>
@@ -92,7 +114,7 @@ export function ActivityEditMenu({
           align="center"
         >
           {menuItems
-            .filter((menu) => (isRepeatable ? menu.label != "Horários" : menu))
+            .filter((menu) => (hasClient ? menu.section != "hide" : menu))
             .map((item) => (
               <DropdownMenuItem
                 key={item.section}
@@ -101,7 +123,9 @@ export function ActivityEditMenu({
               >
                 {item.icon}
                 <MyTypography variant="body-big" weight="medium">
-                  {item.label}
+                  {item.label == "Ocultar atividade" && isOcult
+                    ? "Ativar Atividade"
+                    : item.label}
                 </MyTypography>
               </DropdownMenuItem>
             ))}

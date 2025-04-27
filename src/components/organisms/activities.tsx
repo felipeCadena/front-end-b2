@@ -4,7 +4,7 @@ import MyBadge from "@/components/atoms/my-badge";
 import MyIcon from "@/components/atoms/my-icon";
 import MyTypography from "@/components/atoms/my-typography";
 import StarRating from "@/components/molecules/my-stars";
-import { Adventure } from "@/services/api/adventures";
+import { AddToCartAdventure, Adventure } from "@/services/api/adventures";
 import { cn } from "@/utils/cn";
 import { handleNameActivity, selectActivityImage } from "@/utils/formatters";
 import PATHS from "@/utils/paths";
@@ -17,7 +17,7 @@ export default function Activities({
   withoutHeart,
   withoutShared,
 }: {
-  activities: Adventure[];
+  activities: Adventure[] | AddToCartAdventure[];
   type?: string;
   withoutHeart?: boolean;
   withoutShared?: boolean;

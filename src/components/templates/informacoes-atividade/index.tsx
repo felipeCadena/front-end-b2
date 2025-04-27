@@ -120,8 +120,10 @@ export default function InformacoesAtividade({
   };
 
   // Função pro fluxo de criação de parceiro + atividade
-  const handleSubmit = async () => {
-    if (!isInGroup || !isChildrenAllowed || !priceAdult || !personsLimit) {
+  const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+
+    if (!priceAdult || !personsLimit) {
       toast.error("Preencha todos os campos.");
       return;
     }
@@ -279,7 +281,11 @@ export default function InformacoesAtividade({
   };
 
   // Função apenas pra criar atividade
-  const handleCreateAdventure = async () => {
+  const handleCreateAdventure = async (
+    e: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    e.preventDefault();
+
     if (!priceAdult || !personsLimit) {
       toast.error("Preencha todos os campos.");
       return;

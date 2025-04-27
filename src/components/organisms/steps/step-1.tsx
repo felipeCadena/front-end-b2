@@ -22,7 +22,6 @@ export default function Step1({
       typeAdventure: value,
     });
   };
-
   return (
     <section className="">
       <MyTypography variant="heading2" weight="bold">

@@ -12,36 +12,63 @@ import { useAlert } from "@/hooks/useAlert";
 import { adventures } from "@/services/api/adventures";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { formatAddress, handleNameActivity } from "@/utils/formatters";
-import { ActivityEditMenu } from "@/components/organisms/edit-activity-menu";
-
-export type EditSection =
-  | "basic"
-  | "schedule"
-  | "location"
-  | "pricing"
-  | "images"
-  | "availability";
+import {
+  ActivityEditMenu,
+  EditSection,
+} from "@/components/organisms/edit-activity-menu";
+import { partnerService } from "@/services/api/partner";
+import PATHS from "@/utils/paths";
+import { toast } from "react-toastify";
 
 export default function Atividade() {
   const router = useRouter();
   const { id } = useParams();
-  const [editingSection, setEditingSection] =
-    React.useState<EditSection | null>(null);
-
-  const queryClient = useQueryClient();
-
-  const handleEdit = (section: EditSection) => {
-    router.push(
-      `/parceiro/atividades-cadastradas/atividade/${id}/editar?section=${section}`
-    );
-  };
-
+  const [cancel, setCancel] = React.useState(false);
+  const [confirmedCancel, setConfirmedCancel] = React.useState(false);
+  const [hasClient, setHasClient] = React.useState(false);
+  const [isLoading, setIsLoading] = React.useState(false);
+  const [hideActivity, setHideActivity] = React.useState(false);
+  const [confirmedHideActivity, setConfirmedHideActivity] =
+    React.useState(false);
   const { handleClose, isModalOpen } = useAlert();
+  const queryClient = useQueryClient();
 
   const { data: activity } = useQuery({
     queryKey: ["activity"],
     queryFn: () => adventures.getAdventureById(Number(id)),
   });
+
+  useQuery({
+    queryKey: ["mySchedules"],
+    queryFn: async () => {
+      const schedules = await partnerService.getMySchedules({
+        limit: 30,
+        skip: 0,
+        adventureId: id as string,
+        isAvailable: true,
+      });
+      if (schedules && schedules?.totalCount > 0) {
+        setHasClient(true);
+      }
+      return schedules ?? [];
+    },
+  });
+
+  const handleEdit = (section: EditSection) => {
+    if (section == "cancel") {
+      setCancel(true);
+      return;
+    }
+
+    if (section == "hide") {
+      setHideActivity(true);
+      return;
+    }
+
+    router.push(
+      `/parceiro/atividades-cadastradas/atividade/${id}/editar?section=${section}`
+    );
+  };
 
   const formattedActivity = React.useMemo(() => {
     if (!activity) return null;
@@ -204,13 +231,52 @@ export default function Atividade() {
     return includedItems;
   };
 
-  const handleConclusion = () => {
-    setEditingSection(null);
-    queryClient.invalidateQueries({ queryKey: ["activity"] });
+  const handleCancel = async () => {
+    setIsLoading(true);
+
+    try {
+      await adventures.deleteAdventureById(Number(id));
+
+      setConfirmedCancel(true);
+      setCancel(false);
+    } catch (error) {
+      console.error("Error canceling activity:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleConfirmCancel = () => {
+    router.push(PATHS["atividades-cadastradas"]);
+    setConfirmedCancel(false);
+  };
+
+  const handleHideActivity = async () => {
+    setIsLoading(true);
+    try {
+      if (activity?.onSite) {
+        await adventures.updateAdventureById(Number(id), {
+          onSite: false,
+        });
+      } else {
+        await adventures.updateAdventureById(Number(id), {
+          onSite: true,
+        });
+      }
+      queryClient.invalidateQueries({ queryKey: ["activity"] });
+      setHideActivity(false);
+      setConfirmedHideActivity(true);
+    } catch (error) {
+      console.error("Error hiding activity:", error);
+      toast.error("Erro ao ocultar/ativar atividade. Tente novamente.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
     <section className="my-10">
+      {/* Modal de Atividade Cadastrada */}
       <ModalAlert
         open={isModalOpen}
         onClose={handleClose}
@@ -219,6 +285,64 @@ export default function Atividade() {
         descrition="Parabéns! Sua nova atividade já foi cadastrada e já pode ser visualizada pelos nossos clientes."
         button="Voltar ao início"
       />
+
+      {/* Modal de cancelamento de atividade */}
+      <ModalAlert
+        open={cancel}
+        onClose={handleCancel}
+        isLoading={isLoading}
+        iconName="cancel"
+        title="Cancelamento de Atividade"
+        descrition={
+          hasClient
+            ? "Tem certeza que deseja cancelar essa atividade? Há clientes que já agendaram essa atividade."
+            : "Tem certeza que deseja cancelar?"
+        }
+        button="Cancelar atividade"
+      />
+
+      {/* Modal que confirma o cancelamento da atividade */}
+      <ModalAlert
+        open={confirmedCancel}
+        onClose={handleConfirmCancel}
+        iconName="warning"
+        title="Atividade cancelada"
+        descrition={
+          hasClient
+            ? "A atividade ja foi cancelada e em breve seu cliente receberá uma mensagem explicando isso."
+            : "A atividade ja foi cancelada!"
+        }
+        button="Voltar ao início"
+      />
+
+      {/* Modal que oculta a atividade no site */}
+      <ModalAlert
+        open={hideActivity}
+        onClose={handleHideActivity}
+        iconName="warning"
+        title={activity.onSite ? "Atividade Ocultada" : "Atividade Reativada"}
+        descrition={
+          activity.onSite
+            ? "A atividade será ocultada e não aparecerá mais para os clientes."
+            : "A atividade será reativada e aparecerá novamente para os clientes."
+        }
+        button={activity.onSite ? "Ocultar atividade" : "Reativar atividade"}
+      />
+
+      {/* Modal que confirma que a atividade foi ocultada */}
+      <ModalAlert
+        open={confirmedHideActivity}
+        onClose={() => setConfirmedHideActivity(false)}
+        iconName="warning"
+        title={!activity.onSite ? "Atividade Ocultada" : "Atividade Reativada"}
+        descrition={
+          !activity.onSite
+            ? "A atividade foi ocultada e não aparecerá mais para os clientes."
+            : "A atividade foi reativada e aparecerá novamente para os clientes."
+        }
+        button="Voltar ao início"
+      />
+
       <div className="relative">
         <MyIcon
           name="voltar-black"
@@ -244,12 +368,18 @@ export default function Atividade() {
                 <MyBadge variant="outline" className="p-1 mt-2">
                   {handleNameActivity(activity?.typeAdventure ?? "")}
                 </MyBadge>
+                {!activity.onSite && (
+                  <MyBadge variant="error" className="mx-4 p-1 mt-2 ">
+                    Oculta no Site
+                  </MyBadge>
+                )}
               </div>
             </div>
             <div className="max-sm:hidden">
               <ActivityEditMenu
                 onEdit={handleEdit}
-                isRepeatable={activity?.isRepeatable}
+                hasClient={hasClient}
+                isOcult={!activity.onSite}
               />
             </div>
           </div>
@@ -483,7 +613,11 @@ export default function Atividade() {
           </div>
         </div>
         <div className="md:hidden mt-6">
-          <ActivityEditMenu onEdit={handleEdit} />
+          <ActivityEditMenu
+            onEdit={handleEdit}
+            hasClient={hasClient}
+            isOcult={!activity.onSite}
+          />
         </div>
       </div>
     </section>

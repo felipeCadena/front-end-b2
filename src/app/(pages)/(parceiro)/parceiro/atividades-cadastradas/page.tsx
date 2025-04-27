@@ -9,7 +9,7 @@ import ActivitiesDetails from "@/components/organisms/activities-details";
 import ActivitiesFilter from "@/components/organisms/activities-filter";
 import { ActivityCardSkeleton } from "@/components/organisms/activities-skeleton";
 import SearchActivity from "@/components/organisms/search-activity";
-import { Adventure } from "@/services/api/adventures";
+import { AddToCartAdventure, Adventure } from "@/services/api/adventures";
 import { partnerService } from "@/services/api/partner";
 import PATHS from "@/utils/paths";
 import { useQuery } from "@tanstack/react-query";
@@ -25,14 +25,14 @@ export default function AtividadesCadastradas() {
   const [partnerAdventures, setPartnerAdventures] =
     React.useState<Adventure[]>();
 
-  const params = selected !== "" ? { typeAdventure: selected } : undefined;
-
-  const { data: myAdventures } = useQuery({
+  useQuery({
     queryKey: ["myAdventures", selected],
     queryFn: async () => {
       const activities = await partnerService.getMyAdventures({
-        ...params,
-        orderBy: "averageRating desc",
+        typeAdventure: selected ? selected : undefined,
+        orderBy: "createdAt desc",
+        limit: 30,
+        skip: 0,
       });
 
       if (activities) {

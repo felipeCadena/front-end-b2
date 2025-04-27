@@ -15,11 +15,6 @@ declare module "next-auth" {
   }
 }
 
-type SessionCallback = {
-  session: any;
-  token: any;
-};
-
 type JWTCallback = {
   user: any;
   token: any;
