@@ -20,16 +20,21 @@ export default function Reservas() {
     (sch) => sch.adventureStatus === 'agendado'
   );
 
-  const mapedScheduledActivities = lastAdventures?.map((act) => {
-    return {
-      adventureTitle: act.adventure.title,
-      orderAdventureId: act.orderAdventureId,
-      scheduleId: act.scheduleId,
-      scheduleDate: act.schedule.datetime,
-    };
-  });
+  const gatherDates = lastAdventures?.reduce((acc, adventure) => {
+    const dateWithoutTime = new Date(
+      adventure.schedule.datetime
+    ).toLocaleDateString('pt-BR', {
+      dateStyle: 'short',
+    });
+    const existingScheduleDate = acc.find((date) => dateWithoutTime === date);
+    if (!existingScheduleDate) {
+      acc.push(dateWithoutTime);
+    }
 
-  console.log(mapedScheduledActivities);
+    return acc;
+  }, [] as string[]);
+
+  console.log(gatherDates);
 
   return (
     <section className="bg-white w-full flex flex-col max-sm:items-center relative">
