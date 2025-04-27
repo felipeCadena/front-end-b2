@@ -11,6 +11,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import Image from 'next/image';
 import Link from 'next/link';
 import { toast } from 'react-toastify';
+import MyShareButton from '../atoms/my-share-button';
 
 type FavoriteActivityProps = {
   activity: Adventure;
@@ -34,6 +35,10 @@ export default function FavoriteActivity({
       console.error('Falha ao remover dos favoritos');
     }
   };
+
+  const frontBaseURL =
+    process.env.NEXT_PUBLIC_PROD_URL ?? 'http://localhost:3000';
+
   return (
     <div
       key={id}
@@ -52,8 +57,7 @@ export default function FavoriteActivity({
 
         <MyIcon
           name="full-heart"
-          variant="circled"
-          className="absolute top-3 right-3 border-2 hover:cursor-pointer"
+          className="absolute top-3 right-3 hover:cursor-pointer"
           onClick={removeFavorite}
         />
       </div>
@@ -65,10 +69,10 @@ export default function FavoriteActivity({
       <div className="flex justify-between items-center">
         <StarRating rating={activity.averageRating} />
 
-        <MyIcon name="shared-muted" className="cursor-pointer mx-2" />
+        <MyShareButton url={`${frontBaseURL}/atividades/atividade/${id}`} />
       </div>
       <MyTypography variant="subtitle1" weight="bold" className="">
-        {activity.title.slice(0, 23) + '...'}
+        {activity.title.slice(0, 20) + '...'}
       </MyTypography>
       <MyTypography variant="body-big" className="">
         {activity.description.slice(0, 25).concat('...')}

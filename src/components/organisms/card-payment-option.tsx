@@ -5,7 +5,7 @@ import { FormData } from '@/app/(pages)/(cliente)/finalizar-compra/page';
 import { UseFormReturn } from 'react-hook-form';
 import MyFormInput from '../atoms/my-form-input';
 import MyFormSelect from '../atoms/my-form-select';
-import { formatPrice } from '@/utils/formatters';
+import { formatInstallmentOptions } from '@/utils/formatters';
 import { AddToCartAdventure } from '@/services/api/adventures';
 
 type CardPaymentOptionProps = {
@@ -22,15 +22,13 @@ const CardPaymentOption = ({ form, userCart }: CardPaymentOptionProps) => {
 
   const totalPrice = activityPrice.reduce((acc, price) => acc + price, 0);
 
-  const instalmentOptions = [
-    { value: '1', label: `1x de ${formatPrice(totalPrice)}` },
-    { value: '2', label: `2x de ${formatPrice(Number(totalPrice) / 2)}` },
-    { value: '3', label: `3x de ${formatPrice(Number(totalPrice) / 3)}` },
-    { value: '4', label: `4x de ${formatPrice(Number(totalPrice) / 4)}` },
-  ];
+  const instalmentOptions = formatInstallmentOptions(6, totalPrice);
+
+  const { creditCard } = form.watch();
+
   return (
     <div className="max-sm:mt-8 md:flex md:flex-row-reverse md:items-center md:gap-8 md:col-span-2">
-      <Card />
+      <Card cardObj={creditCard} />
 
       <div className="max-sm:mt-4 space-y-4 md:w-[90%]">
         <MyFormInput

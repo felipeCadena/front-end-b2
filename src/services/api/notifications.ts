@@ -30,4 +30,14 @@ export const notificationsService = {
       throw error;
     }
   },
+
+  async getNotificationById(id: string) {
+    try {
+      const response = await api.get(`/notifications/${id}`);
+      return response.data as Notification;
+    } catch (error) {
+      console.error('Error fetching notification by ID', error);
+      throw error;
+    }
+  },
 };

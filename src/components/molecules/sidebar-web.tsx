@@ -8,15 +8,12 @@ import {
 } from '@/common/constants/sideBar';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import MyIcon from '../atoms/my-icon';
 import { useAuthStore } from '@/store/useAuthStore';
 import { signOut, useSession } from 'next-auth/react';
 import { authService } from '@/services/api/auth';
-import {
-  Notification,
-  notificationsService,
-} from '@/services/api/notifications';
+import { notificationsService } from '@/services/api/notifications';
 import { useQuery } from '@tanstack/react-query';
 import { useCart } from '@/store/useCart';
 import useLogin from '@/store/useLogin';
@@ -24,8 +21,6 @@ import useLogin from '@/store/useLogin';
 export default function SidebarMenuWeb({}) {
   const pathname = usePathname();
   const { setSideBarActive, sideBarActive } = useLogin();
-  const [notifications, setNotifications] = useState<Notification[]>([]);
-
   const { user, clearUser } = useAuthStore();
   const { data: session } = useSession();
   const { getCartSize } = useCart();
@@ -49,7 +44,7 @@ export default function SidebarMenuWeb({}) {
     }
   }, [user, session]);
 
-  useQuery({
+  const { data: notifications = [] } = useQuery({
     queryKey: ['notifications'],
     queryFn: async () => {
       const unreadNotifications = await notificationsService.listNotifications({
@@ -57,7 +52,6 @@ export default function SidebarMenuWeb({}) {
         isRead: false,
       });
 
-      setNotifications(unreadNotifications);
       return unreadNotifications;
     },
     enabled: Boolean(session?.user),

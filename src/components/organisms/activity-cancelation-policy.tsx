@@ -4,6 +4,7 @@ import MyTypography from '../atoms/my-typography';
 import MyIcon from '../atoms/my-icon';
 import { WhatsappShareButton } from 'react-share';
 import { useParams } from 'next/navigation';
+import MyShareButton from '../atoms/my-share-button';
 
 type ActivityCancelationPolicyProps = {
   price: {
@@ -59,13 +60,7 @@ const ActivityCancelationPolicy = ({
                 <MyTypography>{duration}</MyTypography>
               </div>
             </div>
-            <WhatsappShareButton
-              url={`${frontBaseURL}/atividades/atividade/${id}`}
-              title="Olha essa atividade que achei na B2 Adventure:"
-            >
-              <MyIcon name="compartilhar" className="hidden md:block" />
-              <MyIcon name="mobileCompartilhar" className="md:hidden" />
-            </WhatsappShareButton>
+            <MyShareButton url={`${frontBaseURL}/atividades/atividade/${id}`} />
           </div>
         </div>
       </div>

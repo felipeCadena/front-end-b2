@@ -281,26 +281,32 @@ export const formatDificultyTag = (difficulty: number) => {
 };
 
 export const formatIconName = (name: string) => {
-  const lowerName = name.toLowerCase();
+  const lowerName = name?.toLowerCase();
   if (lowerName === "fotos" || lowerName === "foto") {
     return "fotografia";
   }
   const accentRegex = /[\u0300-\u036f]/g;
-
-  return lowerName.normalize("NFD").replace(accentRegex, "");
+  return lowerName?.normalize("NFD").replace(accentRegex, "");
 };
 
 export const selectActivityImage = (activity: Adventure) => {
   if (activity?.images) {
-    if (activity?.images.length > 0) {
-      return activity?.images[0]?.url;
+    if (activity.images.length > 0) {
+      return activity.images[0]?.url;
     }
   }
   return `/images/atividades/${activity?.typeAdventure}/${activity?.typeAdventure}-1.jpeg`;
 };
 
 export const handleActivityImages = (activity: Adventure | undefined) => {
-  if (!activity?.images || activity.images.length === 0) {
+  if (!activity) {
+    return [
+      {
+        url: `/images/atividades/ar/ar-1.jpeg`,
+      },
+    ];
+  }
+  if (!activity?.images || activity?.images.length === 0) {
     return [
       {
         url: `/images/atividades/${activity?.typeAdventure}/${activity?.typeAdventure}-1.jpeg`,
@@ -517,5 +523,136 @@ export const getWeeklyRecurrenceTime = (
     rec?.dias.some((day) => day === selectedWeekDay)
   )[0];
 
+  if (!selectedWeekDayActivityTime?.horarios) {
+    const selectedMonthlyDay = recurrenceGroup.mensal.filter((rec) =>
+      rec.dias.some((day) => day === selected?.getDate())
+    )[0];
+
+    return selectedMonthlyDay?.horarios ?? [];
+  }
+
   return selectedWeekDayActivityTime?.horarios ?? [];
+};
+
+export const separateDecimals = (formattedPrice: string) => {
+  const splitPrice = formattedPrice.split(",");
+  return { reais: splitPrice[0], centavos: splitPrice[1] };
+};
+
+export const encontrarValorBrutoIdeal = (
+  valorLiquidoDesejado: number,
+  parcelas: number,
+  taxaMensalAntecipacao: number,
+  taxaFixaParcelamento: number,
+  taxaPercentualParcelamento: number
+): number => {
+  let brutoMin: number = valorLiquidoDesejado;
+  let brutoMax: number = valorLiquidoDesejado * 2;
+  let brutoMeio: number = 0;
+  const precisao = 1;
+
+  while (brutoMax - brutoMin > precisao) {
+    brutoMeio = (brutoMin + brutoMax) / 2;
+
+    const valorLiquido =
+      brutoMeio - taxaFixaParcelamento - brutoMeio * taxaPercentualParcelamento;
+    const valorParcela = valorLiquido / parcelas;
+
+    let valorAntecipado = 0;
+    for (let i = 1; i <= parcelas; i++) {
+      const valorPresente =
+        valorParcela / Math.pow(1 + taxaMensalAntecipacao, i);
+      valorAntecipado += valorPresente;
+    }
+
+    if (valorAntecipado < valorLiquidoDesejado) {
+      brutoMin = brutoMeio;
+    } else {
+      brutoMax = brutoMeio;
+    }
+  }
+
+  return parseFloat(brutoMeio.toFixed(2));
+};
+
+export const formatInstallmentOptions = (
+  installmentNumber: number,
+  totalPrice: number
+) => {
+  const ASAAS_TAXES = {
+    credito_1x: {
+      value: 0.49,
+      percent: 0.0199,
+    },
+    credito_2x6: {
+      // 2x até 6x
+      value: 0.49,
+      percent: 0.0249,
+    },
+    credito_7x12: {
+      // 7x até 12x
+      value: 0.49,
+      percent: 0.0299,
+    },
+    pix_boleto: {
+      value: 0.99,
+      percent: 0,
+    },
+    antecipacao: {
+      value: 0,
+      percent: 0.017,
+    },
+  };
+  const installmentArr: string | any[] = [];
+  let initialInstallmentCount = 1;
+
+  while (initialInstallmentCount <= installmentNumber) {
+    if (initialInstallmentCount > 1) {
+      const taxPercentage =
+        initialInstallmentCount >= 2 && initialInstallmentCount <= 6
+          ? ASAAS_TAXES["credito_2x6"].percent
+          : ASAAS_TAXES["credito_7x12"].percent;
+      const taxFixedValue =
+        initialInstallmentCount >= 2 && initialInstallmentCount <= 6
+          ? ASAAS_TAXES["credito_2x6"].value
+          : ASAAS_TAXES["credito_7x12"].value;
+
+      const value = encontrarValorBrutoIdeal(
+        totalPrice,
+        initialInstallmentCount,
+        ASAAS_TAXES["antecipacao"].percent,
+        taxFixedValue,
+        taxPercentage
+      );
+      const installmentNumberString = initialInstallmentCount.toString();
+      const total = formatPrice(value);
+      const price = formatPrice(value / initialInstallmentCount);
+      const splitPrice = separateDecimals(price);
+      const splitTotalPrice = separateDecimals(total);
+      installmentArr.push({
+        installment: installmentNumberString,
+        reais: `${installmentNumberString}x ${splitPrice.reais}`,
+        centavos: splitPrice.centavos,
+        totalReais: splitTotalPrice.reais,
+        totalCentavos: splitTotalPrice.centavos,
+      });
+      initialInstallmentCount += 1;
+    } else {
+      const installmentNumberString = initialInstallmentCount.toString();
+      const total = formatPrice(totalPrice);
+      const price = formatPrice(totalPrice / initialInstallmentCount);
+      const splitPrice = separateDecimals(price);
+      const splitTotalPrice = separateDecimals(total);
+      installmentArr.push({
+        installment: installmentNumberString,
+        reais: `${installmentNumberString}x ${splitPrice.reais}`,
+        centavos: splitPrice.centavos,
+        totalReais: splitTotalPrice.reais,
+        totalCentavos: splitTotalPrice.centavos,
+      });
+      initialInstallmentCount += 1;
+    }
+  }
+
+  return installmentArr;
 };

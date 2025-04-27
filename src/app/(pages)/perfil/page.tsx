@@ -101,28 +101,13 @@ export default function Perfil() {
     });
   }, [user]);
 
-  // const handleUploadImage = async () => {
-  //   if (file) {
-  //     const arrayBuffer = await file[0].arrayBuffer();
-  //     users
-  //       .uploadMedia({ mimetype: file[0].type, file: new Blob([arrayBuffer]) })
-  //       .then((res) => {
-  //         console.log(res);
+  const handleUploadPicture = async (fileList: FileList | null) => {
+    if (fileList && fileList.length > 0) {
+      setFile(Array.from(fileList));
+    }
+  };
 
-  //         setUser({
-  //           ...user,
-  //           photo: {
-  //             url: res,
-  //             mimetype: file[0].type,
-  //           },
-  //         });
-  //         queryClient.invalidateQueries({ queryKey: ["user"] });
-  //       })
-  //       .catch((error) => {
-  //         console.error("Error uploading image:", error);
-  //       });
-  //   }
-  // };
+  console.log('file', file);
 
   const handleSubmit = async (formData: FormData) => {
     setIsLoading(true);
@@ -138,29 +123,38 @@ export default function Perfil() {
       }
     }
 
-    if (file) {
-      const arrayBuffer = await file[0].arrayBuffer();
-      try {
-        const response = await users.uploadMedia({
-          mimetype: file[0].type,
-          file: new Blob([arrayBuffer]),
-        });
-        setUser({
-          ...user,
-          photo: {
-            url: response,
-            mimetype: file[0].type,
-          },
-        });
-
-        toast.success('Imagem alterada com sucesso!');
-      } catch (error) {
-        console.error('Erro ao enviar imagem', error);
-      }
-    }
     setIsLoading(false);
     queryClient.invalidateQueries({ queryKey: ['user'] });
   };
+
+  useEffect(() => {
+    const handleSendPhoto = async () => {
+      if (file) {
+        const arrayBuffer = await file[0].arrayBuffer();
+        try {
+          const response = await users.uploadMedia({
+            mimetype: file[0].type,
+            file: new Blob([arrayBuffer]),
+          });
+          setUser({
+            ...user,
+            photo: {
+              url: response,
+              mimetype: file[0].type,
+            },
+          });
+
+          console.log('RES', response);
+
+          toast.success('Imagem alterada com sucesso!');
+        } catch (error) {
+          console.error('Erro ao enviar imagem', error);
+        }
+      }
+    };
+
+    handleSendPhoto();
+  }, [file]);
 
   return (
     <section className="px-6 my-8">
@@ -198,11 +192,7 @@ export default function Perfil() {
           ref={inputRef}
           small
           className="cursor-pointer"
-          onChange={(fileList) => {
-            if (fileList && fileList.length > 0) {
-              setFile(Array.from(fileList));
-            }
-          }}
+          onChange={(fileList) => handleUploadPicture(fileList)}
           multiple
           accept="jpg, png, image/*"
         >

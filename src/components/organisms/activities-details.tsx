@@ -45,10 +45,10 @@ export default function ActivitiesDetails({
   };
 
   return (
-    <section className={cn(withDate && "mx-4 ")}>
+    <section className={cn(withDate && "mx-4")}>
       {activities
-        ? activities?.map((adventure: Adventure, index: number) => (
-            <div key={index} className={cn("flex flex-col")}>
+        ? activities.map((adventure: Adventure, index: number) => (
+            <div key={index} className="flex flex-col">
               <div
                 onClick={() => handleActivity(adventure.id.toString())}
                 className={cn(
@@ -63,7 +63,6 @@ export default function ActivitiesDetails({
                     className="absolute top-0 right-0 cursor-pointer"
                   />
                 )}
-                {/* esperando confirmação da cliente para alterar tipo da activity e englobar reserva */}
                 {withDate && (
                   <div
                     className={cn(
@@ -90,7 +89,7 @@ export default function ActivitiesDetails({
                 )}
                 <div
                   className={cn(
-                    "relative z-10 overflow-hidden w-[6.625rem] h-[6.625rem] hover:cursor-pointer rounded-md flex-shrink-0",
+                    "relative z-10 overflow-hidden hover:cursor-pointer rounded-md flex-shrink-0",
                     withDate
                       ? "w-[7.5rem] h-[7.5rem]"
                       : "w-[6.625rem] h-[6.625rem]"
@@ -101,15 +100,10 @@ export default function ActivitiesDetails({
                     src={selectActivityImage(adventure)}
                     width={250}
                     height={300}
-                    className={cn(
-                      "object-cover",
-                      withDate
-                        ? "w-[7.5rem] h-[7.5rem]"
-                        : "w-[6.625rem] h-[6.625rem]"
-                    )}
+                    className="object-cover w-full h-full"
                   />
                 </div>
-                <div className="relative">
+                <div className="relative flex flex-col justify-between">
                   <div className="flex gap-1 justify-between mb-1 mr-4">
                     <MyBadge
                       className="font-medium flex-shrink-0 w-fit"
@@ -117,7 +111,6 @@ export default function ActivitiesDetails({
                     >
                       {handleNameActivity(adventure?.typeAdventure)}
                     </MyBadge>
-
                     {!withDate && (
                       <StarRating rating={adventure?.averageRating} />
                     )}
@@ -138,15 +131,25 @@ export default function ActivitiesDetails({
                       ? adventure?.description.slice(0, 30).concat("...")
                       : adventure?.description.slice(0, 25).concat("...")}
                   </MyTypography>
-                  <MyIcon
-                    name="shared-muted"
-                    className={cn(
-                      "absolute z-50 right-0 top-1/2 cursor-pointer",
-                      !withDate && "hidden"
-                    )}
-                  />
+
+                  {withDate && (
+                    <div className="flex items-center gap-1">
+                      <MyIcon
+                        name="shared-muted"
+                        className={cn(
+                          "text-primary-600",
+                          isDateInPast("2025-03-12T08:00:00") &&
+                            "text-[#c0c0c0]"
+                        )}
+                      />
+                      <MyTypography variant="notification">
+                        {getData("2025-03-12T08:00:00")}
+                      </MyTypography>
+                    </div>
+                  )}
                 </div>
               </div>
+
               {lowRating && adventure?.averageRating <= 2 && (
                 <MyButton
                   variant="black-border"

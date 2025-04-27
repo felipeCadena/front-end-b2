@@ -18,8 +18,12 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { MyForm } from '@/components/atoms/my-form';
 import { ordersAdventuresService } from '@/services/api/orders';
 import { toast } from 'react-toastify';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { users } from '@/services/api/users';
+import { AxiosError } from 'axios';
+import MySpinner from '@/components/atoms/my-spinner';
+import { useFinishPayment } from '@/store/useFinishPayment';
+import ModalAlert from '@/components/molecules/modal-alert';
 
 const formSchema = z.object({
   paymentMethod: z.string().optional(),
@@ -59,7 +63,7 @@ const formSchema = z.object({
 });
 
 const paymentDefaultValues = {
-  paymentMethod: '',
+  paymentMethod: 'PIX',
   installmentCount: '1',
   creditCard: {
     holderName: '',
@@ -74,7 +78,7 @@ const paymentDefaultValues = {
     cpfCnpj: '',
     postalCode: '',
     addressNumber: '000',
-    addressComplement: '',
+    addressComplement: null,
     phone: '4738010919',
     mobilePhone: '',
   },
@@ -84,14 +88,27 @@ export type FormData = z.infer<typeof formSchema>;
 
 export default function FinalizarCompra() {
   const router = useRouter();
-  const [selectedPayment, setSelectedPayment] = useState<string>('');
+  const [selectedPayment, setSelectedPayment] = useState<string>('PIX');
+  const [isLoading, setIsLoading] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [isReadyToPay, setIsReadyToPay] = useState(false);
+  const { addToPaymentStore } = useFinishPayment();
+  const queryClient = useQueryClient();
 
-  const { carts } = useCart();
+  const handleModal = () => {
+    setIsModalOpen((prev) => !prev);
+  };
+
+  const { carts, clearCart } = useCart();
 
   const { data: loggedUser } = useQuery({
     queryKey: ['logged_user'],
     queryFn: () => users.getUserLogged(),
+  });
+
+  const { data: userIP = '' } = useQuery({
+    queryKey: ['user_ip_address'],
+    queryFn: () => users.getIP(),
   });
 
   const userId = loggedUser?.id ?? '';
@@ -100,15 +117,30 @@ export default function FinalizarCompra() {
 
   const purchaseOrder = userCart?.cart.map((item) => {
     if (item) {
+      const [hour, minute] = item.schedule.scheduleTime.split(':');
+      const scheduleDate = new Date(item.schedule.scheduleDate as Date);
+      scheduleDate.setHours(Number(hour));
+      scheduleDate.setMinutes(Number(minute));
+
       const formatOrder = {
         adventureId: item.adventure.id,
-        scheduleDate: new Date(item.schedule.scheduleDate as Date),
+        scheduleDate,
         qntAdults: item.schedule.qntAdults,
         qntChildren: item.schedule.qntChildren,
         qntBabies: item.schedule.qntBabies,
       };
       return formatOrder;
     }
+  });
+
+  useQuery({
+    queryKey: [purchaseOrder],
+    queryFn: () => {
+      if (purchaseOrder && purchaseOrder.length > 1) {
+        setIsModalOpen(true);
+      }
+      return;
+    },
   });
 
   const payments: { name: string; label: string; icon: IconsMapTypes }[] = [
@@ -142,6 +174,7 @@ export default function FinalizarCompra() {
       form.reset({
         ...paymentDefaultValues,
         creditCardHolderInfo: {
+          ...paymentDefaultValues.creditCardHolderInfo,
           name: loggedUser.name,
           email: loggedUser.email,
           phone: loggedUser.phone,
@@ -154,17 +187,85 @@ export default function FinalizarCompra() {
   }, [userId]);
 
   const handleSubmit = async (formData: FormData) => {
+    setIsLoading(true);
+    const formattedOrder = {
+      ...formData,
+      installmentCount: Number(formData.installmentCount),
+      creditCard: {
+        ...formData.creditCard,
+        number: formData.creditCard?.number?.replaceAll(' ', ''),
+      },
+      creditCardHolderInfo: {
+        ...formData.creditCardHolderInfo,
+        cpfCnpj: formData.creditCardHolderInfo?.cpfCnpj
+          .replaceAll('-', '')
+          .replaceAll('/', '')
+          .replaceAll('.', '')
+          .replaceAll(' ', ''),
+        postalCode: formData.creditCardHolderInfo?.postalCode.replaceAll(
+          '.',
+          ''
+        ),
+      },
+    };
+
     try {
       if (selectedPayment === 'BOLETO' || selectedPayment === 'PIX') {
-        await ordersAdventuresService.create(purchaseOrder);
-        toast.success('Pedido enviado!');
-        return console.log('Enviado');
+        const { data } = await ordersAdventuresService.create(
+          formattedOrder,
+          userIP
+        );
+        queryClient.invalidateQueries({
+          queryKey: ['notifications'],
+        });
+        if (selectedPayment === 'PIX') {
+          addToPaymentStore({
+            id: data.db.id,
+            paymentMethod: data.db.paymentMethod,
+            paymentStatus: data.db.paymentStatus,
+            bankSlipUrl: data.db.bankSlipUrl,
+            dueDate: data.db.dueDate,
+            pixDueDate: data.pixResponse.expirationDate,
+            qrCode: data.pixResponse.encodedImage,
+            pixCopyPaste: data.pixResponse.payload,
+          });
+        }
+        if (selectedPayment === 'BOLETO') {
+          addToPaymentStore({
+            id: data.db.id,
+            paymentMethod: data.db.paymentMethod,
+            paymentStatus: data.db.paymentStatus,
+            bankSlipUrl: data.db.bankSlipUrl,
+            dueDate: data.db.dueDate,
+          });
+        }
+        toast.success('Pedido enviado com sucesso!');
+        router.push(`/finalizar-compra/${data.db.id}`);
+        return data;
       }
 
-      await ordersAdventuresService.create(formData);
+      await ordersAdventuresService.create(formattedOrder, userIP);
+      toast.success('Pedido enviado com sucesso!');
+      clearCart(userId);
+      queryClient.invalidateQueries({
+        queryKey: ['notifications'],
+      });
+      router.push(PATHS.atividades);
     } catch (error) {
+      if (error instanceof AxiosError) {
+        if (error.status === 400) {
+          toast.error(error.response?.data.message);
+          return;
+        }
+        if (error.status === 401) {
+          toast.error('Token inválido ou expirado. Faça login novamente.');
+          return;
+        }
+      }
       toast.error('Um erro inesperado ocorreu!');
       console.error(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -172,8 +273,6 @@ export default function FinalizarCompra() {
     setSelectedPayment(paymentName);
     form.setValue('paymentMethod', paymentName);
   };
-
-  console.log(form.formState.errors);
 
   return (
     <section className="px-4 mb-8">
@@ -308,21 +407,42 @@ export default function FinalizarCompra() {
                     className=""
                     label="Salvar os dados para a próxima compra"
                   />
-                  <MyButton
-                    variant="default"
-                    borderRadius="squared"
-                    size="lg"
-                    type="submit"
-                    className="my-4 w-full"
-                  >
-                    Finalizar compra
-                  </MyButton>
+
+                  {isLoading ? (
+                    <MyButton
+                      variant="default"
+                      borderRadius="squared"
+                      size="lg"
+                      type="button"
+                      className="my-4 w-full flex justify-center items-center"
+                    >
+                      <MySpinner />
+                    </MyButton>
+                  ) : (
+                    <MyButton
+                      variant="default"
+                      borderRadius="squared"
+                      size="lg"
+                      type="submit"
+                      className="my-4 w-full"
+                    >
+                      Finalizar compra
+                    </MyButton>
+                  )}
                 </div>
               )}
             </form>
           </MyForm>
         </div>
       )}
+      <ModalAlert
+        open={isModalOpen}
+        onClose={handleModal}
+        button="Fechar"
+        title="Atenção!"
+        descrition="Não será aceito parcelamento para pagamento de mais de uma atividade."
+        iconName="atention"
+      />
     </section>
   );
 }

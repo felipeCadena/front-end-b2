@@ -10,14 +10,14 @@ import MyButton from "@/components/atoms/my-button";
 import Hide from "@/components/atoms/my-icon/elements/hide";
 import PATHS from "@/utils/paths";
 import ActivitiesHidden from "@/components/organisms/activities-hidden";
-import { notificationActivities } from "@/common/constants/mock";
-import FullActivitiesHistoric from "@/components/organisms/full-activities-historic";
+import { activities, notificationActivities } from "@/common/constants/mock";
 import ModalAlert from "@/components/molecules/modal-alert";
 import { useAlert } from "@/hooks/useAlert";
+import PartnerActivitiesHistoric from "@/components/organisms/partner-activities-historic";
+import { MyFullCalendarMultiple } from "@/components/molecules/my-full-calendar-multiple";
 import { useQuery } from "@tanstack/react-query";
 import { schedules } from "@/services/api/schedules";
 import { parseISO } from "date-fns";
-import { MyFullCalendarMultiple } from "@/components/molecules/my-full-calendar-multiple";
 
 export default function Reservas() {
   const router = useRouter();
@@ -138,11 +138,10 @@ export default function Reservas() {
         <ActivitiesHidden notifications={notificationActivities} />
       </div>
       <div className="hidden md:block">
-        <FullActivitiesHistoric
-          activities={allSchedules?.data}
+        <PartnerActivitiesHistoric
+          activities={activities}
           withDate
           withOptions
-          partner
         />
       </div>
     </main>

@@ -3,28 +3,20 @@
 import MyButton from '@/components/atoms/my-button';
 import MyIcon from '@/components/atoms/my-icon';
 import MyTypography from '@/components/atoms/my-typography';
-import {
-  Notification,
-  notificationsService,
-} from '@/services/api/notifications';
+import { notificationsService } from '@/services/api/notifications';
 import useNotifications from '@/store/useNotifications';
 
 import { cn } from '@/utils/cn';
-import {
-  formatDate,
-  formatNotificationText,
-  getData,
-  getHora,
-  isDateInPast,
-} from '@/utils/formatters';
+import { formatDate, getHora } from '@/utils/formatters';
 import PATHS from '@/utils/paths';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import React from 'react';
+import React, { useEffect } from 'react';
 
 export default function Notificacoes() {
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   const { notifications, setStoreNotifications } = useNotifications();
 
@@ -45,6 +37,12 @@ export default function Notificacoes() {
       return [];
     },
   });
+
+  useEffect(() => {
+    queryClient.invalidateQueries({
+      queryKey: ['notifications'],
+    });
+  }, []);
 
   const getMonthName = (timestamp: string) => {
     const months = [
@@ -159,10 +157,9 @@ export default function Notificacoes() {
                         className="ml-1 flex justify-between items-center"
                       >
                         {index < 9 ? `0${index + 1}` : index} -{' '}
-                        {notification.title.slice(0, 33) + '...'}
-                        <MyIcon
-                          name={notification.isRead ? 'read' : 'unread'}
-                        />
+                        {notification?.title?.length > 33
+                          ? notification.title.slice(0, 33) + '...'
+                          : notification.title}
                       </MyTypography>
 
                       <MyTypography
@@ -170,7 +167,10 @@ export default function Notificacoes() {
                         weight="regular"
                         className="ml-1 flex justify-between"
                       >
-                        {notification.text?.slice(0, 47) + '...'}
+                        {notification.text?.slice(0, 40) + '...'}
+                        <MyIcon
+                          name={notification.isRead ? 'read' : 'unread'}
+                        />
                       </MyTypography>
                     </div>
                   ))}

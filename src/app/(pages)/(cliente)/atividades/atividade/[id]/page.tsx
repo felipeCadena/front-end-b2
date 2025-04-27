@@ -53,6 +53,8 @@ export default function Atividade() {
     queryFn: () => adventures.getAdventureById(Number(id)),
   });
 
+  console.log('ACT', fetchedActivity);
+
   const price = {
     adult: fetchedActivity?.priceAdult,
     children: fetchedActivity?.priceChildren,
@@ -206,7 +208,7 @@ export default function Atividade() {
           />
           <div>
             <MyTypography variant="notification" weight="semibold">
-              {fetchedActivity?.partner.fantasyName}
+              {fetchedActivity?.partner?.fantasyName}
             </MyTypography>
             <MyTypography
               variant="notification"
@@ -272,7 +274,7 @@ export default function Atividade() {
 
             <MyButton
               variant="default"
-              className="mt-4 w-full max-sm:hidden"
+              className="mt-4 w-[280px] max-sm:hidden"
               size="lg"
               borderRadius="squared"
               onClick={handleOrder}

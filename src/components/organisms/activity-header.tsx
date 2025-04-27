@@ -29,7 +29,7 @@ const ActivityHeader = ({ activity }: ActivityHeaderProps) => {
         </div>
       </div>
       <div className="flex gap-4 mt-4 max-sm:hidden">
-        {activity?.partner.logo ? (
+        {activity?.partner?.logo ? (
           <Image
             alt="avatar"
             src={activity?.partner.logo.url ?? '/user.png'}
@@ -45,7 +45,7 @@ const ActivityHeader = ({ activity }: ActivityHeaderProps) => {
 
         <div>
           <MyTypography variant="label" weight="semibold">
-            {activity?.partner.fantasyName}
+            {activity?.partner?.fantasyName}
           </MyTypography>
           <MyTypography variant="label" weight="regular" lightness={400}>
             Parceiro e Guia de atividades

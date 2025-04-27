@@ -19,8 +19,6 @@ export default function Carrinho() {
   const { carts } = useCart();
   const userCart = carts.find((cart) => cart.userId === userId);
 
-  console.log(userCart);
-
   return (
     <section className="mx-4 my-4 -z-10 md:hidden">
       <div className="flex gap-4 items-center">
