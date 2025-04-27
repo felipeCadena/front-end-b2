@@ -11,25 +11,17 @@ import MyButton from '../atoms/my-button';
 import { usePathname, useRouter } from 'next/navigation';
 import PATHS from '@/utils/paths';
 import { cn } from '@/utils/cn';
+import Calendar from '../atoms/my-icon/elements/calendar';
 import PopupActivity from './popup-activity';
 import ModalClient from './modal-client';
 import { clientList } from '@/common/constants/mock';
 import Pessoas from '../atoms/my-icon/elements/pessoas';
-import { CustomerSchedule } from '@/services/api/orders';
 
-type FullActivitiesHistoricProps = {
-  withDate?: boolean;
-  withOptions?: boolean;
-  isActivityDone: boolean;
-  activities: CustomerSchedule[] | undefined;
-};
-
-export default function FullActivitiesHistoric({
+export default function PartnerActivitiesHistoric({
+  activities,
   withDate,
   withOptions,
-  activities,
-  isActivityDone,
-}: FullActivitiesHistoricProps) {
+}: any) {
   const router = useRouter();
   const pathname = usePathname();
   const [showModal, setShowModal] = React.useState(false);
@@ -53,86 +45,98 @@ export default function FullActivitiesHistoric({
         descrition="Confira a lista de clientes para esta atividade:"
         button="Fechar"
       />
-      {activities && activities.length > 0 ? (
-        activities.map((activity, index: number) => (
+      {activities &&
+        activities.map((activity: any, index: number) => (
           <div
             className="flex items-center gap-4 mt-20 mb-20 w-full"
             key={index}
           >
-            <div
-              className={`relative z-10 flex-shrink-0 overflow-hidden w-[265px] ${isActivityDone ? 'h-[265px]' : 'h-[161px]'} hover:cursor-pointer rounded-md`}
-            >
+            {withDate && (
+              <MyButton
+                variant={withDate ? 'secondary-text' : 'default'}
+                borderRadius="squared"
+                size={withDate ? 'md' : 'lg'}
+                className={cn(
+                  !withDate && 'px-10',
+                  'flex flex-col gap-1 text-base'
+                )}
+              >
+                {withDate ? (
+                  <div>
+                    <Calendar width={30} height={30} />
+                  </div>
+                ) : (
+                  <MyIcon name="clock" className="mr-2" />
+                )}
+                {withDate
+                  ? getData(activity.reserva.timestamp)
+                  : 'Refazer atividade'}
+              </MyButton>
+            )}
+
+            <div className="relative z-10 flex-shrink-0 overflow-hidden w-[265px] h-[265px] hover:cursor-pointer rounded-md">
               <Image
                 alt="sample_file"
-                src={'/images/atividades/paraquedas.webp'}
+                src={activity.image ?? '/images/atividades/paraquedas.webp'}
                 width={250}
                 height={300}
-                className={`object-cover w-[265px] ${isActivityDone ? 'h-[265px]' : 'h-[161px]'}`}
+                className="object-cover w-[265px] h-[265px]"
                 onClick={() =>
-                  router.push(PATHS.visualizarAtividade(activity.adventure.id))
+                  router.push(PATHS.atividadeRealizada(activity.id))
                 }
               />
             </div>
 
             <div className="w-full space-y-2 max-h-[265px]">
               <div className="w-full flex justify-between mb-4 relative">
-                <div className="flex flex-col gap-2 cursor-pointer">
+                <div
+                  className="flex flex-col gap-2 cursor-pointer"
+                  onClick={() =>
+                    router.push(PATHS.atividadeRealizada(activity.id))
+                  }
+                >
                   <div className="flex items-center gap-2">
                     <MyBadge className="font-medium p-1" variant="outline">
-                      {handleNameActivity(activity?.adventure?.typeAdventure)}
+                      {handleNameActivity(activity.typeAdventure)}
                     </MyBadge>
-                    <StarRating rating={5} />
+                    <StarRating rating={activity.stars} />
 
                     <div className="flex gap-2 items-center">
                       <Image
                         alt="foto parceiro"
-                        src={activity?.adventure?.partner?.logo?.url}
+                        src={activity.parceiro.avatar}
                         width={40}
                         height={40}
-                        className="w-[40px] h-[40px] rounded-full object-cover border-2"
+                        className="rounded-full"
                       />
                       <MyTypography
                         variant="body"
                         weight="medium"
                         className="mt-1 text-nowrap"
                       >
-                        {activity?.adventure?.partner?.fantasyName}
+                        {activity.parceiro.nome}
                       </MyTypography>
                     </div>
                   </div>
                   <MyTypography variant="subtitle3" weight="bold" className="">
-                    {activity?.adventure?.title}
+                    {activity.title}
+                  </MyTypography>
+
+                  <MyTypography variant="label" className="">
+                    {activity.description.slice(0, 40).concat('...')}
                   </MyTypography>
                 </div>
 
-                {isActivityDone && (
-                  <>
-                    <MyButton
-                      variant="ghost"
-                      size="md"
-                      className="text-base underline p-0 ml-auto decoration-dotted"
-                      onClick={() =>
-                        router.push(PATHS.atividadeRealizada(activity.id))
-                      }
-                    >
-                      Avaliar
-                    </MyButton>
-
-                    <MyButton
-                      variant="default"
-                      borderRadius="squared"
-                      size="md"
-                      className="text-base ml-auto"
-                      leftIcon={<MyIcon name="clock" className="mr-2" />}
-                      onClick={() =>
-                        router.push(
-                          PATHS.visualizarAtividade(activity.adventure.id)
-                        )
-                      }
-                    >
-                      Refazer atividade
-                    </MyButton>
-                  </>
+                {!withDate && (
+                  <MyButton
+                    variant="default"
+                    borderRadius="squared"
+                    size="lg"
+                    className="text-base ml-auto"
+                    leftIcon={<MyIcon name="clock" className="mr-2" />}
+                  >
+                    Refazer atividade
+                  </MyButton>
                 )}
 
                 {withOptions && (
@@ -155,36 +159,20 @@ export default function FullActivitiesHistoric({
                   )}
                 >
                   {withDate && (
-                    <>
-                      <MyButton
-                        variant="message"
-                        borderRadius="squared"
-                        size="md"
-                        className="px-4"
-                        leftIcon={<MyIcon name="message" className="" />}
-                      >
-                        Mensagem
-                      </MyButton>
-                      <MyButton
-                        variant="outline"
-                        borderRadius="squared"
-                        disabled
-                        size="md"
-                        className="p-4 py-5 ml-4 text-md border-primary-900 border-[3px]"
-                        leftIcon={<MyIcon name="calendar" />}
-                      >
-                        {getData(activity.schedule.datetime, true)}
-                      </MyButton>
-                    </>
+                    <MyButton
+                      variant="message"
+                      borderRadius="squared"
+                      size="md"
+                      className="px-10"
+                      leftIcon={<MyIcon name="message" className="" />}
+                    >
+                      Mensagem
+                    </MyButton>
                   )}
                 </div>
               </div>
-              <div
-                className={`w-full flex justify-between items-center p-3 ${isActivityDone ? 'bg-[#F1F0F587]' : 'bg-[#D2F1FF]'} border border-primary-600/30 border-opacity-80 rounded-lg shadow-sm relative`}
-              >
-                <div
-                  className={`absolute inset-y-0 left-0 w-3 ${isActivityDone ? 'bg-primary-900' : 'bg-[#2DADE4]'} rounded-l-lg`}
-                ></div>
+              <div className="w-full flex justify-between items-center p-3 bg-[#F1F0F587] border border-primary-600/30 border-opacity-80 rounded-lg shadow-sm relative">
+                <div className="absolute inset-y-0 left-0 w-3 bg-primary-900 rounded-l-lg"></div>
 
                 <div className="flex flex-col">
                   <MyTypography variant="label" weight="bold" className="ml-3">
@@ -195,9 +183,9 @@ export default function FullActivitiesHistoric({
                     weight="regular"
                     className="ml-3"
                   >
-                    {getData(activity.schedule.datetime)} -{' '}
-                    {getHora(activity.schedule.datetime)}{' '}
-                    {+getHora(activity.schedule.datetime).split(':')[0] > 12
+                    {getData(activity.reserva.timestamp)} -{' '}
+                    {getHora(activity.reserva.timestamp)}{' '}
+                    {+getHora(activity.reserva.timestamp).split(':')[0] > 12
                       ? 'tarde'
                       : 'manhã'}
                   </MyTypography>
@@ -216,18 +204,20 @@ export default function FullActivitiesHistoric({
 
                 <div className="flex flex-col">
                   <MyTypography variant="label" weight="bold" className="ml-3">
-                    Quant. de Pessoas
+                    Quant. de pessoas
                   </MyTypography>
                   <MyTypography
                     variant="body"
                     weight="regular"
                     className="ml-3"
                   >
-                    {activity.qntAdults}x Adulto(s)
-                    {activity.qntChildren > 0
-                      ? ` e ${activity.qntChildren}x
-                    Criança(s)`
-                      : null}
+                    {activity.reserva.pessoas} adultos x{' '}
+                    {new Intl.NumberFormat('pt-BR', {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    }).format(
+                      activity.reserva.total / activity.reserva.pessoas
+                    )}
                   </MyTypography>
                 </div>
 
@@ -240,42 +230,28 @@ export default function FullActivitiesHistoric({
                     Total:
                   </MyTypography>
                   <MyTypography variant="body" weight="bold" className="">
-                    {Number(activity.orderAdventure.totalCost).toLocaleString(
-                      'pt-BR',
-                      {
-                        style: 'currency',
-                        currency: 'BRL',
-                      }
-                    )}
+                    {activity.reserva.total.toLocaleString('pt-BR', {
+                      style: 'currency',
+                      currency: 'BRL',
+                    })}
                   </MyTypography>
                 </div>
               </div>
 
-              {isActivityDone && (
-                <div className="cursor-pointer flex justify-between items-center p-4 bg-[#F1F0F587] border border-primary-600/30 md:bg-primary-900 border-opacity-80 rounded-lg shadow-sm relative">
-                  <div className="absolute inset-y-0 left-0 w-3 bg-primary-900 rounded-l-lg"></div>
+              <div className="cursor-pointer flex justify-between items-center p-4 bg-[#F1F0F587] border border-primary-600/30 md:bg-primary-900 border-opacity-80 rounded-lg shadow-sm relative">
+                <div className="absolute inset-y-0 left-0 w-3 bg-primary-900 rounded-l-lg"></div>
 
-                  <div className="flex items-center gap-1 ml-4">
-                    <MyIcon name="camera" />
-                    <MyTypography
-                      variant="subtitle3"
-                      weight="bold"
-                      className=""
-                    >
-                      Fotos dessa Atividade
-                    </MyTypography>
-                  </div>
-                  <MyIcon name="seta" />
+                <div className="flex items-center gap-1 ml-4">
+                  <MyIcon name="camera" />
+                  <MyTypography variant="subtitle3" weight="bold" className="">
+                    Fotos dessa Atividade
+                  </MyTypography>
                 </div>
-              )}
+                <MyIcon name="seta" />
+              </div>
             </div>
           </div>
-        ))
-      ) : (
-        <div className="w-full h-[30vh] flex justify-center items-center">
-          <p>Não há atividades realizadas.</p>
-        </div>
-      )}
+        ))}
     </section>
   );
 }

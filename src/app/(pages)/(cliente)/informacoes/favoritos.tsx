@@ -6,27 +6,43 @@ import FavoriteActivity from '@/components/organisms/favorite-activity';
 import { adventures } from '@/services/api/adventures';
 import { cn } from '@/utils/cn';
 import { useQuery } from '@tanstack/react-query';
-import React from 'react';
+import React, { useState } from 'react';
 
 export default function Favoritos() {
+  const [selected, setSelected] = useState<'ar' | 'terra' | 'mar' | ''>('');
   const { data: favorites = [] } = useQuery({
     queryKey: ['favorites'],
     queryFn: () => adventures.listFavorites(),
   });
+
+  const filteredAdventures = favorites.filter(
+    (fav) => fav.adventure.typeAdventure === selected
+  );
 
   return (
     <section className="mx-auto mb-15 max-sm:max-w-5xl">
       <div className="mx-4 space-y-8 md:space-y-16">
         {favorites.length > 0 ? (
           <>
-            <ActivitiesFilter withoutText />
+            <ActivitiesFilter
+              selected={selected}
+              setSelected={setSelected}
+              withoutText
+            />
             <div className={cn('grid grid-cols-4 gap-6 max-sm:hidden')}>
-              {favorites.map((favorite) => (
-                <FavoriteActivity
-                  activity={favorite.adventure}
-                  favoriteID={favorite.id}
-                />
-              ))}
+              {selected === ''
+                ? favorites.map((favorite) => (
+                    <FavoriteActivity
+                      activity={favorite.adventure}
+                      favoriteID={favorite.id}
+                    />
+                  ))
+                : filteredAdventures.map((favorite) => (
+                    <FavoriteActivity
+                      activity={favorite.adventure}
+                      favoriteID={favorite.id}
+                    />
+                  ))}
             </div>
           </>
         ) : (

@@ -1,9 +1,95 @@
 import { api } from '@/libs/api';
 
+interface Schedule {
+  adventureId: number;
+  createdAt: string;
+  dateMediasPosted: any;
+  datetime: string;
+  id: string;
+  isAvailable: boolean;
+  isCanceled: boolean;
+  justificationCancel: string | null;
+  qntConfirmedPersons: number;
+  qntLimitPersons: number;
+  updatedAt: string;
+}
+
+interface AdventureOrderSummary {
+  hoursBeforeSchedule: number;
+  id: number;
+  images: [
+    {
+      url: string;
+    },
+  ];
+  partner: {
+    businessEmail: string;
+    fantasyName: string;
+    logo: {
+      url: string;
+    };
+  };
+  title: string;
+  typeAdventure: string;
+}
+
+interface OrderAdventure {
+  id: number;
+  orderId: string;
+  paymentStatus: string;
+  totalCost: string;
+}
+
+export interface CustomerSchedule {
+  adventure: AdventureOrderSummary;
+  adventureFinalPrice: string;
+  adventureId: number;
+  adventureStatus: string;
+  b2AdventureValue: string;
+  b2Percentage: number;
+  createdAt: string;
+  id: string;
+  orderAdventure: OrderAdventure;
+  orderAdventureId: number;
+  partnerConfirmed: boolean;
+  partnerIsPaid: boolean;
+  partnerValue: string;
+  personsIsAccounted: boolean;
+  qntAdults: number;
+  qntBabies: number;
+  qntChildren: number;
+  schedule: Schedule;
+  scheduleId: string;
+  taxesPercentage: number;
+  totalTaxes: string;
+  updatedAt: string;
+}
+
+interface ActivityOrder {
+  bankSlipUrl: string | null;
+  createdAt: string;
+  customer: { name: string };
+  customerUserId: string;
+  discount: string | null;
+  dueDate: string;
+  id: number;
+  installmentCount: number;
+  invoiceUrl: string;
+  lastDigitsCreditCard: string;
+  orderId: string;
+  ordersScheduleAdventure: [];
+  paymentMethod: string;
+  paymentStatus: string;
+  pixCode: string | null;
+  protocolId: string;
+  totalCost: string;
+  updatedAt: string;
+}
+
 export const ordersAdventuresService = {
-  getAll: async () => {
+  getAll: async (): Promise<ActivityOrder[]> => {
     try {
-      const response = await api.get('/ordersAdventures');
+      const response = await api.get('/ordersAdventures?limit=50');
       return response.data;
     } catch (error) {
       console.error('Error fetching all orders:', error);
@@ -77,11 +163,16 @@ export const ordersAdventuresService = {
     }
   },
 
-  getCustomerSchedules: async (startDate: string) => {
+  getCustomerSchedules: async (
+    startDate: string
+  ): Promise<CustomerSchedule[]> => {
     try {
-      const response = await api.get(`/ordersAdventures/orderSchedule`, {
-        params: { startDate },
-      });
+      const response = await api.get(
+        `/ordersAdventures/orderSchedule?limit=50`,
+        {
+          params: { startDate },
+        }
+      );
       return response.data;
     } catch (error) {
       console.error(
@@ -89,6 +180,17 @@ export const ordersAdventuresService = {
         error
       );
       throw error;
+    }
+  },
+
+  getCustomerSchedulesById: async (
+    id: string
+  ): Promise<CustomerSchedule | undefined> => {
+    try {
+      const response = await api.get(`/ordersAdventures/orderSchedule/${id}`);
+      return response.data;
+    } catch (error) {
+      console.error(`Error fetching schedules by ID: ${id}`, error);
     }
   },
 
@@ -102,7 +204,7 @@ export const ordersAdventuresService = {
         `/ordersAdventures/${id}/orderSchedule/${orderScheduleAdventureId}/rating`,
         ratingData
       );
-      return response.data;
+      return response;
     } catch (error) {
       console.error(
         `Error rating adventure for order ID ${id} and schedule ID ${orderScheduleAdventureId}:`,

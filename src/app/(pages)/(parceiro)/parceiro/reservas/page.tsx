@@ -1,19 +1,19 @@
-"use client";
+'use client';
 
-import MyIcon from "@/components/atoms/my-icon";
-import MyTypography from "@/components/atoms/my-typography";
-import { MyFullCalendar } from "@/components/molecules/my-full-calendar";
-import { useRouter } from "next/navigation";
-import React from "react";
-import { ptBR } from "date-fns/locale/pt-BR";
-import MyButton from "@/components/atoms/my-button";
-import Hide from "@/components/atoms/my-icon/elements/hide";
-import PATHS from "@/utils/paths";
-import ActivitiesHidden from "@/components/organisms/activities-hidden";
-import { activities, notificationActivities } from "@/common/constants/mock";
-import FullActivitiesHistoric from "@/components/organisms/full-activities-historic";
-import ModalAlert from "@/components/molecules/modal-alert";
-import { useAlert } from "@/hooks/useAlert";
+import MyIcon from '@/components/atoms/my-icon';
+import MyTypography from '@/components/atoms/my-typography';
+import { MyFullCalendar } from '@/components/molecules/my-full-calendar';
+import { useRouter } from 'next/navigation';
+import React from 'react';
+import { ptBR } from 'date-fns/locale/pt-BR';
+import MyButton from '@/components/atoms/my-button';
+import Hide from '@/components/atoms/my-icon/elements/hide';
+import PATHS from '@/utils/paths';
+import ActivitiesHidden from '@/components/organisms/activities-hidden';
+import { activities, notificationActivities } from '@/common/constants/mock';
+import ModalAlert from '@/components/molecules/modal-alert';
+import { useAlert } from '@/hooks/useAlert';
+import PartnerActivitiesHistoric from '@/components/organisms/partner-activities-historic';
 
 export default function Reservas() {
   const router = useRouter();
@@ -42,7 +42,7 @@ export default function Reservas() {
             borderRadius="squared"
             size="md"
             leftIcon={<MyIcon name="plus" className="" />}
-            onClick={() => router.push(PATHS["cadastro-atividade"])}
+            onClick={() => router.push(PATHS['cadastro-atividade'])}
             className="w-1/4"
           >
             Novo Evento
@@ -53,7 +53,7 @@ export default function Reservas() {
             borderRadius="squared"
             size="md"
             leftIcon={<Hide iconColor="#FF7272" />}
-            onClick={() => router.push(PATHS["atividades-ocultas"])}
+            onClick={() => router.push(PATHS['atividades-ocultas'])}
             className="w-1/4"
           >
             Ocultas
@@ -78,7 +78,7 @@ export default function Reservas() {
           borderRadius="squared"
           size="lg"
           leftIcon={<MyIcon name="plus" className="" />}
-          onClick={() => router.push(PATHS["cadastro-atividade"])}
+          onClick={() => router.push(PATHS['cadastro-atividade'])}
           className="w-1/2"
         >
           Novo Evento
@@ -89,7 +89,7 @@ export default function Reservas() {
           borderRadius="squared"
           size="lg"
           leftIcon={<Hide iconColor="#FF7272" />}
-          onClick={() => router.push(PATHS["atividades-ocultas"])}
+          onClick={() => router.push(PATHS['atividades-ocultas'])}
           className="w-1/2"
         >
           Ocultas
@@ -109,7 +109,11 @@ export default function Reservas() {
         <ActivitiesHidden notifications={notificationActivities} />
       </div>
       <div className="hidden md:block">
-        <FullActivitiesHistoric activities={activities} withDate withOptions />
+        <PartnerActivitiesHistoric
+          activities={activities}
+          withDate
+          withOptions
+        />
       </div>
     </main>
   );

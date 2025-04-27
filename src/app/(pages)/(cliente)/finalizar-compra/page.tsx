@@ -23,6 +23,7 @@ import { users } from '@/services/api/users';
 import { AxiosError } from 'axios';
 import MySpinner from '@/components/atoms/my-spinner';
 import { useFinishPayment } from '@/store/useFinishPayment';
+import ModalAlert from '@/components/molecules/modal-alert';
 
 const formSchema = z.object({
   paymentMethod: z.string().optional(),
@@ -89,9 +90,14 @@ export default function FinalizarCompra() {
   const router = useRouter();
   const [selectedPayment, setSelectedPayment] = useState<string>('PIX');
   const [isLoading, setIsLoading] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [isReadyToPay, setIsReadyToPay] = useState(false);
   const { addToPaymentStore } = useFinishPayment();
   const queryClient = useQueryClient();
+
+  const handleModal = () => {
+    setIsModalOpen((prev) => !prev);
+  };
 
   const { carts, clearCart } = useCart();
 
@@ -125,6 +131,16 @@ export default function FinalizarCompra() {
       };
       return formatOrder;
     }
+  });
+
+  useQuery({
+    queryKey: [purchaseOrder],
+    queryFn: () => {
+      if (purchaseOrder && purchaseOrder.length > 1) {
+        setIsModalOpen(true);
+      }
+      return;
+    },
   });
 
   const payments: { name: string; label: string; icon: IconsMapTypes }[] = [
@@ -419,6 +435,14 @@ export default function FinalizarCompra() {
           </MyForm>
         </div>
       )}
+      <ModalAlert
+        open={isModalOpen}
+        onClose={handleModal}
+        button="Fechar"
+        title="Atenção!"
+        descrition="Não será aceito parcelamento para pagamento de mais de uma atividade."
+        iconName="atention"
+      />
     </section>
   );
 }

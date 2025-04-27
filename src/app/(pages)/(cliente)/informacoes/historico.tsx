@@ -10,19 +10,25 @@ import MyTypography from '@/components/atoms/my-typography';
 import ActivitiesFilter from '@/components/organisms/activities-filter';
 import ActivitiesHistoric from '@/components/organisms/activities-historic';
 import FullActivitiesHistoric from '@/components/organisms/full-activities-historic';
-import SearchActivity from '@/components/organisms/search-activity';
-import { adventures } from '@/services/api/adventures';
+import { ordersAdventuresService } from '@/services/api/orders';
 import { useQuery } from '@tanstack/react-query';
 import React from 'react';
 
 export default function Historico() {
-  const { data: activitiesHistoric } = useQuery({
-    queryKey: ['activitiesHistoric'],
-    queryFn: () => adventures.getAdventures(),
+  // lista as 50 ultimas atividades agendadas
+
+  const { data: schedules } = useQuery({
+    queryKey: ['schedules'],
+    queryFn: () =>
+      ordersAdventuresService.getCustomerSchedules('2025-04-01T00:00:00-03:00'),
   });
 
+  const lastAdventures = schedules?.filter(
+    (sch) => sch.adventureStatus === 'realizado'
+  );
+
   return (
-    <section className="w-full">
+    <section className="w-full border-2 border-red-500">
       <div className="mx-4 space-y-8">
         <div className="md:hidden">{/* <SearchActivity /> */}</div>
         <ActivitiesFilter withoutText />
@@ -35,10 +41,7 @@ export default function Historico() {
             Histórico de atividades
           </MyTypography>
           <div className="ml-auto">
-            <MySelect
-            //   value={}
-            //   onValueChange={}
-            >
+            <MySelect>
               <SelectTrigger className="rounded-2xl text-[#848A9C] text-xs">
                 <SelectValue placeholder="Mensal" />
               </SelectTrigger>
@@ -53,7 +56,7 @@ export default function Historico() {
           <ActivitiesHistoric activities={activities} />
         </div>
         <div className="max-sm:hidden">
-          <FullActivitiesHistoric activities={activities} />
+          <FullActivitiesHistoric isActivityDone activities={lastAdventures} />
         </div>
       </div>
     </section>

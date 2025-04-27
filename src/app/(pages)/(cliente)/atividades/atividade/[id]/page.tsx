@@ -53,6 +53,8 @@ export default function Atividade() {
     queryFn: () => adventures.getAdventureById(Number(id)),
   });
 
+  console.log('ACT', fetchedActivity);
+
   const price = {
     adult: fetchedActivity?.priceAdult,
     children: fetchedActivity?.priceChildren,
@@ -206,7 +208,7 @@ export default function Atividade() {
           />
           <div>
             <MyTypography variant="notification" weight="semibold">
-              {fetchedActivity?.partner.fantasyName}
+              {fetchedActivity?.partner?.fantasyName}
             </MyTypography>
             <MyTypography
               variant="notification"

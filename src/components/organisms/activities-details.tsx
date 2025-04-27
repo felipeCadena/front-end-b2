@@ -117,11 +117,11 @@ export default function ActivitiesDetails({
                         className="font-medium flex-shrink-0 w-fit"
                         variant="outline"
                       >
-                        {handleNameActivity(adventure.typeAdventure)}
+                        {handleNameActivity(adventure?.typeAdventure)}
                       </MyBadge>
 
                       {!withDate && (
-                        <StarRating rating={adventure.averageRating} />
+                        <StarRating rating={adventure?.averageRating} />
                       )}
                     </div>
 
@@ -130,15 +130,15 @@ export default function ActivitiesDetails({
                       weight="bold"
                       className={cn(withDate ? 'mt-4' : 'mt-2')}
                     >
-                      {adventure.title}
+                      {adventure?.title}
                     </MyTypography>
                     <MyTypography
                       variant="notification"
                       className={cn(withDate && 'w-1/2')}
                     >
                       {withDate
-                        ? adventure.description.slice(0, 30).concat('...')
-                        : adventure.description.slice(0, 25).concat('...')}
+                        ? adventure?.description.slice(0, 30).concat('...')
+                        : adventure?.description.slice(0, 25).concat('...')}
                     </MyTypography>
                     <MyIcon
                       name="shared-muted"
@@ -149,7 +149,7 @@ export default function ActivitiesDetails({
                     />
                   </div>
                 </div>
-                {lowRating && adventure.averageRating <= 2 && (
+                {lowRating && adventure?.averageRating <= 2 && (
                   <MyButton
                     variant="black-border"
                     borderRadius="squared"

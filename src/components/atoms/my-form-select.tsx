@@ -12,13 +12,18 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
 } from './my-select';
 
 type Props<T extends FieldValues> = {
   readonly form: UseFormReturn<T>;
   readonly name: Path<T>;
-  readonly options: { value: string; label: string }[];
+  readonly options: {
+    installment: string;
+    reais: string;
+    centavos: string;
+    totalReais: string;
+    totalCentavos: string;
+  }[];
   readonly label?: string;
   readonly disabled?: boolean;
 };
@@ -42,14 +47,50 @@ const MyFormSelect = <T extends FieldValues>({
             defaultValue={field.value.toString()}
           >
             <FormControl>
-              <SelectTrigger disabled={disabled} className="w-[200px]">
-                <SelectValue defaultValue={`1x de ${options[0]}`} />
+              <SelectTrigger disabled={disabled} className="w-[350px]">
+                <div className="flex justify-between w-full ">
+                  {(() => {
+                    const selected = options.find(
+                      (opt) => opt.installment === field.value
+                    );
+                    if (!selected) return null;
+                    return (
+                      <div className="flex justify-start w-[80%] items-start">
+                        <span className="text-black font-semibold">
+                          {selected.reais}
+                        </span>
+                        <span className="text-black font-semibold text-[8px]">
+                          {selected.centavos}
+                        </span>
+                      </div>
+                    );
+                  })()}
+                </div>
               </SelectTrigger>
             </FormControl>
-            <SelectContent>
+            <SelectContent className="rounded-md">
               {options.map((option) => (
-                <SelectItem key={option.value} value={option.value}>
-                  {option.label}
+                <SelectItem
+                  key={option.installment}
+                  value={option.installment}
+                  className="border-t-[1px] flex justify-start w-full"
+                >
+                  <div className="flex justify-between w-[350px] px-3">
+                    <div className="flex justify-start w-[80%] items-start">
+                      <span className="text-black font-semibold">
+                        {option.reais}
+                      </span>
+                      <span className="text-black font-semibold text-[8px]">
+                        {option.centavos}
+                      </span>
+                    </div>
+                    <div className="flex justify-start w-[20%] items-start">
+                      <span className="font-semibold">{option.totalReais}</span>
+                      <span className="font-semibold text-[8px]">
+                        {option.totalCentavos}
+                      </span>
+                    </div>
+                  </div>
                 </SelectItem>
               ))}
             </SelectContent>
