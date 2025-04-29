@@ -32,7 +32,6 @@ export default function ModalClient({
   descrition,
   button,
 }: ModalAlertProps) {
-  console.log(data);
   return (
     <MyDialog open={open} onOpenChange={onClose}>
       <DialogContent className="bg-white flex flex-col gap-4 w-11/12 md:w-full h-auto rounded-2xl text-left px-4 md:max-h-[90vh] md:max-w-3xl overflow-auto">

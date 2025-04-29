@@ -41,8 +41,9 @@ export default function Step7() {
         </MyTypography>
         <TimePickerModal
           iconColor="black"
-          value={duration}
-          onChange={setDuration}
+          selectedTime={duration}
+          setSelectedTime={setDuration}
+          availableActivityTimes={[]}
         />
       </div>
     </section>
