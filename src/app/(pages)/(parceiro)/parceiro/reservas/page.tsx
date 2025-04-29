@@ -2,7 +2,6 @@
 
 import MyIcon from "@/components/atoms/my-icon";
 import MyTypography from "@/components/atoms/my-typography";
-import { MyFullCalendar } from "@/components/molecules/my-full-calendar";
 import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 import { ptBR } from "date-fns/locale/pt-BR";
@@ -10,14 +9,14 @@ import MyButton from "@/components/atoms/my-button";
 import Hide from "@/components/atoms/my-icon/elements/hide";
 import PATHS from "@/utils/paths";
 import ActivitiesHidden from "@/components/organisms/activities-hidden";
-import { activities, notificationActivities } from "@/common/constants/mock";
+import { notificationActivities } from "@/common/constants/mock";
 import ModalAlert from "@/components/molecules/modal-alert";
 import { useAlert } from "@/hooks/useAlert";
 import PartnerActivitiesHistoric from "@/components/organisms/partner-activities-historic";
 import { MyFullCalendarMultiple } from "@/components/molecules/my-full-calendar-multiple";
 import { useQuery } from "@tanstack/react-query";
-import { schedules } from "@/services/api/schedules";
 import { parseISO } from "date-fns";
+import { partnerService } from "@/services/api/partner";
 
 export default function Reservas() {
   const router = useRouter();
@@ -26,27 +25,19 @@ export default function Reservas() {
 
   const { handleClose, isModalOpen } = useAlert();
 
-  const { data: allSchedules } = useQuery({
-    queryKey: ["schedules"],
-    queryFn: async () => {
-      const reservations = await schedules.getSchedules();
-      if (reservations) {
-        const bookedDates = reservations.data.map((item: any) =>
-          parseISO(item.datetime)
-        );
-
-        setDates(bookedDates);
-      }
-      return reservations;
-    },
+  const { data: parterSchedules } = useQuery({
+    queryKey: ["parterSchedules"],
+    queryFn: () => partnerService.getMySchedules({ limit: 50 }),
   });
 
   useEffect(() => {
-    const bookedDates = allSchedules?.data.map((item: any) =>
-      parseISO(item.datetime)
-    );
-    setDates(bookedDates);
-  }, []);
+    if (parterSchedules) {
+      const bookedDates = parterSchedules?.data.map((item: any) =>
+        parseISO(item?.datetime)
+      );
+      setDates(bookedDates);
+    }
+  }, [parterSchedules]);
 
   return (
     <main className="my-6">
@@ -110,7 +101,7 @@ export default function Reservas() {
           onClick={() => router.push(PATHS["cadastro-atividade"])}
           className="w-1/2"
         >
-          Novo Evento
+          Nova Atividade
         </MyButton>
 
         <MyButton
@@ -139,7 +130,7 @@ export default function Reservas() {
       </div>
       <div className="hidden md:block">
         <PartnerActivitiesHistoric
-          activities={activities}
+          activities={parterSchedules?.data}
           withDate
           withOptions
         />

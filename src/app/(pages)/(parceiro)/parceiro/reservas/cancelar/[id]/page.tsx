@@ -4,10 +4,13 @@ import React from "react";
 import MyTypography from "@/components/atoms/my-typography";
 import MyButton from "@/components/atoms/my-button";
 import MyIcon from "@/components/atoms/my-icon";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import PATHS from "@/utils/paths";
 import ModalAlert from "@/components/molecules/modal-alert";
 import { useAlert } from "@/hooks/useAlert";
+import { useQuery } from "@tanstack/react-query";
+import { schedules } from "@/services/api/schedules";
+import { partnerService } from "@/services/api/partner";
 
 const justificativas = [
   "Houve um imprevisto e irei precisar cancelar nossa atividade, desculpe!",
@@ -19,6 +22,8 @@ const justificativas = [
 
 export default function CancelarAtividade() {
   const router = useRouter();
+  const { id } = useParams();
+  console.log(id);
   const [isModalOpen, setIsModalOpen] = React.useState(false);
   const [selectedJustificativa, setSelectedJustificativa] =
     React.useState<string>("");
@@ -27,6 +32,19 @@ export default function CancelarAtividade() {
     setIsModalOpen(false);
     router.push(`${PATHS["reservas-parceiro"]}?openModal=true`);
   };
+
+  // const handleCancel = async () => {
+  //   try {
+  //     await partnerService.cancelSchedule(id as string, {
+  //       justification: selectedJustificativa,
+  //     });
+  //     setIsModalOpen(false);
+  //     router.push(`${PATHS["reservas-parceiro"]}?openModal=true`);
+  //   } catch (error) {
+  //     console.error("Error canceling schedule:", error);
+  //     // Handle error (e.g., show a notification)
+  //   }
+  // };
 
   return (
     <main className="min-h-screen">
@@ -50,8 +68,7 @@ export default function CancelarAtividade() {
           </MyTypography>
 
           <MyTypography variant="body-big" className="text-gray-600 mb-1">
-            Você está prestes a cancelar a atividade de Escalada em Cristo
-            Redentor com <span className="font-semibold">Carla Duarte</span>
+            Você está prestes a cancelar a atividade
           </MyTypography>
 
           <div className="flex items-center gap-2 mt-2">
@@ -93,8 +110,7 @@ export default function CancelarAtividade() {
           onClose={handleClose}
           iconName="cancel"
           title="Cancelamento de Atividade"
-          descrition="Tem certeza que deseja cancelar essa
-atividade? O cliente será notificado sobre isso em menos de 2 horas."
+          descrition="Tem certeza que deseja cancelar essa atividade? O cliente será notificado sobre isso em menos de 2 horas."
           button="Cancelar atividade "
         />
 

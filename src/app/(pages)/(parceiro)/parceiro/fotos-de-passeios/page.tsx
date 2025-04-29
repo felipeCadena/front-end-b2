@@ -41,7 +41,7 @@ export default function FotosDePasseios() {
         Enviar fotos ou vídeos da atividade!
       </MyTypography>
 
-      <ActivitiesPhotos activities={activities} />
+      <ActivitiesPhotos activities={partnerOrders} />
     </main>
   );
 }

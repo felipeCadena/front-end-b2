@@ -1,26 +1,28 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { ptBR } from 'date-fns/locale/pt-BR';
-import FullActivitiesHistoric from '@/components/organisms/full-activities-historic';
-import { useQuery } from '@tanstack/react-query';
-import { ordersAdventuresService } from '@/services/api/orders';
-import { MyFullScheduleCalendar } from '@/components/molecules/my-full-schedule-calendar';
-import MyTypography from '@/components/atoms/my-typography';
-import FullActivitiesHistoricMobile from '@/components/organisms/full-activities-historic-mobile';
-import ScheduledActivitiesMobile from '@/components/organisms/scheduled-activities-mobile';
+import React from "react";
+import { ptBR } from "date-fns/locale/pt-BR";
+import FullActivitiesHistoric from "@/components/organisms/full-activities-historic";
+import { useQuery } from "@tanstack/react-query";
+import { ordersAdventuresService } from "@/services/api/orders";
+import { MyFullScheduleCalendar } from "@/components/molecules/my-full-schedule-calendar";
+import MyTypography from "@/components/atoms/my-typography";
+import FullActivitiesHistoricMobile from "@/components/organisms/full-activities-historic-mobile";
+import ScheduledActivitiesMobile from "@/components/organisms/scheduled-activities-mobile";
 
 export default function Reservas() {
   const [date, setDate] = React.useState<Date>();
 
   const { data: schedules } = useQuery({
-    queryKey: ['schedules'],
+    queryKey: ["schedules"],
     queryFn: () =>
-      ordersAdventuresService.getCustomerSchedules('2025-01-01T00:00:00-03:00'),
+      ordersAdventuresService.getCustomerSchedules({
+        adventureStatus: "agendado",
+      }),
   });
 
   const lastAdventures = schedules?.filter(
-    (sch) => sch.adventureStatus === 'agendado'
+    (sch) => sch.adventureStatus === "agendado"
   );
 
   const gatherDates = lastAdventures?.reduce((acc, adventure) => {

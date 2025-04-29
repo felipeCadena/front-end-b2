@@ -1,5 +1,21 @@
 import { api } from "@/libs/api";
 
+type Media = {
+  id: string;
+  url: string;
+  name: string;
+  title: string | null;
+  description: string | null;
+  mimetype: string;
+  adventureId: number;
+  scheduleId: number | null;
+  index: number | null;
+  isDefault: boolean;
+  createdAt: string; // ou Date, dependendo de como você lida com datas
+  updatedAt: string; // ou Date
+  uploadUrl: string;
+};
+
 export const schedules = {
   getSchedules: async (params?: {
     isAvailable?: boolean;
@@ -40,25 +56,48 @@ export const schedules = {
 
   // Medias
   postScheduleMedias: async (
-    id: string,
-    adventureId: string,
+    scheduleId: string,
     files: Array<{
       filename: string;
       mimetype: string;
       title: string;
       description: string;
       isDefault: boolean;
+      file: Blob | Buffer;
     }>
   ) => {
     try {
-      const response = await api.post(
-        `/schedules/cancel/${id}/adventure/${adventureId}`,
-        { files }
+      const { data } = await api.post<Media[]>(
+        `/schedule/${scheduleId}/media`,
+        {
+          files,
+        }
       );
-      return response.data;
+
+      console.log(data);
+
+      await Promise.all(
+        data.map(async (uploadData, index) => {
+          const file = files[index];
+          const res = await fetch(uploadData.uploadUrl, {
+            method: "PUT",
+            body: file.file,
+            headers: {
+              "Content-Type": file.mimetype,
+            },
+          });
+
+          if (!res.ok) {
+            console.error("Failed to upload media", res);
+            throw new Error(`Failed to upload file ${file.filename}`);
+          }
+        })
+      );
+
+      return data;
     } catch (error) {
       console.error(
-        `Error posting medias for schedule with id ${id} and adventureId ${adventureId}:`,
+        `Error posting medias for schedule with id ${scheduleId}:`,
         error
       );
       throw error;
@@ -78,9 +117,13 @@ export const schedules = {
     }
   ) => {
     try {
-      const response = await api.put(`/schedule/${id}/media/${mediaID}`, body, {
-        params: { updateBinary },
-      });
+      const response = await api.post(
+        `/schedule/${id}/media/${mediaID}`,
+        body,
+        {
+          params: { updateBinary },
+        }
+      );
       return response.data;
     } catch (error) {
       console.error(

@@ -390,7 +390,7 @@ export const adventures = {
         }
         return res;
       });
-      console.log(response);
+
       return response.data.url;
     } catch (error) {
       console.error("Erro ao atualizar mídia:", error);

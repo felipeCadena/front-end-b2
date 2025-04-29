@@ -1,4 +1,4 @@
-import { api } from '@/libs/api';
+import { api } from "@/libs/api";
 
 interface Schedule {
   adventureId: number;
@@ -89,13 +89,21 @@ interface ActivityOrder {
   updatedAt: string;
 }
 
+interface ParamsActivityOrder {
+  adventureId?: string;
+  adventureStatus?: string;
+  orderId?: string;
+  paymentStatus?: string;
+  startDate?: string;
+}
+
 export const ordersAdventuresService = {
   getAll: async (): Promise<ActivityOrder[]> => {
     try {
-      const response = await api.get('/ordersAdventures?limit=50');
+      const response = await api.get("/ordersAdventures?limit=50");
       return response.data;
     } catch (error) {
-      console.error('Error fetching all orders:', error);
+      console.error("Error fetching all orders:", error);
       throw error;
     }
   },
@@ -112,11 +120,11 @@ export const ordersAdventuresService = {
 
   create: async (data: any, userIP: string) => {
     try {
-      api.defaults.headers.common['x-user-ip'] = userIP;
-      const response = await api.post('/ordersAdventures', data);
+      api.defaults.headers.common["x-user-ip"] = userIP;
+      const response = await api.post("/ordersAdventures", data);
       return response;
     } catch (error) {
-      console.error('Error creating order:', error);
+      console.error("Error creating order:", error);
       throw error;
     }
   },
@@ -167,19 +175,19 @@ export const ordersAdventuresService = {
   },
 
   getCustomerSchedules: async (
-    startDate: string
+    params?: ParamsActivityOrder
   ): Promise<CustomerSchedule[]> => {
     try {
       const response = await api.get(
         `/ordersAdventures/orderSchedule?limit=50`,
         {
-          params: { startDate },
+          params,
         }
       );
       return response.data;
     } catch (error) {
       console.error(
-        `Error fetching customer schedules with startDate ${startDate}:`,
+        `Error fetching customer schedules with startDate ${params?.startDate}:`,
         error
       );
       throw error;

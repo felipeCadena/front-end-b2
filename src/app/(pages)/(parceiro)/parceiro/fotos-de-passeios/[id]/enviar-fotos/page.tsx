@@ -3,11 +3,33 @@
 import MyIcon from "@/components/atoms/my-icon";
 import MyTypography from "@/components/atoms/my-typography";
 import SendImages from "@/components/organisms/send-images";
-import { useRouter } from "next/navigation";
+import { schedules } from "@/services/api/schedules";
+import { useParams, useRouter } from "next/navigation";
 import React from "react";
 
 export default function EnviarFotos() {
   const router = useRouter();
+  const { id } = useParams();
+
+  const handleSendImages = async (files: File[]) => {
+    try {
+      const uploadMedias = await schedules.postScheduleMedias(
+        id as string,
+        files.map((file, index) => ({
+          filename: file.name,
+          mimetype: file.type,
+          title: "", // Você pode preencher se quiser
+          description: "", // Você pode preencher se quiser
+          isDefault: index === 0, // primeiro arquivo é default
+          file: file, // aqui mandamos o File direto, que é um Blob
+        }))
+      );
+
+      console.log("Upload metadata enviado:", uploadMedias);
+    } catch (error) {
+      console.error("Erro ao enviar imagens:", error);
+    }
+  };
 
   return (
     <main className="my-6 mx-4">
@@ -32,7 +54,7 @@ export default function EnviarFotos() {
         </MyTypography>
       </div>
 
-      <SendImages />
+      <SendImages handleSendImages={handleSendImages} />
     </main>
   );
 }

@@ -1,21 +1,21 @@
-'use client';
+"use client";
 
-import Image from 'next/image';
-import React from 'react';
-import MyBadge from '../atoms/my-badge';
-import StarRating from '../molecules/my-stars';
-import MyTypography from '../atoms/my-typography';
-import MyIcon from '../atoms/my-icon';
-import { getData, getHora, handleNameActivity } from '@/utils/formatters';
-import MyButton from '../atoms/my-button';
-import { usePathname, useRouter } from 'next/navigation';
-import PATHS from '@/utils/paths';
-import { cn } from '@/utils/cn';
-import Calendar from '../atoms/my-icon/elements/calendar';
-import PopupActivity from './popup-activity';
-import ModalClient from './modal-client';
-import { clientList } from '@/common/constants/mock';
-import Pessoas from '../atoms/my-icon/elements/pessoas';
+import Image from "next/image";
+import React from "react";
+import MyBadge from "../atoms/my-badge";
+import StarRating from "../molecules/my-stars";
+import MyTypography from "../atoms/my-typography";
+import MyIcon from "../atoms/my-icon";
+import { getData, getHora, handleNameActivity } from "@/utils/formatters";
+import MyButton from "../atoms/my-button";
+import { usePathname, useRouter } from "next/navigation";
+import PATHS from "@/utils/paths";
+import { cn } from "@/utils/cn";
+import Calendar from "../atoms/my-icon/elements/calendar";
+import PopupActivity from "./popup-activity";
+import ModalClient from "./modal-client";
+import Pessoas from "../atoms/my-icon/elements/pessoas";
+import { schedules } from "@/services/api/schedules";
 
 export default function PartnerActivitiesHistoric({
   activities,
@@ -25,6 +25,7 @@ export default function PartnerActivitiesHistoric({
   const router = useRouter();
   const pathname = usePathname();
   const [showModal, setShowModal] = React.useState(false);
+  const [clientList, setClientList] = React.useState<any>([]);
 
   const handleCancel = (id: string | number) => {
     router.push(PATHS.cancelarAtividade(id));
@@ -34,12 +35,22 @@ export default function PartnerActivitiesHistoric({
     router.push(PATHS.editarAtividadeParceiro(id));
   };
 
+  const handleModalCustomers = async (id: string) => {
+    try {
+      const clients = await schedules.getScheduleById(id);
+      setClientList(clients);
+      setShowModal(true);
+    } catch (error) {
+      console.error("Error fetching schedule data:", error);
+    }
+  };
+
   return (
     <section className="md:max-w-screen-custom">
       <ModalClient
         open={showModal}
         onClose={() => setShowModal(false)}
-        data={clientList}
+        data={clientList?.ordersScheduleAdventure}
         icon={<Pessoas stroke="#9F9F9F" />}
         title="Lista de Clientes"
         descrition="Confira a lista de clientes para esta atividade:"
@@ -53,12 +64,12 @@ export default function PartnerActivitiesHistoric({
           >
             {withDate && (
               <MyButton
-                variant={withDate ? 'secondary-text' : 'default'}
+                variant={withDate ? "secondary-text" : "default"}
                 borderRadius="squared"
-                size={withDate ? 'md' : 'lg'}
+                size={withDate ? "md" : "lg"}
                 className={cn(
-                  !withDate && 'px-10',
-                  'flex flex-col gap-1 text-base'
+                  !withDate && "px-10",
+                  "flex flex-col gap-1 text-base"
                 )}
               >
                 {withDate ? (
@@ -68,21 +79,24 @@ export default function PartnerActivitiesHistoric({
                 ) : (
                   <MyIcon name="clock" className="mr-2" />
                 )}
-                {withDate
-                  ? getData(activity.reserva.timestamp)
-                  : 'Refazer atividade'}
+                {withDate ? getData(activity?.datetime) : "Refazer atividade"}
               </MyButton>
             )}
 
             <div className="relative z-10 flex-shrink-0 overflow-hidden w-[265px] h-[265px] hover:cursor-pointer rounded-md">
               <Image
                 alt="sample_file"
-                src={activity.image ?? '/images/atividades/paraquedas.webp'}
+                src={
+                  activity?.adventure?.images &&
+                  activity?.adventure?.images.length > 0
+                    ? activity?.adventure?.images[0].url
+                    : "/images/atividades/paraquedas.webp"
+                }
                 width={250}
                 height={300}
                 className="object-cover w-[265px] h-[265px]"
                 onClick={() =>
-                  router.push(PATHS.atividadeRealizada(activity.id))
+                  router.push(PATHS.atividadeRealizada(activity?.id))
                 }
               />
             </div>
@@ -92,38 +106,43 @@ export default function PartnerActivitiesHistoric({
                 <div
                   className="flex flex-col gap-2 cursor-pointer"
                   onClick={() =>
-                    router.push(PATHS.atividadeRealizada(activity.id))
+                    router.push(PATHS.atividadeRealizada(activity?.id))
                   }
                 >
                   <div className="flex items-center gap-2">
                     <MyBadge className="font-medium p-1" variant="outline">
-                      {handleNameActivity(activity.typeAdventure)}
+                      {handleNameActivity(activity?.adventure?.typeAdventure)}
                     </MyBadge>
-                    <StarRating rating={activity.stars} />
+                    <StarRating rating={activity?.adventure?.averageRating} />
 
                     <div className="flex gap-2 items-center">
                       <Image
                         alt="foto parceiro"
-                        src={activity.parceiro.avatar}
+                        src={
+                          activity?.adventure?.partner?.logo?.url ?? "/user.png"
+                        }
                         width={40}
                         height={40}
-                        className="rounded-full"
+                        className="rounded-full objetc-cover w-8 h-8"
                       />
                       <MyTypography
                         variant="body"
                         weight="medium"
                         className="mt-1 text-nowrap"
                       >
-                        {activity.parceiro.nome}
+                        {activity?.adventure?.partner?.fantasyName ??
+                          "John Doe"}
                       </MyTypography>
                     </div>
                   </div>
                   <MyTypography variant="subtitle3" weight="bold" className="">
-                    {activity.title}
+                    {activity?.adventure?.title}
                   </MyTypography>
 
                   <MyTypography variant="label" className="">
-                    {activity.description.slice(0, 40).concat('...')}
+                    {activity?.adventure?.description
+                      ?.slice(0, 40)
+                      .concat("...") ?? ""}
                   </MyTypography>
                 </div>
 
@@ -142,20 +161,23 @@ export default function PartnerActivitiesHistoric({
                 {withOptions && (
                   <div className="absolute top-0 right-3 cursor-pointer z-20">
                     <PopupActivity
-                      onDuplicar={() => console.log('Duplicar')}
-                      onCancelar={() => handleCancel(activity.id)}
+                      reservation
+                      onDuplicar={() => console.log("Duplicar")}
+                      onCancelar={() => handleCancel(activity?.id)}
                       onEditar={() => handleEdit(activity.id)}
-                      onOcultar={() => console.log('Ocultar')}
-                      onExcluir={() => console.log('Excluir')}
-                      onCustomer={() => setShowModal(true)}
+                      onOcultar={() => console.log("Ocultar")}
+                      onExcluir={() => console.log("Excluir")}
+                      onCustomer={() =>
+                        handleModalCustomers(activity?.scheduleId)
+                      }
                     />
                   </div>
                 )}
 
                 <div
                   className={cn(
-                    'flex gap-4',
-                    pathname.includes('parceiro') && 'hidden'
+                    "flex gap-4",
+                    pathname.includes("parceiro") && "hidden"
                   )}
                 >
                   {withDate && (
@@ -183,11 +205,11 @@ export default function PartnerActivitiesHistoric({
                     weight="regular"
                     className="ml-3"
                   >
-                    {getData(activity.reserva.timestamp)} -{' '}
-                    {getHora(activity.reserva.timestamp)}{' '}
-                    {+getHora(activity.reserva.timestamp).split(':')[0] > 12
-                      ? 'tarde'
-                      : 'manhã'}
+                    {getData(activity?.datetime)} -{" "}
+                    {getHora(activity?.datetime)}{" "}
+                    {+getHora(activity?.datetime).split(":")[0] > 12
+                      ? "tarde"
+                      : "manhã"}
                   </MyTypography>
                 </div>
                 <div className="flex items-center gap-1">
@@ -211,13 +233,13 @@ export default function PartnerActivitiesHistoric({
                     weight="regular"
                     className="ml-3"
                   >
-                    {activity.reserva.pessoas} adultos x{' '}
-                    {new Intl.NumberFormat('pt-BR', {
+                    {activity?.qntConfirmedPersons} pessoas
+                    {/* {new Intl.NumberFormat("pt-BR", {
                       minimumFractionDigits: 2,
                       maximumFractionDigits: 2,
                     }).format(
-                      activity.reserva.total / activity.reserva.pessoas
-                    )}
+                      activity?.orderAdventure?.totalCost
+                    )} */}
                   </MyTypography>
                 </div>
 
@@ -230,15 +252,21 @@ export default function PartnerActivitiesHistoric({
                     Total:
                   </MyTypography>
                   <MyTypography variant="body" weight="bold" className="">
-                    {activity.reserva.total.toLocaleString('pt-BR', {
-                      style: 'currency',
-                      currency: 'BRL',
-                    })}
+                    {activity?.orderAdventure?.totalCost &&
+                      new Intl.NumberFormat("pt-BR", {
+                        style: "currency",
+                        currency: "BRL",
+                      }).format(activity?.orderAdventure?.totalCost)}
                   </MyTypography>
                 </div>
               </div>
 
-              <div className="cursor-pointer flex justify-between items-center p-4 bg-[#F1F0F587] border border-primary-600/30 md:bg-primary-900 border-opacity-80 rounded-lg shadow-sm relative">
+              <div
+                onClick={() =>
+                  router.push(PATHS["enviar-fotos"](activity?.schedule?.id))
+                }
+                className="cursor-pointer flex justify-between items-center p-4 bg-[#F1F0F587] border border-primary-600/30 md:bg-primary-900 border-opacity-80 rounded-lg shadow-sm relative"
+              >
                 <div className="absolute inset-y-0 left-0 w-3 bg-primary-900 rounded-l-lg"></div>
 
                 <div className="flex items-center gap-1 ml-4">

@@ -107,6 +107,15 @@ export interface MySchedule {
   endDate: string;
 }
 
+export interface MyScheduleParams {
+  adventureId?: number;
+  adventureStatus?: string;
+  startDate?: string;
+  endDate?: string;
+  limit?: number;
+  offset?: number;
+}
+
 export const partnerService = {
   getPartnerLogged: async (): Promise<Partner | null> => {
     try {
@@ -235,10 +244,25 @@ export const partnerService = {
     }
   },
 
-  async listPartnerSchedules(params?: {
-    startDate?: string;
-    adventureStatus?: string;
-  }) {
+  async getOrderSchedulesById(
+    id: string,
+    params?: {
+      startDate?: string;
+      adventureStatus?: string;
+    }
+  ) {
+    try {
+      const response = await api.get(`/ordersAdventures/orderSchedule/${id}`, {
+        params,
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error listing partner schedules:", error);
+      throw error;
+    }
+  },
+
+  async listPartnerSchedules(params?: MyScheduleParams) {
     try {
       const response = await api.get(
         `/ordersAdventures/orderSchedule/partner`,
@@ -252,12 +276,12 @@ export const partnerService = {
   },
 
   cancelSchedule: async (
-    scheduleId: string,
+    orderScheduleId: string,
     adventureId: string
   ): Promise<boolean> => {
     try {
       await api.post(
-        `/schedules/cancel/${scheduleId}/adventure/${adventureId}`
+        `/schedules/cancel/${orderScheduleId}/adventure/${adventureId}`
       );
       return true;
     } catch (error) {

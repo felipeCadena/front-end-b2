@@ -1,23 +1,23 @@
-'use client';
+"use client";
 
-import Image from 'next/image';
-import React, { useState } from 'react';
-import MyBadge from '../atoms/my-badge';
-import StarRating from '../molecules/my-stars';
-import MyTypography from '../atoms/my-typography';
-import MyIcon from '../atoms/my-icon';
-import { getData, getHora, handleNameActivity } from '@/utils/formatters';
-import MyButton from '../atoms/my-button';
-import { usePathname, useRouter } from 'next/navigation';
-import PATHS from '@/utils/paths';
-import { cn } from '@/utils/cn';
+import Image from "next/image";
+import React, { useState } from "react";
+import MyBadge from "../atoms/my-badge";
+import StarRating from "../molecules/my-stars";
+import MyTypography from "../atoms/my-typography";
+import MyIcon from "../atoms/my-icon";
+import { getData, getHora, handleNameActivity } from "@/utils/formatters";
+import MyButton from "../atoms/my-button";
+import { usePathname, useRouter } from "next/navigation";
+import PATHS from "@/utils/paths";
+import { cn } from "@/utils/cn";
 import {
   CustomerSchedule,
   ordersAdventuresService,
-} from '@/services/api/orders';
-import PopupCancelActivity from './popup-cancel-activity';
+} from "@/services/api/orders";
+import PopupCancelActivity from "./popup-cancel-activity";
 
-import MyCancelScheduleModal from '../molecules/my-cancel-schedule-modal';
+import MyCancelScheduleModal from "../molecules/my-cancel-schedule-modal";
 
 type FullActivitiesHistoricProps = {
   withDate?: boolean;
@@ -76,18 +76,18 @@ export default function FullActivitiesHistoric({
             key={index}
           >
             <div
-              className={`relative z-10 flex-shrink-0 overflow-hidden w-[265px] ${isActivityDone ? 'h-[265px]' : 'h-[161px]'} hover:cursor-pointer rounded-md`}
+              className={`relative z-10 flex-shrink-0 overflow-hidden w-[265px] ${isActivityDone ? "h-[265px]" : "h-[161px]"} hover:cursor-pointer rounded-md`}
             >
               <Image
                 alt="sample_file"
                 src={
                   activity.adventure.images[0]?.url.length > 0
                     ? activity.adventure.images[0]?.url
-                    : '/images/atividades/paraquedas.webp'
+                    : "/images/atividades/paraquedas.webp"
                 }
                 width={250}
                 height={300}
-                className={`object-cover w-[265px] ${isActivityDone ? 'h-[265px]' : 'h-[161px]'}`}
+                className={`object-cover w-[265px] ${isActivityDone ? "h-[265px]" : "h-[161px]"}`}
                 onClick={() =>
                   router.push(PATHS.visualizarAtividade(activity.adventure.id))
                 }
@@ -157,8 +157,8 @@ export default function FullActivitiesHistoric({
 
                 <div
                   className={cn(
-                    'flex gap-4',
-                    pathname.includes('parceiro') && 'hidden'
+                    "flex gap-4",
+                    pathname.includes("parceiro") && "hidden"
                   )}
                 >
                   {withDate && (
@@ -189,17 +189,20 @@ export default function FullActivitiesHistoric({
                   <div className="cursor-pointer z-20">
                     <PopupCancelActivity
                       onCancelar={() =>
-                        handleModal(activity.id, activity.schedule.id)
+                        handleModal(
+                          activity.orderAdventure.orderId,
+                          activity.scheduleId
+                        )
                       }
                     />
                   </div>
                 )}
               </div>
               <div
-                className={`w-full flex justify-between items-center p-3 ${isActivityDone ? 'bg-[#F1F0F587]' : 'bg-[#D2F1FF]'} border border-primary-600/30 border-opacity-80 rounded-lg shadow-sm relative`}
+                className={`w-full flex justify-between items-center p-3 ${isActivityDone ? "bg-[#F1F0F587]" : "bg-[#D2F1FF]"} border border-primary-600/30 border-opacity-80 rounded-lg shadow-sm relative`}
               >
                 <div
-                  className={`absolute inset-y-0 left-0 w-3 ${isActivityDone ? 'bg-primary-900' : 'bg-[#2DADE4]'} rounded-l-lg`}
+                  className={`absolute inset-y-0 left-0 w-3 ${isActivityDone ? "bg-primary-900" : "bg-[#2DADE4]"} rounded-l-lg`}
                 ></div>
 
                 <div className="flex flex-col">
@@ -211,11 +214,11 @@ export default function FullActivitiesHistoric({
                     weight="regular"
                     className="ml-3"
                   >
-                    {getData(activity?.schedule?.datetime)} -{' '}
-                    {getHora(activity?.schedule?.datetime)}{' '}
-                    {+getHora(activity?.schedule?.datetime).split(':')[0] > 12
-                      ? 'tarde'
-                      : 'manhã'}
+                    {getData(activity?.schedule?.datetime)} -{" "}
+                    {getHora(activity?.schedule?.datetime)}{" "}
+                    {+getHora(activity?.schedule?.datetime).split(":")[0] > 12
+                      ? "tarde"
+                      : "manhã"}
                   </MyTypography>
                 </div>
                 <div className="flex items-center gap-1">
@@ -225,7 +228,7 @@ export default function FullActivitiesHistoric({
                       Duração da atividade
                     </MyTypography>
                     <MyTypography variant="body" weight="regular" className="">
-                      {activity?.adventure?.duration?.slice(0, 1) ?? '3'} horas
+                      {activity?.adventure?.duration?.slice(0, 1) ?? "3"} horas
                     </MyTypography>
                   </div>
                 </div>
@@ -257,10 +260,10 @@ export default function FullActivitiesHistoric({
                   </MyTypography>
                   <MyTypography variant="body" weight="bold" className="">
                     {Number(activity.orderAdventure.totalCost).toLocaleString(
-                      'pt-BR',
+                      "pt-BR",
                       {
-                        style: 'currency',
-                        currency: 'BRL',
+                        style: "currency",
+                        currency: "BRL",
                       }
                     )}
                   </MyTypography>

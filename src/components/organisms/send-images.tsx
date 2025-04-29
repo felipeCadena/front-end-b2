@@ -7,7 +7,13 @@ import MyTypography from "../atoms/my-typography";
 import Image from "next/image";
 import MyButton from "../atoms/my-button";
 
-export default function SendImages({ config }: { config?: boolean }) {
+export default function SendImages({
+  config,
+  handleSendImages,
+}: {
+  config?: boolean;
+  handleSendImages: (files: File[]) => void;
+}) {
   const [files, setFiles] = useState<File[] | null>(null);
 
   const inputRef = useRef<HTMLInputElement>(null);
@@ -16,9 +22,16 @@ export default function SendImages({ config }: { config?: boolean }) {
     inputRef.current?.click();
   };
 
+  const sendFiles = (files: File[] | null) => {
+    if (files) {
+      console.log(files);
+      handleSendImages(files);
+    }
+  };
+
   return (
     <section className="space-y-6">
-      <div className="grid grid-cols-3 gap-4 items-center">
+      <div className="grid grid-cols-3 md:flex md:flex-wrap gap-4 items-center">
         {files &&
           files.map((file, index) => (
             <div key={file.name} className="relative w-[100px] mt-4">
@@ -87,7 +100,7 @@ export default function SendImages({ config }: { config?: boolean }) {
         className="w-full"
         size="lg"
         borderRadius="squared"
-        onClick={() => console.log("Enviar")}
+        onClick={() => sendFiles(files)}
       >
         {config ? "Salvar" : "Enviar"}
       </MyButton>
