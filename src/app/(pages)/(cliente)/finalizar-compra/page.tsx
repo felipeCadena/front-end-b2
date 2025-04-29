@@ -140,7 +140,7 @@ export default function FinalizarCompra() {
       if (purchaseOrder && purchaseOrder.length > 1) {
         setIsModalOpen(true);
       }
-      return;
+      return true;
     },
   });
 

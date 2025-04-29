@@ -84,6 +84,8 @@ export default function Perfil() {
     queryFn: () => users.getUserLogged(),
   });
 
+  console.log('Logged ->', user);
+
   const [profile, setProfile] = React.useState({
     email: '',
     name: '',
@@ -106,8 +108,6 @@ export default function Perfil() {
       setFile(Array.from(fileList));
     }
   };
-
-  console.log('file', file);
 
   const handleSubmit = async (formData: FormData) => {
     setIsLoading(true);

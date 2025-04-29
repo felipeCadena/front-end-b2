@@ -22,7 +22,15 @@ const CardPaymentOption = ({ form, userCart }: CardPaymentOptionProps) => {
 
   const totalPrice = activityPrice.reduce((acc, price) => acc + price, 0);
 
-  const instalmentOptions = formatInstallmentOptions(6, totalPrice);
+  const instamentsAvailable =
+    process.env.NEXT_PUBLIC_B2_ENABLED_INSTALLMENT_PAY ?? 1;
+
+  console.log(instamentsAvailable);
+
+  const instalmentOptions = formatInstallmentOptions(
+    Number(instamentsAvailable),
+    totalPrice
+  );
 
   const { creditCard } = form.watch();
 
