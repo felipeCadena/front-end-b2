@@ -1,31 +1,34 @@
-import { activities } from '@/common/constants/mock';
+import { activities } from "@/common/constants/mock";
 import {
   MySelect,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/atoms/my-select';
-import MyTypography from '@/components/atoms/my-typography';
-import ActivitiesFilter from '@/components/organisms/activities-filter';
-import ActivitiesHistoric from '@/components/organisms/activities-historic';
-import FullActivitiesHistoric from '@/components/organisms/full-activities-historic';
-import FullActivitiesHistoricMobile from '@/components/organisms/full-activities-historic-mobile';
-import { ordersAdventuresService } from '@/services/api/orders';
-import { useQuery } from '@tanstack/react-query';
-import React from 'react';
+} from "@/components/atoms/my-select";
+import MyTypography from "@/components/atoms/my-typography";
+import ActivitiesFilter from "@/components/organisms/activities-filter";
+import ActivitiesHistoric from "@/components/organisms/activities-historic";
+import FullActivitiesHistoric from "@/components/organisms/full-activities-historic";
+import FullActivitiesHistoricMobile from "@/components/organisms/full-activities-historic-mobile";
+import { ordersAdventuresService } from "@/services/api/orders";
+import { useQuery } from "@tanstack/react-query";
+import React from "react";
 
 export default function Historico() {
   // lista as 50 ultimas atividades agendadas
 
   const { data: schedules } = useQuery({
-    queryKey: ['schedules'],
+    queryKey: ["schedules"],
     queryFn: () =>
-      ordersAdventuresService.getCustomerSchedules('2025-04-01T00:00:00-03:00'),
+      ordersAdventuresService.getCustomerSchedules({
+        startDate: "2025-04-01T00:00:00-03:00",
+        adventureStatus: "realizado",
+      }),
   });
 
   const lastAdventures = schedules?.filter(
-    (sch) => sch.adventureStatus === 'realizado'
+    (sch) => sch.adventureStatus === "realizado"
   );
 
   return (

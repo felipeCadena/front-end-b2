@@ -1,7 +1,7 @@
-import React from 'react';
-import MyTypography from '../atoms/my-typography';
-import MyBadge from '../atoms/my-badge';
-import MyIcon from '../atoms/my-icon';
+import React from "react";
+import MyTypography from "../atoms/my-typography";
+import MyBadge from "../atoms/my-badge";
+import MyIcon from "../atoms/my-icon";
 import {
   formatAddress,
   formatPrice,
@@ -9,8 +9,8 @@ import {
   getData,
   getHora,
   handleNameActivity,
-} from '@/utils/formatters';
-import { AddToCartAdventure, Adventure } from '@/services/api/adventures';
+} from "@/utils/formatters";
+import { AddToCartAdventure, Adventure } from "@/services/api/adventures";
 
 type ShoppingDetailsProps = {
   activity: AddToCartAdventure;
@@ -91,7 +91,7 @@ export default function ShoppingDetails({ activity }: ShoppingDetailsProps) {
             weight="regular"
             className="md:text-[0.9rem]"
           >
-            {schedule.qntAdults} {schedule.qntAdults > 1 ? 'Adultos' : 'Adulto'}{' '}
+            {schedule.qntAdults} {schedule.qntAdults > 1 ? "Adultos" : "Adulto"}{" "}
             x {formatPrice(schedule.pricePerAdult)}
           </MyTypography>
           <MyTypography
@@ -99,8 +99,10 @@ export default function ShoppingDetails({ activity }: ShoppingDetailsProps) {
             weight="regular"
             className="md:text-[0.9rem]"
           >
-            {getData(schedule.scheduleDate.toString())} -{' '}
-            {formatTime(schedule.scheduleTime)}
+            {schedule?.scheduleDate
+              ? getData(schedule.scheduleDate.toString())
+              : "Data não disponível"}{" "}
+            - {formatTime(schedule.scheduleTime)}
           </MyTypography>
         </div>
 

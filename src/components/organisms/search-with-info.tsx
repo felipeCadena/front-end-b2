@@ -53,9 +53,9 @@ export default function SearchInfoActivity() {
 
         <OneDay />
 
-        <TimePickerModal value={duration} onChange={setDuration} />
+        {/* <TimePickerModal value={duration} onChange={setDuration} />
 
-        <PeopleSelector />
+        <PeopleSelector /> */}
       </div>
 
       <MyButton

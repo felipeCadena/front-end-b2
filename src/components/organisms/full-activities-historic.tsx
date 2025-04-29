@@ -190,8 +190,8 @@ export default function FullActivitiesHistoric({
                     <PopupCancelActivity
                       onCancelar={() =>
                         handleModal(
-                          activity.orderAdventure.orderId,
-                          activity.scheduleId
+                          String(activity.orderAdventureId),
+                          activity.id
                         )
                       }
                     />
