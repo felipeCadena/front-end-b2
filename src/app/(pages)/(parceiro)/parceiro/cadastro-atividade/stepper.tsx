@@ -68,7 +68,7 @@ export default function StepperComponent() {
 
     if (
       (!hoursBeforeCancellation || !hoursBeforeSchedule) &&
-      currentStep == 1
+      currentStep == 2
     ) {
       toast.error(
         "Preencha os campos Antecêdencia de Agendamento e Antecedência de Cancelamento."
@@ -76,14 +76,14 @@ export default function StepperComponent() {
       return;
     }
 
-    if (!someDate && currentStep == 1) {
+    if (!someDate && currentStep == 2) {
       toast.error(
         "Em repetir atividade, é necessário selecionar o dia da semana ou dias específicos. Os horários são obrigatórios."
       );
       return;
     }
 
-    if ((!difficult || !duration) && currentStep == 2) {
+    if ((!difficult || !duration) && currentStep == 1) {
       toast.error("Preencha todos os campos.");
       return;
     }
@@ -185,8 +185,8 @@ export default function StepperComponent() {
 
       {/* Stepper Content */}
       {currentStep === 0 && <Step1 />}
-      {currentStep === 1 && <Step2 />}
-      {currentStep === 2 && <Step3 />}
+      {currentStep === 1 && <Step3 />}
+      {currentStep === 2 && <Step2 />}
       {currentStep === 3 && <Step4 />}
       {currentStep === 4 && <Step5 />}
       {currentStep === 5 && <Step6 />}

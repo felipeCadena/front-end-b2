@@ -75,17 +75,17 @@ const menuItems = [
     description: "Disponibilidade",
   },
   {
-    label: "Ocultar atividade",
+    label: "Desativar atividade",
     icon: <Eye />,
     section: "hide" as EditSection,
-    description: "Ocultar atividad",
+    description: "Desativar atividade",
   },
-  {
-    label: "Cancelar atividade",
-    icon: <Calendar />,
-    section: "cancel" as EditSection,
-    description: "Cancelar atividade",
-  },
+  // {
+  //   label: "Cancelar atividade",
+  //   icon: <Calendar />,
+  //   section: "cancel" as EditSection,
+  //   description: "Cancelar atividade",
+  // },
 ];
 
 export function ActivityEditMenu({
@@ -123,7 +123,7 @@ export function ActivityEditMenu({
               >
                 {item.icon}
                 <MyTypography variant="body-big" weight="medium">
-                  {item.label == "Ocultar atividade" && isOcult
+                  {item.label == "Desativar atividade" && isOcult
                     ? "Ativar Atividade"
                     : item.label}
                 </MyTypography>

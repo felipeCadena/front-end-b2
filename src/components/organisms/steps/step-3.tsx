@@ -35,10 +35,10 @@ export default function Step3() {
 
     // Mantém os minutos se existirem e forem diferentes de zero
     if (!isNaN(minute) && minute > 0) {
-      return `${hour}h${minute}`;
+      return `0${hour}:${minute}`;
     }
 
-    return `${hour}h`;
+    return `0${hour}:00`;
   };
 
   return (

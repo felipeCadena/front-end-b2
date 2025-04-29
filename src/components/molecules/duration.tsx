@@ -24,7 +24,7 @@ export default function TimePickerModal({
   // Converte o valor (ex: "2h30") para hora e minuto
   const parseValue = (val: string) => {
     if (!val) return { hour: "00", minute: "00" };
-    const match = val.match(/(\d+)h(?:(\d+))?/);
+    const match = val.match(/(\d+):(?:(\d+))?/);
     if (!match) return { hour: "00", minute: "00" };
 
     const hour = match[1].padStart(2, "0");
@@ -59,7 +59,7 @@ export default function TimePickerModal({
       const hour = parseInt(selectedHour);
       const minute = parseInt(selectedMinute);
       // Só inclui os minutos se forem maiores que zero
-      const formattedValue = minute > 0 ? `${hour}h${minute}` : `${hour}h`;
+      const formattedValue = minute > 0 ? `${hour}:${minute}` : `${hour}:00`;
       setSelectedTime(formattedValue);
     }
   }, [selectedHour, selectedMinute]);
@@ -102,8 +102,8 @@ export default function TimePickerModal({
           {selectedTime ? (
             <span className="text-black">
               {parseInt(selectedMinute) > 0
-                ? `${parseInt(selectedHour)}h${selectedMinute}`
-                : `${parseInt(selectedHour)}h`}
+                ? `${parseInt(selectedHour)}:${selectedMinute}`
+                : `${parseInt(selectedHour)}:00`}
             </span>
           ) : (
             <MyTypography

@@ -68,7 +68,7 @@ export const schedules = {
   ) => {
     try {
       const { data } = await api.post<Media[]>(
-        `/schedule/${scheduleId}/media`,
+        `/schedules/${scheduleId}/media`,
         {
           files,
         }
@@ -118,7 +118,7 @@ export const schedules = {
   ) => {
     try {
       const response = await api.post(
-        `/schedule/${id}/media/${mediaID}`,
+        `/schedules/${id}/media/${mediaID}`,
         body,
         {
           params: { updateBinary },
@@ -149,7 +149,7 @@ export const schedules = {
 
   listScheduleMedias: async (id: string) => {
     try {
-      const response = await api.get(`/schedule/${id}/medias`);
+      const response = await api.get(`/schedules/${id}/medias`);
       return response.data;
     } catch (error) {
       console.error(`Error listing medias for schedule with id ${id}:`, error);

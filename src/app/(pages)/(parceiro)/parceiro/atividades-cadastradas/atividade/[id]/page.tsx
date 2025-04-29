@@ -287,7 +287,7 @@ export default function Atividade() {
       />
 
       {/* Modal de cancelamento de atividade */}
-      <ModalAlert
+      {/* <ModalAlert
         open={cancel}
         onClose={handleCancel}
         isLoading={isLoading}
@@ -299,10 +299,10 @@ export default function Atividade() {
             : "Tem certeza que deseja cancelar?"
         }
         button="Cancelar atividade"
-      />
+      /> */}
 
       {/* Modal que confirma o cancelamento da atividade */}
-      <ModalAlert
+      {/* <ModalAlert
         open={confirmedCancel}
         onClose={handleConfirmCancel}
         iconName="warning"
@@ -313,20 +313,20 @@ export default function Atividade() {
             : "A atividade ja foi cancelada!"
         }
         button="Voltar ao início"
-      />
+      /> */}
 
       {/* Modal que oculta a atividade no site */}
       <ModalAlert
         open={hideActivity}
         onClose={handleHideActivity}
         iconName="warning"
-        title={activity.onSite ? "Atividade Ocultada" : "Atividade Reativada"}
+        title={activity.onSite ? "Desativar Atividade" : "Ativar Atividade"}
         descrition={
           activity.onSite
-            ? "A atividade será ocultada e não aparecerá mais para os clientes."
+            ? "A atividade será desativada e não aparecerá mais para os clientes."
             : "A atividade será reativada e aparecerá novamente para os clientes."
         }
-        button={activity.onSite ? "Ocultar atividade" : "Reativar atividade"}
+        button={activity.onSite ? "Desativar Atividade" : "Reativar Atividade"}
       />
 
       {/* Modal que confirma que a atividade foi ocultada */}
@@ -334,13 +334,15 @@ export default function Atividade() {
         open={confirmedHideActivity}
         onClose={() => setConfirmedHideActivity(false)}
         iconName="warning"
-        title={!activity.onSite ? "Atividade Ocultada" : "Atividade Reativada"}
+        title={
+          !activity.onSite ? "Atividade Desativada" : "Atividade Reativada"
+        }
         descrition={
           !activity.onSite
-            ? "A atividade foi ocultada e não aparecerá mais para os clientes."
+            ? "A atividade foi desativada e não aparecerá mais para os clientes."
             : "A atividade foi reativada e aparecerá novamente para os clientes."
         }
-        button="Voltar ao início"
+        button="Voltar"
       />
 
       <div className="relative">
@@ -353,7 +355,7 @@ export default function Atividade() {
         <div className="md:hidden">
           <CarouselImages images={activity?.images} />
         </div>
-        <div className="flex flex-col max-sm:items-center my-4">
+        <div className="flex flex-col my-4">
           <div className="flex max-sm:flex-col items-start justify-between gap-8 max-sm:px-4">
             <div className="flex gap-4">
               <MyIcon
@@ -368,9 +370,14 @@ export default function Atividade() {
                 <MyBadge variant="outline" className="p-1 mt-2">
                   {handleNameActivity(activity?.typeAdventure ?? "")}
                 </MyBadge>
-                {!activity.onSite && (
+                {!activity.onSite && activity.adminApproved && (
                   <MyBadge variant="error" className="mx-4 p-1 mt-2 ">
-                    Oculta no Site
+                    Atividade Desativada
+                  </MyBadge>
+                )}
+                {!activity.adminApproved && (
+                  <MyBadge variant="error" className="mx-4 p-1 mt-2 ">
+                    Pendente de aprovação pela B2
                   </MyBadge>
                 )}
               </div>
@@ -378,7 +385,7 @@ export default function Atividade() {
             <div className="max-sm:hidden">
               <ActivityEditMenu
                 onEdit={handleEdit}
-                hasClient={hasClient}
+                // hasClient={hasClient}
                 isOcult={!activity.onSite}
               />
             </div>
@@ -615,7 +622,7 @@ export default function Atividade() {
         <div className="md:hidden mt-6">
           <ActivityEditMenu
             onEdit={handleEdit}
-            hasClient={hasClient}
+            // hasClient={hasClient}
             isOcult={!activity.onSite}
           />
         </div>

@@ -9,13 +9,14 @@ import useNotifications from "@/store/useNotifications";
 import { cn } from "@/utils/cn";
 import { formatDate, getHora } from "@/utils/formatters";
 import PATHS from "@/utils/paths";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useEffect } from "react";
 
 export default function Notificacoes() {
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   const { notifications, setStoreNotifications } = useNotifications();
 
@@ -36,6 +37,12 @@ export default function Notificacoes() {
       return [];
     },
   });
+
+  useEffect(() => {
+    queryClient.invalidateQueries({
+      queryKey: ["notifications"],
+    });
+  }, []);
 
   const getMonthName = (timestamp: string) => {
     const months = [
@@ -102,75 +109,72 @@ export default function Notificacoes() {
                 </MyTypography>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-x-4 gap-y-6">
-                  {notifications &&
-                    notifications.map((notification, index) => (
+                  {notifications.map((notification, index) => (
+                    <div
+                      key={index}
+                      className={cn(
+                        "w-full flex flex-col gap-2 px-3 py-2 bg-[#F1F0F5] rounded-lg shadow-sm hover:bg-gray-100 relative cursor-pointer"
+                      )}
+                      onClick={() =>
+                        router.push(
+                          PATHS.visualizarNotificacaoParceiro(notification.id)
+                        )
+                      }
+                    >
                       <div
-                        key={index}
-                        className={cn(
-                          "w-full flex flex-col gap-2 px-3 py-2 bg-[#F1F0F5] rounded-lg shadow-sm hover:bg-gray-100 relative cursor-pointer"
-                        )}
-                        onClick={() =>
-                          router.push(
-                            PATHS.visualizarNotificacaoParceiro(
-                              notification?.id
-                            )
-                          )
-                        }
-                      >
-                        <div
-                          className={cn(
-                            "absolute inset-y-0 left-0 w-2 rounded-l-lg",
-                            `bg-[${notification.color}]`
-                          )}
-                        />
+                        className={`absolute inset-y-0 left-0 w-2 rounded-l-lg bg-[${notification.color}]`}
+                        style={{ backgroundColor: notification.color }}
+                      />
 
-                        <div className="flex items-center justify-between w-full">
-                          <MyTypography
-                            variant="notification"
-                            weight="semibold"
-                            className="ml-1 mt-1 flex gap-2 items-center"
-                          >
-                            {formatDate(notification?.createdAt) ==
-                              "Agora pouco" && <MyIcon name="now" />}
-                            {formatDate(notification?.createdAt)}
-                            {formatDate(notification?.createdAt) !=
-                              "Agora pouco" &&
-                              ` - ${getHora(notification?.createdAt)}`}
-                          </MyTypography>
-                          {formatDate(notification?.createdAt) ==
-                            "Agora pouco" && (
-                            <MyButton
-                              className="ml-1"
-                              borderRadius="squared"
-                              size="sm"
-                              variant="default"
-                            >
-                              Novo
-                            </MyButton>
-                          )}
-                        </div>
-
-                        <MyTypography
-                          variant="label"
-                          weight="semibold"
-                          className="ml-1 flex justify-between items-center"
-                        >
-                          {index < 9 ? `0${index + 1}` : index} -{" "}
-                          {notification?.title.slice(0, 33) + "..."}
-                          <MyIcon
-                            name={notification?.isRead ? "read" : "unread"}
-                          />
-                        </MyTypography>
-
+                      <div className="flex items-center justify-between w-full">
                         <MyTypography
                           variant="notification"
-                          weight="regular"
-                          className="ml-1 flex justify-between"
+                          weight="semibold"
+                          className="ml-1 mt-1 flex gap-2 items-center"
                         >
-                          {notification?.text}
+                          {formatDate(notification.createdAt) ==
+                            "Agora pouco" && <MyIcon name="now" />}
+                          {formatDate(notification.createdAt)}
+                          {formatDate(notification.createdAt) !=
+                            "Agora pouco" &&
+                            ` - ${getHora(notification.createdAt)}`}
                         </MyTypography>
+                        {formatDate(notification.createdAt) ==
+                          "Agora pouco" && (
+                          <MyButton
+                            className="ml-1"
+                            borderRadius="squared"
+                            size="sm"
+                            variant="default"
+                          >
+                            Novo
+                          </MyButton>
+                        )}
                       </div>
-                    ))}
+
+                      <MyTypography
+                        variant="label"
+                        weight="semibold"
+                        className="ml-1 flex justify-between items-center"
+                      >
+                        {index < 9 ? `0${index + 1}` : index} -{" "}
+                        {notification?.title?.length > 33
+                          ? notification.title.slice(0, 33) + "..."
+                          : notification.title}
+                      </MyTypography>
+
+                      <MyTypography
+                        variant="notification"
+                        weight="regular"
+                        className="ml-1 flex justify-between"
+                      >
+                        {notification.text?.slice(0, 40) + "..."}
+                        <MyIcon
+                          name={notification.isRead ? "read" : "unread"}
+                        />
+                      </MyTypography>
+                    </div>
+                  ))}
                 </div>
               </div>
             )

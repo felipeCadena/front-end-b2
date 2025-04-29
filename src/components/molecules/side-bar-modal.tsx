@@ -1,17 +1,18 @@
-'use client';
+"use client";
 
-import React from 'react';
+import React from "react";
 import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
   MyDropdownMenu,
-} from '../atoms/my-drop-menu';
-import Link from 'next/link';
-import MyIcon from '../atoms/my-icon';
-import { useAuthStore } from '@/store/useAuthStore';
-import { authService } from '@/services/api/auth';
-import { signOut, useSession } from 'next-auth/react';
+} from "../atoms/my-drop-menu";
+import Link from "next/link";
+import MyIcon from "../atoms/my-icon";
+import { useAuthStore } from "@/store/useAuthStore";
+import { authService } from "@/services/api/auth";
+import { signOut, useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 export default function SideBarModal({
   children,
   sideBar,
@@ -21,11 +22,13 @@ export default function SideBarModal({
 }) {
   const { clearUser } = useAuthStore();
   const { data: session } = useSession();
+  const router = useRouter();
   const handleExit = async (item: any) => {
-    if (item === 'Sair') {
-      await authService.logout(session?.user.refreshToken ?? '');
+    if (item === "Sair") {
+      await authService.logout(session?.user.refreshToken ?? "");
       await signOut();
       clearUser();
+      router.push("/");
     }
   };
 
@@ -39,7 +42,7 @@ export default function SideBarModal({
           .map((item) => (
             <Link
               key={item.label}
-              href={`${item.link == '/galeria-de-fotos' ? '/informacoes' : item.link}${item.tab ? `?tab=${item.tab}` : ''}`}
+              href={`${item.link == "/galeria-de-fotos" ? "/informacoes" : item.link}${item.tab ? `?tab=${item.tab}` : ""}`}
               passHref
               onClick={() => handleExit(item.label)}
             >

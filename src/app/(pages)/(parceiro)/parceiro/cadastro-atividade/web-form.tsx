@@ -236,10 +236,10 @@ export default function WebForm({
 
     // Mantém os minutos se existirem e forem diferentes de zero
     if (!isNaN(minute) && minute > 0) {
-      return `${hour}h${minute}`;
+      return `0${hour}:${minute}`;
     }
 
-    return `${hour}h`;
+    return `0${hour}:00`;
   };
 
   const handleLocationSelected = (locationData: LocationData) => {
@@ -390,7 +390,50 @@ export default function WebForm({
               </MySelect>
             </div>
           </div>
+
           <div className="space-y-10 mt-6">
+            <div className="grid grid-cols-2 items-center gap-8">
+              <MySelect
+                label="Grau de Dificuldade"
+                className="text-base text-black"
+                value={getDifficultyDescription(difficult) ?? ""}
+                onValueChange={(value) =>
+                  setAdventureData({
+                    difficult: getDifficultyNumber(value) ?? undefined,
+                  })
+                }
+              >
+                <SelectTrigger className="py-6 my-1">
+                  <SelectValue placeholder="Selecione" />
+                </SelectTrigger>
+                <SelectContent>
+                  {dificulties.map((dificulty) => (
+                    <SelectItem key={dificulty} value={dificulty}>
+                      {dificulty}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </MySelect>
+
+              <div>
+                <MyTypography
+                  variant="label"
+                  weight="bold"
+                  className="mb-1 text-base text-black"
+                >
+                  Duração
+                </MyTypography>
+
+                <Duration
+                  iconColor="black"
+                  selectedTime={duration}
+                  setSelectedTime={(time) =>
+                    setAdventureData({ duration: formatDuration(time) })
+                  }
+                />
+              </div>
+            </div>
+
             <div>
               {/* <MyTypography variant="subtitle3" weight="bold" className="mb-3">
                 Repetir a atividade
@@ -438,6 +481,7 @@ export default function WebForm({
                         grid
                         placeholder="Selecione os horários"
                         options={hours}
+                        duration={duration}
                         selected={block.recurrenceHour}
                         setSelected={(value) =>
                           updateSelectionBlock(
@@ -496,6 +540,7 @@ export default function WebForm({
                         grid
                         placeholder="Selecione os horários"
                         options={hours}
+                        duration={duration}
                         selected={block.recurrenceHour}
                         setSelected={(value) =>
                           updateSelectionBlock(
@@ -528,47 +573,6 @@ export default function WebForm({
                   </MyButton>
                 </div>
               )}
-            </div>
-            <div className="grid grid-cols-2 items-center gap-8">
-              <MySelect
-                label="Grau de Dificuldade"
-                className="text-base text-black"
-                value={getDifficultyDescription(difficult) ?? ""}
-                onValueChange={(value) =>
-                  setAdventureData({
-                    difficult: getDifficultyNumber(value) ?? undefined,
-                  })
-                }
-              >
-                <SelectTrigger className="py-6 my-1">
-                  <SelectValue placeholder="Selecione" />
-                </SelectTrigger>
-                <SelectContent>
-                  {dificulties.map((dificulty) => (
-                    <SelectItem key={dificulty} value={dificulty}>
-                      {dificulty}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </MySelect>
-
-              <div>
-                <MyTypography
-                  variant="subtitle3"
-                  weight="bold"
-                  className="mb-1"
-                >
-                  Duração
-                </MyTypography>
-
-                <Duration
-                  iconColor="black"
-                  selectedTime={duration}
-                  setSelectedTime={(time) =>
-                    setAdventureData({ duration: formatDuration(time) })
-                  }
-                />
-              </div>
             </div>
           </div>
 

@@ -10,9 +10,11 @@ import MyButton from "../atoms/my-button";
 export default function SendImages({
   config,
   handleSendImages,
+  isLoading,
 }: {
   config?: boolean;
   handleSendImages: (files: File[]) => void;
+  isLoading: boolean;
 }) {
   const [files, setFiles] = useState<File[] | null>(null);
 
@@ -100,6 +102,7 @@ export default function SendImages({
         className="w-full"
         size="lg"
         borderRadius="squared"
+        isLoading={isLoading}
         onClick={() => sendFiles(files)}
       >
         {config ? "Salvar" : "Enviar"}

@@ -33,6 +33,7 @@ export default function Step2() {
     removeSelectionBlock,
     updateSelectionBlock,
     isRepeatable,
+    duration,
   } = useAdventureStore();
 
   // Atualiza as datas para um bloco específico
@@ -220,6 +221,7 @@ export default function Step2() {
                     grid
                     placeholder="Selecione os horários"
                     options={hours}
+                    duration={duration}
                     selected={block.recurrenceHour}
                     setSelected={(value) =>
                       updateSelectionBlock(block.id, "recurrenceHour", value)
@@ -255,6 +257,7 @@ export default function Step2() {
                     grid
                     placeholder="Selecione os horários"
                     options={hours}
+                    duration={duration}
                     selected={block.recurrenceHour}
                     setSelected={(value) =>
                       updateSelectionBlock(block.id, "recurrenceHour", value)
