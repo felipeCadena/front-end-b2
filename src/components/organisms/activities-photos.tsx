@@ -94,17 +94,30 @@ export default function ActivitiesPhotos({
                   <MyTypography variant="body" weight="regular" className="">
                     {`Data: ${getData(activity?.schedule?.datetime)} - ${getHora(activity?.schedule?.datetime)}`}
                   </MyTypography>
-                  {!admin && (
-                    <MyTypography
-                      variant="body"
-                      weight="regular"
-                      lightness={500}
-                      className=""
-                    >
-                      Enviar fotos ou vídeos da atividade{" "}
-                      <span className="font-bold">até dia 05/04/2025</span>
-                    </MyTypography>
-                  )}
+                  {!admin &&
+                    (activity?.schedule?.limitDateForMedias ? (
+                      <MyTypography
+                        variant="body"
+                        weight="regular"
+                        lightness={500}
+                        className=""
+                      >
+                        Enviar fotos ou vídeos da atividade{" "}
+                        <span className="font-bold">
+                          até dia{" "}
+                          {getData(activity?.schedule?.limitDateForMedias)}
+                        </span>
+                      </MyTypography>
+                    ) : (
+                      <MyTypography
+                        variant="body"
+                        weight="regular"
+                        lightness={500}
+                        className=""
+                      >
+                        Enviar fotos ou vídeos da atividade
+                      </MyTypography>
+                    ))}
                 </div>
               </div>
 
@@ -116,7 +129,7 @@ export default function ActivitiesPhotos({
                     leftIcon={<Camera color="#8DC63F" />}
                     className="w-full"
                     onClick={() =>
-                      router.push(PATHS["enviar-fotos"](activity?.schedule?.id))
+                      router.push(PATHS["enviar-fotos"](activity?.scheduleId))
                     }
                   >
                     Enviar Fotos
@@ -127,9 +140,7 @@ export default function ActivitiesPhotos({
                     leftIcon={<MyIcon name="video" />}
                     className="w-full"
                     onClick={() =>
-                      router.push(
-                        PATHS["enviar-videos"](activity?.schedule?.id)
-                      )
+                      router.push(PATHS["enviar-videos"](activity?.id))
                     }
                   >
                     Enviar Vídeos

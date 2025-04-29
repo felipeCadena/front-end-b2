@@ -10,8 +10,10 @@ import React from "react";
 export default function EnviarFotos() {
   const router = useRouter();
   const { id } = useParams();
+  const [isLoading, setIsLoading] = React.useState(false);
 
   const handleSendImages = async (files: File[]) => {
+    setIsLoading(true);
     try {
       const uploadMedias = await schedules.postScheduleMedias(
         id as string,
@@ -28,6 +30,8 @@ export default function EnviarFotos() {
       console.log("Upload metadata enviado:", uploadMedias);
     } catch (error) {
       console.error("Erro ao enviar imagens:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -54,7 +58,7 @@ export default function EnviarFotos() {
         </MyTypography>
       </div>
 
-      <SendImages handleSendImages={handleSendImages} />
+      <SendImages handleSendImages={handleSendImages} isLoading={isLoading} />
     </main>
   );
 }

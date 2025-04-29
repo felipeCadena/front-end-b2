@@ -1,10 +1,10 @@
-import { formatPrice } from '@/utils/formatters';
-import React from 'react';
-import MyTypography from '../atoms/my-typography';
-import MyIcon from '../atoms/my-icon';
-import { WhatsappShareButton } from 'react-share';
-import { useParams } from 'next/navigation';
-import MyShareButton from '../atoms/my-share-button';
+import { formatPrice } from "@/utils/formatters";
+import React from "react";
+import MyTypography from "../atoms/my-typography";
+import MyIcon from "../atoms/my-icon";
+import { WhatsappShareButton } from "react-share";
+import { useParams } from "next/navigation";
+import MyShareButton from "../atoms/my-share-button";
 
 type ActivityCancelationPolicyProps = {
   price: {
@@ -12,33 +12,22 @@ type ActivityCancelationPolicyProps = {
     children: string | undefined;
   };
   hoursBeforeCancelation: number | undefined;
-  addressNeighborhood: string | undefined;
-  addressState: string | undefined;
+  address: any;
   duration: string | undefined;
+  isChildrenAllowed: boolean;
 };
 
 const ActivityCancelationPolicy = ({
   price,
   hoursBeforeCancelation,
-  addressNeighborhood,
-  addressState,
+  address,
   duration,
+  isChildrenAllowed,
 }: ActivityCancelationPolicyProps) => {
   const { id } = useParams();
   const hoursToDays = hoursBeforeCancelation ? hoursBeforeCancelation / 24 : 3;
   const frontBaseURL =
-    process.env.NEXT_PUBLIC_PROD_URL ?? 'http://localhost:3000';
-
-  const uniteAddress = (
-    neighborhood: string | undefined,
-    state: string | undefined
-  ) => {
-    if (!neighborhood || !state) {
-      return 'Carregando...';
-    }
-
-    return `${addressNeighborhood} - ${addressState}`;
-  };
+    process.env.NEXT_PUBLIC_PROD_URL ?? "http://localhost:3000";
 
   return (
     <div className="flex flex-col justify-between">
@@ -46,9 +35,7 @@ const ActivityCancelationPolicy = ({
         <div>
           <div className="flex justify-start items-center mt-4 bg-slate-100 border-[1px] border-primary-900 rounded-lg  w-fit py-2 px-6">
             <MyIcon name="localizacaoRedonda" />
-            <MyTypography className="ml-2">
-              {uniteAddress(addressNeighborhood, addressState)}
-            </MyTypography>
+            <MyTypography className="ml-2">{address}</MyTypography>
           </div>
           <div className="flex justify-between items-center mt-4">
             <div className="flex justify-start items-center">
@@ -57,7 +44,7 @@ const ActivityCancelationPolicy = ({
                 <MyTypography variant="subtitle4" weight="semibold">
                   Duração da atividade:
                 </MyTypography>
-                <MyTypography>{duration?.slice(0, 1) + ' horas'}</MyTypography>
+                <MyTypography>{duration?.slice(0, 1) + " horas"}</MyTypography>
               </div>
             </div>
             <MyShareButton url={`${frontBaseURL}/atividades/atividade/${id}`} />
@@ -91,10 +78,10 @@ const ActivityCancelationPolicy = ({
             weight="extrabold"
             className="text-primary-600 text-lg md:text-2xl"
           >
-            {formatPrice(price?.adult ?? '')}
+            {formatPrice(price?.adult ?? "")}
           </MyTypography>
         </div>
-        {price.children !== '0' && (
+        {isChildrenAllowed && (
           <div className="flex justify-between items-center mt-4">
             <MyTypography
               variant="subtitle3"
@@ -108,7 +95,7 @@ const ActivityCancelationPolicy = ({
               weight="extrabold"
               className="text-primary-600 text-lg md:text-2xl"
             >
-              {formatPrice(price?.children ?? '')}
+              {formatPrice(price?.children ?? "")}
             </MyTypography>
           </div>
         )}

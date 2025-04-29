@@ -84,6 +84,8 @@ export default function InformacoesAtividade({
     clearForm,
   } = useStepperStore();
 
+  const [isLoading, setIsLoading] = React.useState(false);
+
   const b2Tax = process.env.NEXT_PUBLIC_PERCENTAGE_TAX_B2;
   const tax = process.env.NEXT_PUBLIC_PERCENTAGE_TAX;
 
@@ -122,6 +124,7 @@ export default function InformacoesAtividade({
   // Função pro fluxo de criação de parceiro + atividade
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
+    setIsLoading(true);
 
     if (!priceAdult || !personsLimit) {
       toast.error("Preencha todos os campos.");
@@ -277,6 +280,8 @@ export default function InformacoesAtividade({
       console.log("Aventura criada e imagens enviadas com sucesso!");
     } catch (error) {
       console.error("Erro ao criar aventura ou enviar imagens:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -285,6 +290,7 @@ export default function InformacoesAtividade({
     e: React.MouseEvent<HTMLButtonElement>
   ) => {
     e.preventDefault();
+    setIsLoading(true);
 
     if (!priceAdult || !personsLimit) {
       toast.error("Preencha todos os campos.");
@@ -404,12 +410,14 @@ export default function InformacoesAtividade({
       console.log("Aventura criada e imagens enviadas com sucesso!");
     } catch (error) {
       console.error("Erro ao criar aventura ou enviar imagens:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
     <main className="w-full max-w-md md:max-w-3xl mx-auto md:p-4">
-      <div className={cn("relative md:hidden", edit && "hidden")}>
+      <div className={cn("relative md:hidden", (edit || step) && "hidden")}>
         <MyLogo variant="mobile" width={100} height={100} className="mx-auto" />
         <MyIcon
           name="voltar"
@@ -610,6 +618,7 @@ export default function InformacoesAtividade({
             rightIcon={<MyIcon name="seta-direita" className="" />}
             className="w-full"
             size="lg"
+            isLoading={isLoading}
             onClick={handleCreateAdventure}
           >
             Concluir atividade
@@ -621,6 +630,7 @@ export default function InformacoesAtividade({
             rightIcon={<MyIcon name="seta-direita" className="" />}
             className="w-full"
             size="lg"
+            isLoading={isLoading}
             onClick={handleSubmit}
           >
             {edit ? "Concluir edição" : "Concluir atividade"}

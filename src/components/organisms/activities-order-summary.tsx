@@ -1,24 +1,24 @@
-import React from 'react';
+import React from "react";
 
-import Image from 'next/image';
-import MyBadge from '../atoms/my-badge';
-import StarRating from '../molecules/my-stars';
-import MyTypography from '../atoms/my-typography';
-import MyIcon from '../atoms/my-icon';
+import Image from "next/image";
+import MyBadge from "../atoms/my-badge";
+import StarRating from "../molecules/my-stars";
+import MyTypography from "../atoms/my-typography";
+import MyIcon from "../atoms/my-icon";
 import {
   formatPrice,
   formatTime,
   getData,
   handleNameActivity,
   selectActivityImage,
-} from '@/utils/formatters';
-import { useRouter } from 'next/navigation';
-import PATHS from '@/utils/paths';
-import { AddToCartAdventure } from '@/services/api/adventures';
-import MyButton from '../atoms/my-button';
-import { useCart } from '@/store/useCart';
-import { useSession } from 'next-auth/react';
-import { toast } from 'react-toastify';
+} from "@/utils/formatters";
+import { useRouter } from "next/navigation";
+import PATHS from "@/utils/paths";
+import { AddToCartAdventure } from "@/services/api/adventures";
+import MyButton from "../atoms/my-button";
+import { useCart } from "@/store/useCart";
+import { useSession } from "next-auth/react";
+import { toast } from "react-toastify";
 
 type ActivitiesOrderSummaryProps = {
   activities: AddToCartAdventure[];
@@ -36,9 +36,9 @@ const ActivitiesOrderSummary = ({
 
     if (userId) {
       removeFromCart(id, userId);
-      toast.success('Atividade removida do carrinho!');
+      toast.success("Atividade removida do carrinho!");
     } else {
-      toast.error('Token expirado!');
+      toast.error("Token expirado!");
     }
   };
 
@@ -49,10 +49,11 @@ const ActivitiesOrderSummary = ({
           <div className="md:grid md:grid-cols-4 gap-4 mt-8 mb-16" key={index}>
             <div className="md:col-span-1 relative z-10 overflow-hidden md:min-w-[8rem] md:min-h-full hover:cursor-pointer rounded-md md:flex">
               <Image
-                alt="sample_file"
+                alt="Imagem Aventura"
                 src={selectActivityImage(adventure)}
                 width={265}
                 height={265}
+                priority
                 className="md:w-[265px] md:h-[265px] w-[114px] h-[106px] object-cover"
               />
             </div>
@@ -120,7 +121,7 @@ const ActivitiesOrderSummary = ({
                       weight="regular"
                       className="ml-3"
                     >
-                      {getData(schedule.scheduleDate?.toString() as string)} -{' '}
+                      {getData(schedule.scheduleDate?.toString() as string)} -{" "}
                       {formatTime(schedule.scheduleTime)}
                     </MyTypography>
                   </div>
@@ -136,7 +137,7 @@ const ActivitiesOrderSummary = ({
                         className="flex items-center"
                       >
                         <MyIcon name="mobileDuracao" />
-                        {adventure?.duration?.slice(0, 1) + ' horas'}
+                        {adventure?.duration?.slice(0, 1) + " horas"}
                       </MyTypography>
                     </div>
                   </div>
@@ -153,7 +154,7 @@ const ActivitiesOrderSummary = ({
                       weight="regular"
                       className="ml-3"
                     >
-                      {schedule.qntAdults} x{' '}
+                      {schedule.qntAdults} x{" "}
                       {formatPrice(schedule.pricePerAdult)}
                     </MyTypography>
                   </div>
@@ -171,8 +172,8 @@ const ActivitiesOrderSummary = ({
                         weight="regular"
                         className="ml-3"
                       >
-                        {schedule.qntChildren} x{' '}
-                        {formatPrice(schedule.pricePerChildren ?? '0')}
+                        {schedule.qntChildren} x{" "}
+                        {formatPrice(schedule.pricePerChildren ?? "0")}
                       </MyTypography>
                     </div>
                   )}

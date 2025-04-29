@@ -1,14 +1,14 @@
-'use client';
+"use client";
 
-import MyIcon from '@/components/atoms/my-icon';
-import MySpinner from '@/components/atoms/my-spinner';
-import MyTypography from '@/components/atoms/my-typography';
-import { notificationsService } from '@/services/api/notifications';
-import { cn } from '@/utils/cn';
-import { formatDate, getHora } from '@/utils/formatters';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { useParams, useRouter } from 'next/navigation';
-import React, { useEffect } from 'react';
+import MyIcon from "@/components/atoms/my-icon";
+import MySpinner from "@/components/atoms/my-spinner";
+import MyTypography from "@/components/atoms/my-typography";
+import { notificationsService } from "@/services/api/notifications";
+import { cn } from "@/utils/cn";
+import { formatDate, getHora } from "@/utils/formatters";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useParams, useRouter } from "next/navigation";
+import React, { useEffect } from "react";
 
 export default function Notificacao() {
   const router = useRouter();
@@ -16,21 +16,21 @@ export default function Notificacao() {
   const queryClient = useQueryClient();
 
   const { data: notification, isLoading } = useQuery({
-    queryKey: ['notification'],
+    queryKey: ["notification"],
     queryFn: () => notificationsService.getNotificationById(id as string),
   });
 
   const notificationHeader =
-    notification?.title.split(' dia')[0] ?? 'Carregando...';
-  const orderStatus = 'realizada';
+    notification?.title.split(" dia")[0] ?? "Carregando...";
+  const orderStatus = "realizada";
 
   useEffect(() => {
-    queryClient.invalidateQueries({ queryKey: ['unread_notifications'] });
+    queryClient.invalidateQueries({ queryKey: ["unread_notifications"] });
   }, [notification]);
 
   const formatDescription = (statusColor: string) => {
     switch (statusColor) {
-      case '#FF7272':
+      case "#FF7272":
         return (
           <div className="flex flex-col gap-4 ml-2 mt-2">
             <MyTypography variant="label" weight="regular">
@@ -43,7 +43,7 @@ export default function Notificacao() {
             </MyTypography>
           </div>
         );
-      case '#D9D9D9':
+      case "#D9D9D9":
         return (
           <div className="flex flex-col gap-4 ml-2 mt-2">
             <MyTypography variant="label" weight="regular">
@@ -51,14 +51,14 @@ export default function Notificacao() {
             </MyTypography>
           </div>
         );
-      case '#8DC63F':
+      case "#8DC63F":
         return (
           <div className="flex flex-col gap-4 ml-2 mt-2">
-            <p dangerouslySetInnerHTML={{ __html: notification?.text || '' }} />
+            <p dangerouslySetInnerHTML={{ __html: notification?.text || "" }} />
           </div>
         );
       default:
-        return '';
+        return "";
     }
   };
 
@@ -82,14 +82,15 @@ export default function Notificacao() {
           <div
             key={0}
             className={cn(
-              'md:w-[60%] flex flex-col gap-3 p-4 mt-4 bg-[#F1F0F5] rounded-lg shadow-sm hover:bg-gray-100 relative',
-              orderStatus === 'realizada' && 'opacity-70'
+              "md:w-[60%] flex flex-col gap-3 p-4 mt-4 bg-[#F1F0F5] rounded-lg shadow-sm hover:bg-gray-100 relative",
+              orderStatus === "realizada" && "opacity-70"
             )}
           >
             <div
               className={cn(
                 `absolute inset-y-0 left-0 w-2 rounded-l-lg  border-2 bg-[${notification?.color}]`
               )}
+              style={{ backgroundColor: notification?.color }}
             ></div>
 
             <MyTypography
@@ -97,18 +98,18 @@ export default function Notificacao() {
               weight="semibold"
               className="ml-2 flex gap-2 items-center"
             >
-              {formatDate(notification?.updatedAt ?? '') == 'Agora pouco' && (
+              {formatDate(notification?.updatedAt ?? "") == "Agora pouco" && (
                 <MyIcon name="now" className="" />
               )}
-              {formatDate(notification?.createdAt ?? '')}
-              {formatDate(notification?.createdAt ?? '') != 'Agora pouco' &&
-                `- ${getHora(notification?.createdAt ?? '')}`}
+              {formatDate(notification?.createdAt ?? "")}
+              {formatDate(notification?.createdAt ?? "") != "Agora pouco" &&
+                `- ${getHora(notification?.createdAt ?? "")}`}
             </MyTypography>
             <MyTypography variant="subtitle3" weight="bold" className="ml-2">
               {notificationHeader}
             </MyTypography>
             <div className="flex justify-start items-center">
-              {formatDescription(notification?.color ?? '')}
+              {formatDescription(notification?.color ?? "")}
             </div>
           </div>
         </div>
