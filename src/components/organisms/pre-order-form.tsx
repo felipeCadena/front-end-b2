@@ -9,7 +9,7 @@ type PreOrderFormProps = {
 
 const PreOrderForm = ({ form }: PreOrderFormProps) => {
   return (
-    <div className="space-y-4 max-sm:my-10 md:w-full">
+    <div className="space-y-4 max-sm:my-10 px-4 md:w-full md:p-0">
       <div className="flex max-sm:flex-col gap-4 md:mt-4">
         <MyFormInput
           label="Nome Completo"
@@ -32,6 +32,7 @@ const PreOrderForm = ({ form }: PreOrderFormProps) => {
           label="Telefone"
           placeholder="(XX) XXXXX-XXXX"
           className="mt-2"
+          isPhoneNumber
           name="creditCardHolderInfo.mobilePhone"
           form={form}
         />
@@ -40,6 +41,7 @@ const PreOrderForm = ({ form }: PreOrderFormProps) => {
           label="CPF"
           placeholder="XXX.XXX.XXX-XX"
           className="mt-2"
+          isCpfCnpj
           name="creditCardHolderInfo.cpfCnpj"
           form={form}
         />
@@ -47,6 +49,7 @@ const PreOrderForm = ({ form }: PreOrderFormProps) => {
           label="CEP"
           placeholder="XXXXX-XXX"
           className="mt-2"
+          isCEP
           name="creditCardHolderInfo.postalCode"
           form={form}
         />

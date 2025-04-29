@@ -1,23 +1,23 @@
-"use client";
+'use client';
 
-import * as React from "react";
-import { DayPicker } from "react-day-picker";
-import type { DayPickerProps } from "react-day-picker";
-import { cn } from "@/utils/cn";
-import { ptBR } from "react-day-picker/locale";
-import { format, isSameDay, parseISO } from "date-fns";
-import { toast } from "react-toastify";
+import * as React from 'react';
+import { DayPicker } from 'react-day-picker';
+import type { DayPickerProps } from 'react-day-picker';
+import { cn } from '@/utils/cn';
+import { ptBR } from 'react-day-picker/locale';
+import { format, isSameDay, parseISO } from 'date-fns';
+import { toast } from 'react-toastify';
 import {
   DialogContent,
   DialogFooter,
   DialogHeader,
   DialogTitle,
   MyDialog,
-} from "../molecules/my-dialog";
-import MyButton from "../atoms/my-button";
-import MultiSelect from "../molecules/combobox";
-import { hours } from "@/common/constants/constants";
-import HoursSelect from "../molecules/date-select";
+} from '../molecules/my-dialog';
+import MyButton from '../atoms/my-button';
+import MultiSelect from '../molecules/combobox';
+import { hours } from '@/common/constants/constants';
+import HoursSelect from '../molecules/date-select';
 
 interface Schedule {
   id: string;
@@ -39,7 +39,7 @@ type CalendarProps = {
   onCancelSchedule: (scheduleId: string) => Promise<void>;
   onCancelAllSchedules: (chedulesId: string[]) => Promise<void>;
   className?: string;
-} & Omit<DayPickerProps, "mode" | "selected" | "onSelect">;
+} & Omit<DayPickerProps, 'mode' | 'selected' | 'onSelect'>;
 
 function CalendarAvailability({
   schedules,
@@ -64,25 +64,25 @@ function CalendarAvailability({
   // Agrupa horários por data se existirem schedules
   const schedulesByDate = React.useMemo<SchedulesByDate>(() => {
     if (!schedules || !Array.isArray(schedules) || schedules.length === 0) {
-      console.log("schedules inválido ou vazio"); // Debug 2
+      console.log('schedules inválido ou vazio'); // Debug 2
       return {};
     }
 
     const result = schedules.reduce((acc: SchedulesByDate, schedule) => {
       try {
         if (!schedule?.datetime) {
-          console.log("datetime inválido:", schedule); // Debug 3
+          console.log('datetime inválido:', schedule); // Debug 3
           return acc;
         }
 
-        const date = format(parseISO(schedule.datetime), "yyyy-MM-dd");
+        const date = format(parseISO(schedule.datetime), 'yyyy-MM-dd');
         if (!acc[date]) {
           acc[date] = [];
         }
         acc[date].push(schedule);
         return acc;
       } catch (error) {
-        console.error("Erro ao processar data:", schedule?.datetime, error);
+        console.error('Erro ao processar data:', schedule?.datetime, error);
         return acc;
       }
     }, {});
@@ -100,7 +100,7 @@ function CalendarAvailability({
   };
 
   const getSchedulesForDate = (date: Date): Schedule[] => {
-    const dateStr = format(date, "yyyy-MM-dd");
+    const dateStr = format(date, 'yyyy-MM-dd');
     return schedulesByDate[dateStr] || [];
   };
 
@@ -108,7 +108,7 @@ function CalendarAvailability({
     date: Date,
     selectedTimes: string[]
   ): string[] => {
-    const baseDate = format(date, "yyyy-MM-dd");
+    const baseDate = format(date, 'yyyy-MM-dd');
 
     // Conta quantas vezes cada horário aparece
     const countMap = selectedTimes.reduce<Record<string, number>>(
@@ -133,7 +133,7 @@ function CalendarAvailability({
     if (!selectedDate || selectedTimes.length === 0) return;
 
     const existingTimes = getSchedulesForDate(selectedDate).map((s) =>
-      format(parseISO(s.datetime), "HH:mm")
+      format(parseISO(s.datetime), 'HH:mm')
     );
 
     const newTimesOnly = selectedTimes.filter(
@@ -141,7 +141,7 @@ function CalendarAvailability({
     );
 
     if (newTimesOnly.length === 0) {
-      toast.info("Selecione novamente o horário.");
+      toast.info('Selecione novamente o horário.');
       return;
     }
 
@@ -151,7 +151,7 @@ function CalendarAvailability({
       await onCreateSchedule(formattedSchedules);
       setSelectedTimes([]); // limpa a seleção
     } catch (error) {
-      console.log("Erro ao criar horários");
+      console.log('Erro ao criar horários');
     } finally {
       setIsLoading(false);
     }
@@ -167,7 +167,7 @@ function CalendarAvailability({
     try {
       await onCancelSchedule(id);
     } catch (error) {
-      console.log("Erro ao cancelar horário");
+      console.log('Erro ao cancelar horário');
     } finally {
       setIsLoadingCancel(false);
     }
@@ -179,7 +179,7 @@ function CalendarAvailability({
     try {
       await onCancelAllSchedules(ids);
     } catch (error) {
-      console.log("Erro ao cancelar horários");
+      console.log('Erro ao cancelar horários');
     } finally {
       setIsLoadingAllCancel(false);
     }
@@ -194,11 +194,11 @@ function CalendarAvailability({
 
     return schedules
       .filter((schedule) => {
-        const scheduleDate = format(parseISO(schedule.datetime), "yyyy-MM-dd");
-        const selectedDateStr = format(date, "yyyy-MM-dd");
+        const scheduleDate = format(parseISO(schedule.datetime), 'yyyy-MM-dd');
+        const selectedDateStr = format(date, 'yyyy-MM-dd');
         return scheduleDate === selectedDateStr;
       })
-      .map((schedule) => format(parseISO(schedule.datetime), "HH:mm"));
+      .map((schedule) => format(parseISO(schedule.datetime), 'HH:mm'));
   };
 
   // Atualiza os horários selecionados quando a data muda
@@ -212,10 +212,9 @@ function CalendarAvailability({
     }
   }, [selectedDate, schedules]);
 
-  const selectedTimesForDate = getSelectedTimesForDate(
-    selectedDate,
-    schedules || []
-  );
+  const selectedTimesForDate = selectedDate
+    ? getSelectedTimesForDate(selectedDate, schedules || [])
+    : [];
 
   const availableHours = hours.filter(
     (hour) => !selectedTimesForDate.includes(hour.value)
@@ -228,24 +227,24 @@ function CalendarAvailability({
         selected={selectedDate}
         onDayClick={handleDayClick}
         showOutsideDays={showOutsideDays}
-        className={cn("md:flex md:justify-center", className)}
+        className={cn('md:flex md:justify-center', className)}
         ISOWeek={true}
         locale={ptBR}
         formatters={{
           formatWeekdayName: (weekday) => {
-            const fullName = weekday.toLocaleDateString("pt-BR", {
-              weekday: "long",
+            const fullName = weekday.toLocaleDateString('pt-BR', {
+              weekday: 'long',
             });
             return isDesktop
-              ? fullName.replace("-feira", "")
+              ? fullName.replace('-feira', '')
               : fullName.substring(0, 3);
           },
           formatCaption: (month) => {
-            return `${format(month, "MMMM", { locale: ptBR })}
-            ${format(month, "yyyy", { locale: ptBR })}`;
+            return `${format(month, 'MMMM', { locale: ptBR })}
+            ${format(month, 'yyyy', { locale: ptBR })}`;
           },
           formatDay: (day) => {
-            return format(day, "d", { locale: ptBR });
+            return format(day, 'd', { locale: ptBR });
           },
         }}
         modifiers={{
@@ -254,80 +253,82 @@ function CalendarAvailability({
           // disabled: (date) => !isDateAvailable(date),
         }}
         modifiersClassNames={{
-          booked: "rounded-lg bg-primary-600 text-white relative",
-          selected: !availableDates.includes(selectedDate?.toISOString())
-            ? "rounded-lg bg-primary-800 text-primary-600 relative"
-            : "",
+          booked: 'rounded-lg bg-primary-600 text-white relative',
+          selected: !availableDates.some((date) =>
+            selectedDate ? isSameDay(date, selectedDate) : false
+          )
+            ? 'rounded-lg bg-primary-800 text-primary-600 relative'
+            : '',
         }}
         styles={{
           months: {
-            display: "flex",
-            justifyContent: "center",
-            width: "100%",
-            textTransform: "capitalize",
+            display: 'flex',
+            justifyContent: 'center',
+            width: '100%',
+            textTransform: 'capitalize',
           },
-          day: { width: "40px", height: "40px" },
-          weekday: { width: "40px", textTransform: "capitalize" },
-          caption: { width: "100%" },
+          day: { width: '40px', height: '40px' },
+          weekday: { width: '40px', textTransform: 'capitalize' },
+          caption: { width: '100%' },
           table: {
-            width: "100%",
-            display: "flex",
-            flexDirection: "column",
-            gap: "0",
+            width: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '0',
           },
           head_row: {
-            display: "flex",
-            justifyContent: "space-between",
-            width: "280px",
+            display: 'flex',
+            justifyContent: 'space-between',
+            width: '280px',
           },
           row: {
-            display: "flex",
-            justifyContent: "space-between",
-            width: "280px",
+            display: 'flex',
+            justifyContent: 'space-between',
+            width: '280px',
           },
         }}
         classNames={{
-          root: "",
+          root: '',
           button_next:
-            "absolute right-1 top-2 md:right-1/3 border rounded-lg p-2",
+            'absolute right-1 top-2 md:right-1/3 border rounded-lg p-2',
           button_previous:
-            "absolute left-1 top-2 md:left-1/3 border rounded-lg p-2",
-          months: "flex flex-col mt-1",
-          month: "space-y-4 text-center",
-          caption: "flex justify-center relative items-center",
+            'absolute left-1 top-2 md:left-1/3 border rounded-lg p-2',
+          months: 'flex flex-col mt-1',
+          month: 'space-y-4 text-center',
+          caption: 'flex justify-center relative items-center',
           caption_label:
-            "whitespace-pre-line text-center font-semibold text-lg",
-          nav: "flex items-center justify-between",
+            'whitespace-pre-line text-center font-semibold text-lg',
+          nav: 'flex items-center justify-between',
           nav_button: cn(
-            "h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100"
+            'h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100'
           ),
-          nav_button_previous: "absolute left-4 bottom-4",
-          nav_button_next: "absolute right-4",
-          table: "w-full border-collapse",
-          head_row: "flex justify-between",
-          row: "flex justify-between w-full",
+          nav_button_previous: 'absolute left-4 bottom-4',
+          nav_button_next: 'absolute right-4',
+          table: 'w-full border-collapse',
+          head_row: 'flex justify-between',
+          row: 'flex justify-between w-full',
           cell: cn(
-            "relative p-0 text-center text-sm focus-within:relative focus-within:z-20",
-            "[&:has([aria-selected])]:bg-accent [&:has([aria-selected].day-outside)]:bg-accent/50 [&:has([aria-selected].day-range-end)]:rounded-r-md",
-            "[&:has([aria-selected])]:rounded-md"
+            'relative p-0 text-center text-sm focus-within:relative focus-within:z-20',
+            '[&:has([aria-selected])]:bg-accent [&:has([aria-selected].day-outside)]:bg-accent/50 [&:has([aria-selected].day-range-end)]:rounded-r-md',
+            '[&:has([aria-selected])]:rounded-md'
           ),
-          day: cn("h-6 w-6 md:py-4"),
-          day_range_start: "day-range-start",
-          day_range_end: "day-range-end",
+          day: cn('h-6 w-6 md:py-4'),
+          day_range_start: 'day-range-start',
+          day_range_end: 'day-range-end',
           day_selected:
-            "bg-white text-primary-600 hover:bg-primary-600 hover:text-white focus:bg-primary-600 focus:text-white",
+            'bg-white text-primary-600 hover:bg-primary-600 hover:text-white focus:bg-primary-600 focus:text-white',
           // day_today: "bg-primary-600 text-white",
-          today: "text-primary-600",
-          day_disabled: "text-[#929292] opacity-50",
+          today: 'text-primary-600',
+          day_disabled: 'text-[#929292] opacity-50',
           day_range_middle:
-            "aria-selected:bg-accent aria-selected:text-accent-foreground",
-          day_hidden: "invisible",
-          selected: "bg-primary-600 text-white rounded-md",
+            'aria-selected:bg-accent aria-selected:text-accent-foreground',
+          day_hidden: 'invisible',
+          selected: 'bg-primary-600 text-white rounded-md',
           weekday:
-            "font-normal text-[#929292] md:text-primary-600 md:font-semibold opacity-80 pt-6",
-          outside: "text-[#929292] opacity-50",
-          disabled: "text-[#929292] opacity-50",
-          month_grid: "w-full",
+            'font-normal text-[#929292] md:text-primary-600 md:font-semibold opacity-80 pt-6',
+          outside: 'text-[#929292] opacity-50',
+          disabled: 'text-[#929292] opacity-50',
+          month_grid: 'w-full',
           ...classNames,
         }}
         {...props}
@@ -357,7 +358,7 @@ function CalendarAvailability({
                       className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
                     >
                       <span className="font-medium">
-                        {format(parseISO(schedule.datetime), "HH:mm")}
+                        {format(parseISO(schedule.datetime), 'HH:mm')}
                       </span>
                       <div className="flex gap-2">
                         <MyButton
@@ -426,6 +427,6 @@ function CalendarAvailability({
   );
 }
 
-CalendarAvailability.displayName = "Full Calendar";
+CalendarAvailability.displayName = 'Full Calendar';
 
 export { CalendarAvailability };

@@ -1,14 +1,14 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import { EditSection } from "./edit-activity-menu";
-import BasicInfo from "@/app/(pages)/(parceiro)/parceiro/atividades-cadastradas/atividade/modules/basic-info";
-import UpdateImages from "@/app/(pages)/(parceiro)/parceiro/atividades-cadastradas/atividade/modules/images";
-import Pricing from "@/app/(pages)/(parceiro)/parceiro/atividades-cadastradas/atividade/modules/pricing";
-import Schedules from "@/app/(pages)/(parceiro)/parceiro/atividades-cadastradas/atividade/modules/schedules";
-import Location from "@/app/(pages)/(parceiro)/parceiro/atividades-cadastradas/atividade/modules/location";
-import Agenda from "@/app/(pages)/(parceiro)/parceiro/atividades-cadastradas/atividade/modules/agenda";
-import ModalAlert from "../molecules/modal-alert";
+import { useEffect, useState } from 'react';
+import { EditSection } from './edit-activity-menu';
+import BasicInfo from '@/app/(pages)/(parceiro)/parceiro/atividades-cadastradas/atividade/modules/basic-info';
+import UpdateImages from '@/app/(pages)/(parceiro)/parceiro/atividades-cadastradas/atividade/modules/images';
+import Pricing from '@/app/(pages)/(parceiro)/parceiro/atividades-cadastradas/atividade/modules/pricing';
+import Schedules from '@/app/(pages)/(parceiro)/parceiro/atividades-cadastradas/atividade/modules/schedules';
+import Location from '@/app/(pages)/(parceiro)/parceiro/atividades-cadastradas/atividade/modules/location';
+import Agenda from '@/app/(pages)/(parceiro)/parceiro/atividades-cadastradas/atividade/modules/agenda';
+import ModalAlert from '../molecules/modal-alert';
 
 interface EditModalProps {
   section: EditSection;
@@ -35,7 +35,7 @@ export function EditarAtividadeTemplate({
 
   const renderForm = () => {
     switch (section) {
-      case "basic":
+      case 'basic':
         return (
           <BasicInfo
             formData={formData}
@@ -44,10 +44,10 @@ export function EditarAtividadeTemplate({
           />
         );
 
-      case "images":
+      case 'images':
         return <UpdateImages formData={data} onClose={onClose} />;
 
-      case "pricing":
+      case 'pricing':
         return (
           <Pricing
             formData={formData}
@@ -56,7 +56,7 @@ export function EditarAtividadeTemplate({
           />
         );
 
-      case "schedule":
+      case 'schedule':
         return (
           <Schedules
             formData={formData}
@@ -65,7 +65,7 @@ export function EditarAtividadeTemplate({
           />
         );
 
-      case "location":
+      case 'location':
         return (
           <Location
             formData={formData}
@@ -73,7 +73,7 @@ export function EditarAtividadeTemplate({
             onClose={onClose}
           />
         );
-      case "availability":
+      case 'availability':
         return (
           <Agenda
             formData={formData}
@@ -81,7 +81,7 @@ export function EditarAtividadeTemplate({
             onClose={onClose}
           />
         );
-      case "hide":
+      case 'hide':
         return (
           // <Agenda
           //   formData={formData}
@@ -90,17 +90,17 @@ export function EditarAtividadeTemplate({
           // />
           <></>
         );
-      case "cancel":
-        return (
-          <ModalAlert
-            open={isModalOpen}
-            onClose={handleClose}
-            iconName="warning"
-            title="Atividade cancelada"
-            descrition="A atividade já foi cancelada e em breve seu cliente receberá uma mensagem explicando isso."
-            button="Voltar ao início"
-          />
-        );
+      // case "cancel":
+      //   return (
+      //     <ModalAlert
+      //       open={isModalOpen}
+      //       onClose={handleClose}
+      //       iconName="warning"
+      //       title="Atividade cancelada"
+      //       descrition="A atividade já foi cancelada e em breve seu cliente receberá uma mensagem explicando isso."
+      //       button="Voltar ao início"
+      //     />
+      //   );
       default:
         return null;
     }

@@ -57,7 +57,7 @@ const ActivityCancelationPolicy = ({
                 <MyTypography variant="subtitle4" weight="semibold">
                   Duração da atividade:
                 </MyTypography>
-                <MyTypography>{duration}</MyTypography>
+                <MyTypography>{duration?.slice(0, 1) + ' horas'}</MyTypography>
               </div>
             </div>
             <MyShareButton url={`${frontBaseURL}/atividades/atividade/${id}`} />
@@ -76,7 +76,7 @@ const ActivityCancelationPolicy = ({
         </MyTypography>
       </div>
 
-      <div className="mt-16">
+      <div className="mt-8 md:mt-16">
         <div className="flex justify-between items-center mt-1">
           <MyTypography
             variant="subtitle3"

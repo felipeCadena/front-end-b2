@@ -102,12 +102,7 @@ const ActivitiesOrderSummary = ({
                   {adventure.description}
                 </MyTypography>
               </div>
-              <div
-                className="w-full flex flex-col items-center gap-3 p-3 mt-2 bg-[#F1F0F587] border border-primary-600/30 border-opacity-80 rounded-lg shadow-sm hover:bg-gray-100 relative cursor-pointer"
-                onClick={() =>
-                  router.push(PATHS.atividadeRealizada(adventure.id))
-                }
-              >
+              <div className="w-full flex flex-col items-center gap-3 p-3 mt-2 bg-[#F1F0F587] border border-primary-600/30 border-opacity-80 rounded-lg shadow-sm hover:bg-gray-100 relative">
                 <div className="absolute inset-y-0 left-0 w-3 bg-primary-900 rounded-l-lg"></div>
 
                 <div className="w-full flex md:flex-row flex-col md:items-center justify-between gap-1 text-nowrap">

@@ -136,13 +136,15 @@ export default function Perfil() {
             mimetype: file[0].type,
             file: new Blob([arrayBuffer]),
           });
-          setUser({
-            ...user,
-            photo: {
-              url: response,
-              mimetype: file[0].type,
-            },
-          });
+          if (user?.name && user?.email && user?.role) {
+            setUser({
+              ...user,
+              photo: {
+                url: response,
+                mimetype: file[0].type,
+              },
+            });
+          }
 
           console.log('RES', response);
 

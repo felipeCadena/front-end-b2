@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { format } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 import { Popover, PopoverContent, PopoverTrigger } from '../atoms/my-popover';
 import MyButton from '../atoms/my-button';
 import { cn } from '@/utils/cn';
@@ -12,21 +12,25 @@ import MyTypography from '../atoms/my-typography';
 import { MyActivityCalendar } from './my-activity-calendar';
 import { Dispatch, SetStateAction, useState } from 'react';
 import { Recurrence } from '../organisms/activity-date-picker';
-import {
-  agruparRecorrencias,
-  formatRecurrencesToDates,
-} from '@/utils/formatters';
+import { formatRecurrencesToDates } from '@/utils/formatters';
 
 type MyActivityDatePickerProps = {
   withlabel?: string;
   selectedDate: Date | undefined;
   setSelectedDates: Dispatch<SetStateAction<Date | undefined>>;
+  partnerSchedules:
+    | {
+        date: string;
+        time: string[];
+      }[]
+    | undefined;
   activityRecurrences: Recurrence[];
 };
 
 export function MyActivityDatePicker({
   withlabel,
   selectedDate,
+  partnerSchedules,
   activityRecurrences,
   setSelectedDates,
 }: MyActivityDatePickerProps) {
@@ -38,6 +42,9 @@ export function MyActivityDatePicker({
     // Apenas atualiza as datas selecionadas sem formatação
     setSelectedDates(dates);
   };
+
+  const partnerScheduledDays =
+    partnerSchedules?.map((sch) => parseISO(sch.date)) ?? [];
 
   const monthlyRecurrences = formatRecurrencesToDates(
     activityRecurrences,
@@ -89,6 +96,7 @@ export function MyActivityDatePicker({
       <PopoverContent
         className="w-full bg-white flex flex-col items-center"
         align="center"
+        sideOffset={-150}
       >
         <MyActivityCalendar
           selected={selectedDate}
@@ -96,7 +104,7 @@ export function MyActivityDatePicker({
           className="capitalize"
           locale={ptBR}
           markedDates={monthlyRecurrences}
-          markedDays={weeklyRecurrences}
+          markedDays={[...weeklyRecurrences, ...partnerScheduledDays]}
         />
         <MyButton
           variant="default"

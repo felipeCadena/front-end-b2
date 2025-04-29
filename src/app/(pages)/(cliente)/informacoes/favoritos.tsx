@@ -15,9 +15,27 @@ export default function Favoritos() {
     queryFn: () => adventures.listFavorites(),
   });
 
-  const filteredAdventures = favorites.filter(
-    (fav) => fav.adventure.typeAdventure === selected
-  );
+  const filteredAdventures = () => {
+    const filterFav = favorites.filter(
+      (fav) => fav.adventure.typeAdventure === selected
+    );
+    if (filterFav.length === 0) {
+      return (
+        <div className="w-full h-[30vh] flex justify-center items-center">
+          <MyTypography variant="subtitle3" weight="bold">
+            Você não tem favoritos nessa categoria
+          </MyTypography>
+        </div>
+      );
+    }
+
+    return filterFav.map((favorite) => (
+      <FavoriteActivity
+        activity={favorite.adventure}
+        favoriteID={favorite.id}
+      />
+    ));
+  };
 
   return (
     <section className="mx-auto mb-15 max-sm:max-w-5xl">
@@ -29,20 +47,17 @@ export default function Favoritos() {
               setSelected={setSelected}
               withoutText
             />
-            <div className={cn('grid grid-cols-4 gap-6 max-sm:hidden')}>
+
+            <div className={cn('md:grid md:grid-cols-4 md:gap-6')}>
               {selected === ''
-                ? favorites.map((favorite) => (
+                ? favorites.map((favorite, i) => (
                     <FavoriteActivity
+                      key={`${favorite.id}-${i}`}
                       activity={favorite.adventure}
                       favoriteID={favorite.id}
                     />
                   ))
-                : filteredAdventures.map((favorite) => (
-                    <FavoriteActivity
-                      activity={favorite.adventure}
-                      favoriteID={favorite.id}
-                    />
-                  ))}
+                : filteredAdventures()}
             </div>
           </>
         ) : (

@@ -44,16 +44,10 @@ export default function SidebarMenuWeb({}) {
     }
   }, [user, session]);
 
-  const { data: notifications = [] } = useQuery({
-    queryKey: ['notifications'],
-    queryFn: async () => {
-      const unreadNotifications = await notificationsService.listNotifications({
-        limit: 30,
-        isRead: false,
-      });
+  const { data: notifications = { messagesUnred: 0 } } = useQuery({
+    queryKey: ['unread_notifications'],
+    queryFn: () => notificationsService.countUnreadNotifications(),
 
-      return unreadNotifications;
-    },
     enabled: Boolean(session?.user),
   });
 
@@ -102,9 +96,9 @@ export default function SidebarMenuWeb({}) {
 
                 {item.label == 'Notificações' && (
                   <div
-                    className={`absolute flex justify-center items-center bottom-4 left-3 ${notifications.length > 0 ? 'bg-red-400 h-[1.125rem]' : 'bg-slate-300 h-[1.125rem]'} w-[1.125rem] rounded-full text-white text-xs font-bold`}
+                    className={`absolute flex justify-center items-center bottom-4 left-3 ${notifications.messagesUnred > 0 ? 'bg-red-400 h-[1.125rem]' : 'bg-slate-300 h-[1.125rem]'} w-[1.125rem] rounded-full text-white text-xs font-bold`}
                   >
-                    {notifications?.length > 9 ? '9+' : notifications?.length}
+                    {notifications.messagesUnred}
                   </div>
                 )}
 

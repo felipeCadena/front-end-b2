@@ -40,4 +40,14 @@ export const notificationsService = {
       throw error;
     }
   },
+
+  async countUnreadNotifications(): Promise<{ messagesUnred: number }> {
+    try {
+      const respose = await api.get('/notifications/count');
+      return respose.data;
+    } catch (error) {
+      console.error('Error fetching notifications count', error);
+      throw error;
+    }
+  },
 };

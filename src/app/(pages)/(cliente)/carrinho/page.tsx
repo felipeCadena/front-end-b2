@@ -27,30 +27,43 @@ export default function Carrinho() {
           className="-ml-2"
           onClick={() => router.back()}
         />
-        <MyTypography variant="subtitle1" weight="bold" className="">
+        <MyTypography variant="subtitle1" weight="bold" className="ml-6">
           Carrinho de compras
         </MyTypography>
       </div>
-      <MobileActivitiesOrderSummary activities={userCart?.cart ?? []} />
+      {userCart?.cart && userCart?.cart.length > 0 ? (
+        <MobileActivitiesOrderSummary activities={userCart?.cart ?? []} />
+      ) : (
+        <div className="w-full h-[30vh] flex justify-center items-center">
+          <MyTypography variant="subtitle3" weight="bold" className="my-8">
+            Seu carrinho está vazio.
+          </MyTypography>
+        </div>
+      )}
       <MyButton
         variant="outline-neutral"
         borderRadius="squared"
         size="lg"
         className="w-full font-bold text-[1rem]"
+        leftIcon={<MyIcon name="add" />}
         onClick={() => router.push(PATHS.atividades)}
       >
-        Adicionar mais atividades
+        {userCart?.cart && userCart?.cart.length > 0
+          ? 'Adicionar mais atividades'
+          : 'Adicionar atividades'}
       </MyButton>
 
-      <MyButton
-        variant="default"
-        borderRadius="squared"
-        size="lg"
-        className="w-full mt-6"
-        onClick={() => router.push(PATHS['finalizar-compra'])}
-      >
-        Finalizar Pedido
-      </MyButton>
+      {userCart?.cart && userCart?.cart.length !== 0 && (
+        <MyButton
+          variant="default"
+          borderRadius="squared"
+          size="lg"
+          className="w-full mt-6"
+          onClick={() => router.push(PATHS['carrinho-pagamento'])}
+        >
+          Finalizar Pedido
+        </MyButton>
+      )}
     </section>
   );
 }

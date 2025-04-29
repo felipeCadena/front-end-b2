@@ -14,16 +14,13 @@ import {
 } from '@/components/molecules/my-toggle-group';
 import { cn } from '@/utils/cn';
 import Link from 'next/link';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect } from 'react';
 import { authService } from '@/services/api/auth';
 import { signOut, useSession } from 'next-auth/react';
 import useLogin from '@/store/useLogin';
 import { useQuery } from '@tanstack/react-query';
 import { useCart } from '@/store/useCart';
-import {
-  Notification,
-  notificationsService,
-} from '@/services/api/notifications';
+import { notificationsService } from '@/services/api/notifications';
 
 export default function SidebarMenu({
   closeSidebar,
@@ -33,7 +30,6 @@ export default function SidebarMenu({
   const { user, clearUser } = useAuthStore();
   const { data: session } = useSession();
   const { setSideBarActive, sideBarActive } = useLogin();
-  const [notifications, setNotifications] = useState<Notification[]>([]);
 
   useEffect(() => {
     switch (session?.user?.role) {
@@ -68,17 +64,10 @@ export default function SidebarMenu({
 
   const cartSize = getCartSize(userId ?? '');
 
-  useQuery({
-    queryKey: ['notifications'],
-    queryFn: async () => {
-      const unreadNotifications = await notificationsService.listNotifications({
-        limit: 30,
-        isRead: false,
-      });
+  const { data: notifications = { messagesUnred: 0 } } = useQuery({
+    queryKey: ['unread_notifications'],
+    queryFn: () => notificationsService.countUnreadNotifications(),
 
-      setNotifications(unreadNotifications ?? []);
-      return unreadNotifications;
-    },
     enabled: Boolean(session?.user),
   });
 
@@ -110,9 +99,9 @@ export default function SidebarMenu({
 
               {item.label === 'Notificações' && (
                 <span
-                  className={`flex items-center justify-center ${notifications.length > 0 ? 'bg-red-400' : 'bg-slate-300'} h-[1.1rem] w-[1.1rem] rounded-full text-white text-xs font-bold`}
+                  className={`flex items-center justify-center ${notifications.messagesUnred > 0 ? 'bg-red-400' : 'bg-slate-300'} h-[1.1rem] w-[1.1rem] rounded-full text-white text-xs font-bold`}
                 >
-                  {notifications.length}
+                  {notifications.messagesUnred}
                 </span>
               )}
 

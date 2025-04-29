@@ -54,10 +54,10 @@ const MobileActivitiesOrderSummary = ({
                   src={selectActivityImage(adventure)}
                   width={114}
                   height={106}
-                  className="w-[114px] h-[106px] object-cover rounded-md"
+                  className="w-[94px] h-[106px] object-cover rounded-md"
                 />
                 <div className="flex flex-col gap-2 ml-2">
-                  <div className="flex justify-start">
+                  <div className="flex justify-between">
                     <MyBadge
                       className="font-medium text-nowrap p-1 mr-2"
                       variant="outline"
@@ -75,7 +75,7 @@ const MobileActivitiesOrderSummary = ({
                       {adventure.title}
                     </MyTypography>
                     <MyTypography variant="label" className="">
-                      {adventure.description.slice(0, 25) + '...'}
+                      {adventure.description.slice(0, 30) + '...'}
                     </MyTypography>
                   </div>
                 </div>
@@ -96,18 +96,10 @@ const MobileActivitiesOrderSummary = ({
                 <div className="w-full flex flex-col justify-between gap-1 text-nowrap">
                   <div className="flex justify-between items-center">
                     <div className="flex flex-col items-start gap-1">
-                      <MyTypography
-                        variant="label"
-                        weight="bold"
-                        className="ml-3"
-                      >
+                      <MyTypography variant="label" weight="bold">
                         Data da Atividade:
                       </MyTypography>
-                      <MyTypography
-                        variant="body"
-                        weight="regular"
-                        className="ml-3"
-                      >
+                      <MyTypography variant="body" weight="regular">
                         {getData(schedule.scheduleDate?.toString() as string)} -{' '}
                         {formatTime(schedule.scheduleTime)}
                       </MyTypography>
@@ -130,18 +122,10 @@ const MobileActivitiesOrderSummary = ({
                     </div>
                   </div>
                   <div className="flex flex-col gap-1 py-4">
-                    <MyTypography
-                      variant="label"
-                      weight="bold"
-                      className="ml-3"
-                    >
+                    <MyTypography variant="label" weight="bold">
                       Quant. de pessoas
                     </MyTypography>
-                    <MyTypography
-                      variant="body"
-                      weight="regular"
-                      className="ml-3"
-                    >
+                    <MyTypography variant="body" weight="regular">
                       {schedule.qntAdults}{' '}
                       {schedule.qntAdults > 1 ? 'Adultos' : 'Adulto'} x{' '}
                       {formatPrice(schedule.pricePerAdult)}
@@ -149,11 +133,7 @@ const MobileActivitiesOrderSummary = ({
                     {schedule.qntChildren > 0 && (
                       <div className="gap-1 w-fit flex flex-col items-center">
                         <hr className="my-1 w-[50%]" />
-                        <MyTypography
-                          variant="body"
-                          weight="regular"
-                          className="ml-3"
-                        >
+                        <MyTypography variant="body" weight="regular">
                           {schedule.qntChildren}{' '}
                           {schedule.qntChildren > 1 ? 'Crianças' : 'Criança'} x{' '}
                           {formatPrice(schedule.pricePerChildren ?? '0')}

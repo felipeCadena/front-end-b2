@@ -25,8 +25,8 @@ export default function Notificacao() {
   const orderStatus = 'realizada';
 
   useEffect(() => {
-    queryClient.invalidateQueries({ queryKey: ['notifications'] });
-  }, []);
+    queryClient.invalidateQueries({ queryKey: ['unread_notifications'] });
+  }, [notification]);
 
   const formatDescription = (statusColor: string) => {
     switch (statusColor) {

@@ -3,6 +3,7 @@ import {
   Recurrence,
 } from '@/components/organisms/activity-date-picker';
 import { Adventure, AdventureSchedule } from '@/services/api/adventures';
+import { format, parseISO } from 'date-fns';
 
 export function getData(timestamp: string, year?: boolean) {
   const date = new Date(timestamp);
@@ -95,6 +96,13 @@ export const formatPhoneNumber = (phoneNumberString?: string) => {
     .replace(/(-\d{4})\d+?$/, '$1');
 };
 
+export const formatCEP = (value: string) => {
+  return value
+    .replace(/\D/g, '')
+    .replace(/^(\d{5})(\d)/, '$1-$2')
+    .slice(0, 9);
+};
+
 export const formatCPF = (value: string | null) => {
   if (!value) return '';
 
@@ -118,6 +126,14 @@ export const formatCNPJ = (value?: string | null) => {
     .replace(/(\d{4})(\d{1,2})$/, '$1-$2');
 
   return newValue;
+};
+
+export const formatCpfCnpj = (value: string) => {
+  if (value.length <= 14) {
+    return formatCPF(value);
+  } else {
+    return formatCNPJ(value);
+  }
 };
 
 // Transforme minutos ou dias em horas
@@ -356,16 +372,6 @@ export const agruparRecorrencias = (
   recurrences: AdventureSchedule[] | undefined
 ) => {
   if (!recurrences) return { semanal: [], mensal: [] };
-
-  const diasSemana = [
-    'Domingo',
-    'Segunda',
-    'Terça',
-    'Quarta',
-    'Quinta',
-    'Sexta',
-    'Sábado',
-  ];
 
   // Agrupar por groupId
   const grupos = new Map<
@@ -651,4 +657,75 @@ export const formatInstallmentOptions = (
   }
 
   return installmentArr;
+};
+
+export const getPartnerAvailableSchedules = (
+  activity: Adventure | undefined
+) => {
+  if (activity) {
+    const partnerSchedules = activity.schedules?.reduce(
+      (acc, schedule) => {
+        if (schedule.isAvailable) {
+          const availableScheduleDate = schedule.datetime.slice(0, 10);
+          const availableScheduleDateTime = schedule.datetime.slice(11, 16);
+          const formattedSchedule = {
+            date: availableScheduleDate,
+            time: [availableScheduleDateTime],
+          };
+          const existingAvailableSchedule = acc.find(
+            (sch) => sch.date === formattedSchedule.date
+          );
+
+          if (!existingAvailableSchedule) {
+            acc.push(formattedSchedule);
+          }
+
+          const alreadyScheduledTime = existingAvailableSchedule?.time.find(
+            (time) => availableScheduleDateTime === time
+          );
+
+          if (!alreadyScheduledTime) {
+            existingAvailableSchedule?.time.push(availableScheduleDateTime);
+          }
+
+          return acc;
+        }
+        return acc;
+      },
+      [] as { date: string; time: string[] }[]
+    );
+
+    return partnerSchedules;
+  }
+};
+
+export const addPartnerScheduledTimeToSelectedDateTime = (
+  selectedDate: Date | undefined,
+  selectedDateTimes: string[],
+  availablePartnerSchedules:
+    | {
+        date: string;
+        time: string[];
+      }[]
+    | undefined
+) => {
+  if (selectedDate) {
+    const partnerScheduleSelected = availablePartnerSchedules?.find(
+      (sch) => sch.date === format(selectedDate, 'yyyy-MM-dd')
+    );
+
+    if (partnerScheduleSelected) {
+      const timeAlreadyExists = partnerScheduleSelected.time.find((time) =>
+        selectedDateTimes.some((selectedTime) => selectedTime === time)
+      );
+      const filteredTimes = partnerScheduleSelected.time.filter(
+        (time) => time !== timeAlreadyExists
+      );
+
+      return [...selectedDateTimes, ...filteredTimes.sort()];
+    } else {
+      return selectedDateTimes;
+    }
+  }
+  return selectedDateTimes;
 };

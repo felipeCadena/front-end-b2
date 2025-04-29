@@ -71,11 +71,19 @@ export default function FavoriteActivity({
 
         <MyShareButton url={`${frontBaseURL}/atividades/atividade/${id}`} />
       </div>
-      <MyTypography variant="subtitle1" weight="bold" className="">
+      <MyTypography variant="subtitle1" weight="bold" className="md:hidden">
+        {activity?.title?.length > 35
+          ? activity.title.slice(0, 35) + '...'
+          : activity.title}
+      </MyTypography>
+      <MyTypography variant="subtitle1" weight="bold" className="max-sm:hidden">
         {activity.title.slice(0, 20) + '...'}
       </MyTypography>
-      <MyTypography variant="body-big" className="">
+      <MyTypography variant="body-big" className="max-sm:hidden">
         {activity.description.slice(0, 25).concat('...')}
+      </MyTypography>
+      <MyTypography variant="body-big" className="md:hidden mb-8">
+        {activity.description}
       </MyTypography>
     </div>
   );

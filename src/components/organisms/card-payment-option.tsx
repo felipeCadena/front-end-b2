@@ -27,7 +27,7 @@ const CardPaymentOption = ({ form, userCart }: CardPaymentOptionProps) => {
   const { creditCard } = form.watch();
 
   return (
-    <div className="max-sm:mt-8 md:flex md:flex-row-reverse md:items-center md:gap-8 md:col-span-2">
+    <div className="max-sm:mt-8 px-4 md:px-0 md:flex md:flex-row-reverse md:items-center md:gap-8 md:col-span-2">
       <Card cardObj={creditCard} />
 
       <div className="max-sm:mt-4 space-y-4 md:w-[90%]">

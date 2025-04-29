@@ -2,33 +2,32 @@
 
 import MyButton from '@/components/atoms/my-button';
 import MyCheckbox from '@/components/atoms/my-checkbox';
+import { MyForm } from '@/components/atoms/my-form';
 import MyIcon, { IconsMapTypes } from '@/components/atoms/my-icon';
+import MySpinner from '@/components/atoms/my-spinner';
 import MyTypography from '@/components/atoms/my-typography';
-import ActivitiesOrderSummary from '@/components/organisms/activities-order-summary';
 import CardPaymentOption from '@/components/organisms/card-payment-option';
 import PreOrderForm from '@/components/organisms/pre-order-form';
-import { useCart } from '@/store/useCart';
 import { cn } from '@/utils/cn';
-import PATHS from '@/utils/paths';
-import { useRouter } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { MyForm } from '@/components/atoms/my-form';
+import React, { useEffect, useState } from 'react';
 import { ordersAdventuresService } from '@/services/api/orders';
-import { toast } from 'react-toastify';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { users } from '@/services/api/users';
-import { AxiosError } from 'axios';
-import MySpinner from '@/components/atoms/my-spinner';
+import { useCart } from '@/store/useCart';
+import { useRouter } from 'next/navigation';
 import { useFinishPayment } from '@/store/useFinishPayment';
+import PATHS from '@/utils/paths';
+import { useQueryClient, useQuery } from '@tanstack/react-query';
+import { AxiosError } from 'axios';
+import { toast } from 'react-toastify';
 import ModalAlert from '@/components/molecules/modal-alert';
-import { formatCpfCnpj, formatPhoneNumber } from '@/utils/formatters';
 
 const formSchema = z.object({
   paymentMethod: z.string().optional(),
   installmentCount: z.string().optional(),
+
   creditCard: z
     .object({
       holderName: z.string().trim().optional(),
@@ -38,11 +37,27 @@ const formSchema = z.object({
       ccv: z.string().optional(),
     })
     .optional(),
+
   creditCardHolderInfo: z
     .object({
       name: z.string().trim(),
       email: z.string().email().trim(),
-      cpfCnpj: z.string(),
+      cpfCnpj: z
+        .string({
+          required_error: 'CPF/CNPJ é obrigatório.',
+        })
+        .refine((doc) => {
+          const replacedDoc = doc.replace(/\D/g, '');
+          return replacedDoc.length >= 11;
+        }, 'CPF/CNPJ deve conter no mínimo 11 caracteres.')
+        .refine((doc) => {
+          const replacedDoc = doc.replace(/\D/g, '');
+          return replacedDoc.length <= 14;
+        }, 'CPF/CNPJ deve conter no máximo 14 caracteres.')
+        .refine((doc) => {
+          const replacedDoc = doc.replace(/\D/g, '');
+          return !!Number(replacedDoc);
+        }, 'CPF/CNPJ deve conter apenas números.'),
       postalCode: z.string(),
       addressNumber: z.string().optional(),
       addressComplement: z.string().nullable().optional(),
@@ -50,6 +65,7 @@ const formSchema = z.object({
       mobilePhone: z.string(),
     })
     .optional(),
+
   adventures: z
     .array(
       z.object({
@@ -87,12 +103,11 @@ const paymentDefaultValues = {
 
 export type FormData = z.infer<typeof formSchema>;
 
-export default function FinalizarCompra() {
-  const router = useRouter();
+const PagamentoMobile = () => {
   const [selectedPayment, setSelectedPayment] = useState<string>('PIX');
   const [isLoading, setIsLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isReadyToPay, setIsReadyToPay] = useState(false);
+  const router = useRouter();
   const { addToPaymentStore } = useFinishPayment();
   const queryClient = useQueryClient();
 
@@ -140,7 +155,7 @@ export default function FinalizarCompra() {
       if (purchaseOrder && purchaseOrder.length > 1) {
         setIsModalOpen(true);
       }
-      return;
+      return true;
     },
   });
 
@@ -179,8 +194,8 @@ export default function FinalizarCompra() {
           name: loggedUser.name,
           email: loggedUser.email,
           phone: loggedUser.phone,
-          cpfCnpj: formatCpfCnpj(loggedUser.cpf),
-          mobilePhone: formatPhoneNumber(loggedUser.phone),
+          cpfCnpj: loggedUser.cpf,
+          mobilePhone: loggedUser.phone,
         },
         adventures: purchaseOrder,
       });
@@ -205,10 +220,6 @@ export default function FinalizarCompra() {
           .replaceAll(' ', ''),
         postalCode: formData.creditCardHolderInfo?.postalCode.replaceAll(
           '.',
-          ''
-        ),
-        mobilePhone: formData.creditCardHolderInfo?.mobilePhone?.replace(
-          /\D/g,
           ''
         ),
       },
@@ -280,171 +291,93 @@ export default function FinalizarCompra() {
   };
 
   return (
-    <section className="px-4 mb-8">
-      <div className="flex gap-4 items-center max-sm:hidden">
-        <MyIcon
-          name="voltar-black"
-          className="-ml-2 cursor-pointer"
-          onClick={() => router.back()}
-        />
-        <MyTypography variant="subtitle1" weight="bold" className="">
-          Finalizar Pedido
-        </MyTypography>
-      </div>
+    <div className="md:my-16">
+      <MyTypography
+        variant="subtitle2"
+        weight="bold"
+        className="mb-4 hidden md:block"
+      >
+        Informações de pagamento
+      </MyTypography>
 
-      <div className="flex gap-4 items-center md:hidden">
-        <MyIcon
-          name="voltar-black"
-          className=""
-          onClick={() => router.back()}
-        />
-        <MyTypography variant="subtitle1" weight="bold" className="">
-          Pagamento de atividades
-        </MyTypography>
-      </div>
-
-      <div className="max-sm:hidden md:flex md:flex-col md:gap-2">
-        {userCart &&
-          (userCart.cart.length > 0 ? (
-            <ActivitiesOrderSummary activities={userCart?.cart ?? []} />
-          ) : (
-            <div className="flex justify-center w-full my-20">
-              <MyTypography weight="bold" variant="heading3">
-                Seu carrinho está vazio
-              </MyTypography>
-            </div>
-          ))}
-
-        <div className="col-span-2 space-y-16">
-          <div className="flex gap-4 items-center end">
-            <MyButton
-              variant="outline-neutral"
-              borderRadius="squared"
-              size="lg"
-              className="w-full font-bold text-[1rem]"
-              leftIcon={<MyIcon name="add" />}
-              onClick={() => router.push(PATHS.atividades)}
-            >
-              {userCart && userCart.cart.length > 0
-                ? 'Adicionar mais atividades'
-                : 'Adicionar atividades'}
-            </MyButton>
-
-            <MyButton
-              variant="default"
-              borderRadius="squared"
-              size="lg"
-              className="md:hidden w-full max-sm:mt-6"
-              onClick={() => router.push(PATHS['finalizar-compra'])}
-            >
-              Finalizar Pedido
-            </MyButton>
-
-            {userCart && userCart.cart.length > 0 && (
-              <MyButton
-                variant="default"
-                borderRadius="squared"
-                size="lg"
-                className="max-sm:hidden w-full max-sm:mt-6"
-                onClick={() => setIsReadyToPay((prev) => !prev)}
-              >
-                Ir para o pagamento
-              </MyButton>
-            )}
+      <MyForm {...form}>
+        <form
+          onSubmit={form.handleSubmit(handleSubmit)}
+          className={cn('md:flex md:flex-col md:w-full')}
+        >
+          <PreOrderForm form={form} />
+          <div className="my-4 px-4 md:px-0">
+            <MyTypography variant="subtitle4" weight="bold">
+              Selecione o método de pagamento:
+            </MyTypography>
           </div>
-        </div>
-      </div>
+          <div className={cn('flex flex-col gap-4 mb-4 px-4 md:px-0')}>
+            {payments.map((payment) => (
+              <MyButton
+                key={payment.name}
+                variant="payment"
+                type="button"
+                borderRadius="squared"
+                className={cn(
+                  'flex justify-between p-4 md:max-w-[200px]',
+                  selectedPayment === payment.name &&
+                    'bg-primary-900 opacity-100 border border-primary-600'
+                )}
+                size="lg"
+                value={selectedPayment}
+                rightIcon={<MyIcon name={payment.icon} />}
+                onClick={() => handleSelectPaymentOption(payment.name)}
+              >
+                {payment.label}
+              </MyButton>
+            ))}
+          </div>
 
-      {isReadyToPay && (
-        <div className="md:my-16">
-          <MyTypography
-            variant="subtitle2"
-            weight="bold"
-            className="mb-4 hidden md:block"
-          >
-            Informações de pagamento
-          </MyTypography>
+          {selectedPayment === 'CREDIT_CARD' && (
+            <CardPaymentOption
+              userCart={userCart ? userCart.cart : []}
+              form={form}
+            />
+          )}
 
-          <MyForm {...form}>
-            <form
-              onSubmit={form.handleSubmit(handleSubmit)}
-              className={cn('md:flex md:flex-col md:w-full')}
+          {selectedPayment && (
+            <div
+              className={cn(
+                'mt-6 md:mt-4 col-start-2 px-4',
+                selectedPayment === 'CREDIT_CARD' &&
+                  'md:col-span-2 md:col-start-2'
+              )}
             >
-              <PreOrderForm form={form} />
-              <div className="my-4">
-                <MyTypography variant="subtitle4" weight="bold">
-                  Selecione o método de pagamento:
-                </MyTypography>
-              </div>
-              <div className={cn('flex gap-4 mb-4')}>
-                {payments.map((payment) => (
-                  <MyButton
-                    key={payment.name}
-                    variant="payment"
-                    type="button"
-                    borderRadius="squared"
-                    className={cn(
-                      'flex justify-between md:max-w-[200px]',
-                      selectedPayment === payment.name &&
-                        'bg-primary-900 opacity-100 border border-primary-600'
-                    )}
-                    size="md"
-                    value={selectedPayment}
-                    rightIcon={<MyIcon name={payment.icon} />}
-                    onClick={() => handleSelectPaymentOption(payment.name)}
-                  >
-                    {payment.label}
-                  </MyButton>
-                ))}
-              </div>
+              <MyCheckbox
+                className=""
+                label="Salvar os dados para a próxima compra"
+              />
 
-              {selectedPayment === 'CREDIT_CARD' && (
-                <CardPaymentOption
-                  userCart={userCart ? userCart.cart : []}
-                  form={form}
-                />
-              )}
-
-              {selectedPayment && (
-                <div
-                  className={cn(
-                    'mt-6 md:mt-4 col-start-2',
-                    selectedPayment === 'CREDIT_CARD' &&
-                      'md:col-span-2 md:col-start-2'
-                  )}
+              {isLoading ? (
+                <MyButton
+                  variant="default"
+                  borderRadius="squared"
+                  size="lg"
+                  type="button"
+                  className="my-4 w-full flex justify-center items-center"
                 >
-                  <MyCheckbox
-                    className=""
-                    label="Salvar os dados para a próxima compra"
-                  />
-
-                  {isLoading ? (
-                    <MyButton
-                      variant="default"
-                      borderRadius="squared"
-                      size="lg"
-                      type="button"
-                      className="my-4 w-full flex justify-center items-center"
-                    >
-                      <MySpinner />
-                    </MyButton>
-                  ) : (
-                    <MyButton
-                      variant="default"
-                      borderRadius="squared"
-                      size="lg"
-                      type="submit"
-                      className="my-4 w-full"
-                    >
-                      Finalizar compra
-                    </MyButton>
-                  )}
-                </div>
+                  <MySpinner />
+                </MyButton>
+              ) : (
+                <MyButton
+                  variant="default"
+                  borderRadius="squared"
+                  size="lg"
+                  type="submit"
+                  className="my-4 w-full"
+                >
+                  Finalizar compra
+                </MyButton>
               )}
-            </form>
-          </MyForm>
-        </div>
-      )}
+            </div>
+          )}
+        </form>
+      </MyForm>
       <ModalAlert
         open={isModalOpen}
         onClose={handleModal}
@@ -453,6 +386,8 @@ export default function FinalizarCompra() {
         descrition="Não será aceito parcelamento para pagamento de mais de uma atividade."
         iconName="atention"
       />
-    </section>
+    </div>
   );
-}
+};
+
+export default PagamentoMobile;

@@ -91,9 +91,21 @@ export default function Cadastro() {
 
   const handleSubmit = async (formData: FormData) => {
     const { name, email, phone, cpf, password } = formData;
+    const formattedPhone = phone.replace(/\D/g, '');
+    const formattedCpfCnpJ = cpf
+      .replaceAll('-', '')
+      .replaceAll('/', '')
+      .replaceAll('.', '')
+      .replaceAll(' ', '');
     setIsLoading(true);
     try {
-      await users.registerCustomer({ name, email, phone, cpf, password });
+      await users.registerCustomer({
+        name,
+        email,
+        phone: formattedPhone,
+        cpf: formattedCpfCnpJ,
+        password,
+      });
 
       form.reset();
       toast.success('Cadastro feito com sucesso!');
@@ -151,11 +163,18 @@ export default function Cadastro() {
           <MyFormInput
             form={form}
             name="phone"
-            label="Telefone/Celular:"
+            label="Celular:"
+            isPhoneNumber
             placeholder="b2adventure@gmail.com"
             className="mb-4"
           />
-          <MyFormInput form={form} name="cpf" label="CPF" className="mb-6" />
+          <MyFormInput
+            isCpfCnpj
+            form={form}
+            name="cpf"
+            label="CPF/CNPJ"
+            className="mb-6"
+          />
 
           <MyFormInput
             form={form}

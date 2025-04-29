@@ -2,13 +2,16 @@ import React, { useState } from 'react';
 import MyTypography from '../atoms/my-typography';
 import TimePickerModal from '../molecules/time-picker';
 import PeopleSelector from './people-selector';
-import { ClientSchedule } from '@/services/api/adventures';
+import { Adventure, ClientSchedule } from '@/services/api/adventures';
 import { useQuery } from '@tanstack/react-query';
 import { MyActivityDatePicker } from '../molecules/my-activity-date-picker';
 import {
+  addPartnerScheduledTimeToSelectedDateTime,
   agruparRecorrencias,
+  getPartnerAvailableSchedules,
   getWeeklyRecurrenceTime,
 } from '@/utils/formatters';
+import { parseISO } from 'date-fns';
 
 export type Recurrence = {
   adventureId: number;
@@ -32,31 +35,41 @@ export type GroupedRecurrences = {
 };
 
 type ActivityDatePickerProps = {
+  activity: Adventure | undefined;
   schedule: ClientSchedule;
   setSchedule: React.Dispatch<React.SetStateAction<ClientSchedule>>;
-  price: {
-    adult: string | undefined;
-    children: string | undefined;
-  };
-  isChildrenAllowed: boolean;
-  activityRecurrence: Recurrence[];
 };
 
 const ActivityDatePicker = ({
+  activity,
   schedule,
   setSchedule,
-  price,
-  isChildrenAllowed,
-  activityRecurrence = [],
 }: ActivityDatePickerProps) => {
   const [selectedDate, setSelectedDate] = useState<Date>();
   const [selectedTime, setSelectedTime] = useState('');
+
+  const price = {
+    adult: activity?.priceAdult,
+    children: activity?.priceChildren,
+  };
+
+  const isChildrenAllowed = activity?.isChildrenAllowed ?? false;
+
+  const activityRecurrence = activity?.recurrence ?? [];
 
   const groupedRecurrences = agruparRecorrencias(activityRecurrence);
 
   const selectedDateTimes = getWeeklyRecurrenceTime(
     selectedDate,
     groupedRecurrences
+  );
+
+  const availablePartnerSchedules = getPartnerAvailableSchedules(activity);
+
+  const AddToSelectedDateTimes = addPartnerScheduledTimeToSelectedDateTime(
+    selectedDate,
+    selectedDateTimes,
+    availablePartnerSchedules
   );
 
   useQuery({
@@ -85,9 +98,10 @@ const ActivityDatePicker = ({
               selectedDate={selectedDate}
               setSelectedDates={setSelectedDate}
               activityRecurrences={activityRecurrence}
+              partnerSchedules={availablePartnerSchedules}
             />
             <TimePickerModal
-              availableActivityTimes={selectedDateTimes}
+              availableActivityTimes={AddToSelectedDateTimes}
               selectedTime={selectedTime}
               setSelectedTime={setSelectedTime}
             />

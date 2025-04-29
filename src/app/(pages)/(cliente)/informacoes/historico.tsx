@@ -10,6 +10,7 @@ import MyTypography from '@/components/atoms/my-typography';
 import ActivitiesFilter from '@/components/organisms/activities-filter';
 import ActivitiesHistoric from '@/components/organisms/activities-historic';
 import FullActivitiesHistoric from '@/components/organisms/full-activities-historic';
+import FullActivitiesHistoricMobile from '@/components/organisms/full-activities-historic-mobile';
 import { ordersAdventuresService } from '@/services/api/orders';
 import { useQuery } from '@tanstack/react-query';
 import React from 'react';
@@ -28,11 +29,11 @@ export default function Historico() {
   );
 
   return (
-    <section className="w-full border-2 border-red-500">
+    <section className="w-full">
       <div className="mx-4 space-y-8">
         <div className="md:hidden">{/* <SearchActivity /> */}</div>
         <ActivitiesFilter withoutText />
-        <div className="w-full flex items-center md:hidden">
+        {/* <div className="w-full flex items-center md:hidden">
           <MyTypography
             variant="subtitle1"
             weight="bold"
@@ -45,19 +46,32 @@ export default function Historico() {
               <SelectTrigger className="rounded-2xl text-[#848A9C] text-xs">
                 <SelectValue placeholder="Mensal" />
               </SelectTrigger>
-              <SelectContent className="rounded-lg border-2 border-red-500">
+              <SelectContent className="rounded-lg ">
                 <SelectItem value="Mensal">Mensal</SelectItem>
                 <SelectItem value="Semanal">Semanal</SelectItem>
               </SelectContent>
             </MySelect>
           </div>
-        </div>
-        <div className="md:hidden">
-          <ActivitiesHistoric activities={activities} />
-        </div>
-        <div className="max-sm:hidden">
-          <FullActivitiesHistoric isActivityDone activities={lastAdventures} />
-        </div>
+        </div> */}
+        {lastAdventures && lastAdventures.length > 0 ? (
+          <>
+            <div className="md:hidden">
+              <FullActivitiesHistoricMobile activities={lastAdventures} />
+            </div>
+            <div className="max-sm:hidden">
+              <FullActivitiesHistoric
+                isActivityDone
+                activities={lastAdventures}
+              />
+            </div>
+          </>
+        ) : (
+          <div className="w-full h-[30vh] flex justify-center items-center">
+            <MyTypography variant="subtitle3" weight="bold">
+              Vocễ não possui histórico de atividades
+            </MyTypography>
+          </div>
+        )}
       </div>
     </section>
   );

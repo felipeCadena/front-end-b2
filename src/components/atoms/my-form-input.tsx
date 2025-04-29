@@ -15,6 +15,11 @@ import MyTextInput from './my-text-input';
 
 import { Skeleton } from './my-skeleton';
 import { cn } from '@/utils/cn';
+import {
+  formatCEP,
+  formatCpfCnpj,
+  formatPhoneNumber,
+} from '@/utils/formatters';
 
 type Props<T extends FieldValues> = {
   readonly form: UseFormReturn<T>;
@@ -27,6 +32,9 @@ type Props<T extends FieldValues> = {
   readonly prefix?: string;
   readonly decimalScale?: number;
   readonly label?: string;
+  readonly isCpfCnpj?: boolean;
+  readonly isCEP?: boolean;
+  readonly isPhoneNumber?: boolean;
   readonly placeholder?: string;
   readonly className?: string;
   readonly labelClassname?: string;
@@ -42,6 +50,9 @@ export default function MyFormInput<T extends FieldValues>({
   withMask,
   maskFormat,
   numeric,
+  isCpfCnpj,
+  isCEP,
+  isPhoneNumber,
   suffix,
   prefix,
   decimalScale = 2,
@@ -106,6 +117,26 @@ export default function MyFormInput<T extends FieldValues>({
               <div className="relative">
                 <MyTextInput
                   {...field}
+                  value={field.value}
+                  onChange={(e) => {
+                    const rawValue = e.target.value;
+                    let formattedValue = rawValue;
+
+                    if (isCpfCnpj) {
+                      formattedValue = formatCpfCnpj(rawValue);
+                    } else if (isPhoneNumber) {
+                      formattedValue = formatPhoneNumber(rawValue);
+                    } else if (isCEP) {
+                      formattedValue = formatCEP(rawValue);
+                    }
+
+                    field.onChange({
+                      target: {
+                        name,
+                        value: formattedValue,
+                      },
+                    });
+                  }}
                   type={showPassword ? 'text' : type}
                   placeholder={placeholder}
                   disabled={disabled}
