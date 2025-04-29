@@ -136,7 +136,7 @@ const ActivitiesOrderSummary = ({
                         className="flex items-center"
                       >
                         <MyIcon name="mobileDuracao" />
-                        {adventure.duration}
+                        {adventure?.duration?.slice(0, 1) + ' horas'}
                       </MyTypography>
                     </div>
                   </div>
@@ -157,23 +157,25 @@ const ActivitiesOrderSummary = ({
                       {formatPrice(schedule.pricePerAdult)}
                     </MyTypography>
                   </div>
-                  <div className="flex flex-col">
-                    <MyTypography
-                      variant="label"
-                      weight="bold"
-                      className="ml-3"
-                    >
-                      Quant. de Crianças
-                    </MyTypography>
-                    <MyTypography
-                      variant="body"
-                      weight="regular"
-                      className="ml-3"
-                    >
-                      {schedule.qntChildren} x{' '}
-                      {formatPrice(schedule.pricePerChildren ?? '0')}
-                    </MyTypography>
-                  </div>
+                  {schedule.qntChildren > 0 && (
+                    <div className="flex flex-col">
+                      <MyTypography
+                        variant="label"
+                        weight="bold"
+                        className="ml-3"
+                      >
+                        Quant. de Crianças
+                      </MyTypography>
+                      <MyTypography
+                        variant="body"
+                        weight="regular"
+                        className="ml-3"
+                      >
+                        {schedule.qntChildren} x{' '}
+                        {formatPrice(schedule.pricePerChildren ?? '0')}
+                      </MyTypography>
+                    </div>
+                  )}
 
                   <div className="flex flex-col">
                     <MyTypography

@@ -90,17 +90,17 @@ export function EditarAtividadeTemplate({
           // />
           <></>
         );
-      // case "cancel":
-      //   return (
-      //     <ModalAlert
-      //       open={isModalOpen}
-      //       onClose={handleClose}
-      //       iconName="warning"
-      //       title="Atividade cancelada"
-      //       descrition="A atividade já foi cancelada e em breve seu cliente receberá uma mensagem explicando isso."
-      //       button="Voltar ao início"
-      //     />
-      //   );
+      case 'cancel':
+        return (
+          <ModalAlert
+            open={isModalOpen}
+            onClose={handleClose}
+            iconName="warning"
+            title="Atividade cancelada"
+            descrition="A atividade já foi cancelada e em breve seu cliente receberá uma mensagem explicando isso."
+            button="Voltar ao início"
+          />
+        );
       default:
         return null;
     }
