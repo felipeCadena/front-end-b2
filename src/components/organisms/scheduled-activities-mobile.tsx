@@ -63,8 +63,6 @@ export default function ScheduledActivitiesMobile({
     }
   };
 
-  console.log('ACT --> ', activities);
-
   return (
     <section className="">
       {activities &&

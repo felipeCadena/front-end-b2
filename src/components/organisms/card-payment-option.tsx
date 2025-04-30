@@ -25,8 +25,6 @@ const CardPaymentOption = ({ form, userCart }: CardPaymentOptionProps) => {
   const instamentsAvailable =
     process.env.NEXT_PUBLIC_B2_ENABLED_INSTALLMENT_PAY ?? 1;
 
-  console.log(instamentsAvailable);
-
   const instalmentOptions = formatInstallmentOptions(
     Number(instamentsAvailable),
     totalPrice

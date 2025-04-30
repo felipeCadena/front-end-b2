@@ -1,24 +1,24 @@
-import React from "react";
+import React from 'react';
 
-import Image from "next/image";
-import MyBadge from "../atoms/my-badge";
-import StarRating from "../molecules/my-stars";
-import MyTypography from "../atoms/my-typography";
-import MyIcon from "../atoms/my-icon";
+import Image from 'next/image';
+import MyBadge from '../atoms/my-badge';
+import StarRating from '../molecules/my-stars';
+import MyTypography from '../atoms/my-typography';
+import MyIcon from '../atoms/my-icon';
 import {
   formatPrice,
   formatTime,
   getData,
   handleNameActivity,
   selectActivityImage,
-} from "@/utils/formatters";
-import { useRouter } from "next/navigation";
-import PATHS from "@/utils/paths";
-import { AddToCartAdventure } from "@/services/api/adventures";
-import MyButton from "../atoms/my-button";
-import { useCart } from "@/store/useCart";
-import { useSession } from "next-auth/react";
-import { toast } from "react-toastify";
+} from '@/utils/formatters';
+import { useRouter } from 'next/navigation';
+import PATHS from '@/utils/paths';
+import { AddToCartAdventure } from '@/services/api/adventures';
+import MyButton from '../atoms/my-button';
+import { useCart } from '@/store/useCart';
+import { useSession } from 'next-auth/react';
+import { toast } from 'react-toastify';
 
 type ActivitiesOrderSummaryProps = {
   activities: AddToCartAdventure[];
@@ -31,23 +31,28 @@ const ActivitiesOrderSummary = ({
   const session = useSession();
   const { removeFromCart } = useCart();
 
-  const handleRemoveActivity = (id: number) => {
+  const handleRemoveActivity = (id: string) => {
     const userId = session.data?.user.id;
 
     if (userId) {
       removeFromCart(id, userId);
-      toast.success("Atividade removida do carrinho!");
+      toast.success('Atividade removida do carrinho!');
     } else {
-      toast.error("Token expirado!");
+      toast.error('Token expirado!');
     }
   };
 
   return (
     <section>
       {activities &&
-        activities.map(({ adventure, schedule }, index: number) => (
+        activities.map(({ adventure, schedule, purchaseId }, index: number) => (
           <div className="md:grid md:grid-cols-4 gap-4 mt-8 mb-16" key={index}>
-            <div className="md:col-span-1 relative z-10 overflow-hidden md:min-w-[8rem] md:min-h-full hover:cursor-pointer rounded-md md:flex">
+            <div
+              className="md:col-span-1 relative z-10 overflow-hidden md:min-w-[8rem] md:min-h-full hover:cursor-pointer rounded-md md:flex"
+              onClick={() =>
+                router.push(PATHS.visualizarAtividade(adventure.id))
+              }
+            >
               <Image
                 alt="Imagem Aventura"
                 src={selectActivityImage(adventure)}
@@ -90,7 +95,7 @@ const ActivitiesOrderSummary = ({
                   <MyButton
                     variant="ghost"
                     className="z-10 ml-auto"
-                    onClick={() => handleRemoveActivity(adventure.id)}
+                    onClick={() => handleRemoveActivity(purchaseId)}
                   >
                     <MyIcon name="trash" className="hover:cursor-pointer" />
                   </MyButton>
@@ -121,7 +126,7 @@ const ActivitiesOrderSummary = ({
                       weight="regular"
                       className="ml-3"
                     >
-                      {getData(schedule.scheduleDate?.toString() as string)} -{" "}
+                      {getData(schedule.scheduleDate?.toString() as string)} -{' '}
                       {formatTime(schedule.scheduleTime)}
                     </MyTypography>
                   </div>
@@ -137,7 +142,7 @@ const ActivitiesOrderSummary = ({
                         className="flex items-center"
                       >
                         <MyIcon name="mobileDuracao" />
-                        {adventure?.duration?.slice(0, 1) + " horas"}
+                        {adventure?.duration?.slice(0, 1) + ' horas'}
                       </MyTypography>
                     </div>
                   </div>
@@ -154,7 +159,7 @@ const ActivitiesOrderSummary = ({
                       weight="regular"
                       className="ml-3"
                     >
-                      {schedule.qntAdults} x{" "}
+                      {schedule.qntAdults} x{' '}
                       {formatPrice(schedule.pricePerAdult)}
                     </MyTypography>
                   </div>
@@ -172,8 +177,8 @@ const ActivitiesOrderSummary = ({
                         weight="regular"
                         className="ml-3"
                       >
-                        {schedule.qntChildren} x{" "}
-                        {formatPrice(schedule.pricePerChildren ?? "0")}
+                        {schedule.qntChildren} x{' '}
+                        {formatPrice(schedule.pricePerChildren ?? '0')}
                       </MyTypography>
                     </div>
                   )}

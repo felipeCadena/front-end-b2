@@ -91,7 +91,8 @@ export default function AtividadesTemplate() {
           }))}
         />
       </div>
-      <ShoppingCard items={cartSize} />
+      <ShoppingCard isMobile={false} items={cartSize} />
+      <ShoppingCard isMobile items={cartSize} />
     </section>
   );
 }

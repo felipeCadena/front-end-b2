@@ -11,7 +11,6 @@ import {
   getPartnerAvailableSchedules,
   getWeeklyRecurrenceTime,
 } from '@/utils/formatters';
-import { parseISO } from 'date-fns';
 
 export type Recurrence = {
   adventureId: number;
@@ -56,6 +55,8 @@ const ActivityDatePicker = ({
   const isChildrenAllowed = activity?.isChildrenAllowed ?? false;
 
   const activityRecurrence = activity?.recurrence ?? [];
+
+  console.log('SCH', activity?.schedules);
 
   const groupedRecurrences = agruparRecorrencias(activityRecurrence);
 

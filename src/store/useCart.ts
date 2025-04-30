@@ -10,7 +10,7 @@ export interface UserCart {
 interface CartStore {
   carts: UserCart[];
   addToCart: (adventure: AddToCartAdventure, userId: string) => void;
-  removeFromCart: (id: number, userId: string) => void;
+  removeFromCart: (id: string, userId: string) => void;
   getCartSize: (userId: string) => number;
   clearCart: (userId: string) => void;
 }
@@ -64,7 +64,7 @@ export const useCart = create<CartStore>()(
           const updatedState = [...state.carts];
 
           const filteredCart = updatedState[cartIndex].cart.filter(
-            (adventure) => adventure.adventure.id !== id
+            (adventure) => adventure.purchaseId !== id
           );
 
           updatedState[cartIndex] = {

@@ -56,7 +56,9 @@ export default function FullActivitiesHistoricMobile({
                     >
                       {handleNameActivity(activity?.adventure?.typeAdventure)}
                     </MyBadge>
-                    <StarRating rating={5} />
+                    <StarRating
+                      rating={activity?.adventure.averageRating ?? 0}
+                    />
                   </div>
 
                   <div className="flex gap-2 items-center my-1">

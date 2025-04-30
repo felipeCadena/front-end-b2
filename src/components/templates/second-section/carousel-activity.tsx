@@ -1,13 +1,16 @@
-import MyBadge from "@/components/atoms/my-badge";
-import MyIcon from "@/components/atoms/my-icon";
-import MyTypography from "@/components/atoms/my-typography";
-import StarRating from "@/components/molecules/my-stars";
-import { handleNameActivity, selectActivityImage } from "@/utils/formatters";
-import Image from "next/image";
-import { Adventure } from "@/services/api/adventures";
-import React from "react";
-import PATHS from "@/utils/paths";
-import { useRouter } from "next/navigation";
+import MyBadge from '@/components/atoms/my-badge';
+import MyIcon from '@/components/atoms/my-icon';
+import MyTypography from '@/components/atoms/my-typography';
+import StarRating from '@/components/molecules/my-stars';
+import { handleNameActivity, selectActivityImage } from '@/utils/formatters';
+import Image from 'next/image';
+import { Adventure, adventures } from '@/services/api/adventures';
+import React from 'react';
+import PATHS from '@/utils/paths';
+import { useRouter } from 'next/navigation';
+import MyButton from '@/components/atoms/my-button';
+import favoriteActivity from '@/components/organisms/favorite-activity';
+import { useQueryClient } from '@tanstack/react-query';
 
 type CarouselActitityProps = {
   activity: Adventure;
@@ -24,8 +27,9 @@ const CarouselActivity = ({
   favoriteList,
 }: CarouselActitityProps) => {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const handleActivity = (id: string) => {
-    if (type === "parceiro") {
+    if (type === 'parceiro') {
       return router.push(PATHS.visualizarAtividadeParceiro(id));
     } else {
       router.push(PATHS.visualizarAtividade(id));
@@ -35,32 +39,66 @@ const CarouselActivity = ({
   const isFavorite = favoriteList.some(
     (favorite) => favorite.adventureID === activity.id.toString()
   );
+
+  const handleFavorite = async (id: number) => {
+    const favoriteActivity = favoriteList.find(
+      (activity) => activity.adventureID === id.toString()
+    );
+
+    try {
+      if (!favoriteActivity) {
+        await adventures.addFavorite(id);
+        queryClient.invalidateQueries();
+      } else {
+        await adventures.removeFavorite(
+          id.toString(),
+          favoriteActivity.favoriteID
+        );
+        queryClient.invalidateQueries();
+      }
+    } catch (error) {
+      console.error('Erro ao favoritar');
+    }
+  };
   return (
     <div
       key={activity.id}
-      className="min-w-[85%] w-[25%] md:min-w-[25%] flex flex-col gap-1 cursor-pointer items-start md:mb-8"
-      onClick={() => handleActivity((activity?.id).toString())}
+      className="min-w-[85%] w-[25%] md:min-w-[25%] flex flex-col gap-1 items-start md:mb-8"
     >
       <div className="relative z-10 overflow-hidden h-[225px] w-full md:w-[250px] hover:cursor-pointer rounded-md">
         <Image
           alt="Fotos da atividade"
           src={selectActivityImage(activity)}
           fill
-          className="object-cover"
+          className="object-cover cursor-pointer"
+          onClick={() => handleActivity((activity?.id).toString())}
         />
-        {type !== "parceiro" && isFavorite ? (
-          <MyIcon
-            name="full-heart"
-            variant="circled"
-            className="absolute top-3 right-3"
-          />
-        ) : (
-          type !== "parceiro" && (
+        {type !== 'parceiro' && isFavorite ? (
+          <MyButton variant="ghost" className="z-20 border-2 border-red-500">
             <MyIcon
-              name="black-heart"
+              name="full-heart"
               variant="circled"
               className="absolute top-3 right-3"
+              onClick={() => {
+                handleFavorite(activity.id);
+              }}
             />
+          </MyButton>
+        ) : (
+          type !== 'parceiro' && (
+            <MyButton
+              variant="ghost"
+              className="z-20"
+              onClick={() => {
+                handleFavorite(activity.id);
+              }}
+            >
+              <MyIcon
+                name="black-heart"
+                variant="circled"
+                className="absolute top-3 right-3"
+              />
+            </MyButton>
           )
         )}
       </div>
@@ -73,7 +111,7 @@ const CarouselActivity = ({
       <div className="flex gap-2 items-center mt-1">
         <Image
           alt="foto parceiro"
-          src={activity?.partner?.logo?.url ?? "/user.png"}
+          src={activity?.partner?.logo?.url ?? '/user.png'}
           width={40}
           height={40}
           className="rounded-full object-cover w-8 h-8"
@@ -86,20 +124,25 @@ const CarouselActivity = ({
           {activity?.partner?.fantasyName}
         </MyTypography>
       </div>
-      <MyTypography variant="subtitle1" weight="bold">
-        {activity?.title}
-      </MyTypography>
-      <MyTypography variant="body-big" className="md:pr-4">
-        {activity?.description.slice(0, 105).concat("...")}
-        <MyTypography
-          variant="body-big"
-          weight="bold"
-          lightness={500}
-          className="inline cursor-pointer"
-        >
-          Saiba Mais
+      <div
+        className="cursor-pointer"
+        onClick={() => handleActivity((activity?.id).toString())}
+      >
+        <MyTypography variant="subtitle1" weight="bold">
+          {activity?.title}
         </MyTypography>
-      </MyTypography>
+        <MyTypography variant="body-big" className="md:pr-4">
+          {activity?.description.slice(0, 105).concat('...')}
+          <MyTypography
+            variant="body-big"
+            weight="bold"
+            lightness={500}
+            className="inline cursor-pointer"
+          >
+            Saiba Mais
+          </MyTypography>
+        </MyTypography>
+      </div>
     </div>
   );
 };

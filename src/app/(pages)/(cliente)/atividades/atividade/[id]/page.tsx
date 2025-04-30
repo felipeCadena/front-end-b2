@@ -1,44 +1,45 @@
-"use client";
+'use client';
 
-import MyIcon from "@/components/atoms/my-icon";
-import MyTypography from "@/components/atoms/my-typography";
-import CarouselImages from "@/components/organisms/carousel-images";
-import { useParams, useRouter } from "next/navigation";
-import React, { useState } from "react";
-import { album } from "@/common/constants/mock";
-import MyBadge from "@/components/atoms/my-badge";
-import StarRating from "@/components/molecules/my-stars";
-import Image from "next/image";
-import MyButton from "@/components/atoms/my-button";
-import PATHS from "@/utils/paths";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import MyIcon from '@/components/atoms/my-icon';
+import MyTypography from '@/components/atoms/my-typography';
+import CarouselImages from '@/components/organisms/carousel-images';
+import { useParams, useRouter } from 'next/navigation';
+import React, { useState } from 'react';
+import { album } from '@/common/constants/mock';
+import MyBadge from '@/components/atoms/my-badge';
+import StarRating from '@/components/molecules/my-stars';
+import Image from 'next/image';
+import MyButton from '@/components/atoms/my-button';
+import PATHS from '@/utils/paths';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   Adventure,
   adventures,
   ClientSchedule,
-} from "@/services/api/adventures";
+} from '@/services/api/adventures';
 import {
   formatAddress,
   handleActivityImages,
   handleNameActivity,
-} from "@/utils/formatters";
-import { useCart } from "@/store/useCart";
-import { toast } from "react-toastify";
-import { useSession } from "next-auth/react";
-import ActivityCancelationPolicy from "@/components/organisms/activity-cancelation-policy";
-import ActivityDatePicker from "@/components/organisms/activity-date-picker";
-import ActivityIncludedItems from "@/components/organisms/activity-included-items";
-import ActivityTags from "@/components/organisms/actitity-tags";
-import ActivityHeader from "@/components/organisms/activity-header";
+} from '@/utils/formatters';
+import { useCart } from '@/store/useCart';
+import { toast } from 'react-toastify';
+import { useSession } from 'next-auth/react';
+import ActivityCancelationPolicy from '@/components/organisms/activity-cancelation-policy';
+import ActivityDatePicker from '@/components/organisms/activity-date-picker';
+import ActivityIncludedItems from '@/components/organisms/activity-included-items';
+import ActivityTags from '@/components/organisms/actitity-tags';
+import ActivityHeader from '@/components/organisms/activity-header';
+import { v4 as uuidv4 } from 'uuid';
 
 const initialScheduleState = {
   qntAdults: 0,
   qntChildren: 0,
   qntBabies: 0,
   scheduleDate: new Date(),
-  scheduleTime: "",
-  pricePerAdult: "",
-  pricePerChildren: "",
+  scheduleTime: '',
+  pricePerAdult: '',
+  pricePerChildren: '',
 };
 
 export default function Atividade() {
@@ -53,11 +54,9 @@ export default function Atividade() {
   const userId = session.data?.user.id;
 
   const { data: fetchedActivity } = useQuery({
-    queryKey: ["this_activity"],
+    queryKey: ['this_activity'],
     queryFn: () => adventures.getAdventureById(Number(id)),
   });
-
-  console.log("ACT", fetchedActivity);
 
   const price = {
     adult: fetchedActivity?.priceAdult,
@@ -65,7 +64,7 @@ export default function Atividade() {
   };
 
   const { data: favorites = [] } = useQuery({
-    queryKey: ["favorites"],
+    queryKey: ['favorites'],
     queryFn: async () => {
       const response = await adventures.listFavorites();
       const isFavorite = response.some(
@@ -96,12 +95,12 @@ export default function Atividade() {
         setFavorite((prev) => !prev);
       }
     } catch (error) {
-      console.error("Erro ao favoritar");
+      console.error('Erro ao favoritar');
     }
   };
 
   const parsedItems: string[] = JSON.parse(
-    `${fetchedActivity?.itemsIncluded ?? "[]"}`
+    `${fetchedActivity?.itemsIncluded ?? '[]'}`
   );
 
   const { addToCart } = useCart();
@@ -109,6 +108,7 @@ export default function Atividade() {
   const handleOrder = () => {
     if (fetchedActivity) {
       const adventureOrder = {
+        purchaseId: uuidv4(),
         adventure: fetchedActivity,
         schedule: {
           ...schedule,
@@ -118,8 +118,8 @@ export default function Atividade() {
       };
       if (userId) {
         addToCart(adventureOrder, userId);
-        router.push(PATHS["finalizar-compra"]);
-        toast.success("Atividade adicionada ao carrinho!");
+        router.push(PATHS['finalizar-compra']);
+        toast.success('Atividade adicionada ao carrinho!');
       }
     }
   };
@@ -127,6 +127,7 @@ export default function Atividade() {
   const handleMobileOrder = () => {
     if (fetchedActivity) {
       const adventureOrder = {
+        purchaseId: uuidv4(),
         adventure: fetchedActivity,
         schedule: {
           ...schedule,
@@ -136,8 +137,8 @@ export default function Atividade() {
       };
       if (userId) {
         addToCart(adventureOrder, userId);
-        router.push(PATHS["carrinho"]);
-        toast.success("Atividade adicionada ao carrinho!");
+        router.push(PATHS['carrinho']);
+        toast.success('Atividade adicionada ao carrinho!');
       }
     }
   };
@@ -145,10 +146,10 @@ export default function Atividade() {
   const images = handleActivityImages(fetchedActivity);
 
   const address = {
-    addressState: fetchedActivity?.addressState ?? "",
-    addressCity: fetchedActivity?.addressCity ?? "",
-    addressNeighborhood: fetchedActivity?.addressNeighborhood ?? "",
-    addressStreet: fetchedActivity?.addressStreet ?? "",
+    addressState: fetchedActivity?.addressState ?? '',
+    addressCity: fetchedActivity?.addressCity ?? '',
+    addressNeighborhood: fetchedActivity?.addressNeighborhood ?? '',
+    addressStreet: fetchedActivity?.addressStreet ?? '',
     addressNumber: fetchedActivity?.addressNumber,
     addressComplement: fetchedActivity?.addressComplement,
     addressPostalCode: fetchedActivity?.addressPostalCode,
@@ -176,7 +177,7 @@ export default function Atividade() {
               alt="album"
               width={300}
               height={300}
-              className={`h-full w-full rounded-lg object-cover ${index === 0 ? "col-span-2 row-span-2 h-full" : ""}`}
+              className={`h-full w-full rounded-lg object-cover ${index === 0 ? 'col-span-2 row-span-2 h-full' : ''}`}
             />
           ))}
         </div>
@@ -196,7 +197,7 @@ export default function Atividade() {
           onClick={handleFavorite}
         >
           <MyIcon
-            name={favorite ? "full-heart" : "black-heart"}
+            name={favorite ? 'full-heart' : 'black-heart'}
             className="z-999"
           />
         </div>
@@ -216,7 +217,7 @@ export default function Atividade() {
         <div className="mx-6 flex items-center gap-2 md:hidden">
           <Image
             alt="avatar"
-            src={fetchedActivity?.partner?.logo?.url ?? "/user.png"}
+            src={fetchedActivity?.partner?.logo?.url ?? '/user.png'}
             width={6}
             height={6}
             className="w-10 h-10 rounded-full object-cover"
