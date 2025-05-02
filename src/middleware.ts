@@ -4,8 +4,16 @@ import { getToken } from "next-auth/jwt";
 import { PATHS_CONFIG } from "./utils/paths";
 
 // Verifica se a rota começa com alguma das listadas
-const isPathMatch = (path: string, list: string[]) =>
-  list.some((p) => path === p || path.startsWith(p));
+const isPathMatch = (path: string, publicPaths: string[]) => {
+  return publicPaths.some((publicPath) => {
+    if (publicPath.includes("*")) {
+      // Remove o '*' e compara se o path começa com isso
+      const basePath = publicPath.replace("*", "");
+      return path.startsWith(basePath);
+    }
+    return path === publicPath;
+  });
+};
 
 export async function middleware(req: NextRequest) {
   const token = await getToken({ req });
@@ -20,11 +28,15 @@ export async function middleware(req: NextRequest) {
   // Se for pública, libera
   if (isPublic) return NextResponse.next();
 
-  console.log(token);
+  console.log("isPublic", isPublic);
+  console.log("pathname", pathname);
 
   // Se não tiver token, redireciona
   if (!token) {
-    return NextResponse.redirect(new URL("/", req.url));
+    const redirectUrl = req.nextUrl.clone();
+    redirectUrl.pathname = "/";
+
+    return NextResponse.redirect(redirectUrl);
   }
 
   const role = token.role;
@@ -35,7 +47,10 @@ export async function middleware(req: NextRequest) {
     (isPartner && role !== "partner") ||
     (isCustomer && role !== "customer")
   ) {
-    return NextResponse.redirect(new URL("/", req.url));
+    const redirectUrl = req.nextUrl.clone();
+    redirectUrl.pathname = "/";
+
+    return NextResponse.redirect(redirectUrl);
   }
 
   // Libera se passou por tudo
@@ -45,6 +60,6 @@ export async function middleware(req: NextRequest) {
 export const config = {
   matcher: [
     // Ignora rotas internas do Next, imagens públicas, favicons, fontes, etc
-    "/((?!api|_next/static|_next/image|favicon.ico|images|logo.png|logo-web.png|fonts|assets).*)",
+    "/((?!api|_next/static|_next/image|favicon.ico|images|user.png|logo.png|logo-web.png|fonts|assets).*)",
   ],
 };

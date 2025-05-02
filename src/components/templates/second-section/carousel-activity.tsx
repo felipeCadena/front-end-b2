@@ -1,16 +1,18 @@
-import MyBadge from '@/components/atoms/my-badge';
-import MyIcon from '@/components/atoms/my-icon';
-import MyTypography from '@/components/atoms/my-typography';
-import StarRating from '@/components/molecules/my-stars';
-import { handleNameActivity, selectActivityImage } from '@/utils/formatters';
-import Image from 'next/image';
-import { Adventure, adventures } from '@/services/api/adventures';
-import React from 'react';
-import PATHS from '@/utils/paths';
-import { useRouter } from 'next/navigation';
-import MyButton from '@/components/atoms/my-button';
-import favoriteActivity from '@/components/organisms/favorite-activity';
-import { useQueryClient } from '@tanstack/react-query';
+import MyBadge from "@/components/atoms/my-badge";
+import MyIcon from "@/components/atoms/my-icon";
+import MyTypography from "@/components/atoms/my-typography";
+import StarRating from "@/components/molecules/my-stars";
+import { handleNameActivity, selectActivityImage } from "@/utils/formatters";
+import Image from "next/image";
+import { Adventure, adventures } from "@/services/api/adventures";
+import React, { use } from "react";
+import PATHS from "@/utils/paths";
+import { useRouter } from "next/navigation";
+import MyButton from "@/components/atoms/my-button";
+import favoriteActivity from "@/components/organisms/favorite-activity";
+import { useQueryClient } from "@tanstack/react-query";
+import { useSession } from "next-auth/react";
+import { toast } from "react-toastify";
 
 type CarouselActitityProps = {
   activity: Adventure;
@@ -28,8 +30,9 @@ const CarouselActivity = ({
 }: CarouselActitityProps) => {
   const router = useRouter();
   const queryClient = useQueryClient();
+  const { data: session } = useSession();
   const handleActivity = (id: string) => {
-    if (type === 'parceiro') {
+    if (type === "parceiro") {
       return router.push(PATHS.visualizarAtividadeParceiro(id));
     } else {
       router.push(PATHS.visualizarAtividade(id));
@@ -41,6 +44,11 @@ const CarouselActivity = ({
   );
 
   const handleFavorite = async (id: number) => {
+    if (!session?.user) {
+      toast.error("Você precisa estar logado para favoritar uma atividade");
+      router.push(PATHS.login);
+      return;
+    }
     const favoriteActivity = favoriteList.find(
       (activity) => activity.adventureID === id.toString()
     );
@@ -57,7 +65,7 @@ const CarouselActivity = ({
         queryClient.invalidateQueries();
       }
     } catch (error) {
-      console.error('Erro ao favoritar');
+      console.error("Erro ao favoritar");
     }
   };
   return (
@@ -73,7 +81,7 @@ const CarouselActivity = ({
           className="object-cover cursor-pointer"
           onClick={() => handleActivity((activity?.id).toString())}
         />
-        {type !== 'parceiro' && isFavorite ? (
+        {type !== "parceiro" && isFavorite ? (
           <MyButton variant="ghost" className="z-20 border-2 border-red-500">
             <MyIcon
               name="full-heart"
@@ -85,7 +93,7 @@ const CarouselActivity = ({
             />
           </MyButton>
         ) : (
-          type !== 'parceiro' && (
+          type !== "parceiro" && (
             <MyButton
               variant="ghost"
               className="z-20"
@@ -111,7 +119,7 @@ const CarouselActivity = ({
       <div className="flex gap-2 items-center mt-1">
         <Image
           alt="foto parceiro"
-          src={activity?.partner?.logo?.url ?? '/user.png'}
+          src={activity?.partner?.logo?.url ?? "/user.png"}
           width={40}
           height={40}
           className="rounded-full object-cover w-8 h-8"
@@ -132,7 +140,7 @@ const CarouselActivity = ({
           {activity?.title}
         </MyTypography>
         <MyTypography variant="body-big" className="md:pr-4">
-          {activity?.description.slice(0, 105).concat('...')}
+          {activity?.description.slice(0, 105).concat("...")}
           <MyTypography
             variant="body-big"
             weight="bold"

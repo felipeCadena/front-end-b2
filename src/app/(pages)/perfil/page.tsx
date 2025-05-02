@@ -1,26 +1,26 @@
-'use client';
+"use client";
 
-import MyIcon from '@/components/atoms/my-icon';
-import MyTextInput from '@/components/atoms/my-text-input';
-import MyTypography from '@/components/atoms/my-typography';
-import Image from 'next/image';
-import { useRouter } from 'next/navigation';
-import React, { useEffect } from 'react';
-import MyButton from '@/components/atoms/my-button';
-import { users } from '@/services/api/users';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { Dropzone } from '@/components/molecules/drop-zone';
-import Camera from '@/components/atoms/my-icon/elements/camera';
-import { useAuthStore } from '@/store/useAuthStore';
-import { toast } from 'react-toastify';
-import { MyForm } from '@/components/atoms/my-form';
-import MyFormInput from '@/components/atoms/my-form-input';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { AxiosError } from 'axios';
-import MySpinner from '@/components/atoms/my-spinner';
-import Loading from '@/app/loading';
+import MyIcon from "@/components/atoms/my-icon";
+import MyTextInput from "@/components/atoms/my-text-input";
+import MyTypography from "@/components/atoms/my-typography";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import React, { useEffect } from "react";
+import MyButton from "@/components/atoms/my-button";
+import { users } from "@/services/api/users";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { Dropzone } from "@/components/molecules/drop-zone";
+import Camera from "@/components/atoms/my-icon/elements/camera";
+import { useAuthStore } from "@/store/useAuthStore";
+import { toast } from "react-toastify";
+import { MyForm } from "@/components/atoms/my-form";
+import MyFormInput from "@/components/atoms/my-form-input";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { AxiosError } from "axios";
+import MySpinner from "@/components/atoms/my-spinner";
+import Loading from "@/app/loading";
 
 const formSchema = z
   .object({
@@ -29,22 +29,22 @@ const formSchema = z
         ctx.addIssue({
           code: z.ZodIssueCode.too_small,
           minimum: 6,
-          type: 'string',
+          type: "string",
           inclusive: true,
-          message: 'A senha deve ter no mínimo 6 caracteres.',
+          message: "A senha deve ter no mínimo 6 caracteres.",
         });
       }
       if (!/[A-Z]/.test(value)) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
-          message: 'A senha deve conter pelo menos uma letra maiúscula.',
+          message: "A senha deve conter pelo menos uma letra maiúscula.",
         });
       }
       if (!/[\W_]/.test(value)) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           message:
-            'A senha deve conter pelo menos um caractere especial e um número.',
+            "A senha deve conter pelo menos um caractere especial e um número.",
         });
       }
     }),
@@ -53,9 +53,9 @@ const formSchema = z
   .superRefine((data, ctx) => {
     if (data.password !== data.confirmPassword) {
       ctx.addIssue({
-        code: 'custom',
-        message: 'As senhas não coincidem',
-        path: ['confirmPassword'],
+        code: "custom",
+        message: "As senhas não coincidem",
+        path: ["confirmPassword"],
       });
     }
   });
@@ -68,41 +68,41 @@ export default function Perfil() {
   const [file, setFile] = React.useState<File[] | null>(null);
   const inputRef = React.useRef<HTMLInputElement>(null);
   const queryClient = useQueryClient();
-  const { setUser } = useAuthStore();
+  const { setUser, user } = useAuthStore();
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
-    mode: 'onChange',
-    criteriaMode: 'all',
+    mode: "onChange",
+    criteriaMode: "all",
     defaultValues: {
-      password: '',
-      confirmPassword: '',
+      password: "",
+      confirmPassword: "",
     },
   });
 
-  const { data: user, isLoading: loadingPage } = useQuery({
-    queryKey: ['user'],
+  const { data: fetchUser, isLoading: loadingPage } = useQuery({
+    queryKey: ["fetchUser"],
     queryFn: () => users.getUserLogged(),
   });
 
-  console.log('USER', user);
+  console.log("USER", fetchUser);
 
-  const [profile, setProfile] = React.useState({
-    email: '',
-    name: '',
-    image: '',
-  });
+  // const [profile, setProfile] = React.useState({
+  //   email: '',
+  //   name: '',
+  //   image: '',
+  // });
   const handleClickUpload = () => {
     inputRef.current?.click();
   };
 
-  useEffect(() => {
-    setProfile({
-      email: user?.email ?? '',
-      name: user?.name ?? '',
-      image: user?.photo?.url ?? '/user.png',
-    });
-  }, [user]);
+  // useEffect(() => {
+  //   setProfile({
+  //     email: user?.email ?? '',
+  //     name: user?.name ?? '',
+  //     image: user?.photo?.url ?? '/user.png',
+  //   });
+  // }, [user]);
 
   const handleUploadPicture = async (fileList: FileList | null) => {
     if (fileList && fileList.length > 0) {
@@ -117,7 +117,7 @@ export default function Perfil() {
         password: formData.password,
       });
 
-      toast.success('Senha alterada com sucesso!');
+      toast.success("Senha alterada com sucesso!");
     } catch (error) {
       if (error instanceof AxiosError) {
         console.error(error.response?.data.message);
@@ -125,7 +125,7 @@ export default function Perfil() {
     }
 
     setIsLoading(false);
-    queryClient.invalidateQueries({ queryKey: ['user'] });
+    queryClient.invalidateQueries({ queryKey: ["user"] });
   };
 
   useEffect(() => {
@@ -137,9 +137,9 @@ export default function Perfil() {
             mimetype: file[0].type,
             file: new Blob([arrayBuffer]),
           });
-          console.log('useEffect Res', response);
+          console.log("useEffect Res", response);
           if (user?.name && user?.email && user?.role) {
-            console.log('MUDOU');
+            console.log("MUDOU");
             setUser({
               ...user,
               photo: {
@@ -149,18 +149,20 @@ export default function Perfil() {
             });
           }
 
-          toast.success('Imagem alterada com sucesso!');
+          toast.success("Imagem alterada com sucesso!");
           queryClient.invalidateQueries({
-            queryKey: ['user'],
+            queryKey: ["user"],
           });
         } catch (error) {
-          console.error('Erro ao enviar imagem', error);
+          console.error("Erro ao enviar imagem", error);
         }
       }
     };
 
     handleSendPhoto();
   }, [file]);
+
+  const userData = user ?? fetchUser;
 
   return loadingPage ? (
     <div className="w-full h-[30vh] flex justify-center items-center mb-16">
@@ -183,7 +185,7 @@ export default function Perfil() {
           {file ? (
             <Image
               alt="avatar"
-              src={URL.createObjectURL(file[0]) ?? '/user.png'}
+              src={URL.createObjectURL(file[0]) ?? "/user.png"}
               width={28}
               height={28}
               className="w-24 h-24 rounded-full object-cover"
@@ -191,7 +193,7 @@ export default function Perfil() {
           ) : (
             <Image
               alt="avatar"
-              src={user?.photo?.url ?? '/user.png'}
+              src={userData?.photo?.url ?? "/user.png"}
               width={28}
               height={28}
               className="w-24 h-24 rounded-full object-cover"
@@ -213,7 +215,7 @@ export default function Perfil() {
         </Dropzone>
         <div>
           <MyTypography variant="label" weight="semibold">
-            {user?.name}
+            {userData?.name}
           </MyTypography>
           <MyTypography
             variant="label"
@@ -235,13 +237,13 @@ export default function Perfil() {
           label="E-mail"
           placeholder="b2adventure@gmail.com"
           className="mt-2 disabled:cursor-default"
-          value={user?.email}
+          value={userData?.email}
           disabled
         />
         <MyTextInput
           label="Nome Completo"
           placeholder="Nome Completo"
-          value={user?.name}
+          value={userData?.name}
           className="mt-2 disabled:cursor-default"
           disabled
         />
@@ -277,7 +279,7 @@ export default function Perfil() {
               size="lg"
               className="mt-4 px-12 w-[166px]"
             >
-              {isLoading ? <MySpinner /> : 'Atualizar'}
+              {isLoading ? <MySpinner /> : "Atualizar"}
             </MyButton>
           </form>
         </MyForm>

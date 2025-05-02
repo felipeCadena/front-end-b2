@@ -277,11 +277,13 @@ export const partnerService = {
 
   cancelSchedule: async (
     orderScheduleId: string,
-    adventureId: string
-  ): Promise<boolean> => {
+    adventureId: string,
+    justification: string
+  ): Promise<any> => {
     try {
       await api.post(
-        `/schedules/cancel/${orderScheduleId}/adventure/${adventureId}`
+        `/schedules/cancel/${orderScheduleId}/adventure/${adventureId}`,
+        { justificationCancel: justification }
       );
       return true;
     } catch (error) {

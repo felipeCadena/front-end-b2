@@ -1,38 +1,42 @@
-'use client';
+"use client";
 
-import React from 'react';
-import Sidebar from './sidebar';
-import MyLogo from '../atoms/my-logo';
-import LanguageDropdown from './language-dropdown';
-import MyIcon from '../atoms/my-icon';
-import { usePathname, useRouter } from 'next/navigation';
-import PATHS from '@/utils/paths';
-import Image from 'next/image';
-import SideBarModal from '../molecules/side-bar-modal';
-import { cn } from '@/utils/cn';
-import { useSession } from 'next-auth/react';
-import useLogin from '@/store/useLogin';
-import { useQuery } from '@tanstack/react-query';
-import { users } from '@/services/api/users';
+import React from "react";
+import Sidebar from "./sidebar";
+import MyLogo from "../atoms/my-logo";
+import LanguageDropdown from "./language-dropdown";
+import MyIcon from "../atoms/my-icon";
+import { usePathname, useRouter } from "next/navigation";
+import PATHS from "@/utils/paths";
+import Image from "next/image";
+import SideBarModal from "../molecules/side-bar-modal";
+import { cn } from "@/utils/cn";
+import { useSession } from "next-auth/react";
+import useLogin from "@/store/useLogin";
+import { useQuery } from "@tanstack/react-query";
+import { users } from "@/services/api/users";
+import { useAuthStore } from "@/store/useAuthStore";
 
 export default function Header() {
   const router = useRouter();
   const pathname = usePathname();
   const { sideBarActive } = useLogin();
+  const { user } = useAuthStore();
   const { data: session } = useSession();
 
-  const { data: user } = useQuery({
-    queryKey: ['user'],
+  const { data: fetchUser } = useQuery({
+    queryKey: ["fetchUser"],
     queryFn: () => users.getUserLogged(),
     enabled: !!session?.user,
   });
 
+  const userData = user ?? fetchUser;
+
   const withoutHeaderMobile = () => {
     return (
-      pathname === PATHS['sobre-a-empresa'] ||
-      pathname === PATHS['cadastro-parceiro'] ||
-      pathname === PATHS['informacoes-atividades'] ||
-      pathname === PATHS['cadastro-atividade']
+      pathname === PATHS["sobre-a-empresa"] ||
+      pathname === PATHS["cadastro-parceiro"] ||
+      pathname === PATHS["informacoes-atividades"] ||
+      pathname === PATHS["cadastro-atividade"]
       // pathname.includes("editar")
     );
   };
@@ -40,13 +44,13 @@ export default function Header() {
   return (
     <header
       className={cn(
-        'top-0 z-50 h-[100px] w-full md:max-w-screen-custom md:mx-auto bg-white flex items-center justify-between px-4 md:px-6 mb-4',
-        withoutHeaderMobile() && 'max-sm:hidden'
+        "top-0 z-50 h-[100px] w-full md:max-w-screen-custom md:mx-auto bg-white flex items-center justify-between px-4 md:px-6 mb-4",
+        withoutHeaderMobile() && "max-sm:hidden"
       )}
     >
       <div
         className="max-sm:hidden cursor-pointer"
-        onClick={() => router.push('/')}
+        onClick={() => router.push("/")}
       >
         <MyLogo variant="web" width={122} height={40} />
       </div>
@@ -77,7 +81,7 @@ export default function Header() {
               <div className="flex items-center gap-1 cursor-pointer">
                 <MyIcon name="chevron-down" />
                 <Image
-                  src={user?.photo?.url ?? '/user.png'}
+                  src={userData?.photo?.url ?? "/user.png"}
                   alt="Avatar"
                   width={50}
                   height={50}

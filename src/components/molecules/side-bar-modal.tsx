@@ -25,10 +25,11 @@ export default function SideBarModal({
   const router = useRouter();
   const handleExit = async (item: any) => {
     if (item === "Sair") {
+      console.log(item);
+      router.push("/");
       await authService.logout(session?.user.refreshToken ?? "");
       await signOut();
       clearUser();
-      router.push("/");
     }
   };
 

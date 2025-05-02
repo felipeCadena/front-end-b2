@@ -10,8 +10,13 @@ import { MyCalendar } from "./my-calendar";
 import { ptBR } from "date-fns/locale/pt-BR";
 import MyTypography from "../atoms/my-typography";
 
-export function OneDay({ withlabel }: { withlabel?: string }) {
-  const [date, setDate] = React.useState<Date>();
+type OneDayProps = {
+  date?: Date;
+  setDate?: React.Dispatch<React.SetStateAction<Date | undefined>>;
+  withlabel?: string;
+};
+
+export function OneDay({ withlabel, date, setDate }: OneDayProps) {
   const [open, setOpen] = React.useState(false);
 
   return (

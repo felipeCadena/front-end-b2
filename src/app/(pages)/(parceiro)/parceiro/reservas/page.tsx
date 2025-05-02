@@ -26,8 +26,13 @@ export default function Reservas() {
   const { handleClose, isModalOpen } = useAlert();
 
   const { data: parterSchedules } = useQuery({
-    queryKey: ["parterSchedules"],
-    queryFn: () => partnerService.getMySchedules({ limit: 50 }),
+    queryKey: ["parterSchedules", date],
+    queryFn: () =>
+      partnerService.getMySchedules({
+        limit: 50,
+        isCanceled: false,
+        qntConfirmedPersons: "> 0",
+      }),
   });
 
   useEffect(() => {
@@ -38,6 +43,17 @@ export default function Reservas() {
       setDates(bookedDates);
     }
   }, [parterSchedules]);
+
+  const selectedScheduleActivities =
+    parterSchedules &&
+    parterSchedules.data?.filter(
+      (act) => act.datetime.slice(0, 10) === date?.toISOString().slice(0, 10)
+    );
+
+  const renderActivities =
+    selectedScheduleActivities && selectedScheduleActivities?.length > 0
+      ? selectedScheduleActivities
+      : parterSchedules?.data;
 
   return (
     <main className="my-6">
@@ -66,7 +82,7 @@ export default function Reservas() {
             Nova atividade
           </MyButton>
 
-          <MyButton
+          {/* <MyButton
             variant="red"
             borderRadius="squared"
             size="md"
@@ -75,7 +91,7 @@ export default function Reservas() {
             className="w-1/4"
           >
             Ocultas
-          </MyButton>
+          </MyButton> */}
         </div>
       </div>
 
@@ -104,7 +120,7 @@ export default function Reservas() {
           Nova Atividade
         </MyButton>
 
-        <MyButton
+        {/* <MyButton
           variant="red"
           borderRadius="squared"
           size="lg"
@@ -113,7 +129,7 @@ export default function Reservas() {
           className="w-1/2"
         >
           Ocultas
-        </MyButton>
+        </MyButton> */}
       </div>
 
       <ModalAlert
@@ -121,7 +137,7 @@ export default function Reservas() {
         onClose={handleClose}
         iconName="warning"
         title="Atividade cancelada"
-        descrition="A atividade já foi cancelada e em breve seu cliente receberá uma mensagem explicando isso."
+        descrition="A atividade foi cancelada."
         button="Voltar ao início"
       />
 
@@ -130,7 +146,7 @@ export default function Reservas() {
       </div>
       <div className="hidden md:block">
         <PartnerActivitiesHistoric
-          activities={parterSchedules?.data}
+          activities={renderActivities}
           withDate
           withOptions
         />

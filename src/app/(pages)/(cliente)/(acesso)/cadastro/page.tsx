@@ -1,58 +1,61 @@
-'use client';
+"use client";
 
-import MyButton from '@/components/atoms/my-button';
-import MyCheckbox from '@/components/atoms/my-checkbox';
-import MyIcon from '@/components/atoms/my-icon';
-import MyTypography from '@/components/atoms/my-typography';
-import PATHS from '@/utils/paths';
-import { useRouter } from 'next/navigation';
-import React from 'react';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { MyForm } from '@/components/atoms/my-form';
-import MyFormInput from '@/components/atoms/my-form-input';
-import { users } from '@/services/api/users';
-import { toast } from 'react-toastify';
-import { AxiosError } from 'axios';
-import MySpinner from '@/components/atoms/my-spinner';
+import MyButton from "@/components/atoms/my-button";
+import MyCheckbox from "@/components/atoms/my-checkbox";
+import MyIcon from "@/components/atoms/my-icon";
+import MyTypography from "@/components/atoms/my-typography";
+import PATHS, { DEFAULT_ROLE_PATHS } from "@/utils/paths";
+import { useRouter } from "next/navigation";
+import React from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { MyForm } from "@/components/atoms/my-form";
+import MyFormInput from "@/components/atoms/my-form-input";
+import { users } from "@/services/api/users";
+import { toast } from "react-toastify";
+import { AxiosError } from "axios";
+import MySpinner from "@/components/atoms/my-spinner";
+import { authService } from "@/services/api/auth";
+import { signIn, useSession } from "next-auth/react";
+import { useAuthStore } from "@/store/useAuthStore";
 
 const formSchema = z
   .object({
     name: z
       .string()
       .trim()
-      .min(3, { message: 'Por favor, forneça seu nome completo.' }),
-    email: z.string().email({ message: 'E-mail inválido.' }),
+      .min(3, { message: "Por favor, forneça seu nome completo." }),
+    email: z.string().email({ message: "E-mail inválido." }),
     phone: z
       .string()
       .trim()
-      .min(8, { message: 'Forneça um número de celular válido.' }),
+      .min(8, { message: "Forneça um número de celular válido." }),
     cpf: z
       .string()
       .trim()
-      .min(11, { message: 'Por favor insira um cpf válido' }),
+      .min(11, { message: "Por favor insira um cpf válido" }),
     password: z.string().superRefine((value, ctx) => {
       if (value.length < 6) {
         ctx.addIssue({
           code: z.ZodIssueCode.too_small,
           minimum: 6,
-          type: 'string',
+          type: "string",
           inclusive: true,
-          message: 'A senha deve ter no mínimo 6 caracteres.',
+          message: "A senha deve ter no mínimo 6 caracteres.",
         });
       }
       if (!/[A-Z]/.test(value)) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
-          message: 'A senha deve conter pelo menos uma letra maiúscula.',
+          message: "A senha deve conter pelo menos uma letra maiúscula.",
         });
       }
       if (!/[\W_]/.test(value)) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           message:
-            'A senha deve conter pelo menos um caractere especial e um número.',
+            "A senha deve conter pelo menos um caractere especial e um número.",
         });
       }
     }),
@@ -61,9 +64,9 @@ const formSchema = z
   .superRefine((data, ctx) => {
     if (data.password !== data.confirmPassword) {
       ctx.addIssue({
-        code: 'custom',
-        message: 'As senhas não coincidem',
-        path: ['confirmPassword'],
+        code: "custom",
+        message: "As senhas não coincidem",
+        path: ["confirmPassword"],
       });
     }
   });
@@ -74,29 +77,31 @@ export default function Cadastro() {
   const router = useRouter();
   const [visibility, setVisibility] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
+  const { data: session, status } = useSession();
+  const { setUser } = useAuthStore();
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
-    mode: 'onChange',
-    criteriaMode: 'all',
+    mode: "onChange",
+    criteriaMode: "all",
     defaultValues: {
-      name: '',
-      email: '',
-      phone: '',
-      cpf: '',
-      password: '',
-      confirmPassword: '',
+      name: "",
+      email: "",
+      phone: "",
+      cpf: "",
+      password: "",
+      confirmPassword: "",
     },
   });
 
   const handleSubmit = async (formData: FormData) => {
     const { name, email, phone, cpf, password } = formData;
-    const formattedPhone = phone.replace(/\D/g, '');
+    const formattedPhone = phone.replace(/\D/g, "");
     const formattedCpfCnpJ = cpf
-      .replaceAll('-', '')
-      .replaceAll('/', '')
-      .replaceAll('.', '')
-      .replaceAll(' ', '');
+      .replaceAll("-", "")
+      .replaceAll("/", "")
+      .replaceAll(".", "")
+      .replaceAll(" ", "");
     setIsLoading(true);
     try {
       await users.registerCustomer({
@@ -108,13 +113,20 @@ export default function Cadastro() {
       });
 
       form.reset();
-      toast.success('Cadastro feito com sucesso!');
+      toast.success("Cadastro feito com sucesso!");
 
-      router.push(PATHS.login);
+      const credentials = {
+        email,
+        password,
+      };
+
+      await signIn("credentials", {
+        ...credentials,
+      });
     } catch (error) {
       if (error instanceof AxiosError) {
         if (error.response?.status === 401) {
-          return toast.error('Email ou senha inválidos');
+          return toast.error("Email ou senha inválidos");
         }
         if (error.response?.status === 500) {
           toast.error(`Um erro inesperado ocorreu. Tente novamente.`);
@@ -126,6 +138,49 @@ export default function Cadastro() {
       setIsLoading(false);
     }
   };
+
+  React.useEffect(() => {
+    const handleSessionUpdate = async () => {
+      if (status === "authenticated" && session?.user?.role) {
+        try {
+          const userData = {
+            id: session.user.id,
+            name: session.user.name ?? "",
+            email: session.user.email ?? "",
+            role: session.user.role.toLowerCase(),
+          };
+
+          setUser({
+            id: session.user.id!, // Garante que id não é undefined
+            name: userData.name,
+            email: userData.email,
+            role: userData.role,
+          });
+
+          const userRole = session.user.role.toLowerCase();
+          const roleMapping = {
+            superadmin: "admin",
+            admin: "admin",
+            partner: "partner",
+            customer: "customer",
+          };
+
+          const mappedRole = roleMapping[userRole as keyof typeof roleMapping];
+          const defaultPath =
+            DEFAULT_ROLE_PATHS[mappedRole as keyof typeof DEFAULT_ROLE_PATHS];
+
+          if (defaultPath) {
+            console.log("Redirecionando para:", defaultPath);
+            router.replace(defaultPath);
+          }
+        } catch (error) {
+          console.error("Erro ao processar sessão:", error);
+        }
+      }
+    };
+
+    handleSessionUpdate();
+  }, [session, status]);
 
   return (
     <MyForm {...form}>
@@ -181,7 +236,7 @@ export default function Cadastro() {
             name="password"
             label="Senha:"
             placeholder="******"
-            type={visibility ? 'text' : 'password'}
+            type={visibility ? "text" : "password"}
             className="mb-4"
           />
 
@@ -190,7 +245,7 @@ export default function Cadastro() {
             name="confirmPassword"
             label="Confirmar Senha:"
             placeholder="******"
-            type={visibility ? 'text' : 'password'}
+            type={visibility ? "text" : "password"}
             className="mb-4"
           />
 
@@ -204,7 +259,7 @@ export default function Cadastro() {
             borderRadius="squared"
             size="md"
           >
-            {isLoading ? <MySpinner /> : 'Cadastrar Conta'}
+            {isLoading ? <MySpinner /> : "Cadastrar Conta"}
           </MyButton>
 
           <div className="flex justify-center items-center text-center mt-4">

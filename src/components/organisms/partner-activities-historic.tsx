@@ -45,6 +45,16 @@ export default function PartnerActivitiesHistoric({
     }
   };
 
+  // if (!activities) {
+  //   return (
+  //     <div className="flex items-center justify-center w-full h-full">
+  //       <MyTypography variant="subtitle3" weight="bold" className="">
+  //         Nenhuma atividade encontrada
+  //       </MyTypography>
+  //     </div>
+  //   );
+  // }
+
   return (
     <section className="md:max-w-screen-custom">
       <ModalClient
@@ -85,7 +95,7 @@ export default function PartnerActivitiesHistoric({
 
             <div className="relative z-10 flex-shrink-0 overflow-hidden w-[265px] h-[265px] hover:cursor-pointer rounded-md">
               <Image
-                alt="sample_file"
+                alt="Imagem da atividade"
                 src={
                   activity?.adventure?.images &&
                   activity?.adventure?.images.length > 0
@@ -114,26 +124,6 @@ export default function PartnerActivitiesHistoric({
                       {handleNameActivity(activity?.adventure?.typeAdventure)}
                     </MyBadge>
                     <StarRating rating={activity?.adventure?.averageRating} />
-
-                    <div className="flex gap-2 items-center">
-                      <Image
-                        alt="foto parceiro"
-                        src={
-                          activity?.adventure?.partner?.logo?.url ?? "/user.png"
-                        }
-                        width={40}
-                        height={40}
-                        className="rounded-full objetc-cover w-8 h-8"
-                      />
-                      <MyTypography
-                        variant="body"
-                        weight="medium"
-                        className="mt-1 text-nowrap"
-                      >
-                        {activity?.adventure?.partner?.fantasyName ??
-                          "John Doe"}
-                      </MyTypography>
-                    </div>
                   </div>
                   <MyTypography variant="subtitle3" weight="bold" className="">
                     {activity?.adventure?.title}
@@ -167,9 +157,7 @@ export default function PartnerActivitiesHistoric({
                       onEditar={() => handleEdit(activity.id)}
                       onOcultar={() => console.log("Ocultar")}
                       onExcluir={() => console.log("Excluir")}
-                      onCustomer={() =>
-                        handleModalCustomers(activity?.scheduleId)
-                      }
+                      onCustomer={() => handleModalCustomers(activity?.id)}
                     />
                   </div>
                 )}

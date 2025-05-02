@@ -1,9 +1,15 @@
+"use client";
+
 import MyButton from "@/components/atoms/my-button";
 import MyTypography from "@/components/atoms/my-typography";
 import CarouselImages from "@/components/organisms/carousel-images";
+import PATHS from "@/utils/paths";
+import { useRouter } from "next/navigation";
 import React from "react";
 
 export default function FirstSection() {
+  const router = useRouter();
+
   const images = [
     { url: "/images/atividades/paraquedas.webp" },
     { url: "/images/atividades/moto.webp" },
@@ -29,6 +35,7 @@ export default function FirstSection() {
           size="md"
           borderRadius="squared"
           className="mt-4 md:absolute md:bottom-24 md:right-12"
+          onClick={() => router.push(PATHS.atividades)}
         >
           Descobrir agora
         </MyButton>

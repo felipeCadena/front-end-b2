@@ -1,20 +1,20 @@
-'use client';
+"use client";
 
-import React, { useEffect } from 'react';
+import React, { useEffect } from "react";
 
-import MyButton from '@/components/atoms/my-button';
-import MyIcon from '@/components/atoms/my-icon';
-import MyLogo from '@/components/atoms/my-logo';
-import MyTextInput from '@/components/atoms/my-text-input';
-import MyTypography from '@/components/atoms/my-typography';
-import PATHS, { DEFAULT_ROLE_PATHS } from '@/utils/paths';
-import { useRouter } from 'next/navigation';
-import { toast } from 'react-toastify';
-import { useAuthStore } from '@/store/useAuthStore';
-import GoogleLoginButton from '@/components/molecules/google-login-button';
-import { signIn, useSession } from 'next-auth/react';
-import FacebookLoginButton from '@/components/molecules/facebook-login-button';
-import useLogin from '@/store/useLogin';
+import MyButton from "@/components/atoms/my-button";
+import MyIcon from "@/components/atoms/my-icon";
+import MyLogo from "@/components/atoms/my-logo";
+import MyTextInput from "@/components/atoms/my-text-input";
+import MyTypography from "@/components/atoms/my-typography";
+import PATHS, { DEFAULT_ROLE_PATHS } from "@/utils/paths";
+import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
+import { useAuthStore } from "@/store/useAuthStore";
+import GoogleLoginButton from "@/components/molecules/google-login-button";
+import { signIn, useSession } from "next-auth/react";
+import FacebookLoginButton from "@/components/molecules/facebook-login-button";
+import useLogin from "@/store/useLogin";
 
 export default function Login() {
   const router = useRouter();
@@ -29,12 +29,12 @@ export default function Login() {
 
   useEffect(() => {
     const handleSessionUpdate = async () => {
-      if (status === 'authenticated' && session?.user?.role) {
+      if (status === "authenticated" && session?.user?.role) {
         try {
           const userData = {
             id: session.user.id,
-            name: session.user.name ?? '',
-            email: session.user.email ?? '',
+            name: session.user.name ?? "",
+            email: session.user.email ?? "",
             role: session.user.role.toLowerCase(),
           };
 
@@ -47,10 +47,10 @@ export default function Login() {
 
           const userRole = session.user.role.toLowerCase();
           const roleMapping = {
-            superadmin: 'admin',
-            admin: 'admin',
-            partner: 'partner',
-            customer: 'customer',
+            superadmin: "admin",
+            admin: "admin",
+            partner: "partner",
+            customer: "customer",
           };
 
           const mappedRole = roleMapping[userRole as keyof typeof roleMapping];
@@ -58,11 +58,12 @@ export default function Login() {
             DEFAULT_ROLE_PATHS[mappedRole as keyof typeof DEFAULT_ROLE_PATHS];
 
           if (defaultPath) {
-            console.log('Redirecionando para:', defaultPath);
+            toast.success("Login realizado com sucesso!");
+            console.log("Redirecionando para:", defaultPath);
             router.replace(defaultPath);
           }
         } catch (error) {
-          console.error('Erro ao processar sessão:', error);
+          console.error("Erro ao processar sessão:", error);
         }
       }
     };
@@ -74,20 +75,18 @@ export default function Login() {
     setIsLoading(true);
     const credentials = { email, password };
     try {
-      const response = await signIn('credentials', {
+      const response = await signIn("credentials", {
         ...credentials,
         redirect: false,
       });
 
       if (response?.status === 401) {
-        toast.error('E-mail ou senha inválidos.');
+        toast.error("E-mail ou senha inválidos.");
         return;
       }
-
-      toast.success('Login realizado com sucesso!');
     } catch (err) {
-      console.error('Erro no login:', err);
-      toast.error('Erro ao fazer login');
+      console.error("Erro no login:", err);
+      toast.error("Erro ao fazer login");
     } finally {
       setIsLoading(false);
     }
@@ -132,10 +131,10 @@ export default function Login() {
           <MyTextInput
             label="Senha"
             placeholder="******"
-            type={visibility ? 'text' : 'password'}
+            type={visibility ? "text" : "password"}
             rightIcon={
               <MyIcon
-                name={visibility ? 'hide' : 'eye'}
+                name={visibility ? "hide" : "eye"}
                 className="mr-4 mt-6 cursor-pointer"
                 onClick={() => setVisibility((prev) => !prev)}
               />
@@ -158,7 +157,7 @@ export default function Login() {
           <MyButton
             variant="text"
             className="p-0  underline"
-            onClick={() => router.push(PATHS['esqueci-minha-senha'])}
+            onClick={() => router.push(PATHS["esqueci-minha-senha"])}
           >
             Esqueci minha senha
           </MyButton>
@@ -171,7 +170,7 @@ export default function Login() {
             onClick={handleLogin}
             disabled={isLoading}
           >
-            {isLoading ? 'Entrando...' : 'Login'}
+            {isLoading ? "Entrando..." : "Login"}
           </MyButton>
 
           <GoogleLoginButton />
@@ -183,7 +182,7 @@ export default function Login() {
               weight="regular"
               className="text-[#5F5C6B]"
             >
-              Deseja ser um parceiro? Clique{' '}
+              Deseja ser um parceiro? Clique{" "}
               <MyButton
                 variant="text"
                 className="p-0 underline"

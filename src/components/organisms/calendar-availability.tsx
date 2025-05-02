@@ -127,7 +127,10 @@ function CalendarAvailability({
     console.log(filteredTimes);
 
     // Formata os horários
-    return filteredTimes.map((time) => `${baseDate}T${time}:00-03:00`);
+    return filteredTimes.map(
+      (time) => `${baseDate}T${time}
+    `
+    );
   };
 
   const handleSaveNewSchedules = async () => {
