@@ -151,7 +151,7 @@ export default function Perfil() {
 
           toast.success("Imagem alterada com sucesso!");
           queryClient.invalidateQueries({
-            queryKey: ["user"],
+            queryKey: ["fetchUser"],
           });
         } catch (error) {
           console.error("Erro ao enviar imagem", error);

@@ -278,7 +278,7 @@ export const partnerService = {
   cancelSchedule: async (
     orderScheduleId: string,
     adventureId: string,
-    justification: string
+    justification?: string
   ): Promise<any> => {
     try {
       await api.post(
