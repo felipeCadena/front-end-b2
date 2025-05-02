@@ -150,11 +150,12 @@ export default function Perfil() {
           }
 
           toast.success('Imagem alterada com sucesso!');
+        } catch (error) {
+          console.error('Erro ao enviar imagem', error);
+        } finally {
           queryClient.invalidateQueries({
             queryKey: ['user'],
           });
-        } catch (error) {
-          console.error('Erro ao enviar imagem', error);
         }
       }
     };

@@ -5,7 +5,7 @@ import { DayPicker, formatDay } from 'react-day-picker';
 import type { DayPickerProps } from 'react-day-picker';
 import { cn } from '@/utils/cn';
 import { ptBR } from 'react-day-picker/locale';
-import { format } from 'date-fns';
+import { addHours, format, isBefore, startOfDay } from 'date-fns';
 import MyIcon from '../atoms/my-icon';
 
 type CalendarProps = {
@@ -13,12 +13,14 @@ type CalendarProps = {
   onSelect: (dates?: Date | undefined) => void;
   markedDates?: Date[];
   markedDays?: Date[];
+  hoursBeforeSchedule?: number;
   className?: string;
 } & Omit<DayPickerProps, 'mode' | 'selected' | 'onSelect'>;
 
 export function MyActivityCalendar({
   selected,
   onSelect,
+  hoursBeforeSchedule = 24,
   markedDates = [],
   markedDays = [],
   showOutsideDays = true,
@@ -54,14 +56,18 @@ export function MyActivityCalendar({
         ISOWeek={true}
         locale={ptBR}
         disabled={(date) => {
+          const limitDate = addHours(new Date(), hoursBeforeSchedule);
+
+          const isBeforeLimit = isBefore(date, limitDate);
+
           const isMarkedDate = markedDates.some(
             (thisDate) => thisDate.toDateString() === date.toDateString()
           );
-          const isMakedDay = markedDays?.some(
+          const isMarkedDay = markedDays?.some(
             (thisDay) => thisDay.toDateString() === date.toDateString()
           );
 
-          return !(isMakedDay || isMarkedDate);
+          return isBeforeLimit || !(isMarkedDay || isMarkedDate);
         }}
         formatters={{
           formatWeekdayName: (weekday) => {

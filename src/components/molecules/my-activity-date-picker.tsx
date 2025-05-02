@@ -17,6 +17,7 @@ import { formatRecurrencesToDates } from '@/utils/formatters';
 type MyActivityDatePickerProps = {
   withlabel?: string;
   selectedDate: Date | undefined;
+  hourBeforeSchedule?: number;
   setSelectedDates: Dispatch<SetStateAction<Date | undefined>>;
   partnerSchedules:
     | {
@@ -30,6 +31,7 @@ type MyActivityDatePickerProps = {
 export function MyActivityDatePicker({
   withlabel,
   selectedDate,
+  hourBeforeSchedule,
   partnerSchedules,
   activityRecurrences,
   setSelectedDates,
@@ -105,6 +107,7 @@ export function MyActivityDatePicker({
           locale={ptBR}
           markedDates={monthlyRecurrences}
           markedDays={[...weeklyRecurrences, ...partnerScheduledDays]}
+          hoursBeforeSchedule={hourBeforeSchedule}
         />
         <MyButton
           variant="default"

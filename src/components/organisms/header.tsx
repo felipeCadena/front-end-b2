@@ -37,6 +37,8 @@ export default function Header() {
     );
   };
 
+  console.log('USER PHOTO', user?.photo?.url);
+
   return (
     <header
       className={cn(

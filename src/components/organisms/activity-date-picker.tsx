@@ -100,6 +100,7 @@ const ActivityDatePicker = ({
               setSelectedDates={setSelectedDate}
               activityRecurrences={activityRecurrence}
               partnerSchedules={availablePartnerSchedules}
+              hourBeforeSchedule={activity?.hoursBeforeSchedule}
             />
             <TimePickerModal
               availableActivityTimes={AddToSelectedDateTimes}
