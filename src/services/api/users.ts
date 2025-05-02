@@ -60,7 +60,9 @@ export const users = {
         }
       );
 
-      const { url } = await fetch(response.data.uploadUrl, {
+      console.log('RESPONSE', response);
+
+      const otherRES = await fetch(response.data.uploadUrl, {
         method: 'PUT',
         body: body.file,
         headers: {
@@ -72,8 +74,10 @@ export const users = {
         }
         return res;
       });
-      console.log(url);
-      return url;
+
+      // antes era colocado no retorno da função a url que volta de otherRes, alterei para a url que volta de response.
+      console.log('otherRES', otherRES);
+      return response.data.url;
     } catch (error) {
       console.error('Error uploading media:', error);
       throw error;

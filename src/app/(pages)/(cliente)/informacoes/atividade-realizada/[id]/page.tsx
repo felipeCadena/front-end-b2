@@ -46,6 +46,7 @@ export default function AtividadeRealizada() {
       );
 
       toast.success('Avaliação enviada com sucesso!');
+      router.push(PATHS.atividades);
       return data;
     } catch (error) {
       if (error instanceof AxiosError) {

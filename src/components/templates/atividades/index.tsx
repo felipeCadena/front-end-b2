@@ -9,9 +9,10 @@ import { useQuery } from '@tanstack/react-query';
 import { adventures } from '@/services/api/adventures';
 import { useCart } from '@/store/useCart';
 import { useSession } from 'next-auth/react';
+import Loading from '@/app/loading';
 
 export default function AtividadesTemplate() {
-  const { data: activities = [] } = useQuery({
+  const { data: activities = [], isLoading } = useQuery({
     queryKey: ['activities'],
     queryFn: () => adventures.getAdventures({ limit: 30, skip: 0 }),
   });
@@ -31,7 +32,11 @@ export default function AtividadesTemplate() {
     );
   };
 
-  return (
+  return isLoading ? (
+    <div className="w-full h-[30vh] flex justify-center items-center">
+      <Loading />
+    </div>
+  ) : (
     <section className="">
       {/* <SearchActivity /> */}
 

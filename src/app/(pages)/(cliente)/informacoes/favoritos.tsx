@@ -1,5 +1,6 @@
 'use client';
 
+import Loading from '@/app/loading';
 import MyTypography from '@/components/atoms/my-typography';
 import ActivitiesFilter from '@/components/organisms/activities-filter';
 import FavoriteActivity from '@/components/organisms/favorite-activity';
@@ -10,7 +11,7 @@ import React, { useState } from 'react';
 
 export default function Favoritos() {
   const [selected, setSelected] = useState<'ar' | 'terra' | 'mar' | ''>('');
-  const { data: favorites = [] } = useQuery({
+  const { data: favorites = [], isLoading } = useQuery({
     queryKey: ['favorites'],
     queryFn: () => adventures.listFavorites(),
   });
@@ -37,7 +38,11 @@ export default function Favoritos() {
     ));
   };
 
-  return (
+  return isLoading ? (
+    <div className="w-full h-[30vh] flex justify-center items-center mb-16">
+      <Loading />
+    </div>
+  ) : (
     <section className="mx-auto mb-15 max-sm:max-w-5xl">
       <div className="mx-4 space-y-8 md:space-y-16">
         {favorites.length > 0 ? (

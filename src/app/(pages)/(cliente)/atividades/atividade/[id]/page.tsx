@@ -31,6 +31,7 @@ import ActivityIncludedItems from '@/components/organisms/activity-included-item
 import ActivityTags from '@/components/organisms/actitity-tags';
 import ActivityHeader from '@/components/organisms/activity-header';
 import { v4 as uuidv4 } from 'uuid';
+import Loading from '@/app/loading';
 
 const initialScheduleState = {
   qntAdults: 0,
@@ -53,7 +54,7 @@ export default function Atividade() {
   const session = useSession();
   const userId = session.data?.user.id;
 
-  const { data: fetchedActivity } = useQuery({
+  const { data: fetchedActivity, isLoading } = useQuery({
     queryKey: ['this_activity'],
     queryFn: () => adventures.getAdventureById(Number(id)),
   });
@@ -156,7 +157,11 @@ export default function Atividade() {
     addressCountry: fetchedActivity?.addressCountry,
   };
 
-  return (
+  return isLoading ? (
+    <div className="w-full h-[30vh] flex justify-center items-center">
+      <Loading />
+    </div>
+  ) : (
     <section className="my-10">
       <div className="relative">
         <MyIcon

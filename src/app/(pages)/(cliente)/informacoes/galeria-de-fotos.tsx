@@ -1,49 +1,54 @@
-"use client";
+'use client';
 
-import { activities, album } from "@/common/constants/mock";
-import MyBadge from "@/components/atoms/my-badge";
-import MyButton from "@/components/atoms/my-button";
-import MyIcon from "@/components/atoms/my-icon";
-import Calendar from "@/components/atoms/my-icon/elements/calendar";
-import MyTypography from "@/components/atoms/my-typography";
-import StarRating from "@/components/molecules/my-stars";
-import { adventures } from "@/services/api/adventures";
-import { cn } from "@/utils/cn";
-import { getData, handleNameActivity } from "@/utils/formatters";
-import { useQuery } from "@tanstack/react-query";
-import Image from "next/image";
-import React from "react";
+import Loading from '@/app/loading';
+import { activities, album } from '@/common/constants/mock';
+import MyBadge from '@/components/atoms/my-badge';
+import MyButton from '@/components/atoms/my-button';
+import MyIcon from '@/components/atoms/my-icon';
+import Calendar from '@/components/atoms/my-icon/elements/calendar';
+import MyTypography from '@/components/atoms/my-typography';
+import StarRating from '@/components/molecules/my-stars';
+import { adventures } from '@/services/api/adventures';
+import { cn } from '@/utils/cn';
+import { getData, handleNameActivity } from '@/utils/formatters';
+import { useQuery } from '@tanstack/react-query';
+import Image from 'next/image';
+import React from 'react';
 
 export default function GaleriaDeFotos() {
   const [open, setOpen] = React.useState(false);
-  const [selected, setSelected] = React.useState("");
+  const [selected, setSelected] = React.useState('');
 
-  const { data: activities } = useQuery({
-    queryKey: ["activities"],
+  const { data: activities, isLoading } = useQuery({
+    queryKey: ['activities'],
     queryFn: () => adventures.getAdventures(),
   });
 
-  return (
+  return isLoading ? (
+    <div className="w-full h-[30vh] flex justify-center items-center mb-16">
+      <Loading />
+    </div>
+  ) : (
     <section className="space-y-12 mb-10">
       {activities &&
         activities.map((activity) => (
           <div key={activity?.id} className="flex md:flex-col gap-4">
             <div className="border border-gray-300 rounded-lg h-[220px] flex items-center gap-5 p-4 overflow-hidden cursor-pointer">
               <MyButton
-                variant={"secondary-text"}
+                variant={'secondary-text'}
                 borderRadius="squared"
-                size={"md"}
-                className={cn("flex flex-col gap-1 text-base")}
+                size={'md'}
+                className={cn('flex flex-col gap-1 text-base')}
               >
                 <div>
                   <Calendar width={30} height={30} />
                 </div>
-                {getData("2025-03-12T08:00:00")}
+                {getData('2025-03-12T08:00:00')}
               </MyButton>
               <Image
                 src={
                   activity?.images[0]?.url ??
-                  "/images/atividades/cachoeira.webp"
+                  '/images/atividades/cachoeira.webp'
                 }
                 alt={activity?.title}
                 width={300}
@@ -59,7 +64,7 @@ export default function GaleriaDeFotos() {
                     <div className="flex gap-2 items-center max-sm:hidden">
                       <Image
                         alt="avatar"
-                        src={activity?.partner.logo?.url ?? "/user.png"}
+                        src={activity?.partner.logo?.url ?? '/user.png'}
                         width={10}
                         height={10}
                         className="w-10 h-10 rounded-full object-cover"
@@ -78,7 +83,7 @@ export default function GaleriaDeFotos() {
                       </div>
                     </div>
                     <MyTypography variant="body-big" weight="regular">
-                      {activity?.description.slice(0, 40).concat("...")}
+                      {activity?.description.slice(0, 40).concat('...')}
                     </MyTypography>
                     <div className="flex gap-2">
                       <MyBadge variant="outline" className="p-2">
@@ -118,8 +123,8 @@ export default function GaleriaDeFotos() {
             {String(activity.id) == selected && (
               <div
                 className={cn(
-                  "mt-4 flex flex-col justify-center items-center space-y-4",
-                  !open && "hidden"
+                  'mt-4 flex flex-col justify-center items-center space-y-4',
+                  !open && 'hidden'
                 )}
               >
                 <MyIcon name="chevron-down-green" className="mt-2" />

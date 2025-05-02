@@ -20,6 +20,7 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { AxiosError } from 'axios';
 import MySpinner from '@/components/atoms/my-spinner';
+import Loading from '@/app/loading';
 
 const formSchema = z
   .object({
@@ -79,12 +80,12 @@ export default function Perfil() {
     },
   });
 
-  const { data: user } = useQuery({
+  const { data: user, isLoading: loadingPage } = useQuery({
     queryKey: ['user'],
     queryFn: () => users.getUserLogged(),
   });
 
-  console.log('Logged ->', user);
+  console.log('USER', user);
 
   const [profile, setProfile] = React.useState({
     email: '',
@@ -136,19 +137,22 @@ export default function Perfil() {
             mimetype: file[0].type,
             file: new Blob([arrayBuffer]),
           });
+          console.log('useEffect Res', response);
           if (user?.name && user?.email && user?.role) {
+            console.log('MUDOU');
             setUser({
               ...user,
               photo: {
-                url: response,
+                url: `${response}?v=${Date.now()}`,
                 mimetype: file[0].type,
               },
             });
           }
 
-          console.log('RES', response);
-
           toast.success('Imagem alterada com sucesso!');
+          queryClient.invalidateQueries({
+            queryKey: ['user'],
+          });
         } catch (error) {
           console.error('Erro ao enviar imagem', error);
         }
@@ -158,7 +162,11 @@ export default function Perfil() {
     handleSendPhoto();
   }, [file]);
 
-  return (
+  return loadingPage ? (
+    <div className="w-full h-[30vh] flex justify-center items-center mb-16">
+      <Loading />
+    </div>
+  ) : (
     <section className="px-6 my-8">
       <div className="relative flex gap-4 items-center">
         <MyIcon
@@ -183,10 +191,11 @@ export default function Perfil() {
           ) : (
             <Image
               alt="avatar"
-              src={profile.image ?? '/user.png'}
+              src={user?.photo?.url ?? '/user.png'}
               width={28}
               height={28}
               className="w-24 h-24 rounded-full object-cover"
+              unoptimized
             />
           )}
         </div>

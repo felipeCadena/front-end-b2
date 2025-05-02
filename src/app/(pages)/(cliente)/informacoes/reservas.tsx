@@ -8,11 +8,12 @@ import { ordersAdventuresService } from '@/services/api/orders';
 import { MyFullScheduleCalendar } from '@/components/molecules/my-full-schedule-calendar';
 import MyTypography from '@/components/atoms/my-typography';
 import ScheduledActivitiesMobile from '@/components/organisms/scheduled-activities-mobile';
+import Loading from '@/app/loading';
 
 export default function Reservas() {
   const [date, setDate] = React.useState<Date>();
 
-  const { data: schedules } = useQuery({
+  const { data: schedules, isLoading } = useQuery({
     queryKey: ['schedules'],
     queryFn: () =>
       ordersAdventuresService.getCustomerSchedules({
@@ -41,7 +42,11 @@ export default function Reservas() {
       ? selectedScheduleActivities
       : schedules;
 
-  return (
+  return isLoading ? (
+    <div className="w-full h-[30vh] flex justify-center items-center mb-16">
+      <Loading />
+    </div>
+  ) : (
     <section className="bg-white w-full flex flex-col max-sm:items-center relative">
       <MyFullScheduleCalendar
         mode="single"
