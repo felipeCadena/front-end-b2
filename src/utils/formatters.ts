@@ -671,7 +671,7 @@ export const getPartnerAvailableSchedules = (
           // foi necessário reconverter para o horario original.
           // para conferir, use console.log(schedule.datetime) e antes do reduce use console.log(activity.schedules).
           // note a diferença de horario
-          console.log('PRE FORCED', activity.schedules);
+
           const forceStringDate = String(schedule.datetime);
           const localDateTime = new Date(schedule.datetime);
           const localHours = localDateTime
@@ -684,6 +684,7 @@ export const getPartnerAvailableSchedules = (
             .padStart(2, '0');
 
           const availableScheduleDateTime = `${localHours}:${localMinutes}`;
+
           const availableScheduleDate = forceStringDate.slice(0, 10);
 
           const formattedSchedule = {
@@ -741,7 +742,7 @@ export const addPartnerScheduledTimeToSelectedDateTime = (
         (time) => time !== timeAlreadyExists
       );
 
-      return [...selectedDateTimes, ...filteredTimes.sort()];
+      return [...selectedDateTimes, ...filteredTimes].sort();
     } else {
       return selectedDateTimes;
     }

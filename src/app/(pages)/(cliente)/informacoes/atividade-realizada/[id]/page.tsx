@@ -73,7 +73,14 @@ export default function AtividadeRealizada() {
         </MyTypography>
       </div>
       <div className="md:flex md:gap-4">
-        <div className="bg-[#F7F7F9] w-full md:w-2/5 h-[440px] rounded-lg mt-4">
+        <div
+          className="bg-[#F7F7F9] w-full md:w-2/5 h-[440px] rounded-lg mt-4 cursor-pointer"
+          onClick={() =>
+            router.push(
+              PATHS.visualizarAtividade(activity?.adventure?.id as number)
+            )
+          }
+        >
           <Image
             src={
               activity?.adventure.images[0]?.url ??

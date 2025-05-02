@@ -157,6 +157,8 @@ export default function Atividade() {
     addressCountry: fetchedActivity?.addressCountry,
   };
 
+  console.log('ACT', fetchedActivity);
+
   return isLoading ? (
     <div className="w-full h-[30vh] flex justify-center items-center">
       <Loading />
