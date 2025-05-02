@@ -1,28 +1,41 @@
-'use client';
+"use client";
 
-import MyTypography from '@/components/atoms/my-typography';
-import ShoppingCard from '@/components/molecules/shopping-card';
-import ActivitiesFilter from '@/components/organisms/activities-filter';
-import CarouselCustom from '@/components/templates/second-section/carousel-custom';
-import React from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { adventures } from '@/services/api/adventures';
-import { useCart } from '@/store/useCart';
-import { useSession } from 'next-auth/react';
-import Loading from '@/app/loading';
+import MyTypography from "@/components/atoms/my-typography";
+import ShoppingCard from "@/components/molecules/shopping-card";
+import ActivitiesFilter from "@/components/organisms/activities-filter";
+import CarouselCustom from "@/components/templates/second-section/carousel-custom";
+import React, { useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { adventures } from "@/services/api/adventures";
+import { useCart } from "@/store/useCart";
+import { useSession } from "next-auth/react";
+import useSearchQueryService from "@/services/use-search-query-service";
 
 export default function AtividadesTemplate() {
-  const { data: activities = [], isLoading } = useQuery({
-    queryKey: ['activities'],
-    queryFn: () => adventures.getAdventures({ limit: 30, skip: 0 }),
+  const { params } = useSearchQueryService();
+
+  const { data: activities = [], isFetching } = useQuery({
+    queryKey: ["activities", params],
+    queryFn: () => {
+      // Verifica se `params` está vazio (sem filtros) ou não
+      const hasFilters = params && Object.keys(params).length > 0;
+
+      return adventures.filterAdventures({
+        limit: 30,
+        skip: 0,
+        ...(hasFilters ? params : {}), // Só passa se houver filtros
+      });
+    },
   });
+
+  console.log(params);
 
   const { data } = useSession();
   const userId = data?.user.id;
 
   const { getCartSize } = useCart();
 
-  const cartSize = getCartSize(userId ?? '');
+  const cartSize = getCartSize(userId ?? "");
 
   const filterActivity = (typeAdventure: string) => {
     return (
@@ -32,11 +45,7 @@ export default function AtividadesTemplate() {
     );
   };
 
-  return isLoading ? (
-    <div className="w-full h-[30vh] flex justify-center items-center">
-      <Loading />
-    </div>
-  ) : (
+  return (
     <section className="">
       {/* <SearchActivity /> */}
 
@@ -58,9 +67,9 @@ export default function AtividadesTemplate() {
           Atividades Aéreas
         </MyTypography>
         <CarouselCustom
-          activities={filterActivity('ar').map((activity) => ({
+          activities={filterActivity("ar").map((activity) => ({
             ...activity,
-            addressComplement: activity.addressComplement || '',
+            addressComplement: activity.addressComplement || "",
           }))}
         />
 
@@ -74,9 +83,9 @@ export default function AtividadesTemplate() {
           Atividades Terrestres
         </MyTypography>
         <CarouselCustom
-          activities={filterActivity('terra').map((activity) => ({
+          activities={filterActivity("terra").map((activity) => ({
             ...activity,
-            addressComplement: activity.addressComplement || '',
+            addressComplement: activity.addressComplement || "",
           }))}
         />
 
@@ -90,9 +99,9 @@ export default function AtividadesTemplate() {
           Atividades Aquática
         </MyTypography>
         <CarouselCustom
-          activities={filterActivity('mar').map((activity) => ({
+          activities={filterActivity("mar").map((activity) => ({
             ...activity,
-            addressComplement: activity.addressComplement || '',
+            addressComplement: activity.addressComplement || "",
           }))}
         />
       </div>

@@ -9,6 +9,7 @@ export interface User {
   photo?: {
     url: string;
     mimetype: string;
+    updatedAt?: string;
   };
 }
 

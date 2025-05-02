@@ -1,6 +1,6 @@
 import { api } from "@/libs/api";
 
-type Media = {
+export type Media = {
   id: string;
   url: string;
   name: string;
@@ -8,7 +8,7 @@ type Media = {
   description: string | null;
   mimetype: string;
   adventureId: number;
-  scheduleId: number | null;
+  scheduleId: string;
   index: number | null;
   isDefault: boolean;
   createdAt: string; // ou Date, dependendo de como você lida com datas
@@ -109,21 +109,34 @@ export const schedules = {
     mediaID: string,
     updateBinary: boolean,
     body: {
-      name: string;
+      name?: string;
       mimetype: string;
-      title: string;
-      description: string;
-      isDefault: boolean;
+      title?: string;
+      description?: string;
+      isDefault?: boolean;
+      file: Blob | Buffer;
     }
   ) => {
     try {
-      const response = await api.post(
-        `/schedules/${id}/media/${mediaID}`,
-        body,
+      const response = await api.patch(
+        `/schedules/${id}/media/${mediaID}?updateBinary=true`,
         {
-          params: { updateBinary },
+          mimetype: body.mimetype,
         }
       );
+      await fetch(response.data.uploadUrl, {
+        method: "PUT",
+        body: body.file,
+        headers: {
+          "Content-Type": body.mimetype,
+        },
+      }).then((res) => {
+        if (!res.ok) {
+          console.log("Failed to upload media", res);
+        }
+        return res;
+      });
+
       return response.data;
     } catch (error) {
       console.error(
@@ -149,7 +162,7 @@ export const schedules = {
 
   listScheduleMedias: async (id: string) => {
     try {
-      const response = await api.get(`/schedules/${id}/medias`);
+      const response = await api.get<Media[]>(`/schedules/${id}/medias`);
       return response.data;
     } catch (error) {
       console.error(`Error listing medias for schedule with id ${id}:`, error);

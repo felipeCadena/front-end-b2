@@ -17,6 +17,7 @@ import { MyFullCalendarMultiple } from "@/components/molecules/my-full-calendar-
 import { useQuery } from "@tanstack/react-query";
 import { parseISO } from "date-fns";
 import { partnerService } from "@/services/api/partner";
+import PartnerHistoricMobile from "@/components/organisms/partner-historic-mobile";
 
 export default function Reservas() {
   const router = useRouter();
@@ -26,8 +27,13 @@ export default function Reservas() {
   const { handleClose, isModalOpen } = useAlert();
 
   const { data: parterSchedules } = useQuery({
-    queryKey: ["parterSchedules"],
-    queryFn: () => partnerService.getMySchedules({ limit: 50 }),
+    queryKey: ["parterSchedules", date],
+    queryFn: () =>
+      partnerService.getMySchedules({
+        limit: 50,
+        // isCanceled: false,
+        qntConfirmedPersons: "> 0",
+      }),
   });
 
   useEffect(() => {
@@ -38,6 +44,17 @@ export default function Reservas() {
       setDates(bookedDates);
     }
   }, [parterSchedules]);
+
+  const selectedScheduleActivities =
+    parterSchedules &&
+    parterSchedules.data?.filter(
+      (act) => act.datetime.slice(0, 10) === date?.toISOString().slice(0, 10)
+    );
+
+  const renderActivities =
+    selectedScheduleActivities && selectedScheduleActivities?.length > 0
+      ? selectedScheduleActivities
+      : parterSchedules?.data;
 
   return (
     <main className="my-6">
@@ -66,7 +83,7 @@ export default function Reservas() {
             Nova atividade
           </MyButton>
 
-          <MyButton
+          {/* <MyButton
             variant="red"
             borderRadius="squared"
             size="md"
@@ -75,7 +92,7 @@ export default function Reservas() {
             className="w-1/4"
           >
             Ocultas
-          </MyButton>
+          </MyButton> */}
         </div>
       </div>
 
@@ -99,12 +116,12 @@ export default function Reservas() {
           size="lg"
           leftIcon={<MyIcon name="plus" className="" />}
           onClick={() => router.push(PATHS["cadastro-atividade"])}
-          className="w-1/2"
+          className="w-full md:w-1/2"
         >
           Nova Atividade
         </MyButton>
 
-        <MyButton
+        {/* <MyButton
           variant="red"
           borderRadius="squared"
           size="lg"
@@ -113,7 +130,7 @@ export default function Reservas() {
           className="w-1/2"
         >
           Ocultas
-        </MyButton>
+        </MyButton> */}
       </div>
 
       <ModalAlert
@@ -121,16 +138,16 @@ export default function Reservas() {
         onClose={handleClose}
         iconName="warning"
         title="Atividade cancelada"
-        descrition="A atividade já foi cancelada e em breve seu cliente receberá uma mensagem explicando isso."
+        descrition="A atividade foi cancelada."
         button="Voltar ao início"
       />
 
       <div className="md:hidden">
-        <ActivitiesHidden notifications={notificationActivities} />
+        <PartnerHistoricMobile activities={renderActivities} />
       </div>
       <div className="hidden md:block">
         <PartnerActivitiesHistoric
-          activities={parterSchedules?.data}
+          activities={renderActivities}
           withDate
           withOptions
         />

@@ -1,14 +1,14 @@
-'use client';
+"use client";
 
-import MyButton from '@/components/atoms/my-button';
-import MyIcon from '@/components/atoms/my-icon';
+import MyButton from "@/components/atoms/my-button";
+import MyIcon from "@/components/atoms/my-icon";
 import {
   DialogContent,
   DialogHeader,
   DialogTitle,
   MyDialog,
-} from '@/components/molecules/my-dialog';
-import MyTypography from '../atoms/my-typography';
+} from "@/components/molecules/my-dialog";
+import MyTypography from "../atoms/my-typography";
 
 interface ModalAlertProps {
   open: boolean;
@@ -37,8 +37,7 @@ export default function MyCancelScheduleModal({
           lightness={500}
           className="w-11/12 mx-auto"
         >
-          Tem certeza que deseja cancelar essa atividade? Não será possível
-          remarcar na mesma data ou reembolsar no valor pago.
+          Tem certeza que deseja cancelar essa atividade?
         </MyTypography>
         <MyButton
           variant="black-border"

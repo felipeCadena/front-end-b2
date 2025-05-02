@@ -37,43 +37,6 @@ function MyFullCalendarMultiple({
     return () => window.removeEventListener("resize", checkScreenSize);
   }, []);
 
-  const activitiesBooked = [
-    {
-      date: "2025-02-06",
-      activities: [
-        {
-          name: "Atividade 1",
-          activityName: "Escalada Cristo",
-          time: "08:00 - 09:00",
-          color: "bg-primary-600",
-        },
-        {
-          name: "Atividade 2",
-          activityName: "Surfe",
-          time: "09:00 - 10:00",
-          color: "bg-accent",
-        },
-      ],
-    },
-    {
-      date: "2025-02-22",
-      activities: [
-        {
-          name: "Atividade 3",
-          activityName: "Parapente",
-          time: "08:00 - 09:00",
-          color: "bg-primary-600",
-        },
-        {
-          name: "Atividade 4",
-          activityName: "Mergulho",
-          time: "15:00 - 16:00",
-          color: "bg-accent",
-        },
-      ],
-    },
-  ];
-
   console.log(markedDates);
 
   const handleDayClick = (date: Date, modifiers: any) => {
@@ -111,10 +74,16 @@ function MyFullCalendarMultiple({
         }}
         modifiers={{
           booked: markedDates.map((act) => act),
+          disabled: (date: Date) =>
+            !markedDates.some(
+              (marked) =>
+                date.getFullYear() === marked.getFullYear() &&
+                date.getMonth() === marked.getMonth() &&
+                date.getDate() === marked.getDate()
+            ),
         }}
         modifiersClassNames={{
-          booked:
-            "bg-primary-800 rounded-lg border border-primary-600 text-primary-600 relative after:content-[''] after:w-2 after:h-2 after:border-2 after:border-secondary-600 after:rounded-full after:absolute after:top-1/4 after:left-2 md:after:top-1/3 md:after:left-20",
+          booked: "bg-primary-600 rounded-lg text-white",
         }}
         styles={{
           months: { display: "flex", justifyContent: "center", width: "100%" },
@@ -167,14 +136,14 @@ function MyFullCalendarMultiple({
           day_range_start: "day-range-start",
           day_range_end: "day-range-end",
           day_selected:
-            "bg-white text-primary-600 hover:bg-primary-600 hover:text-white focus:bg-primary-600 focus:text-white",
+            "bg-white text-primary-600 hover:bg-primary-600 hover:text-black focus:bg-primary-600 focus:text-black",
           // day_today: "bg-primary-600 text-white",
           today: "text-primary-600",
           day_disabled: "text-[#929292] opacity-50",
           day_range_middle:
             "aria-selected:bg-accent aria-selected:text-accent-foreground",
           day_hidden: "invisible",
-          selected: "bg-primary-600 text-white rounded-md",
+          selected: "bg-[#bceb7c] text-black rounded-lg",
           weekday:
             "font-normal text-[#929292] md:text-primary-600 md:font-semibold opacity-80 pt-6",
           outside: "text-[#929292] opacity-50",

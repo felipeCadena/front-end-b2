@@ -19,7 +19,7 @@ interface AddressData {
   addressState: string;
   addressCountry: string;
 }
-interface LocationData {
+export interface LocationData {
   address: string;
   completeAddress: AddressData;
   coordinates: {

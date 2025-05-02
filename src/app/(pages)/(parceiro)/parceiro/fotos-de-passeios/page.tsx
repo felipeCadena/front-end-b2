@@ -38,7 +38,7 @@ export default function FotosDePasseios() {
         lightness={500}
         className="mt-4"
       >
-        Enviar fotos ou vídeos da atividade!
+        Enviar fotos ou vídeos da atividade
       </MyTypography>
 
       <ActivitiesPhotos activities={partnerOrders} />

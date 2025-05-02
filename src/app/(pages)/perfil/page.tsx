@@ -68,7 +68,7 @@ export default function Perfil() {
   const [file, setFile] = React.useState<File[] | null>(null);
   const inputRef = React.useRef<HTMLInputElement>(null);
   const queryClient = useQueryClient();
-  const { setUser } = useAuthStore();
+  const { setUser, user } = useAuthStore();
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -80,29 +80,40 @@ export default function Perfil() {
     },
   });
 
-  const { data: user, isLoading: loadingPage } = useQuery({
-    queryKey: ['user'],
-    queryFn: () => users.getUserLogged(),
+  const { data: fetchUser, isLoading: loadingPage } = useQuery({
+    queryKey: ['fetchUser'],
+    queryFn: async () => {
+      const user = await users.getUserLogged();
+      setUser({
+        ...user,
+        photo: {
+          url: user?.photo?.url,
+          mimetype: user?.photo?.mimetype,
+          updatedAt: user?.photo?.updatedAt,
+        },
+      });
+      return user;
+    },
   });
 
-  console.log('USER', user);
+  console.log('USER', fetchUser);
 
-  const [profile, setProfile] = React.useState({
-    email: '',
-    name: '',
-    image: '',
-  });
+  // const [profile, setProfile] = React.useState({
+  //   email: '',
+  //   name: '',
+  //   image: '',
+  // });
   const handleClickUpload = () => {
     inputRef.current?.click();
   };
 
-  useEffect(() => {
-    setProfile({
-      email: user?.email ?? '',
-      name: user?.name ?? '',
-      image: user?.photo?.url ?? '/user.png',
-    });
-  }, [user]);
+  // useEffect(() => {
+  //   setProfile({
+  //     email: user?.email ?? '',
+  //     name: user?.name ?? '',
+  //     image: user?.photo?.url ?? '/user.png',
+  //   });
+  // }, [user]);
 
   const handleUploadPicture = async (fileList: FileList | null) => {
     if (fileList && fileList.length > 0) {
@@ -145,23 +156,25 @@ export default function Perfil() {
               photo: {
                 url: `${response}?v=${Date.now()}`,
                 mimetype: file[0].type,
+                updatedAt: response?.updatedAt,
               },
             });
           }
 
           toast.success('Imagem alterada com sucesso!');
+          queryClient.invalidateQueries({
+            queryKey: ['fetchUser'],
+          });
         } catch (error) {
           console.error('Erro ao enviar imagem', error);
-        } finally {
-          queryClient.invalidateQueries({
-            queryKey: ['user'],
-          });
         }
       }
     };
 
     handleSendPhoto();
   }, [file]);
+
+  const userData = user ?? fetchUser;
 
   return loadingPage ? (
     <div className="w-full h-[30vh] flex justify-center items-center mb-16">
@@ -192,7 +205,7 @@ export default function Perfil() {
           ) : (
             <Image
               alt="avatar"
-              src={user?.photo?.url ?? '/user.png'}
+              src={`${userData?.photo?.url ?? '/user.png'}`}
               width={28}
               height={28}
               className="w-24 h-24 rounded-full object-cover"
@@ -214,7 +227,7 @@ export default function Perfil() {
         </Dropzone>
         <div>
           <MyTypography variant="label" weight="semibold">
-            {user?.name}
+            {userData?.name}
           </MyTypography>
           <MyTypography
             variant="label"
@@ -236,13 +249,13 @@ export default function Perfil() {
           label="E-mail"
           placeholder="b2adventure@gmail.com"
           className="mt-2 disabled:cursor-default"
-          value={user?.email}
+          value={userData?.email}
           disabled
         />
         <MyTextInput
           label="Nome Completo"
           placeholder="Nome Completo"
-          value={user?.name}
+          value={userData?.name}
           className="mt-2 disabled:cursor-default"
           disabled
         />

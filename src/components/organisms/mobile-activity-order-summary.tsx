@@ -1,24 +1,24 @@
-import React from 'react';
+import React from "react";
 
-import Image from 'next/image';
-import MyBadge from '../atoms/my-badge';
-import StarRating from '../molecules/my-stars';
-import MyTypography from '../atoms/my-typography';
-import MyIcon from '../atoms/my-icon';
+import Image from "next/image";
+import MyBadge from "../atoms/my-badge";
+import StarRating from "../molecules/my-stars";
+import MyTypography from "../atoms/my-typography";
+import MyIcon from "../atoms/my-icon";
 import {
   formatPrice,
   formatTime,
   getData,
   handleNameActivity,
   selectActivityImage,
-} from '@/utils/formatters';
-import { useRouter } from 'next/navigation';
-import PATHS from '@/utils/paths';
-import { AddToCartAdventure } from '@/services/api/adventures';
-import MyButton from '../atoms/my-button';
-import { useCart } from '@/store/useCart';
-import { useSession } from 'next-auth/react';
-import { toast } from 'react-toastify';
+} from "@/utils/formatters";
+import { useRouter } from "next/navigation";
+import PATHS from "@/utils/paths";
+import { AddToCartAdventure } from "@/services/api/adventures";
+import MyButton from "../atoms/my-button";
+import { useCart } from "@/store/useCart";
+import { useSession } from "next-auth/react";
+import { toast } from "react-toastify";
 
 type ActivitiesOrderSummaryProps = {
   activities: AddToCartAdventure[];
@@ -35,10 +35,10 @@ const MobileActivitiesOrderSummary = ({
     const userId = session.data?.user.id;
 
     if (userId) {
-      removeFromCart(id, userId);
-      toast.success('Atividade removida do carrinho!');
+      removeFromCart(String(id), userId);
+      toast.success("Atividade removida do carrinho!");
     } else {
-      toast.error('Token expirado!');
+      toast.error("Token expirado!");
     }
   };
 
@@ -75,7 +75,7 @@ const MobileActivitiesOrderSummary = ({
                       {adventure.title}
                     </MyTypography>
                     <MyTypography variant="label" className="">
-                      {adventure.description.slice(0, 30) + '...'}
+                      {adventure.description.slice(0, 30) + "..."}
                     </MyTypography>
                   </div>
                 </div>
@@ -100,7 +100,7 @@ const MobileActivitiesOrderSummary = ({
                         Data da Atividade:
                       </MyTypography>
                       <MyTypography variant="body" weight="regular">
-                        {getData(schedule.scheduleDate?.toString() as string)} -{' '}
+                        {getData(schedule.scheduleDate?.toString() as string)} -{" "}
                         {formatTime(schedule.scheduleTime)}
                       </MyTypography>
                     </div>
@@ -126,17 +126,17 @@ const MobileActivitiesOrderSummary = ({
                       Quant. de pessoas
                     </MyTypography>
                     <MyTypography variant="body" weight="regular">
-                      {schedule.qntAdults}{' '}
-                      {schedule.qntAdults > 1 ? 'Adultos' : 'Adulto'} x{' '}
+                      {schedule.qntAdults}{" "}
+                      {schedule.qntAdults > 1 ? "Adultos" : "Adulto"} x{" "}
                       {formatPrice(schedule.pricePerAdult)}
                     </MyTypography>
                     {schedule.qntChildren > 0 && (
                       <div className="gap-1 w-fit flex flex-col items-center">
                         <hr className="my-1 w-[50%]" />
                         <MyTypography variant="body" weight="regular">
-                          {schedule.qntChildren}{' '}
-                          {schedule.qntChildren > 1 ? 'Crianças' : 'Criança'} x{' '}
-                          {formatPrice(schedule.pricePerChildren ?? '0')}
+                          {schedule.qntChildren}{" "}
+                          {schedule.qntChildren > 1 ? "Crianças" : "Criança"} x{" "}
+                          {formatPrice(schedule.pricePerChildren ?? "0")}
                         </MyTypography>
                       </div>
                     )}

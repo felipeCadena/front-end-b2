@@ -30,7 +30,7 @@ const CarouselReview = ({ reviews }: any) => {
 
   const showRightShadow =
     ref.current &&
-    ref.current.scrollWidth > ref.current.clientWidth + scrollPosition + 1;
+    ref.current?.scrollWidth > ref.current?.clientWidth + scrollPosition + 1;
 
   return (
     <div className="relative my-8 md:ml-6 max-sm:px-4">
