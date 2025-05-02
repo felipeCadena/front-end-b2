@@ -17,6 +17,7 @@ import { MyFullCalendarMultiple } from "@/components/molecules/my-full-calendar-
 import { useQuery } from "@tanstack/react-query";
 import { parseISO } from "date-fns";
 import { partnerService } from "@/services/api/partner";
+import PartnerHistoricMobile from "@/components/organisms/partner-historic-mobile";
 
 export default function Reservas() {
   const router = useRouter();
@@ -30,7 +31,7 @@ export default function Reservas() {
     queryFn: () =>
       partnerService.getMySchedules({
         limit: 50,
-        isCanceled: false,
+        // isCanceled: false,
         qntConfirmedPersons: "> 0",
       }),
   });
@@ -115,7 +116,7 @@ export default function Reservas() {
           size="lg"
           leftIcon={<MyIcon name="plus" className="" />}
           onClick={() => router.push(PATHS["cadastro-atividade"])}
-          className="w-1/2"
+          className="w-full md:w-1/2"
         >
           Nova Atividade
         </MyButton>
@@ -142,7 +143,7 @@ export default function Reservas() {
       />
 
       <div className="md:hidden">
-        <ActivitiesHidden notifications={notificationActivities} />
+        <PartnerHistoricMobile activities={renderActivities} />
       </div>
       <div className="hidden md:block">
         <PartnerActivitiesHistoric

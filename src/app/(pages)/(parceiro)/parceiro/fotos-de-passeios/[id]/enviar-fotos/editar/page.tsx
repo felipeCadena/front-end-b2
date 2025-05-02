@@ -8,8 +8,9 @@ import { getData } from "@/utils/formatters";
 import { useQuery } from "@tanstack/react-query";
 import { useParams, useRouter } from "next/navigation";
 import React from "react";
+import Edit from "./edit-midias";
 
-export default function EnviarFotos() {
+export default function EditarMidias() {
   const router = useRouter();
   const { id } = useParams();
   const [isLoading, setIsLoading] = React.useState(false);
@@ -50,8 +51,6 @@ export default function EnviarFotos() {
 
   const limitDateForMedias = schedule?.limitDateForMedias;
 
-  console.log(getData(limitDateForMedias));
-
   return (
     <main className="my-6 mx-4">
       <div className="flex gap-4 items-center">
@@ -61,26 +60,13 @@ export default function EnviarFotos() {
           onClick={() => router.back()}
         />
         <MyTypography variant="subtitle1" weight="bold" className="">
-          Configuração da Atividade
+          Editar Mídias
         </MyTypography>
       </div>
 
-      <div className="space-y-2 mt-4">
-        <MyTypography variant="subtitle3" weight="bold" className="">
-          Enviar fotos da atividade
-        </MyTypography>
-        <MyTypography variant="label" lightness={500} className="">
-          Enviar as fotos da atividade{" "}
-          <span className="font-bold">
-            {limitDateForMedias
-              ? `até ${getData(limitDateForMedias)}`
-              : "em até 7 dias após a realização da atividade"}
-          </span>
-        </MyTypography>
-      </div>
-
-      <SendImages
+      <Edit
         open={sendImages}
+        schedulesMedia={schedulesMedia}
         setOpen={setSendImages}
         handleSendImages={handleSendImages}
         isLoading={isLoading}

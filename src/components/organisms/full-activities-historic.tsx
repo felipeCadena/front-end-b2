@@ -85,7 +85,11 @@ export default function FullActivitiesHistoric({
       {activities && activities.length > 0 ? (
         activities.map((activity, index: number) => (
           <div
-            className="flex items-center gap-4 mt-20 mb-20 w-full"
+            className={cn(
+              "flex items-center gap-4 mt-20 mb-20 w-full",
+              activity?.adventureStatus == "cancelado_pelo_cliente" &&
+                "opacity-60 pointer-events-none"
+            )}
             key={index}
           >
             <div
@@ -187,16 +191,27 @@ export default function FullActivitiesHistoric({
                       >
                         Mensagem
                       </MyButton>
-                      <MyButton
-                        variant="outline"
-                        borderRadius="squared"
-                        disabled
-                        size="md"
-                        className="p-4 py-5 ml-4 text-md border-primary-900 border-[3px]"
-                        leftIcon={<MyIcon name="calendar" />}
-                      >
-                        {getData(activity.schedule.datetime, true)}
-                      </MyButton>
+                      {activity?.adventureStatus == "cancelado_pelo_cliente" ? (
+                        <MyButton
+                          variant="red"
+                          borderRadius="squared"
+                          size="md"
+                          className="px-4"
+                        >
+                          Atividade cancelada
+                        </MyButton>
+                      ) : (
+                        <MyButton
+                          variant="outline"
+                          borderRadius="squared"
+                          disabled
+                          size="md"
+                          className="p-4 py-5 ml-4 text-md border-primary-900 border-[3px]"
+                          leftIcon={<MyIcon name="calendar" />}
+                        >
+                          {getData(activity.schedule.datetime, true)}
+                        </MyButton>
+                      )}
                     </>
                   )}
                 </div>

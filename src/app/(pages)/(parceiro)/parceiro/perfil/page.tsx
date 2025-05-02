@@ -80,12 +80,9 @@ export default function PerfiParceiro() {
     },
   });
 
-  const { data: partner } = useQuery({
-    queryKey: ["partner"],
-    queryFn: async () => {
-      const partnerLog = await partnerService.getPartnerLogged();
-      return partnerLog;
-    },
+  const { data: fetchPartner } = useQuery({
+    queryKey: ["fetchPartner"],
+    queryFn: () => partnerService.getPartnerLogged(),
   });
 
   const handleClickUpload = () => {
@@ -101,13 +98,19 @@ export default function PerfiParceiro() {
           file: new Blob([arrayBuffer]),
         });
 
+        await users.uploadMedia({
+          mimetype: file.type,
+          file: new Blob([arrayBuffer]),
+        });
+
         setUser({
-          email: partner?.businessEmail ?? "",
-          name: partner?.fantasyName ?? "",
+          email: fetchPartner?.businessEmail ?? "",
+          name: fetchPartner?.fantasyName ?? "",
           role: user?.role ?? "",
           photo: {
             url,
             mimetype: file.type,
+            updatedAt: fetchPartner?.updatedAt,
           },
         });
 
@@ -115,7 +118,7 @@ export default function PerfiParceiro() {
       } catch (error) {
         console.error("Erro ao enviar imagem", error);
       } finally {
-        queryClient.invalidateQueries({ queryKey: ["partner"] });
+        queryClient.invalidateQueries({ queryKey: ["fetchPartner"] });
       }
     }
   };
@@ -134,8 +137,14 @@ export default function PerfiParceiro() {
       }
     }
     setIsLoading(false);
-    queryClient.invalidateQueries({ queryKey: ["user"] });
+    queryClient.invalidateQueries({ queryKey: ["fetchPartner"] });
   };
+
+  const userData = fetchPartner ?? user;
+
+  const avatar = userData?.photo?.url ?? fetchPartner?.logo?.url;
+
+  console.log("avatar", avatar);
 
   return (
     <section className="px-6 my-8">
@@ -162,7 +171,7 @@ export default function PerfiParceiro() {
           ) : (
             <Image
               alt="avatar"
-              src={partner?.logo?.url ?? "/user.png"}
+              src={`${`${avatar}?${fetchPartner?.updatedAt}` || "/user.png"}`}
               width={28}
               height={28}
               className="w-24 h-24 rounded-full object-cover"
@@ -189,7 +198,7 @@ export default function PerfiParceiro() {
         </Dropzone>
         <div>
           <MyTypography variant="label" weight="semibold">
-            {partner?.fantasyName}
+            {fetchPartner?.fantasyName}
           </MyTypography>
           <MyTypography
             variant="label"
@@ -211,13 +220,13 @@ export default function PerfiParceiro() {
           label="E-mail"
           placeholder="b2adventure@gmail.com"
           className="mt-2 disabled:cursor-default"
-          value={partner?.businessEmail}
+          value={fetchPartner?.businessEmail}
           disabled
         />
         <MyTextInput
           label="Nome Completo"
           placeholder="Nome Completo"
-          value={partner?.fantasyName}
+          value={fetchPartner?.fantasyName}
           className="mt-2 disabled:cursor-default"
           disabled
         />

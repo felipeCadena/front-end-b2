@@ -72,6 +72,10 @@ export interface Partner {
     createdAt: string;
     updatedAt: string;
   };
+  photo?: {
+    url?: string;
+    mimetype?: string;
+  };
 }
 
 export interface UploadImage {

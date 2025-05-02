@@ -11,6 +11,7 @@ import { useRouter } from "next/navigation";
 import PATHS from "@/utils/paths";
 import { getData, getHora, handleNameActivity } from "@/utils/formatters";
 import { cn } from "@/utils/cn";
+import Edit from "../atoms/my-icon/elements/edit";
 
 export default function ActivitiesPhotos({
   activities,
@@ -115,7 +116,8 @@ export default function ActivitiesPhotos({
                         lightness={500}
                         className=""
                       >
-                        Enviar fotos ou vídeos da atividade
+                        Enviar fotos ou vídeos da atividade até 7 dias após a
+                        data da realização
                       </MyTypography>
                     ))}
                 </div>
@@ -126,6 +128,7 @@ export default function ActivitiesPhotos({
                   <MyButton
                     variant="secondary-muted"
                     borderRadius="squared"
+                    size="sm"
                     leftIcon={<Camera color="#8DC63F" />}
                     className="w-full"
                     onClick={() =>
@@ -137,6 +140,7 @@ export default function ActivitiesPhotos({
                   <MyButton
                     variant="secondary-muted"
                     borderRadius="squared"
+                    size="sm"
                     leftIcon={<MyIcon name="video" />}
                     className="w-full"
                     onClick={() =>
@@ -145,6 +149,20 @@ export default function ActivitiesPhotos({
                   >
                     Enviar Vídeos
                   </MyButton>
+                  {activity?.schedule?.dateMediasPosted && (
+                    <MyButton
+                      variant="secondary-muted"
+                      borderRadius="squared"
+                      leftIcon={<Edit fill="#8DC63F" />}
+                      className="w-full"
+                      size="sm"
+                      onClick={() =>
+                        router.push(PATHS["editar-fotos"](activity?.scheduleId))
+                      }
+                    >
+                      Editar Mídias
+                    </MyButton>
+                  )}
                 </div>
               )}
             </div>

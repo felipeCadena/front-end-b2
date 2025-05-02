@@ -19,6 +19,7 @@ import {
 import { partnerService } from "@/services/api/partner";
 import PATHS from "@/utils/paths";
 import { toast } from "react-toastify";
+import MyButton from "@/components/atoms/my-button";
 
 export default function Atividade() {
   const router = useRouter();
@@ -33,7 +34,7 @@ export default function Atividade() {
   const { handleClose, isModalOpen } = useAlert();
   const queryClient = useQueryClient();
 
-  const { data: activity } = useQuery({
+  const { data: activity, isLoading: isLoadingActivity } = useQuery({
     queryKey: ["activity"],
     queryFn: () => adventures.getAdventureById(Number(id)),
   });
@@ -166,7 +167,7 @@ export default function Atividade() {
   }, [activity, activity?.images]);
 
   if (!activity) {
-    return (
+    return isLoadingActivity ? (
       <div className="flex items-center justify-center">
         <Image
           src="/logo.png"
@@ -175,6 +176,20 @@ export default function Atividade() {
           height={250}
           className="object-contain animate-pulse"
         />
+      </div>
+    ) : (
+      <div className="flex flex-col gap-4 items-center justify-center my-10">
+        <MyTypography variant="subtitle3" weight="bold">
+          A atividade buscada não foi encontrada.
+        </MyTypography>
+        <MyButton
+          variant="default"
+          size="lg"
+          borderRadius="squared"
+          onClick={() => router.push(PATHS["atividades-cadastradas"])}
+        >
+          Voltar
+        </MyButton>
       </div>
     );
   }
@@ -287,33 +302,25 @@ export default function Atividade() {
       />
 
       {/* Modal de cancelamento de atividade */}
-      {/* <ModalAlert
+      <ModalAlert
         open={cancel}
         onClose={handleCancel}
         isLoading={isLoading}
         iconName="cancel"
-        title="Cancelamento de Atividade"
-        descrition={
-          hasClient
-            ? "Tem certeza que deseja cancelar essa atividade? Há clientes que já agendaram essa atividade."
-            : "Tem certeza que deseja cancelar?"
-        }
-        button="Cancelar atividade"
-      /> */}
+        title="Exclusão de Atividade"
+        descrition="Tem certeza que deseja excluir a atividade? Você não poderá voltar atrás!"
+        button="Excluir atividade"
+      />
 
       {/* Modal que confirma o cancelamento da atividade */}
-      {/* <ModalAlert
+      <ModalAlert
         open={confirmedCancel}
         onClose={handleConfirmCancel}
         iconName="warning"
         title="Atividade cancelada"
-        descrition={
-          hasClient
-            ? "A atividade ja foi cancelada e em breve seu cliente receberá uma mensagem explicando isso."
-            : "A atividade ja foi cancelada!"
-        }
+        descrition="A atividade foi excluída."
         button="Voltar ao início"
-      /> */}
+      />
 
       {/* Modal que oculta a atividade no site */}
       <ModalAlert
@@ -385,7 +392,6 @@ export default function Atividade() {
             <div className="max-sm:hidden">
               <ActivityEditMenu
                 onEdit={handleEdit}
-                // hasClient={hasClient}
                 isOcult={!activity.onSite}
               />
             </div>
@@ -555,7 +561,8 @@ export default function Atividade() {
                     Duração da atividade
                   </MyTypography>
                   <MyTypography variant="body-big" weight="regular">
-                    {activity?.duration}
+                    {activity?.duration +
+                      (activity?.duration == "01:00" ? " hora" : " horas")}
                   </MyTypography>
                 </div>
               </div>

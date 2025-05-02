@@ -74,10 +74,16 @@ function MyFullCalendarMultiple({
         }}
         modifiers={{
           booked: markedDates.map((act) => act),
+          disabled: (date: Date) =>
+            !markedDates.some(
+              (marked) =>
+                date.getFullYear() === marked.getFullYear() &&
+                date.getMonth() === marked.getMonth() &&
+                date.getDate() === marked.getDate()
+            ),
         }}
         modifiersClassNames={{
-          booked:
-            "bg-primary-800 rounded-lg border border-primary-600 text-primary-600",
+          booked: "bg-primary-600 rounded-lg text-white",
         }}
         styles={{
           months: { display: "flex", justifyContent: "center", width: "100%" },
@@ -137,7 +143,7 @@ function MyFullCalendarMultiple({
           day_range_middle:
             "aria-selected:bg-accent aria-selected:text-accent-foreground",
           day_hidden: "invisible",
-          selected: "bg-primary-600 text-white rounded-md",
+          selected: "bg-[#bceb7c] text-black rounded-lg",
           weekday:
             "font-normal text-[#929292] md:text-primary-600 md:font-semibold opacity-80 pt-6",
           outside: "text-[#929292] opacity-50",

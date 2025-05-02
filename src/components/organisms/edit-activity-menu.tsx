@@ -20,6 +20,8 @@ import Eye from "../atoms/my-icon/elements/eye";
 import { useQuery } from "@tanstack/react-query";
 import { partnerService } from "@/services/api/partner";
 import { useParams } from "next/navigation";
+import Cancel from "../atoms/my-icon/elements/cancel";
+import Warning from "../atoms/my-icon/elements/warning";
 
 export type EditSection =
   | "basic" // título, descrição, tipo
@@ -80,19 +82,15 @@ const menuItems = [
     section: "hide" as EditSection,
     description: "Desativar atividade",
   },
-  // {
-  //   label: "Cancelar atividade",
-  //   icon: <Calendar />,
-  //   section: "cancel" as EditSection,
-  //   description: "Cancelar atividade",
-  // },
+  {
+    label: "Excluir atividade",
+    icon: <Warning fill="#8DC63F" width="24" height="24" />,
+    section: "cancel" as EditSection,
+    description: "Excluir atividade",
+  },
 ];
 
-export function ActivityEditMenu({
-  onEdit,
-  hasClient,
-  isOcult,
-}: ActivityEditMenuProps) {
+export function ActivityEditMenu({ onEdit, isOcult }: ActivityEditMenuProps) {
   return (
     <MyDropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -113,22 +111,20 @@ export function ActivityEditMenu({
           sideOffset={5}
           align="center"
         >
-          {menuItems
-            .filter((menu) => (hasClient ? menu.section != "hide" : menu))
-            .map((item) => (
-              <DropdownMenuItem
-                key={item.section}
-                className="flex items-center gap-2 px-2 py-4 cursor-pointer hover:bg-gray-200"
-                onSelect={() => onEdit(item.section)}
-              >
-                {item.icon}
-                <MyTypography variant="body-big" weight="medium">
-                  {item.label == "Desativar atividade" && isOcult
-                    ? "Ativar Atividade"
-                    : item.label}
-                </MyTypography>
-              </DropdownMenuItem>
-            ))}
+          {menuItems.map((item) => (
+            <DropdownMenuItem
+              key={item.section}
+              className="flex items-center gap-2 px-2 py-4 cursor-pointer hover:bg-gray-200"
+              onSelect={() => onEdit(item.section)}
+            >
+              {item.icon}
+              <MyTypography variant="body-big" weight="medium">
+                {item.label == "Desativar atividade" && isOcult
+                  ? "Ativar Atividade"
+                  : item.label}
+              </MyTypography>
+            </DropdownMenuItem>
+          ))}
         </DropdownMenuContent>
       </DropdownMenuPortal>
     </MyDropdownMenu>

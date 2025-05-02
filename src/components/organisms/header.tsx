@@ -31,6 +31,8 @@ export default function Header() {
 
   const userData = user ?? fetchUser;
 
+  const avatar = userData?.photo?.url ?? fetchUser?.logo?.url;
+
   const withoutHeaderMobile = () => {
     return (
       pathname === PATHS["sobre-a-empresa"] ||
@@ -81,7 +83,7 @@ export default function Header() {
               <div className="flex items-center gap-1 cursor-pointer">
                 <MyIcon name="chevron-down" />
                 <Image
-                  src={userData?.photo?.url ?? "/user.png"}
+                  src={`${avatar ?? "/user.png"}${userData?.photo?.updatedAt ? `?${userData?.photo.updatedAt}` : ""}`}
                   alt="Avatar"
                   width={50}
                   height={50}

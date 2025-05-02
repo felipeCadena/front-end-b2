@@ -55,6 +55,17 @@ export default function PartnerActivitiesHistoric({
   //   );
   // }
 
+  const calculateTotalCost = (ordersScheduleAdventure: any) => {
+    const totalCost = ordersScheduleAdventure?.reduce(
+      (acc: number, order: any) => acc + Number(order.adventureFinalPrice),
+      0
+    );
+    return new Intl.NumberFormat("pt-BR", {
+      style: "currency",
+      currency: "BRL",
+    }).format(totalCost);
+  };
+
   return (
     <section className="md:max-w-screen-custom">
       <ModalClient
@@ -106,7 +117,7 @@ export default function PartnerActivitiesHistoric({
                 height={300}
                 className="object-cover w-[265px] h-[265px]"
                 onClick={() =>
-                  router.push(PATHS.atividadeRealizada(activity?.id))
+                  router.push(PATHS.atividadeRealizada(activity?.adventureId))
                 }
               />
             </div>
@@ -116,7 +127,7 @@ export default function PartnerActivitiesHistoric({
                 <div
                   className="flex flex-col gap-2 cursor-pointer"
                   onClick={() =>
-                    router.push(PATHS.atividadeRealizada(activity?.id))
+                    router.push(PATHS.atividadeRealizada(activity?.adventureId))
                   }
                 >
                   <div className="flex items-center gap-2">
@@ -124,6 +135,11 @@ export default function PartnerActivitiesHistoric({
                       {handleNameActivity(activity?.adventure?.typeAdventure)}
                     </MyBadge>
                     <StarRating rating={activity?.adventure?.averageRating} />
+                    {activity?.adventure?.deleted && (
+                      <MyBadge className="font-medium p-1" variant="warning">
+                        Atividade deletada pelo parceiro!
+                      </MyBadge>
+                    )}
                   </div>
                   <MyTypography variant="subtitle3" weight="bold" className="">
                     {activity?.adventure?.title}
@@ -240,11 +256,10 @@ export default function PartnerActivitiesHistoric({
                     Total:
                   </MyTypography>
                   <MyTypography variant="body" weight="bold" className="">
-                    {activity?.orderAdventure?.totalCost &&
-                      new Intl.NumberFormat("pt-BR", {
-                        style: "currency",
-                        currency: "BRL",
-                      }).format(activity?.orderAdventure?.totalCost)}
+                    {activity?.ordersScheduleAdventure &&
+                    activity?.ordersScheduleAdventure.length > 0
+                      ? calculateTotalCost(activity?.ordersScheduleAdventure)
+                      : "R$ 0,00"}
                   </MyTypography>
                 </div>
               </div>

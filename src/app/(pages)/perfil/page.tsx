@@ -82,7 +82,18 @@ export default function Perfil() {
 
   const { data: fetchUser, isLoading: loadingPage } = useQuery({
     queryKey: ["fetchUser"],
-    queryFn: () => users.getUserLogged(),
+    queryFn: async () => {
+      const user = await users.getUserLogged();
+      setUser({
+        ...user,
+        photo: {
+          url: user?.photo?.url,
+          mimetype: user?.photo?.mimetype,
+          updatedAt: user?.photo?.updatedAt,
+        },
+      });
+      return user;
+    },
   });
 
   console.log("USER", fetchUser);
@@ -145,6 +156,7 @@ export default function Perfil() {
               photo: {
                 url: `${response}?v=${Date.now()}`,
                 mimetype: file[0].type,
+                updatedAt: response?.updatedAt,
               },
             });
           }
@@ -193,7 +205,7 @@ export default function Perfil() {
           ) : (
             <Image
               alt="avatar"
-              src={userData?.photo?.url ?? "/user.png"}
+              src={`${userData?.photo?.url ?? "/user.png"}`}
               width={28}
               height={28}
               className="w-24 h-24 rounded-full object-cover"
