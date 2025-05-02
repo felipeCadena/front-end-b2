@@ -32,6 +32,7 @@ import ActivityTags from '@/components/organisms/actitity-tags';
 import ActivityHeader from '@/components/organisms/activity-header';
 import { v4 as uuidv4 } from 'uuid';
 import Loading from '@/app/loading';
+import NotFound from '@/app/not-found';
 
 const initialScheduleState = {
   qntAdults: 0,
@@ -157,12 +158,12 @@ export default function Atividade() {
     addressCountry: fetchedActivity?.addressCountry,
   };
 
-  console.log('ACT', fetchedActivity);
-
   return isLoading ? (
     <div className="w-full h-[30vh] flex justify-center items-center">
       <Loading />
     </div>
+  ) : !fetchedActivity ? (
+    <NotFound />
   ) : (
     <section className="my-10">
       <div className="relative">

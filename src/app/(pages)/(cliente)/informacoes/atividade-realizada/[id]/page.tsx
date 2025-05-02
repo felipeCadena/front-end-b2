@@ -1,5 +1,7 @@
 'use client';
 
+import Loading from '@/app/loading';
+import NotFound from '@/app/not-found';
 import MyBadge from '@/components/atoms/my-badge';
 import MyButton from '@/components/atoms/my-button';
 import MyIcon from '@/components/atoms/my-icon';
@@ -23,7 +25,7 @@ export default function AtividadeRealizada() {
   const [userRating, setUserRating] = useState(0);
   const { id } = useParams();
 
-  const { data: activity } = useQuery({
+  const { data: activity, isLoading } = useQuery({
     queryKey: ['order_schedule'],
     queryFn: () =>
       ordersAdventuresService.getCustomerSchedulesById(id as string),
@@ -60,7 +62,11 @@ export default function AtividadeRealizada() {
     }
   };
 
-  return (
+  return isLoading ? (
+    <Loading />
+  ) : !activity ? (
+    <NotFound />
+  ) : (
     <section className="mx-4 my-4">
       <div className="flex gap-4 items-center">
         <MyIcon

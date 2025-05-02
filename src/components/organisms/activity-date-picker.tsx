@@ -56,7 +56,7 @@ const ActivityDatePicker = ({
 
   const activityRecurrence = activity?.recurrence ?? [];
 
-  console.log('SCH', activity?.schedules);
+  // console.log('SCH', activity?.schedules);
 
   const groupedRecurrences = agruparRecorrencias(activityRecurrence);
 

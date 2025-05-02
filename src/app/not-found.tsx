@@ -1,11 +1,10 @@
-"use client";
+'use client';
 
-import MyButton from "@/components/atoms/my-button";
-import MyTypography from "@/components/atoms/my-typography";
-import { CardContent, MyCard } from "@/components/molecules/my-card";
-import PATHS from "@/utils/paths";
-import { useRouter } from "next/navigation";
-import Loading from "./loading";
+import MyButton from '@/components/atoms/my-button';
+import MyTypography from '@/components/atoms/my-typography';
+import { CardContent, MyCard } from '@/components/molecules/my-card';
+import PATHS from '@/utils/paths';
+import { useRouter } from 'next/navigation';
 
 export default function NotFound() {
   const router = useRouter();
