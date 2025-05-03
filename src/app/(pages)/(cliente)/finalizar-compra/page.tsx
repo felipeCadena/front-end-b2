@@ -418,11 +418,6 @@ export default function FinalizarCompra() {
                       'md:col-span-2 md:col-start-2'
                   )}
                 >
-                  <MyCheckbox
-                    className=""
-                    label="Salvar os dados para a próxima compra"
-                  />
-
                   {isLoading ? (
                     <MyButton
                       variant="default"
