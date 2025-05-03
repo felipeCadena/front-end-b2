@@ -49,6 +49,7 @@ const CardPaymentOption = ({ form, userCart }: CardPaymentOptionProps) => {
           label="Número do cartão"
           placeholder="XXXX XXXX XXXX XXXX"
           className="mt-2"
+          isCardNumber
           name="creditCard.number"
           form={form}
         />

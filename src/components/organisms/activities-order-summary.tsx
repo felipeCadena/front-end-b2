@@ -1,24 +1,24 @@
-import React from "react";
+import React from 'react';
 
-import Image from "next/image";
-import MyBadge from "../atoms/my-badge";
-import StarRating from "../molecules/my-stars";
-import MyTypography from "../atoms/my-typography";
-import MyIcon from "../atoms/my-icon";
+import Image from 'next/image';
+import MyBadge from '../atoms/my-badge';
+import StarRating from '../molecules/my-stars';
+import MyTypography from '../atoms/my-typography';
+import MyIcon from '../atoms/my-icon';
 import {
   formatPrice,
   formatTime,
   getData,
   handleNameActivity,
   selectActivityImage,
-} from "@/utils/formatters";
-import { useRouter } from "next/navigation";
-import PATHS from "@/utils/paths";
-import { AddToCartAdventure } from "@/services/api/adventures";
-import MyButton from "../atoms/my-button";
-import { useCart } from "@/store/useCart";
-import { useSession } from "next-auth/react";
-import { toast } from "react-toastify";
+} from '@/utils/formatters';
+import { useRouter } from 'next/navigation';
+import PATHS from '@/utils/paths';
+import { AddToCartAdventure } from '@/services/api/adventures';
+import MyButton from '../atoms/my-button';
+import { useCart } from '@/store/useCart';
+import { useSession } from 'next-auth/react';
+import { toast } from 'react-toastify';
 
 type ActivitiesOrderSummaryProps = {
   activities: AddToCartAdventure[];
@@ -36,9 +36,9 @@ const ActivitiesOrderSummary = ({
 
     if (userId) {
       removeFromCart(id, userId);
-      toast.success("Atividade removida do carrinho!");
+      toast.success('Atividade removida do carrinho!');
     } else {
-      toast.error("Token expirado!");
+      toast.error('Token expirado!');
     }
   };
 
@@ -50,7 +50,7 @@ const ActivitiesOrderSummary = ({
             <div
               className="md:col-span-1 relative z-10 overflow-hidden md:min-w-[8rem] md:min-h-full hover:cursor-pointer rounded-md md:flex"
               onClick={() =>
-                router.push(PATHS.visualizarAtividade(adventure.id))
+                router.push(PATHS.visualizarAtividade(adventure?.id))
               }
             >
               <Image
@@ -71,14 +71,14 @@ const ActivitiesOrderSummary = ({
                         className="font-medium text-nowrap p-1 mr-2"
                         variant="outline"
                       >
-                        {handleNameActivity(adventure.typeAdventure)}
+                        {handleNameActivity(adventure?.typeAdventure)}
                       </MyBadge>
-                      <StarRating rating={adventure.averageRating} />
+                      <StarRating rating={adventure?.averageRating} />
                     </div>
                     <div className="flex gap-2 items-center my-1">
                       <Image
                         alt="foto parceiro"
-                        src={adventure.partner.logo.url}
+                        src={adventure?.partner?.logo?.url}
                         width={40}
                         height={40}
                         className="w-[40px] h-[40px] rounded-full border-2"
@@ -88,7 +88,7 @@ const ActivitiesOrderSummary = ({
                         weight="medium"
                         className="mt-1 text-nowrap"
                       >
-                        {adventure.partner.fantasyName}
+                        {adventure?.partner?.fantasyName}
                       </MyTypography>
                     </div>
                   </div>
@@ -102,10 +102,10 @@ const ActivitiesOrderSummary = ({
                 </div>
 
                 <MyTypography variant="subtitle3" weight="bold" className="">
-                  {adventure.title}
+                  {adventure?.title}
                 </MyTypography>
                 <MyTypography variant="label" className="">
-                  {adventure.description}
+                  {adventure?.description}
                 </MyTypography>
               </div>
               <div className="w-full flex flex-col items-center gap-3 p-3 mt-2 bg-[#F1F0F587] border border-primary-600/30 border-opacity-80 rounded-lg shadow-sm hover:bg-gray-100 relative">
@@ -126,8 +126,8 @@ const ActivitiesOrderSummary = ({
                       weight="regular"
                       className="ml-3"
                     >
-                      {getData(schedule.scheduleDate?.toString() as string)} -{" "}
-                      {formatTime(schedule.scheduleTime)}
+                      {getData(schedule?.scheduleDate?.toString() as string)} -{' '}
+                      {formatTime(schedule?.scheduleTime)}
                     </MyTypography>
                   </div>
 
@@ -142,7 +142,7 @@ const ActivitiesOrderSummary = ({
                         className="flex items-center"
                       >
                         <MyIcon name="mobileDuracao" />
-                        {adventure?.duration + " horas"}
+                        {adventure?.duration + ' horas'}
                       </MyTypography>
                     </div>
                   </div>
@@ -159,11 +159,11 @@ const ActivitiesOrderSummary = ({
                       weight="regular"
                       className="ml-3"
                     >
-                      {schedule.qntAdults} x{" "}
-                      {formatPrice(schedule.pricePerAdult)}
+                      {schedule?.qntAdults} x{' '}
+                      {formatPrice(schedule?.pricePerAdult)}
                     </MyTypography>
                   </div>
-                  {schedule.qntChildren > 0 && (
+                  {schedule?.qntChildren > 0 && (
                     <div className="flex flex-col">
                       <MyTypography
                         variant="label"
@@ -177,8 +177,8 @@ const ActivitiesOrderSummary = ({
                         weight="regular"
                         className="ml-3"
                       >
-                        {schedule.qntChildren} x{" "}
-                        {formatPrice(schedule.pricePerChildren ?? "0")}
+                        {schedule?.qntChildren} x{' '}
+                        {formatPrice(schedule?.pricePerChildren ?? '0')}
                       </MyTypography>
                     </div>
                   )}
@@ -193,9 +193,9 @@ const ActivitiesOrderSummary = ({
                     </MyTypography>
                     <MyTypography variant="body" weight="bold" className="">
                       {formatPrice(
-                        schedule.qntAdults * Number(schedule.pricePerAdult) +
-                          schedule.qntChildren *
-                            Number(schedule.pricePerChildren)
+                        schedule?.qntAdults * Number(schedule?.pricePerAdult) +
+                          schedule?.qntChildren *
+                            Number(schedule?.pricePerChildren)
                       )}
                     </MyTypography>
                   </div>

@@ -42,7 +42,7 @@ export default function FavoriteActivity({
   return (
     <div
       key={id}
-      className="min-w-[70%] md:min-w-[30%] lg:min-w-[20%] flex flex-col gap-1 md:mb-8"
+      className="min-w-[70%] md:min-w-[30%] lg:min-w-[20%] flex flex-col gap-1 md:mb-8 max-sm:hidden"
     >
       <div className="relative z-10 overflow-hidden h-[265px] w-full  rounded-md">
         <Link href={PATHS.visualizarAtividade(id)}>

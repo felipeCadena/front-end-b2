@@ -3,6 +3,7 @@
 import Loading from '@/app/loading';
 import MyTypography from '@/components/atoms/my-typography';
 import ActivitiesFilter from '@/components/organisms/activities-filter';
+import FavoriteActivityMobile from '@/components/organisms/favorite-acitvity-mobile';
 import FavoriteActivity from '@/components/organisms/favorite-activity';
 import { adventures } from '@/services/api/adventures';
 import { cn } from '@/utils/cn';
@@ -30,11 +31,19 @@ export default function Favoritos() {
       );
     }
 
-    return filterFav.map((favorite) => (
-      <FavoriteActivity
-        activity={favorite.adventure}
-        favoriteID={favorite.id}
-      />
+    return filterFav.map((favorite, i) => (
+      <>
+        <FavoriteActivity
+          key={`${favorite.id}-${i}`}
+          activity={favorite.adventure}
+          favoriteID={favorite.id}
+        />
+        <FavoriteActivityMobile
+          key={`${favorite.id}-${i}-mobile`}
+          activity={favorite.adventure}
+          favoriteID={favorite.id}
+        />
+      </>
     ));
   };
 
@@ -56,11 +65,18 @@ export default function Favoritos() {
             <div className={cn('md:grid md:grid-cols-4 md:gap-6')}>
               {selected === ''
                 ? favorites.map((favorite, i) => (
-                    <FavoriteActivity
-                      key={`${favorite.id}-${i}`}
-                      activity={favorite.adventure}
-                      favoriteID={favorite.id}
-                    />
+                    <>
+                      <FavoriteActivity
+                        key={`${favorite.id}-${i}`}
+                        activity={favorite.adventure}
+                        favoriteID={favorite.id}
+                      />
+                      <FavoriteActivityMobile
+                        key={`${favorite.id}-${i}-mobile`}
+                        activity={favorite.adventure}
+                        favoriteID={favorite.id}
+                      />
+                    </>
                   ))
                 : filteredAdventures()}
             </div>

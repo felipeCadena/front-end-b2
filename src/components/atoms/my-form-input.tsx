@@ -16,6 +16,7 @@ import MyTextInput from './my-text-input';
 import { Skeleton } from './my-skeleton';
 import { cn } from '@/utils/cn';
 import {
+  formatCardNumber,
   formatCEP,
   formatCpfCnpj,
   formatPhoneNumber,
@@ -34,6 +35,7 @@ type Props<T extends FieldValues> = {
   readonly label?: string;
   readonly isCpfCnpj?: boolean;
   readonly isCEP?: boolean;
+  readonly isCardNumber?: boolean;
   readonly isPhoneNumber?: boolean;
   readonly placeholder?: string;
   readonly className?: string;
@@ -51,6 +53,7 @@ export default function MyFormInput<T extends FieldValues>({
   maskFormat,
   numeric,
   isCpfCnpj,
+  isCardNumber,
   isCEP,
   isPhoneNumber,
   suffix,
@@ -128,6 +131,8 @@ export default function MyFormInput<T extends FieldValues>({
                       formattedValue = formatPhoneNumber(rawValue);
                     } else if (isCEP) {
                       formattedValue = formatCEP(rawValue);
+                    } else if (isCardNumber) {
+                      formattedValue = formatCardNumber(rawValue);
                     }
 
                     field.onChange({

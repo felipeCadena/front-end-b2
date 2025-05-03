@@ -112,9 +112,9 @@ export default function AtividadeRealizada() {
             <MyTypography variant="subtitle3" weight="bold" className="">
               {activity?.adventure?.title}
             </MyTypography>
-            {/* <MyTypography variant="label" className="">
-              {activity?.description}
-            </MyTypography> */}
+            <MyTypography variant="label" className="">
+              {activity?.adventure.description}
+            </MyTypography>
           </div>
         </div>
 

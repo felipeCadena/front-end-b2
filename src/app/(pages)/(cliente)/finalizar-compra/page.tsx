@@ -95,6 +95,8 @@ export default function FinalizarCompra() {
   const [isReadyToPay, setIsReadyToPay] = useState(false);
   const { addToPaymentStore } = useFinishPayment();
   const queryClient = useQueryClient();
+  const installmentsAvailable =
+    process.env.NEXT_PUBLIC_B2_ENABLED_INSTALLMENT_PAY ?? 1;
 
   const handleModal = () => {
     setIsModalOpen((prev) => !prev);
@@ -134,10 +136,12 @@ export default function FinalizarCompra() {
     }
   });
 
+  console.log('PURCHASE ORDER', purchaseOrder);
+
   useQuery({
     queryKey: [purchaseOrder],
     queryFn: () => {
-      if (purchaseOrder && purchaseOrder.length > 1) {
+      if (Number(installmentsAvailable) > 1) {
         setIsModalOpen(true);
       }
       return purchaseOrder ?? [];
@@ -170,6 +174,8 @@ export default function FinalizarCompra() {
     },
   });
 
+  console.log('FORM PURCHASEORDER', form.getValues('adventures'));
+
   useEffect(() => {
     if (purchaseOrder && loggedUser) {
       form.reset({
@@ -185,7 +191,7 @@ export default function FinalizarCompra() {
         adventures: purchaseOrder,
       });
     }
-  }, [userId]);
+  }, [userId, purchaseOrder?.length]);
 
   const handleSubmit = async (formData: FormData) => {
     setIsLoading(true);

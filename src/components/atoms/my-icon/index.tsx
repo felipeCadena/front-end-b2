@@ -122,6 +122,7 @@ import SimpleCalendar from './elements/simple-calendar';
 import TextIcon from './elements/text';
 import Atention from './elements/atention';
 import Marketing from './elements/marketing';
+import MobileFullHeart from './mobile-full-heart';
 
 export type IconsMapTypes = keyof typeof IconsMap;
 
@@ -172,6 +173,7 @@ const IconsMap = {
   'chevron-down': <ChevronDown />,
   file: <File />,
   'full-heart': <FullHeart />,
+  'mobile-full-heart': <MobileFullHeart />,
   'shopping-card': <ShoppingCard />,
   'black-heart': <BlackHeart />,
   'voltar-black': <VoltarBlack />,
