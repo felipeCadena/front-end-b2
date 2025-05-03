@@ -100,8 +100,6 @@ export default function Perfil() {
     },
   });
 
-  console.log('USER', fetchUser);
-
   const handleClickUpload = () => {
     inputRef.current?.click();
   };
@@ -139,9 +137,8 @@ export default function Perfil() {
             mimetype: file[0].type,
             file: new Blob([arrayBuffer]),
           });
-          console.log('useEffect Res', response);
+
           if (user?.name && user?.email && user?.role) {
-            console.log('MUDOU');
             setUser({
               ...user,
               photo: {
