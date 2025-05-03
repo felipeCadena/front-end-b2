@@ -1,60 +1,64 @@
-"use client";
+'use client';
 
-import React from "react";
-import Sidebar from "./sidebar";
-import MyLogo from "../atoms/my-logo";
-import LanguageDropdown from "./language-dropdown";
-import MyIcon from "../atoms/my-icon";
-import { usePathname, useRouter } from "next/navigation";
-import PATHS from "@/utils/paths";
-import Image from "next/image";
-import SideBarModal from "../molecules/side-bar-modal";
-import { cn } from "@/utils/cn";
-import { useSession } from "next-auth/react";
-import useLogin from "@/store/useLogin";
-import { useQuery } from "@tanstack/react-query";
-import { users } from "@/services/api/users";
-import { useAuthStore } from "@/store/useAuthStore";
+import React, { useEffect } from 'react';
+import Sidebar from './sidebar';
+import MyLogo from '../atoms/my-logo';
+import LanguageDropdown from './language-dropdown';
+import MyIcon from '../atoms/my-icon';
+import { usePathname, useRouter } from 'next/navigation';
+import PATHS from '@/utils/paths';
+import Image from 'next/image';
+import SideBarModal from '../molecules/side-bar-modal';
+import { cn } from '@/utils/cn';
+import { useSession } from 'next-auth/react';
+import useLogin from '@/store/useLogin';
+import { useQuery } from '@tanstack/react-query';
+import { users } from '@/services/api/users';
+import { useAuthStore } from '@/store/useAuthStore';
 
 export default function Header() {
   const router = useRouter();
   const pathname = usePathname();
   const { sideBarActive } = useLogin();
-  const { user } = useAuthStore();
+  const { setUser } = useAuthStore();
   const { data: session } = useSession();
 
-  const { data: fetchUser } = useQuery({
-    queryKey: ["fetchUser"],
-    queryFn: () => users.getUserLogged(),
-    enabled: !!session?.user,
+  const { data: fetchUser, refetch } = useQuery({
+    queryKey: ['fetchUser'],
+    queryFn: async () => {
+      const user = await users.getUserLogged();
+      setUser({
+        ...user,
+        photo: {
+          url: user?.photo?.url,
+          mimetype: user?.photo?.mimetype,
+          updatedAt: user?.photo?.updatedAt,
+        },
+      });
+      return user;
+    },
   });
-
-  const userData = user ?? fetchUser;
-
-  const avatar = userData?.photo?.url ?? fetchUser?.logo?.url;
 
   const withoutHeaderMobile = () => {
     return (
-      pathname === PATHS["sobre-a-empresa"] ||
-      pathname === PATHS["cadastro-parceiro"] ||
-      pathname === PATHS["informacoes-atividades"] ||
-      pathname === PATHS["cadastro-atividade"]
+      pathname === PATHS['sobre-a-empresa'] ||
+      pathname === PATHS['cadastro-parceiro'] ||
+      pathname === PATHS['informacoes-atividades'] ||
+      pathname === PATHS['cadastro-atividade']
       // pathname.includes("editar")
     );
   };
 
-  console.log('USER PHOTO', user?.photo?.url);
-
   return (
     <header
       className={cn(
-        "top-0 z-50 h-[100px] w-full md:max-w-screen-custom md:mx-auto bg-white flex items-center justify-between px-4 md:px-6 mb-4",
-        withoutHeaderMobile() && "max-sm:hidden"
+        'top-0 z-50 h-[100px] w-full md:max-w-screen-custom md:mx-auto bg-white flex items-center justify-between px-4 md:px-6 mb-4',
+        withoutHeaderMobile() && 'max-sm:hidden'
       )}
     >
       <div
         className="max-sm:hidden cursor-pointer"
-        onClick={() => router.push("/")}
+        onClick={() => router.push('/')}
       >
         <MyLogo variant="web" width={122} height={40} />
       </div>
@@ -85,12 +89,12 @@ export default function Header() {
               <div className="flex items-center gap-1 cursor-pointer">
                 <MyIcon name="chevron-down" />
                 <Image
-                  src={`${avatar ?? "/user.png"}${userData?.photo?.updatedAt ? `?${userData?.photo.updatedAt}` : ""}`}
+                  key={fetchUser?.photo?.updatedAt}
+                  src={`${fetchUser?.photo?.url}?v=${new Date(fetchUser?.photo?.updatedAt ?? Date.now()).getTime()}`}
                   alt="Avatar"
                   width={50}
                   height={50}
                   className="rounded-full w-14 h-14 object-cover"
-                  unoptimized
                 />
               </div>
             </SideBarModal>

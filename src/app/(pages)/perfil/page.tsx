@@ -80,7 +80,11 @@ export default function Perfil() {
     },
   });
 
-  const { data: fetchUser, isLoading: loadingPage } = useQuery({
+  const {
+    data: fetchUser,
+    isLoading: loadingPage,
+    refetch,
+  } = useQuery({
     queryKey: ['fetchUser'],
     queryFn: async () => {
       const user = await users.getUserLogged();
@@ -98,22 +102,9 @@ export default function Perfil() {
 
   console.log('USER', fetchUser);
 
-  // const [profile, setProfile] = React.useState({
-  //   email: '',
-  //   name: '',
-  //   image: '',
-  // });
   const handleClickUpload = () => {
     inputRef.current?.click();
   };
-
-  // useEffect(() => {
-  //   setProfile({
-  //     email: user?.email ?? '',
-  //     name: user?.name ?? '',
-  //     image: user?.photo?.url ?? '/user.png',
-  //   });
-  // }, [user]);
 
   const handleUploadPicture = async (fileList: FileList | null) => {
     if (fileList && fileList.length > 0) {
@@ -136,7 +127,7 @@ export default function Perfil() {
     }
 
     setIsLoading(false);
-    queryClient.invalidateQueries({ queryKey: ['user'] });
+    queryClient.invalidateQueries({ queryKey: ['fetchUser'] });
   };
 
   useEffect(() => {
@@ -162,9 +153,12 @@ export default function Perfil() {
           }
 
           toast.success('Imagem alterada com sucesso!');
+
           queryClient.invalidateQueries({
             queryKey: ['fetchUser'],
           });
+
+          refetch();
         } catch (error) {
           console.error('Erro ao enviar imagem', error);
         }
@@ -174,7 +168,11 @@ export default function Perfil() {
     handleSendPhoto();
   }, [file]);
 
-  const userData = user ?? fetchUser;
+  const userData = fetchUser ?? user;
+
+  useEffect(() => {
+    refetch();
+  }, []);
 
   return loadingPage ? (
     <div className="w-full h-[30vh] flex justify-center items-center mb-16">
@@ -204,12 +202,12 @@ export default function Perfil() {
             />
           ) : (
             <Image
+              key={fetchUser?.photo?.updatedAt}
               alt="avatar"
-              src={`${userData?.photo?.url ?? '/user.png'}`}
+              src={`${fetchUser?.photo?.url}?v=${new Date(fetchUser?.photo?.updatedAt ?? Date.now()).getTime()}`}
               width={28}
               height={28}
               className="w-24 h-24 rounded-full object-cover"
-              unoptimized
             />
           )}
         </div>
