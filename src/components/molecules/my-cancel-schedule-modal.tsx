@@ -1,17 +1,20 @@
-"use client";
+'use client';
 
-import MyButton from "@/components/atoms/my-button";
-import MyIcon from "@/components/atoms/my-icon";
+import MyButton from '@/components/atoms/my-button';
+import MyIcon from '@/components/atoms/my-icon';
 import {
   DialogContent,
   DialogHeader,
   DialogTitle,
   MyDialog,
-} from "@/components/molecules/my-dialog";
-import MyTypography from "../atoms/my-typography";
+} from '@/components/molecules/my-dialog';
+import MyTypography from '../atoms/my-typography';
 
 interface ModalAlertProps {
   open: boolean;
+  title: string;
+  subtitle?: string;
+  buttonTitle: string;
   onClose: () => void;
   onSubmit: () => void;
   isLoading?: boolean;
@@ -20,6 +23,9 @@ interface ModalAlertProps {
 export default function MyCancelScheduleModal({
   open,
   onClose,
+  title,
+  subtitle,
+  buttonTitle,
   onSubmit,
   isLoading,
 }: ModalAlertProps) {
@@ -37,7 +43,14 @@ export default function MyCancelScheduleModal({
           lightness={500}
           className="w-11/12 mx-auto"
         >
-          Tem certeza que deseja cancelar essa atividade?
+          {title}
+        </MyTypography>
+        <MyTypography
+          variant="subtitle4"
+          lightness={500}
+          className="w-11/12 mx-auto"
+        >
+          {subtitle}
         </MyTypography>
         <MyButton
           variant="black-border"
@@ -47,7 +60,7 @@ export default function MyCancelScheduleModal({
           onClick={onSubmit}
           isLoading={isLoading ?? false}
         >
-          Cancelar atividade
+          {buttonTitle}
         </MyButton>
 
         <MyButton

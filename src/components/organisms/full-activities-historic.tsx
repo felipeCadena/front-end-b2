@@ -43,6 +43,7 @@ export default function FullActivitiesHistoric({
   const router = useRouter();
   const pathname = usePathname();
   const [showModal, setShowModal] = useState(false);
+  const [showCanceledModal, setShowCanceledModal] = useState(false);
   const [cancelOrder, setCancelOrder] = useState<CancelSchedule | null>(null);
   const queryClient = useQueryClient();
 
@@ -59,20 +60,22 @@ export default function FullActivitiesHistoric({
     setShowModal(false);
   };
 
+  const handleCloseSecondModal = () => {
+    setCancelOrder(null);
+    setShowCanceledModal(false);
+  };
+
   const handleCancelSchedule = async () => {
     if (cancelOrder) {
       try {
         const { orderAdventuresId, orderScheduleAdventureId } = cancelOrder;
-        const response = await ordersAdventuresService.cancelSchedule(
+        await ordersAdventuresService.cancelSchedule(
           orderAdventuresId,
           orderScheduleAdventureId
         );
-        toast.success('Atividade cancelada com sucesso!');
         queryClient.invalidateQueries({
           queryKey: ['schedules'],
         });
-
-        console.log(response);
       } catch (error) {
         if (error instanceof AxiosError) {
           if (error.status === 400) {
@@ -83,6 +86,7 @@ export default function FullActivitiesHistoric({
       } finally {
         setCancelOrder(null);
         setShowModal(false);
+        setShowCanceledModal(true);
       }
     }
   };
@@ -334,9 +338,20 @@ export default function FullActivitiesHistoric({
       )}
 
       <MyCancelScheduleModal
+        title="Cancelamento de atividade"
+        subtitle="Tem certeza que deseja cancelar essa atividade? Não será possível remarcar na mesma data ou reembolsar o valor pago."
+        buttonTitle="Cancelar atividade"
         open={showModal}
         onClose={handleClose}
         onSubmit={handleCancelSchedule}
+      />
+      <MyCancelScheduleModal
+        title="Atividade cancelada"
+        subtitle="A atividade já foi cancelada e em breve seu estorno estará disponível na mesma forma de pagamento realizada."
+        buttonTitle="Voltar"
+        open={showCanceledModal}
+        onClose={handleCloseSecondModal}
+        onSubmit={handleCloseSecondModal}
       />
     </section>
   );

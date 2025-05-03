@@ -32,7 +32,10 @@ const formSchema = z.object({
   creditCard: z
     .object({
       holderName: z.string().trim().optional(),
-      number: z.string().trim().optional(),
+      number: z
+        .string()
+        .min(16, { message: 'Número do cartão precisa ter 16 digitos' })
+        .trim(),
       expiryMonth: z.string().optional(),
       expiryYear: z.string().optional(),
       ccv: z.string().optional(),
@@ -172,8 +175,6 @@ export default function FinalizarCompra() {
     },
   });
 
-  console.log('FORM PURCHASEORDER', form.getValues('adventures'));
-
   useEffect(() => {
     if (purchaseOrder && loggedUser) {
       form.reset({
@@ -252,6 +253,15 @@ export default function FinalizarCompra() {
         toast.success('Pedido enviado com sucesso!');
         router.push(`/finalizar-compra/${data.db.id}`);
         return data;
+      }
+
+      if (
+        selectedPayment === 'CREDIT_CARD' &&
+        formattedOrder.creditCard.number &&
+        formattedOrder.creditCard.number.length < 16
+      ) {
+        toast.error('Número do cartão inválido.');
+        return;
       }
 
       await ordersAdventuresService.create(formattedOrder, userIP);

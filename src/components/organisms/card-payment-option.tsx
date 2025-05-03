@@ -7,6 +7,7 @@ import MyFormInput from '../atoms/my-form-input';
 import MyFormSelect from '../atoms/my-form-select';
 import { formatInstallmentOptions } from '@/utils/formatters';
 import { AddToCartAdventure } from '@/services/api/adventures';
+import MyTypography from '../atoms/my-typography';
 
 type CardPaymentOptionProps = {
   form: UseFormReturn<FormData>;
@@ -45,14 +46,25 @@ const CardPaymentOption = ({ form, userCart }: CardPaymentOptionProps) => {
           name="creditCard.holderName"
         />
 
-        <MyFormInput
-          label="Número do cartão"
-          placeholder="XXXX XXXX XXXX XXXX"
-          className="mt-2"
-          isCardNumber
-          name="creditCard.number"
-          form={form}
-        />
+        <div>
+          <MyFormInput
+            label="Número do cartão"
+            placeholder="XXXX XXXX XXXX XXXX"
+            className="mt-2"
+            isCardNumber
+            name="creditCard.number"
+            form={form}
+          />
+          <div className="min-h-[22px]">
+            {creditCard &&
+              creditCard.number.length > 0 &&
+              creditCard.number.length < 19 && (
+                <MyTypography variant="label" className="text-red-600">
+                  O número do cartão deve possuir 16 dígitos
+                </MyTypography>
+              )}
+          </div>
+        </div>
 
         <MyFormSelect
           form={form}
