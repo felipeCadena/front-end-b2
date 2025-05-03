@@ -136,8 +136,6 @@ export default function FinalizarCompra() {
     }
   });
 
-  console.log('PURCHASE ORDER', purchaseOrder);
-
   useQuery({
     queryKey: [purchaseOrder],
     queryFn: () => {
@@ -250,6 +248,7 @@ export default function FinalizarCompra() {
             dueDate: data.db.dueDate,
           });
         }
+        clearCart(userId);
         toast.success('Pedido enviado com sucesso!');
         router.push(`/finalizar-compra/${data.db.id}`);
         return data;
