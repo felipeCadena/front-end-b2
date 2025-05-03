@@ -34,12 +34,12 @@ export default function Favoritos() {
     return filterFav.map((favorite, i) => (
       <>
         <FavoriteActivity
-          key={`${favorite.id}-${i}`}
+          key={`filterd-${favorite.id}-${i}`}
           activity={favorite.adventure}
           favoriteID={favorite.id}
         />
         <FavoriteActivityMobile
-          key={`${favorite.id}-${i}-mobile`}
+          key={`filtered-${favorite.id}-${i}-mobile`}
           activity={favorite.adventure}
           favoriteID={favorite.id}
         />
