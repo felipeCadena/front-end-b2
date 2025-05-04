@@ -162,7 +162,9 @@ export default function FullActivitiesHistoric({
                       size="md"
                       className="text-base p-0 ml-auto"
                       onClick={() =>
-                        router.push(PATHS.atividadeRealizada(activity.id))
+                        router.push(
+                          PATHS.atividadeRealizadaCliente(activity.id)
+                        )
                       }
                     >
                       Avaliar

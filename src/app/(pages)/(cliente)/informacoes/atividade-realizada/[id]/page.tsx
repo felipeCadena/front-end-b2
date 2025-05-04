@@ -62,6 +62,8 @@ export default function AtividadeRealizada() {
     }
   };
 
+  console.log(activity);
+
   return isLoading ? (
     <Loading />
   ) : !activity ? (
@@ -112,8 +114,8 @@ export default function AtividadeRealizada() {
             <MyTypography variant="subtitle3" weight="bold" className="">
               {activity?.adventure?.title}
             </MyTypography>
-            <MyTypography variant="label" className="">
-              {activity?.adventure.description}
+            <MyTypography variant="label">
+              {activity?.adventure?.description}
             </MyTypography>
           </div>
         </div>

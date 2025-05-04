@@ -50,7 +50,7 @@ export default function Notificacao() {
         <div
           key={0}
           className={cn(
-            'md:w-[60%] flex flex-col gap-3 p-4 mt-4 bg-[#F1F0F5] rounded-lg shadow-sm hover:bg-gray-100 relative',
+            'md:w-[60%] flex flex-col gap-3 p-4 mt-4 bg-[#F1F0F5] rounded-lg shadow-sm hover:bg-gray-100 relative w-full',
             orderStatus === 'realizada' && 'opacity-70'
           )}
         >
@@ -77,7 +77,7 @@ export default function Notificacao() {
             {notificationHeader}
           </MyTypography>
           <div className="flex justify-start items-center">
-            <div className="flex flex-col gap-4 ml-2 mt-2">
+            <div className="flex flex-col gap-4 ml-2 mt-2 w-full">
               <p
                 dangerouslySetInnerHTML={{ __html: notification?.text || '' }}
               />
