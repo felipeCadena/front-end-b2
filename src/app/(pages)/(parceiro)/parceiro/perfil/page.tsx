@@ -85,6 +85,22 @@ export default function PerfiParceiro() {
     queryFn: () => partnerService.getPartnerLogged(),
   });
 
+  const { refetch } = useQuery({
+    queryKey: ["fetchUser"],
+    queryFn: async () => {
+      const user = await users.getUserLogged();
+      setUser({
+        ...user,
+        photo: {
+          url: user?.photo?.url,
+          mimetype: user?.photo?.mimetype,
+          updatedAt: user?.photo?.updatedAt,
+        },
+      });
+      return user;
+    },
+  });
+
   const handleClickUpload = () => {
     inputRef.current?.click();
   };
@@ -113,6 +129,8 @@ export default function PerfiParceiro() {
             updatedAt: fetchPartner?.updatedAt,
           },
         });
+
+        refetch();
 
         toast.success("Imagem alterada com sucesso!");
       } catch (error) {
@@ -170,8 +188,9 @@ export default function PerfiParceiro() {
             />
           ) : (
             <Image
+              key={user?.photo?.updatedAt}
               alt="avatar"
-              src={`${`${avatar}?${fetchPartner?.updatedAt}` || "/user.png"}`}
+              src={`${user?.photo?.url}?v=${new Date(user?.photo?.updatedAt ?? Date.now()).getTime()}`}
               width={28}
               height={28}
               className="w-24 h-24 rounded-full object-cover"

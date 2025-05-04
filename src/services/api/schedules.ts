@@ -149,7 +149,7 @@ export const schedules = {
 
   deleteScheduleMedia: async (id: string, mediaID: string) => {
     try {
-      const response = await api.delete(`/schedule/${id}/media/${mediaID}`);
+      const response = await api.delete(`/schedules/${id}/media/${mediaID}`);
       return response.data;
     } catch (error) {
       console.error(

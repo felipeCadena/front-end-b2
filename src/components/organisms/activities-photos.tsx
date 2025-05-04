@@ -128,41 +128,31 @@ export default function ActivitiesPhotos({
                   <MyButton
                     variant="secondary-muted"
                     borderRadius="squared"
-                    size="sm"
+                    size="md"
                     leftIcon={<Camera color="#8DC63F" />}
                     className="w-full"
                     onClick={() =>
                       router.push(PATHS["enviar-fotos"](activity?.scheduleId))
                     }
                   >
-                    Enviar Fotos
+                    {activity?.schedule?.dateMediasPosted
+                      ? "Editar Fotos"
+                      : "Enviar Fotos"}
                   </MyButton>
                   <MyButton
                     variant="secondary-muted"
                     borderRadius="squared"
-                    size="sm"
+                    size="md"
                     leftIcon={<MyIcon name="video" />}
                     className="w-full"
                     onClick={() =>
                       router.push(PATHS["enviar-videos"](activity?.id))
                     }
                   >
-                    Enviar Vídeos
+                    {activity?.schedule?.dateMediasPosted
+                      ? "Editar Vídeos"
+                      : "Enviar Vídeos"}
                   </MyButton>
-                  {activity?.schedule?.dateMediasPosted && (
-                    <MyButton
-                      variant="secondary-muted"
-                      borderRadius="squared"
-                      leftIcon={<Edit fill="#8DC63F" />}
-                      className="w-full"
-                      size="sm"
-                      onClick={() =>
-                        router.push(PATHS["editar-fotos"](activity?.scheduleId))
-                      }
-                    >
-                      Editar Mídias
-                    </MyButton>
-                  )}
                 </div>
               )}
             </div>

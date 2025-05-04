@@ -138,7 +138,7 @@ export default function MultiSelect({
                         "bg-primary-600 text-white",
                       disabledTimes &&
                         disabledTimes.includes(option.value) &&
-                        "opacity-50 cursor-not-allowed"
+                        "opacity-50 cursor-not-allowed pointer-events-none"
                     )}
                   >
                     {option.label}

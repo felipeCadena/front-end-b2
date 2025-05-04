@@ -1,22 +1,22 @@
-'use client';
-import React from 'react';
-import MyButton from '../atoms/my-button';
-import MyIcon, { IconsMapTypes } from '../atoms/my-icon';
-import { cn } from '@/utils/cn';
-import MyTypography from '../atoms/my-typography';
-import { usePathname } from 'next/navigation';
-import { useDebounce } from '@/hooks/useDebounce';
-import { useQuery } from '@tanstack/react-query';
-import { adventures } from '@/services/api/adventures';
-import { TypeAdventure } from '@/store/useAdventureStore';
+"use client";
+import React from "react";
+import MyButton from "../atoms/my-button";
+import MyIcon, { IconsMapTypes } from "../atoms/my-icon";
+import { cn } from "@/utils/cn";
+import MyTypography from "../atoms/my-typography";
+import { usePathname } from "next/navigation";
+import { useDebounce } from "@/hooks/useDebounce";
+import { useQuery } from "@tanstack/react-query";
+import { adventures } from "@/services/api/adventures";
+import { TypeAdventure } from "@/store/useAdventureStore";
 
 type ActivitiesFilterProps = {
   withText?: boolean;
   withoutText?: boolean;
   small?: boolean;
   admin?: boolean;
-  selected?: 'ar' | 'terra' | 'mar' | '';
-  setSelected?: (value: 'ar' | 'terra' | 'mar' | '') => void;
+  selected?: "ar" | "terra" | "mar" | "";
+  setSelected?: (value: "ar" | "terra" | "mar" | "") => void;
 };
 
 export default function ActivitiesFilter({
@@ -31,30 +31,25 @@ export default function ActivitiesFilter({
 
   const activities: {
     icon: IconsMapTypes;
-    name: 'ar' | 'terra' | 'mar';
+    name: "ar" | "terra" | "mar";
     title: string;
   }[] = [
     {
-      icon: 'ar',
-      name: 'ar',
-      title: 'Atividades Aéreas',
+      icon: "ar",
+      name: "ar",
+      title: "Atividades Aéreas",
     },
     {
-      icon: 'terra',
-      name: 'terra',
-      title: 'Atividades Terrestres',
+      icon: "terra",
+      name: "terra",
+      title: "Atividades Terrestres",
     },
     {
-      icon: 'mar',
-      name: 'mar',
-      title: 'Atividades Aquáticas',
+      icon: "mar",
+      name: "mar",
+      title: "Atividades Aquáticas",
     },
   ];
-
-  const { data: filterAdventure } = useQuery({
-    queryKey: ['user', selected],
-    queryFn: () => adventures.filterAdventures({ typeAdventure: selected }),
-  });
 
   const handleFilterClick = (
     e: React.MouseEvent<HTMLButtonElement>,
@@ -70,11 +65,11 @@ export default function ActivitiesFilter({
   return (
     <section
       className={cn(
-        'flex flex-col justify-around gap-2 mx-auto',
-        withText ? 'mt-12 md:my-12' : 'my-6'
+        "flex flex-col justify-around gap-2 mx-auto",
+        withText ? "mt-12 md:my-12" : "my-6"
       )}
     >
-      {withText && pathname == '/' ? (
+      {withText && pathname == "/" ? (
         <div className="md:hidden mx-4">
           <MyTypography variant="heading2" weight="semibold">
             Como você quer se aventurar?
@@ -86,7 +81,7 @@ export default function ActivitiesFilter({
       ) : (
         withText &&
         !admin && (
-          <div className={cn('md:hidden', withoutText && 'hidden')}>
+          <div className={cn("md:hidden", withoutText && "hidden")}>
             <MyTypography variant="heading2" weight="semibold" className="mx-4">
               Qual sua próxima aventura?
             </MyTypography>
@@ -111,8 +106,8 @@ export default function ActivitiesFilter({
       )}
       <div
         className={cn(
-          'flex justify-center gap-2 max-sm:w-full',
-          small && 'gap-4'
+          "flex justify-center gap-2 max-sm:w-full",
+          small && "gap-4"
         )}
       >
         {activities.map((item, index) => (
@@ -121,10 +116,10 @@ export default function ActivitiesFilter({
             variant="outline-muted"
             size="md"
             className={cn(
-              'flex max-sm:flex-col gap-1 items-center rounded-md max-sm:w-[6.5rem] max-sm:h-[6.5rem] md:py-8 md:w-1/2 md:border-2 md:border-black md:text-nowrap',
+              "flex max-sm:flex-col gap-1 items-center rounded-md max-sm:w-[6.5rem] max-sm:h-[6.5rem] md:py-8 md:w-1/2 md:border-2 md:border-black md:text-nowrap",
               item.name === selected &&
-                'border border-black bg-[#E5E4E9] opacity-100',
-              small && 'md:flex-col md:w-[10rem] md:h-[5rem]'
+                "border border-black bg-[#E5E4E9] opacity-100",
+              small && "md:flex-col md:w-[10rem] md:h-[5rem]"
             )}
             onClick={(e) => handleFilterClick(e, item.name)}
           >

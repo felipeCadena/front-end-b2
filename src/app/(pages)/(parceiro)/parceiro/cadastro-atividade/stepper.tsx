@@ -60,7 +60,6 @@ export default function StepperComponent() {
         date.recurrenceHour.length
     );
 
-    console.log(someDate);
     if ((!typeAdventure || !description || !title) && currentStep == 0) {
       toast.error("Preencha todos os campos.");
       return;

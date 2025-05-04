@@ -213,7 +213,7 @@ export default function Schedules({
         variant="secondary"
         borderRadius="squared"
         size="lg"
-        className="w-1/2 mx-auto"
+        className="w-full md:w-1/2 mx-auto"
         onClick={(e) => handleAddSelectionBlock(e)}
         leftIcon={<MyIcon name="soma" />}
       >

@@ -13,16 +13,19 @@ export default function SendImages({
   setOpen,
   config,
   handleSendImages,
+  handleDeleteMedia,
   isLoading,
+  schedulesMedia,
 }: {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   config?: boolean;
   handleSendImages: (files: File[]) => void;
+  handleDeleteMedia: (mediaId: string) => void;
   isLoading: boolean;
+  schedulesMedia?: any;
 }) {
   const [files, setFiles] = useState<File[] | null>(null);
-  const [images, setImages] = useState<File[] | null>(null);
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -34,6 +37,7 @@ export default function SendImages({
     if (files) {
       console.log(files);
       handleSendImages(files);
+      setFiles(null);
     }
   };
 
@@ -54,8 +58,32 @@ export default function SendImages({
       />
 
       <div className="grid grid-cols-3 md:flex md:flex-wrap gap-4 items-center">
+        {schedulesMedia &&
+          schedulesMedia?.map((media: any, index: number) => (
+            <div key={media.id} className="relative w-[100px] mt-4">
+              <Image
+                width={100}
+                height={100}
+                src={media.url}
+                alt={media.name}
+                className="w-[100px] h-[100px] rounded-md object-cover"
+              />
+              <MyTypography
+                weight="bold"
+                className="absolute top-1 left-1 bg-white w-6 h-6 rounded-full flex items-center justify-center text-xs text-primary-600"
+              >
+                {index + 1}
+              </MyTypography>
+              <MyIcon
+                name="x"
+                className="absolute flex items-center justify-center w-6 h-6 top-1 right-1 cursor-pointer bg-white rounded-full"
+                onClick={() => handleDeleteMedia(media.id)}
+              />
+            </div>
+          ))}
+
         {files &&
-          files.map((file, index) => (
+          files?.map((file, index) => (
             <div key={file.name} className="relative w-[100px] mt-4">
               <Image
                 width={100}
@@ -68,7 +96,7 @@ export default function SendImages({
                 weight="bold"
                 className="absolute top-1 left-1 bg-white w-6 h-6 rounded-full flex items-center justify-center text-xs text-primary-600"
               >
-                {index + 1}
+                {schedulesMedia.length + index + 1}
               </MyTypography>
               <MyIcon
                 name="x"

@@ -120,6 +120,48 @@ export interface MyScheduleParams {
   offset?: number;
 }
 
+export interface IncomeType {
+  [key: string]: {
+    countTotal: number;
+    sumTotal: number;
+    marTotal: number;
+    marPercent: number;
+    arTotal: number;
+    arPercent: number;
+    terraTotal: number;
+    terraPercent: number;
+  };
+}
+
+export interface PartnerIncome {
+  startsAt: string; // ex: "2025-04-01T00:00:00-03:00"
+  endsAt: string; // ex: "2025-04-30T23:59:59-03:00"
+  total_orders: number;
+  partnerId: number;
+  total_value_pending: number;
+  total_value_paid: number;
+  ordersSchedules: OrderSchedule[];
+}
+
+export interface OrderSchedule {
+  id: string;
+  adventureFinalPrice: string;
+  adventureStatus: "realizado" | string;
+  partnerIsPaid: boolean;
+  partnerValue: string;
+  personsIsAccounted: boolean;
+  partnerConfirmed: boolean;
+  orderAdventure: OrderAdventure;
+}
+
+export interface OrderAdventure {
+  id: number;
+  customer: {
+    name: string;
+  };
+  paymentStatus: "CONFIRMED" | "RECEIVED" | string;
+}
+
 export const partnerService = {
   getPartnerLogged: async (): Promise<Partner | null> => {
     try {
@@ -297,23 +339,31 @@ export const partnerService = {
   },
 
   // Payment
-  getIncome: async (
-    partnerId: number,
-    startsAt: string,
-    endsAt: string
-  ): Promise<number | null> => {
+  getIncome: async (params?: {
+    startsAt?: string;
+    endsAt?: string;
+    typeGroup?: string;
+  }): Promise<IncomeType | null> => {
     try {
-      const response = await api.get<{ income: number }>(
-        `/admin/partner/income`,
-        {
-          params: {
-            partnerId,
-            startsAt,
-            endsAt,
-          },
-        }
-      );
-      return response.data.income;
+      const response = await api.get<IncomeType>(`/admin/partner/income`, {
+        params,
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching partner income:", error);
+      return null;
+    }
+  },
+
+  getOrders: async (params?: {
+    startsAt?: string;
+    endsAt?: string;
+  }): Promise<PartnerIncome | null> => {
+    try {
+      const response = await api.get<PartnerIncome>(`/admin/partner/orders`, {
+        params,
+      });
+      return response.data;
     } catch (error) {
       console.error("Error fetching partner income:", error);
       return null;

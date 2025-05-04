@@ -1,20 +1,20 @@
-'use client';
+"use client";
 
-import MyButton from '@/components/atoms/my-button';
-import MyIcon from '@/components/atoms/my-icon';
+import MyButton from "@/components/atoms/my-button";
+import MyIcon from "@/components/atoms/my-icon";
 import {
   DialogContent,
   DialogHeader,
   DialogTitle,
   MyDialog,
-} from '@/components/molecules/my-dialog';
-import MyTypography from '../atoms/my-typography';
+} from "@/components/molecules/my-dialog";
+import MyTypography from "../atoms/my-typography";
 
 interface ModalAlertProps {
   open: boolean;
-  title: string;
+  title?: string;
   subtitle?: string;
-  buttonTitle: string;
+  buttonTitle?: string;
   onClose: () => void;
   onSubmit: () => void;
   isLoading?: boolean;

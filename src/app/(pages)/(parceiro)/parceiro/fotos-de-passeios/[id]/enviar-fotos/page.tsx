@@ -5,15 +5,17 @@ import MyTypography from "@/components/atoms/my-typography";
 import SendImages from "@/components/organisms/send-images";
 import { schedules } from "@/services/api/schedules";
 import { getData } from "@/utils/formatters";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams, useRouter } from "next/navigation";
 import React from "react";
+import { toast } from "react-toastify";
 
 export default function EnviarFotos() {
   const router = useRouter();
   const { id } = useParams();
   const [isLoading, setIsLoading] = React.useState(false);
   const [sendImages, setSendImages] = React.useState(false);
+  const queryClient = useQueryClient();
 
   const handleSendImages = async (files: File[]) => {
     setIsLoading(true);
@@ -31,6 +33,7 @@ export default function EnviarFotos() {
       );
 
       setSendImages(true);
+      queryClient.invalidateQueries({ queryKey: ["schedulesMedia"] });
     } catch (error) {
       console.error("Erro ao enviar imagens:", error);
     } finally {
@@ -47,6 +50,22 @@ export default function EnviarFotos() {
     queryKey: ["schedule"],
     queryFn: () => schedules.getScheduleById(id as string),
   });
+
+  const handleDeleteMedia = async (mediaId: string) => {
+    try {
+      setIsLoading(true);
+      await schedules.deleteScheduleMedia(id as string, mediaId);
+
+      // Invalida a query para recarregar as imagens
+      queryClient.invalidateQueries({ queryKey: ["schedulesMedia"] });
+      toast.success("Imagem excluída com sucesso");
+    } catch (error) {
+      console.error("Erro ao excluir imagem:", error);
+      toast.error("Erro ao excluir imagem");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const limitDateForMedias = schedule?.limitDateForMedias;
 
@@ -83,6 +102,8 @@ export default function EnviarFotos() {
         open={sendImages}
         setOpen={setSendImages}
         handleSendImages={handleSendImages}
+        handleDeleteMedia={handleDeleteMedia}
+        schedulesMedia={schedulesMedia}
         isLoading={isLoading}
       />
     </main>
