@@ -63,7 +63,7 @@ export default function ConfirmModal({
               variant="black-border"
               borderRadius="squared"
               size="lg"
-              className={cn("mt-4 w-11/12 mx-auto font-bold")}
+              className={cn("mt-4 w-11/12 md:w-full mx-auto font-bold")}
               // isLoading={isLoading ?? false}
             >
               {customConfirmMessage}

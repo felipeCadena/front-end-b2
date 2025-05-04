@@ -50,6 +50,7 @@ export default function SuasAtividades() {
       <ModalAlert
         open={isModalOpen}
         onClose={handleClose}
+        onAction={handleClose}
         iconName="success"
         title="Atividade cadastrada"
         descrition="Parabéns! Sua nova atividade já foi cadastrada e já pode ser visualizada pelos nossos clientes."

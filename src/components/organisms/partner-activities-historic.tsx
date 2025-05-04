@@ -16,6 +16,8 @@ import PopupActivity from "./popup-activity";
 import ModalClient from "./modal-client";
 import Pessoas from "../atoms/my-icon/elements/pessoas";
 import { schedules } from "@/services/api/schedules";
+import { ordersAdventuresService } from "@/services/api/orders";
+import { toast } from "react-toastify";
 
 export default function PartnerActivitiesHistoric({
   activities,
@@ -38,6 +40,7 @@ export default function PartnerActivitiesHistoric({
   const handleModalCustomers = async (id: string) => {
     try {
       const clients = await schedules.getScheduleById(id);
+      console.log(clients);
       setClientList(clients);
       setShowModal(true);
     } catch (error) {
@@ -45,15 +48,7 @@ export default function PartnerActivitiesHistoric({
     }
   };
 
-  // if (!activities) {
-  //   return (
-  //     <div className="flex items-center justify-center w-full h-full">
-  //       <MyTypography variant="subtitle3" weight="bold" className="">
-  //         Nenhuma atividade encontrada
-  //       </MyTypography>
-  //     </div>
-  //   );
-  // }
+  console.log(activities);
 
   const calculateTotalCost = (ordersScheduleAdventure: any) => {
     const totalCost = ordersScheduleAdventure?.reduce(
@@ -64,6 +59,24 @@ export default function PartnerActivitiesHistoric({
       style: "currency",
       currency: "BRL",
     }).format(totalCost);
+  };
+
+  const handleConfirmSchedule = async (
+    scheduleId: string,
+    orderScheduleAdventureId: string
+  ) => {
+    try {
+      const response = await ordersAdventuresService.partnerConfirmSchedule(
+        scheduleId,
+        orderScheduleAdventureId
+      );
+      if (response) {
+        toast.success("Agendamento confirmado com sucesso!");
+      }
+    } catch (error) {
+      console.error("Error confirming schedule:", error);
+      toast.error("Erro ao confirmar agendamento!");
+    }
   };
 
   return (
@@ -80,7 +93,11 @@ export default function PartnerActivitiesHistoric({
       {activities &&
         activities.map((activity: any, index: number) => (
           <div
-            className="flex items-center gap-4 mt-20 mb-20 w-full"
+            className={cn(
+              "flex items-center gap-4 mt-20 mb-20 w-full",
+              (activity?.adventure?.deleted || activity.isCanceled) &&
+                "cursor-not-allowed opacity-50"
+            )}
             key={index}
           >
             {withDate && (
@@ -115,7 +132,11 @@ export default function PartnerActivitiesHistoric({
                 }
                 width={250}
                 height={300}
-                className="object-cover w-[265px] h-[265px]"
+                className={cn(
+                  "object-cover w-[265px] h-[265px]",
+                  (activity?.adventure?.deleted || activity.isCanceled) &&
+                    "cursor-not-allowed opacity-50"
+                )}
                 onClick={() =>
                   router.push(PATHS.atividadeRealizada(activity?.adventureId))
                 }
@@ -125,7 +146,11 @@ export default function PartnerActivitiesHistoric({
             <div className="w-full space-y-2 max-h-[265px]">
               <div className="w-full flex justify-between mb-4 relative">
                 <div
-                  className="flex flex-col gap-2 cursor-pointer"
+                  className={cn(
+                    "flex flex-col gap-2 cursor-pointer",
+                    (activity?.adventure?.deleted || activity.isCanceled) &&
+                      "cursor-not-allowed opacity-50"
+                  )}
                   onClick={() =>
                     router.push(PATHS.atividadeRealizada(activity?.adventureId))
                   }
@@ -137,7 +162,13 @@ export default function PartnerActivitiesHistoric({
                     <StarRating rating={activity?.adventure?.averageRating} />
                     {activity?.adventure?.deleted && (
                       <MyBadge className="font-medium p-1" variant="warning">
-                        Atividade deletada pelo parceiro!
+                        Atividade deletada!
+                      </MyBadge>
+                    )}
+
+                    {activity?.isCanceled && (
+                      <MyBadge className="font-medium p-1" variant="error">
+                        Atividade cancelada!
                       </MyBadge>
                     )}
                   </div>
@@ -151,6 +182,23 @@ export default function PartnerActivitiesHistoric({
                       .concat("...") ?? ""}
                   </MyTypography>
                 </div>
+
+                {!activity?.adventure?.deleted && !activity.isCanceled && (
+                  <MyButton
+                    variant="outline-neutral"
+                    borderRadius="squared"
+                    size="sm"
+                    className="mx-12"
+                    onClick={() =>
+                      handleConfirmSchedule(
+                        activity?.id,
+                        activity?.ordersScheduleAdventure[0]?.id
+                      )
+                    }
+                  >
+                    Confirmar agendamento
+                  </MyButton>
+                )}
 
                 {!withDate && (
                   <MyButton
@@ -268,7 +316,11 @@ export default function PartnerActivitiesHistoric({
                 onClick={() =>
                   router.push(PATHS["enviar-fotos"](activity?.schedule?.id))
                 }
-                className="cursor-pointer flex justify-between items-center p-4 bg-[#F1F0F587] border border-primary-600/30 md:bg-primary-900 border-opacity-80 rounded-lg shadow-sm relative"
+                className={cn(
+                  "cursor-pointer flex justify-between items-center p-4 bg-[#F1F0F587] border border-primary-600/30 md:bg-primary-900 border-opacity-80 rounded-lg shadow-sm relative",
+                  (activity?.adventure?.deleted || activity.isCanceled) &&
+                    "cursor-not-allowed opacity-50"
+                )}
               >
                 <div className="absolute inset-y-0 left-0 w-3 bg-primary-900 rounded-l-lg"></div>
 

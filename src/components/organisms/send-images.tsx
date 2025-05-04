@@ -51,6 +51,7 @@ export default function SendImages({
       <ModalAlert
         open={open}
         onClose={handleClose}
+        onAction={handleClose}
         iconName="warning"
         title="Fotos enviadas"
         descrition="As fotos dessa atividade foram envidas para os seus clientes que participaram neste dia com sucesso."

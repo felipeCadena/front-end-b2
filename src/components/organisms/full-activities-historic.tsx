@@ -272,7 +272,7 @@ export default function FullActivitiesHistoric({
                       Duração da atividade
                     </MyTypography>
                     <MyTypography variant="body" weight="regular" className="">
-                      {activity?.adventure?.duration?.slice(0, 1) ?? "3"} horas
+                      {activity?.adventure?.duration ?? "3"} horas
                     </MyTypography>
                   </div>
                 </div>

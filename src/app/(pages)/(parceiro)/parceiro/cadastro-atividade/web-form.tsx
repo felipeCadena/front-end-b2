@@ -105,8 +105,8 @@ export default function WebForm({
 
   const inputRef = React.useRef<HTMLInputElement>(null);
 
-  console.log(recurrences);
-  console.log(availableDates);
+  console.log(hoursBeforeCancellation);
+  console.log(hoursBeforeSchedule);
 
   // Atualiza as datas para um bloco específico
   const handleDateChange = (blockId: number, dates: Date[]) => {

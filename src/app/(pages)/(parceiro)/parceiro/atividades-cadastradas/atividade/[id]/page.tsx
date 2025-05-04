@@ -289,14 +289,13 @@ export default function Atividade() {
     }
   };
 
-  console.log(activity?.hoursBeforeSchedule);
-
   return (
     <section className="my-10">
       {/* Modal de Atividade Cadastrada */}
       <ModalAlert
         open={isModalOpen}
         onClose={handleClose}
+        onAction={handleClose}
         iconName="success"
         title="Atividade cadastrada"
         descrition="Parabéns! Sua nova atividade já foi cadastrada e já pode ser visualizada pelos nossos clientes."
@@ -306,7 +305,8 @@ export default function Atividade() {
       {/* Modal de cancelamento de atividade */}
       <ModalAlert
         open={cancel}
-        onClose={handleCancel}
+        onClose={() => setCancel(false)}
+        onAction={handleCancel}
         isLoading={isLoading}
         iconName="cancel"
         title="Exclusão de Atividade"
@@ -317,7 +317,8 @@ export default function Atividade() {
       {/* Modal que confirma o cancelamento da atividade */}
       <ModalAlert
         open={confirmedCancel}
-        onClose={handleConfirmCancel}
+        onClose={() => setConfirmedCancel(false)}
+        onAction={handleConfirmCancel}
         iconName="warning"
         title="Atividade cancelada"
         descrition="A atividade foi excluída."
@@ -327,7 +328,8 @@ export default function Atividade() {
       {/* Modal que oculta a atividade no site */}
       <ModalAlert
         open={hideActivity}
-        onClose={handleHideActivity}
+        onClose={() => setHideActivity(false)}
+        onAction={handleHideActivity}
         iconName="warning"
         title={activity.onSite ? "Desativar Atividade" : "Ativar Atividade"}
         descrition={
@@ -342,6 +344,7 @@ export default function Atividade() {
       <ModalAlert
         open={confirmedHideActivity}
         onClose={() => setConfirmedHideActivity(false)}
+        onAction={() => setConfirmedHideActivity(false)}
         iconName="warning"
         title={
           !activity.onSite ? "Atividade Desativada" : "Atividade Reativada"

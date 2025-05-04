@@ -1,30 +1,30 @@
-'use client';
+"use client";
 
-import MyButton from '@/components/atoms/my-button';
-import MyCheckbox from '@/components/atoms/my-checkbox';
-import MyIcon, { IconsMapTypes } from '@/components/atoms/my-icon';
-import MyTypography from '@/components/atoms/my-typography';
-import ActivitiesOrderSummary from '@/components/organisms/activities-order-summary';
-import CardPaymentOption from '@/components/organisms/card-payment-option';
-import PreOrderForm from '@/components/organisms/pre-order-form';
-import { useCart } from '@/store/useCart';
-import { cn } from '@/utils/cn';
-import PATHS from '@/utils/paths';
-import { useRouter } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { MyForm } from '@/components/atoms/my-form';
-import { ordersAdventuresService } from '@/services/api/orders';
-import { toast } from 'react-toastify';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { users } from '@/services/api/users';
-import { AxiosError } from 'axios';
-import MySpinner from '@/components/atoms/my-spinner';
-import { useFinishPayment } from '@/store/useFinishPayment';
-import ModalAlert from '@/components/molecules/modal-alert';
-import { formatCpfCnpj, formatPhoneNumber } from '@/utils/formatters';
+import MyButton from "@/components/atoms/my-button";
+import MyCheckbox from "@/components/atoms/my-checkbox";
+import MyIcon, { IconsMapTypes } from "@/components/atoms/my-icon";
+import MyTypography from "@/components/atoms/my-typography";
+import ActivitiesOrderSummary from "@/components/organisms/activities-order-summary";
+import CardPaymentOption from "@/components/organisms/card-payment-option";
+import PreOrderForm from "@/components/organisms/pre-order-form";
+import { useCart } from "@/store/useCart";
+import { cn } from "@/utils/cn";
+import PATHS from "@/utils/paths";
+import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { MyForm } from "@/components/atoms/my-form";
+import { ordersAdventuresService } from "@/services/api/orders";
+import { toast } from "react-toastify";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { users } from "@/services/api/users";
+import { AxiosError } from "axios";
+import MySpinner from "@/components/atoms/my-spinner";
+import { useFinishPayment } from "@/store/useFinishPayment";
+import ModalAlert from "@/components/molecules/modal-alert";
+import { formatCpfCnpj, formatPhoneNumber } from "@/utils/formatters";
 
 const formSchema = z.object({
   paymentMethod: z.string().optional(),
@@ -34,7 +34,7 @@ const formSchema = z.object({
       holderName: z.string().trim().optional(),
       number: z
         .string()
-        .min(16, { message: 'Número do cartão precisa ter 16 digitos' })
+        .min(16, { message: "Número do cartão precisa ter 16 digitos" })
         .trim(),
       expiryMonth: z.string().optional(),
       expiryYear: z.string().optional(),
@@ -67,24 +67,24 @@ const formSchema = z.object({
 });
 
 const paymentDefaultValues = {
-  paymentMethod: 'PIX',
-  installmentCount: '1',
+  paymentMethod: "PIX",
+  installmentCount: "1",
   creditCard: {
-    holderName: '',
-    number: '',
-    expiryMonth: '',
-    expiryYear: '',
-    ccv: '',
+    holderName: "",
+    number: "",
+    expiryMonth: "",
+    expiryYear: "",
+    ccv: "",
   },
   creditCardHolderInfo: {
-    name: '',
-    email: '',
-    cpfCnpj: '',
-    postalCode: '',
-    addressNumber: '000',
+    name: "",
+    email: "",
+    cpfCnpj: "",
+    postalCode: "",
+    addressNumber: "000",
     addressComplement: null,
-    phone: '4738010919',
-    mobilePhone: '',
+    phone: "4738010919",
+    mobilePhone: "",
   },
 };
 
@@ -92,7 +92,7 @@ export type FormData = z.infer<typeof formSchema>;
 
 export default function FinalizarCompra() {
   const router = useRouter();
-  const [selectedPayment, setSelectedPayment] = useState<string>('PIX');
+  const [selectedPayment, setSelectedPayment] = useState<string>("PIX");
   const [isLoading, setIsLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isReadyToPay, setIsReadyToPay] = useState(false);
@@ -108,22 +108,22 @@ export default function FinalizarCompra() {
   const { carts, clearCart } = useCart();
 
   const { data: loggedUser } = useQuery({
-    queryKey: ['logged_user'],
+    queryKey: ["logged_user"],
     queryFn: () => users.getUserLogged(),
   });
 
-  const { data: userIP = '' } = useQuery({
-    queryKey: ['user_ip_address'],
+  const { data: userIP = "" } = useQuery({
+    queryKey: ["user_ip_address"],
     queryFn: () => users.getIP(),
   });
 
-  const userId = loggedUser?.id ?? '';
+  const userId = loggedUser?.id ?? "";
 
   const userCart = carts.find((cart) => cart.userId === userId);
 
   const purchaseOrder = userCart?.cart.map((item) => {
     if (item) {
-      const [hour, minute] = item.schedule.scheduleTime.split(':');
+      const [hour, minute] = item.schedule.scheduleTime.split(":");
       const scheduleDate = new Date(item.schedule.scheduleDate as Date);
       scheduleDate.setHours(Number(hour));
       scheduleDate.setMinutes(Number(minute));
@@ -151,19 +151,19 @@ export default function FinalizarCompra() {
 
   const payments: { name: string; label: string; icon: IconsMapTypes }[] = [
     {
-      name: 'PIX',
-      label: 'Pix',
-      icon: 'pix',
+      name: "PIX",
+      label: "Pix",
+      icon: "pix",
     },
     {
-      name: 'BOLETO',
-      label: 'Boleto',
-      icon: 'boleto',
+      name: "BOLETO",
+      label: "Boleto",
+      icon: "boleto",
     },
     {
-      name: 'CREDIT_CARD',
-      label: 'Cartão de crédito',
-      icon: 'card',
+      name: "CREDIT_CARD",
+      label: "Cartão de crédito",
+      icon: "card",
     },
   ];
 
@@ -199,36 +199,36 @@ export default function FinalizarCompra() {
       installmentCount: Number(formData.installmentCount),
       creditCard: {
         ...formData.creditCard,
-        number: formData.creditCard?.number?.replaceAll(' ', ''),
+        number: formData.creditCard?.number?.replaceAll(" ", ""),
       },
       creditCardHolderInfo: {
         ...formData.creditCardHolderInfo,
         cpfCnpj: formData.creditCardHolderInfo?.cpfCnpj
-          .replaceAll('-', '')
-          .replaceAll('/', '')
-          .replaceAll('.', '')
-          .replaceAll(' ', ''),
+          .replaceAll("-", "")
+          .replaceAll("/", "")
+          .replaceAll(".", "")
+          .replaceAll(" ", ""),
         postalCode: formData.creditCardHolderInfo?.postalCode.replaceAll(
-          '.',
-          ''
+          ".",
+          ""
         ),
         mobilePhone: formData.creditCardHolderInfo?.mobilePhone?.replace(
           /\D/g,
-          ''
+          ""
         ),
       },
     };
 
     try {
-      if (selectedPayment === 'BOLETO' || selectedPayment === 'PIX') {
+      if (selectedPayment === "BOLETO" || selectedPayment === "PIX") {
         const { data } = await ordersAdventuresService.create(
           formattedOrder,
           userIP
         );
         queryClient.invalidateQueries({
-          queryKey: ['unread_notifications'],
+          queryKey: ["unread_notifications"],
         });
-        if (selectedPayment === 'PIX') {
+        if (selectedPayment === "PIX") {
           addToPaymentStore({
             id: data.db.id,
             paymentMethod: data.db.paymentMethod,
@@ -240,7 +240,7 @@ export default function FinalizarCompra() {
             pixCopyPaste: data.pixResponse.payload,
           });
         }
-        if (selectedPayment === 'BOLETO') {
+        if (selectedPayment === "BOLETO") {
           addToPaymentStore({
             id: data.db.id,
             paymentMethod: data.db.paymentMethod,
@@ -250,25 +250,25 @@ export default function FinalizarCompra() {
           });
         }
         clearCart(userId);
-        toast.success('Pedido enviado com sucesso!');
+        toast.success("Pedido enviado com sucesso!");
         router.push(`/finalizar-compra/${data.db.id}`);
         return data;
       }
 
       if (
-        selectedPayment === 'CREDIT_CARD' &&
+        selectedPayment === "CREDIT_CARD" &&
         formattedOrder.creditCard.number &&
         formattedOrder.creditCard.number.length < 16
       ) {
-        toast.error('Número do cartão inválido.');
+        toast.error("Número do cartão inválido.");
         return;
       }
 
       await ordersAdventuresService.create(formattedOrder, userIP);
-      toast.success('Pedido enviado com sucesso!');
+      toast.success("Pedido enviado com sucesso!");
       clearCart(userId);
       queryClient.invalidateQueries({
-        queryKey: ['unread_notifications'],
+        queryKey: ["unread_notifications"],
       });
       router.push(PATHS.atividades);
     } catch (error) {
@@ -278,11 +278,11 @@ export default function FinalizarCompra() {
           return;
         }
         if (error.status === 401) {
-          toast.error('Token inválido ou expirado. Faça login novamente.');
+          toast.error("Token inválido ou expirado. Faça login novamente.");
           return;
         }
       }
-      toast.error('Um erro inesperado ocorreu!');
+      toast.error("Um erro inesperado ocorreu!");
       console.error(error);
     } finally {
       setIsLoading(false);
@@ -291,7 +291,7 @@ export default function FinalizarCompra() {
 
   const handleSelectPaymentOption = (paymentName: string) => {
     setSelectedPayment(paymentName);
-    form.setValue('paymentMethod', paymentName);
+    form.setValue("paymentMethod", paymentName);
   };
 
   return (
@@ -341,8 +341,8 @@ export default function FinalizarCompra() {
               onClick={() => router.push(PATHS.atividades)}
             >
               {userCart && userCart.cart.length > 0
-                ? 'Adicionar mais atividades'
-                : 'Adicionar atividades'}
+                ? "Adicionar mais atividades"
+                : "Adicionar atividades"}
             </MyButton>
 
             <MyButton
@@ -350,7 +350,7 @@ export default function FinalizarCompra() {
               borderRadius="squared"
               size="lg"
               className="md:hidden w-full max-sm:mt-6"
-              onClick={() => router.push(PATHS['finalizar-compra'])}
+              onClick={() => router.push(PATHS["finalizar-compra"])}
             >
               Finalizar Pedido
             </MyButton>
@@ -383,7 +383,7 @@ export default function FinalizarCompra() {
           <MyForm {...form}>
             <form
               onSubmit={form.handleSubmit(handleSubmit)}
-              className={cn('md:flex md:flex-col md:w-full')}
+              className={cn("md:flex md:flex-col md:w-full")}
             >
               <PreOrderForm form={form} />
               <div className="my-4">
@@ -391,7 +391,7 @@ export default function FinalizarCompra() {
                   Selecione o método de pagamento:
                 </MyTypography>
               </div>
-              <div className={cn('flex gap-4 mb-4')}>
+              <div className={cn("flex gap-4 mb-4")}>
                 {payments.map((payment) => (
                   <MyButton
                     key={payment.name}
@@ -399,9 +399,9 @@ export default function FinalizarCompra() {
                     type="button"
                     borderRadius="squared"
                     className={cn(
-                      'flex justify-between md:max-w-[200px]',
+                      "flex justify-between md:max-w-[200px]",
                       selectedPayment === payment.name &&
-                        'bg-primary-900 opacity-100 border border-primary-600'
+                        "bg-primary-900 opacity-100 border border-primary-600"
                     )}
                     size="md"
                     value={selectedPayment}
@@ -413,7 +413,7 @@ export default function FinalizarCompra() {
                 ))}
               </div>
 
-              {selectedPayment === 'CREDIT_CARD' && (
+              {selectedPayment === "CREDIT_CARD" && (
                 <CardPaymentOption
                   userCart={userCart ? userCart.cart : []}
                   form={form}
@@ -423,9 +423,9 @@ export default function FinalizarCompra() {
               {selectedPayment && (
                 <div
                   className={cn(
-                    'mt-6 md:mt-4 col-start-2',
-                    selectedPayment === 'CREDIT_CARD' &&
-                      'md:col-span-2 md:col-start-2'
+                    "mt-6 md:mt-4 col-start-2",
+                    selectedPayment === "CREDIT_CARD" &&
+                      "md:col-span-2 md:col-start-2"
                   )}
                 >
                   {isLoading ? (
@@ -458,6 +458,7 @@ export default function FinalizarCompra() {
       <ModalAlert
         open={isModalOpen}
         onClose={handleModal}
+        onAction={handleModal}
         button="Fechar"
         title="Atenção!"
         descrition="Não será aceito parcelamento para pagamento de mais de uma atividade."

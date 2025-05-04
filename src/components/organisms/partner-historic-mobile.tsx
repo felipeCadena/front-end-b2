@@ -20,6 +20,8 @@ import User from "../atoms/my-icon/elements/user";
 import Pessoas from "../atoms/my-icon/elements/pessoas";
 import { schedules } from "@/services/api/schedules";
 import { getHours } from "date-fns";
+import MyButton from "../atoms/my-button";
+import MyBadge from "../atoms/my-badge";
 
 export default function PartnerHistoricMobile({
   activities,
@@ -76,10 +78,11 @@ export default function PartnerHistoricMobile({
                 key={activity.id}
                 className={cn(
                   "w-full flex flex-col gap-2 px-3 py-2 bg-[#F1F0F5] rounded-lg shadow-sm hover:bg-gray-100 relative cursor-pointer",
-                  activity.isCanceled && "border border-[#FF7272]",
+                  activity.isCanceled &&
+                    "border border-[#FF7272] cursor-not-allowed opacity-50",
                   isPastActivity(activity?.datetime) && !activity.isCanceled
                     ? "border border-[#9F9F9F]"
-                    : "border border-[#8DC63F]"
+                    : !activity.isCanceled && "border border-[#8DC63F]"
                 )}
               >
                 {!hidden ? (
@@ -100,23 +103,31 @@ export default function PartnerHistoricMobile({
                   </div>
                 )}
 
-                <div className="flex items-center justify-between w-full">
-                  <MyTypography
-                    variant="notification"
-                    weight="semibold"
-                    className="mt-1 flex gap-2 items-center"
-                  >
-                    <Now
-                      iconColor={cn(
-                        activity?.isCanceled && "#FF7272",
-                        isPastActivity(activity?.datetime) &&
-                          !activity.isCanceled
-                          ? "#9F9F9F"
-                          : "#8DC63F"
-                      )}
-                    />
-                    {`${getData(activity?.datetime)} - ${getHora(activity?.datetime)}`}
-                  </MyTypography>
+                <div className="flex items-center gap-4">
+                  <div className="flex items-center justify-between">
+                    <MyTypography
+                      variant="notification"
+                      weight="semibold"
+                      className="mt-1 flex gap-2 items-center"
+                    >
+                      <Now
+                        iconColor={cn(
+                          activity?.isCanceled && "#FF7272",
+                          isPastActivity(activity?.datetime) &&
+                            !activity.isCanceled
+                            ? "#1E1E1E"
+                            : !activity.isCanceled && "#8DC63F"
+                        )}
+                      />
+                      {`${getData(activity?.datetime)} - ${getHora(activity?.datetime)}`}
+                    </MyTypography>
+                  </div>
+
+                  {!activity?.isCanceled ? (
+                    <MyBadge variant="warning">Confirmar agendamento</MyBadge>
+                  ) : (
+                    <MyBadge variant="error">Cancelada</MyBadge>
+                  )}
                 </div>
 
                 <MyTypography variant="label" weight="semibold" className="">

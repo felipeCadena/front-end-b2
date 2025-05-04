@@ -381,6 +381,7 @@ const PagamentoMobile = () => {
       <ModalAlert
         open={isModalOpen}
         onClose={handleModal}
+        onAction={handleModal}
         button="Fechar"
         title="Atenção!"
         descrition="Não será aceito parcelamento para pagamento de mais de uma atividade."

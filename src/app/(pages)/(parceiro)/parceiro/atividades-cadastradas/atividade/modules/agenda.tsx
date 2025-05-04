@@ -21,36 +21,43 @@ export default function Agenda({ formData, setFormData, onClose }: ModalProps) {
     try {
       await partnerService.createMoreSchedule(formData.id, body);
       queryClient.invalidateQueries({ queryKey: ["activity"] });
-      toast.success("Horários criados com sucesso!");
     } catch (error) {
       console.error("Error creating schedule:", error);
       toast.error("Erro ao criar horário!");
     }
   };
 
-  const handleCancelSchedule = async (scheduleId: string) => {
+  const handleCancelSchedule = async (
+    scheduleId: string,
+    justificativa?: string
+  ) => {
     try {
       console.log("scheduleId", scheduleId);
-      await partnerService.cancelSchedule(scheduleId, formData.id);
+      await partnerService.cancelSchedule(
+        scheduleId,
+        formData.id,
+        justificativa
+      );
 
       queryClient.invalidateQueries({ queryKey: ["activity"] });
-      toast.success("Horário cancelado com sucesso!");
     } catch (error) {
       console.error("Error creating schedule:", error);
       toast.error("Erro ao cancelar horário!");
     }
   };
 
-  const handleCancelAllSchedules = async (schedulesId: string[]) => {
+  const handleCancelAllSchedules = async (
+    schedulesId: string[],
+    justificativa?: string
+  ) => {
     try {
       const allSchedules = schedulesId.map((scheduleId) =>
-        partnerService.cancelSchedule(scheduleId, formData.id)
+        partnerService.cancelSchedule(scheduleId, formData.id, justificativa)
       );
 
       await Promise.all(allSchedules);
 
       queryClient.invalidateQueries({ queryKey: ["activity"] });
-      toast.success("Horários cancelados com sucesso!");
     } catch (error) {
       console.error("Error creating schedule:", error);
       toast.error("Erro ao cancelar todos os horário!");

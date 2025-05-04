@@ -141,17 +141,17 @@ export const ordersAdventuresService = {
     }
   },
   partnerConfirmSchedule: async (
-    id: string,
+    scheduleId: string,
     orderScheduleAdventureId: string
   ) => {
     try {
       const response = await api.post(
-        `/ordersAdventures/${id}/orderSchedule/${orderScheduleAdventureId}/confirm`
+        `/ordersAdventures/${scheduleId}/orderSchedule/${orderScheduleAdventureId}/confirm`
       );
       return response.data;
     } catch (error) {
       console.error(
-        `Error confirming schedule for order ID ${id} and schedule ID ${orderScheduleAdventureId}:`,
+        `Error confirming schedule for order ID ${scheduleId} and schedule ID ${orderScheduleAdventureId}:`,
         error
       );
       throw error;
