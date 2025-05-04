@@ -1,22 +1,108 @@
 "use client";
 
-import useLogin from "@/app/(pages)/(cliente)/(acesso)/login/login-store";
+import React, { useEffect } from "react";
+
 import MyButton from "@/components/atoms/my-button";
 import MyIcon from "@/components/atoms/my-icon";
 import MyLogo from "@/components/atoms/my-logo";
 import MyTextInput from "@/components/atoms/my-text-input";
 import MyTypography from "@/components/atoms/my-typography";
-import PATHS from "@/utils/paths";
+import PATHS, { DEFAULT_ROLE_PATHS } from "@/utils/paths";
 import { useRouter } from "next/navigation";
-import React from "react";
+import { toast } from "react-toastify";
+import { useAuthStore } from "@/store/useAuthStore";
+import GoogleLoginButton from "@/components/molecules/google-login-button";
+import { getSession, signIn, useSession } from "next-auth/react";
+import FacebookLoginButton from "@/components/molecules/facebook-login-button";
+import useLogin from "@/store/useLogin";
 
-export default function LoginParceiro() {
+export default function Login() {
   const router = useRouter();
-  const { email, setEmail } = useLogin();
+  const { setUser } = useAuthStore();
+  const [isLoading, setIsLoading] = React.useState(false);
+  const { data: session, status } = useSession();
 
-  const handleLogin = () => {
-    if (email === "parceiro@gmail.com") {
-      router.push(PATHS["minhas-atividades"]);
+  const [visibility, setVisibility] = React.useState(false);
+
+  const { email, password, error, setEmail, setPassword, clearError } =
+    useLogin();
+
+  useEffect(() => {
+    const handleSessionUpdate = async () => {
+      if (status === "authenticated" && session?.user?.role) {
+        try {
+          const userData = {
+            id: session.user.id,
+            name: session.user.name ?? "",
+            email: session.user.email ?? "",
+            role: session.user.role.toLowerCase(),
+          };
+
+          setUser({
+            id: session.user.id!, // Garante que id não é undefined
+            name: userData.name,
+            email: userData.email,
+            role: userData.role,
+          });
+
+          const userRole = session.user.role.toLowerCase();
+          const roleMapping = {
+            superadmin: "admin",
+            admin: "admin",
+            partner: "partner",
+            customer: "customer",
+          };
+
+          const mappedRole = roleMapping[userRole as keyof typeof roleMapping];
+          const defaultPath =
+            DEFAULT_ROLE_PATHS[mappedRole as keyof typeof DEFAULT_ROLE_PATHS];
+
+          if (defaultPath) {
+            console.log("Redirecionando para:", defaultPath);
+            router.replace(defaultPath);
+          }
+        } catch (error) {
+          console.error("Erro ao processar sessão:", error);
+        }
+      }
+    };
+
+    handleSessionUpdate();
+  }, [session, status]);
+
+  const handleLogin = async () => {
+    setIsLoading(true);
+    const credentials = { email, password };
+    try {
+      await signIn("credentials", {
+        ...credentials,
+        redirect: false,
+      });
+
+      // if (!session?.user?.role) {
+      //   console.log("Erro ao obter dados do usuário");
+      //   toast.error("Erro ao fazer login. Tente novamente em 5 minutos!");
+      //   return;
+      // }
+
+      // const userRole = session.user.role.toLowerCase() ?? "";
+
+      // // Atualiza o user no store global
+      // setUser({
+      //   id: session.user.id ?? "",
+      //   name: session.user.name ?? "",
+      //   email: session.user.email ?? "",
+      //   role: userRole,
+      // });
+
+      // router.push(session.user.defaultPath ?? "/");
+
+      toast.success("Login realizado com sucesso!");
+    } catch (err) {
+      console.error("Erro no login:", err);
+      toast.error(error || "Erro ao fazer login");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -33,7 +119,7 @@ export default function LoginParceiro() {
           <MyIcon
             name="voltar"
             className="absolute top-16 left-0 md:hidden"
-            onClick={() => router.push(PATHS["minhas-atividades"])}
+            onClick={() => router.push(PATHS.initial)}
           />
         </div>
 
@@ -47,7 +133,10 @@ export default function LoginParceiro() {
             noHintText
             placeholder="b2adventure@gmail.com"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => {
+              clearError();
+              setEmail(e.target.value);
+            }}
             className="mt-2"
           />
         </div>
@@ -56,52 +145,70 @@ export default function LoginParceiro() {
           <MyTextInput
             label="Senha"
             placeholder="******"
-            type="password"
-            noHintText
+            type={visibility ? "text" : "password"}
+            rightIcon={
+              <MyIcon
+                name={visibility ? "hide" : "eye"}
+                className="mr-4 mt-6 cursor-pointer"
+                onClick={() => setVisibility((prev) => !prev)}
+              />
+            }
             className="mt-2"
+            onChange={(e) => {
+              clearError();
+              setPassword(e.target.value);
+            }}
           />
         </div>
+
+        {error && (
+          <MyTypography variant="caption" className="text-red-500 mt-2">
+            {error}
+          </MyTypography>
+        )}
 
         <div className="flex flex-col">
           <MyButton
             variant="text"
-            className="mt-4"
-            onClick={() => router.push(PATHS["senha-parceiro"])}
+            className="p-0  underline"
+            onClick={() => router.push(PATHS["esqueci-minha-senha"])}
           >
             Esqueci minha senha
           </MyButton>
 
           <MyButton
-            className="mt-8"
+            className="mt-8 "
             variant="default"
             borderRadius="squared"
             size="md"
             onClick={handleLogin}
+            disabled={isLoading}
           >
-            Login
+            {isLoading ? "Entrando..." : "Login"}
           </MyButton>
 
-          <MyButton
-            className="mt-4"
-            variant="outline-neutral"
-            borderRadius="squared"
-            size="md"
-            leftIcon={<MyIcon name="google" />}
-          >
-            Logar com o Google
-          </MyButton>
+          <GoogleLoginButton />
 
-          <MyButton
-            className="mt-4"
-            variant="outline-neutral"
-            borderRadius="squared"
-            size="md"
-            leftIcon={<MyIcon name="facebook" />}
-          >
-            Logar com o Facebook
-          </MyButton>
+          <FacebookLoginButton />
+          <div className="text-center mt-4">
+            <MyTypography
+              variant="label"
+              weight="regular"
+              className="text-[#5F5C6B]"
+            >
+              Deseja ser um parceiro? Clique{" "}
+              <MyButton
+                variant="text"
+                className="p-0 underline"
+                onClick={() => router.push(PATHS.parceiro)}
+              >
+                aqui
+              </MyButton>
+              .
+            </MyTypography>
+          </div>
 
-          <div className="text-center mt-12">
+          <div className="text-center mt-4">
             <MyTypography
               variant="label"
               weight="regular"
@@ -111,16 +218,7 @@ export default function LoginParceiro() {
             </MyTypography>
             <MyButton
               variant="text"
-              onClick={() => router.push("cadastro-parceiro")}
-              className="max-sm:hidden"
-            >
-              Cadastre-se
-            </MyButton>
-
-            <MyButton
-              variant="text"
-              onClick={() => router.push(PATHS["termos-parceiro"])}
-              className="md:hidden"
+              onClick={() => router.push(PATHS.cadastro)}
             >
               Cadastre-se
             </MyButton>

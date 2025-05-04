@@ -8,6 +8,7 @@ import { usePathname } from "next/navigation";
 import { useDebounce } from "@/hooks/useDebounce";
 import { useQuery } from "@tanstack/react-query";
 import { adventures } from "@/services/api/adventures";
+import { TypeAdventure } from "@/store/useAdventureStore";
 
 type ActivitiesFilterProps = {
   withText?: boolean;
@@ -15,7 +16,7 @@ type ActivitiesFilterProps = {
   small?: boolean;
   admin?: boolean;
   selected?: "ar" | "terra" | "mar" | "";
-  setSelected?: (value: "ar" | "terra" | "mar") => void;
+  setSelected?: (value: "ar" | "terra" | "mar" | "") => void;
 };
 
 export default function ActivitiesFilter({
@@ -50,10 +51,16 @@ export default function ActivitiesFilter({
     },
   ];
 
-  // const { data: filterAdventure } = useQuery({
-  //   queryKey: ["user", selected],
-  //   queryFn: () => adventures.filterAdventures({ typeAdventure: selected }),
-  // });
+  const handleFilterClick = (
+    e: React.MouseEvent<HTMLButtonElement>,
+    filter: TypeAdventure
+  ) => {
+    e.preventDefault(); // Previne o comportamento padrão
+    e.stopPropagation(); // Impede a propagação do evento
+
+    setSelected(filter);
+    // Sua lógica de filtro aqui
+  };
 
   return (
     <section
@@ -63,7 +70,7 @@ export default function ActivitiesFilter({
       )}
     >
       {withText && pathname == "/" ? (
-        <div className="md:hidden">
+        <div className="md:hidden mx-4">
           <MyTypography variant="heading2" weight="semibold">
             Como você quer se aventurar?
           </MyTypography>
@@ -114,7 +121,7 @@ export default function ActivitiesFilter({
                 "border border-black bg-[#E5E4E9] opacity-100",
               small && "md:flex-col md:w-[10rem] md:h-[5rem]"
             )}
-            onClick={() => setSelected(item.name)}
+            onClick={(e) => handleFilterClick(e, item.name)}
           >
             <MyIcon name={item.icon as IconsMapTypes} />
             <span className="px-4">{item.title}</span>

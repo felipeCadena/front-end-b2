@@ -7,6 +7,7 @@ import "react-toastify/dist/ReactToastify.css";
 import Layout from "@/components/organisms/layout";
 import AuthProvider from "@/providers/auth-provider";
 import { Provider } from "@/providers/provider";
+import { GoogleMapsProvider } from "@/providers/google-provider";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -35,9 +36,11 @@ export default function RootLayout({
       >
         <AuthProvider>
           <Provider>
-            <Suspense>
-              <Layout>{children}</Layout>
-            </Suspense>
+            <GoogleMapsProvider>
+              <Suspense>
+                <Layout>{children}</Layout>
+              </Suspense>
+            </GoogleMapsProvider>
             <ToastContainer
               position="top-right"
               autoClose={3000}

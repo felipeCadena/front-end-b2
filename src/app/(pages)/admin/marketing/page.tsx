@@ -1,12 +1,11 @@
-"use client";
+'use client';
 
-import { activities } from "@/common/constants/mock";
-import MyIcon from "@/components/atoms/my-icon";
-import MyTypography from "@/components/atoms/my-typography";
-import Activities from "@/components/organisms/activities";
-import ActivitiesPhotos from "@/components/organisms/activities-photos";
-import { useRouter } from "next/navigation";
-import React from "react";
+import { activities } from '@/common/constants/mock';
+import MyIcon from '@/components/atoms/my-icon';
+import MyTypography from '@/components/atoms/my-typography';
+import ActivitiesPhotos from '@/components/organisms/activities-photos';
+import { useRouter } from 'next/navigation';
+import React from 'react';
 
 export default function Marketing() {
   const router = useRouter();

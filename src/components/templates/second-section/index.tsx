@@ -1,41 +1,51 @@
-"use client";
+'use client';
 
-import MyTypography from "@/components/atoms/my-typography";
-import ActivitiesFilter from "@/components/organisms/activities-filter";
-import React from "react";
-import CarouselCustom from "./carousel-custom";
-import { activities, newActivities } from "@/common/constants/mock";
-import { useQuery } from "@tanstack/react-query";
-import { adventures as adventuresService } from "@/services/api/adventures";
-import useAdventures from "@/store/useAdventure";
+import MyTypography from '@/components/atoms/my-typography';
+import ActivitiesFilter from '@/components/organisms/activities-filter';
+import React from 'react';
+import CarouselCustom from './carousel-custom';
+import { useQuery } from '@tanstack/react-query';
+import { adventures as adventuresService } from '@/services/api/adventures';
+import useAdventures from '@/store/useAdventure';
+import { handleNameActivity } from '@/utils/formatters';
+import Loading from '@/app/loading';
 
 export default function SecondSection() {
-  const [selected, setSelected] = React.useState<"ar" | "terra" | "mar" | "">(
-    ""
+  const [selected, setSelected] = React.useState<'ar' | 'terra' | 'mar' | ''>(
+    ''
   );
-  const { setAdventures, adventures } = useAdventures();
+  const {
+    setAdventures,
+    adventures,
+    searchedAdventures,
+    setSearchedAdventures,
+  } = useAdventures();
 
   // adventures
-  const { data: filterAdventures } = useQuery({
-    queryKey: ["adventures", selected],
+  const { isLoading } = useQuery({
+    queryKey: ['adventures', selected],
     queryFn: async () => {
       const filterAdventures = await adventuresService.filterAdventures({
         typeAdventure: selected ? selected : undefined,
       });
 
-      setAdventures(filterAdventures.data);
-      return filterAdventures.data;
+      setSearchedAdventures(selected);
+      setAdventures(filterAdventures);
+
+      return filterAdventures;
     },
   });
 
   // adventures
-  const { data: popularAdventures } = useQuery({
-    queryKey: ["popularAdventures"],
+  const { data: popularAdventures = [] } = useQuery({
+    queryKey: ['popularAdventures'],
     queryFn: async () =>
-      await adventuresService.getAdventures({ orderBy: "qntTotalSales desc" }),
+      await adventuresService.getAdventures({ orderBy: 'qntTotalSales desc' }),
   });
 
-  return (
+  return isLoading ? (
+    <Loading />
+  ) : (
     <section className="">
       <ActivitiesFilter selected={selected} setSelected={setSelected} />
 
@@ -44,13 +54,13 @@ export default function SecondSection() {
           Conheça nossas atividades
         </MyTypography>
         <MyTypography variant="subtitle3" weight="regular" className="mt-1">
-          Esses são os resultados da sua busca
+          {handleNameActivity(searchedAdventures)}
         </MyTypography>
 
         <CarouselCustom
-          activities={newActivities.map((activity) => ({
+          activities={adventures.map((activity) => ({
             ...activity,
-            addressComplement: activity.addressComplement || "",
+            addressComplement: activity.addressComplement || '',
           }))}
         />
 
@@ -64,9 +74,9 @@ export default function SecondSection() {
         </MyTypography>
 
         <CarouselCustom
-          activities={newActivities.map((activity) => ({
+          activities={popularAdventures.map((activity) => ({
             ...activity,
-            addressComplement: activity.addressComplement || "",
+            addressComplement: activity.addressComplement || '',
           }))}
         />
       </div>

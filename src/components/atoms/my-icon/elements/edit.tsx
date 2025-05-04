@@ -1,7 +1,15 @@
-const Edit = ({ fill = "#9F9F9F" }: { fill?: string }) => (
+const Edit = ({
+  fill = "#9F9F9F",
+  width = "24",
+  height = "23",
+}: {
+  fill?: string;
+  width?: string;
+  height?: string;
+}) => (
   <svg
-    width="24"
-    height="23"
+    width={width}
+    height={height}
     viewBox="0 0 24 23"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"

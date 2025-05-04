@@ -1,30 +1,23 @@
-"use client";
+'use client';
 
-import { activities } from "@/common/constants/mock";
-import MyButton from "@/components/atoms/my-button";
-import MyIcon from "@/components/atoms/my-icon";
-import MyTextInput from "@/components/atoms/my-text-input";
-import MyTypography from "@/components/atoms/my-typography";
-import { MyDatePicker } from "@/components/molecules/my-date-picker";
-import TimePickerModal from "@/components/molecules/time-picker";
-import ActivitiesDetails from "@/components/organisms/activities-details";
-import PeopleSelector from "@/components/organisms/people-selector";
-import ShoppingDetails from "@/components/organisms/shopping-details";
-import PATHS from "@/utils/paths";
-import { useRouter } from "next/navigation";
-import React from "react";
+import MyButton from '@/components/atoms/my-button';
+import MyIcon from '@/components/atoms/my-icon';
+import MyTypography from '@/components/atoms/my-typography';
+import MobileActivitiesOrderSummary from '@/components/organisms/mobile-activity-order-summary';
+import { useCart } from '@/store/useCart';
+import PATHS from '@/utils/paths';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import React from 'react';
 
 export default function Carrinho() {
   const router = useRouter();
-  const [selectedDates, setSelectedDates] = React.useState<Date[]>([]); // Estado para armazenar as datas selecionadas
+  const session = useSession();
 
-  const activity = activities.filter((activity) =>
-    activity.title.includes("Atividade 2")
-  );
+  const userId = session.data?.user.id;
 
-  const activityDetails = activities.find((activity) =>
-    activity.title.includes("Atividade 1")
-  );
+  const { carts } = useCart();
+  const userCart = carts.find((cart) => cart.userId === userId);
 
   return (
     <section className="mx-4 my-4 -z-10 md:hidden">
@@ -34,50 +27,43 @@ export default function Carrinho() {
           className="-ml-2"
           onClick={() => router.back()}
         />
-        <MyTypography variant="subtitle1" weight="bold" className="">
+        <MyTypography variant="subtitle1" weight="bold" className="ml-6">
           Carrinho de compras
         </MyTypography>
       </div>
-      <ActivitiesDetails activities={activity} />
-
-      <div className="border-t-[1px] border-gray-400/30">
-        <MyTypography variant="subtitle3" weight="bold" className="my-4">
-          Escolha o dia e horário para realizar a atividade.
-        </MyTypography>
-
-        <div className="border space-y-6 border-gray-300 rounded-lg py-8 px-5">
-          <MyDatePicker
-            selectedDates={selectedDates}
-            setSelectedDates={setSelectedDates}
-          />
-
-          <TimePickerModal />
-
-          <PeopleSelector />
+      {userCart?.cart && userCart?.cart.length > 0 ? (
+        <MobileActivitiesOrderSummary activities={userCart?.cart ?? []} />
+      ) : (
+        <div className="w-full h-[30vh] flex justify-center items-center">
+          <MyTypography variant="subtitle3" weight="bold" className="my-8">
+            Seu carrinho está vazio.
+          </MyTypography>
         </div>
-      </div>
-
-      <ShoppingDetails activityDetails={activityDetails} />
-
+      )}
       <MyButton
         variant="outline-neutral"
         borderRadius="squared"
         size="lg"
         className="w-full font-bold text-[1rem]"
+        leftIcon={<MyIcon name="add" />}
         onClick={() => router.push(PATHS.atividades)}
       >
-        Adicionar mais atividades
+        {userCart?.cart && userCart?.cart.length > 0
+          ? 'Adicionar mais atividades'
+          : 'Adicionar atividades'}
       </MyButton>
 
-      <MyButton
-        variant="default"
-        borderRadius="squared"
-        size="lg"
-        className="w-full mt-6"
-        onClick={() => router.push(PATHS["finalizar-compra"])}
-      >
-        Finalizar Pedido
-      </MyButton>
+      {userCart?.cart && userCart?.cart.length !== 0 && (
+        <MyButton
+          variant="default"
+          borderRadius="squared"
+          size="lg"
+          className="w-full mt-6"
+          onClick={() => router.push(PATHS['carrinho-pagamento'])}
+        >
+          Finalizar Pedido
+        </MyButton>
+      )}
     </section>
   );
 }

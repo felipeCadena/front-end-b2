@@ -1,17 +1,29 @@
 import { type NextAuthOptions, type User } from "next-auth";
+import { addSeconds, isAfter, parseISO } from "date-fns";
+
+import GoogleProvider from "next-auth/providers/google";
+import FacebookProvider from "next-auth/providers/facebook";
+import CredentialsProvider from "next-auth/providers/credentials";
+import { authService } from "@/services/api/auth";
+import { jwtDecode } from "jwt-decode";
+import { DEFAULT_ROLE_PATHS } from "@/utils/paths";
+import { signOut } from "next-auth/react";
 
 declare module "next-auth" {
   interface User {
     expiresIn?: number;
   }
 }
-import GoogleProvider from "next-auth/providers/google";
-import FacebookProvider from "next-auth/providers/facebook";
-import CredentialsProvider from "next-auth/providers/credentials";
-import { authService } from "@/services/api/auth";
-import { jwtDecode } from "jwt-decode";
-import { getServerSession } from "next-auth";
-import { DEFAULT_ROLE_PATHS } from "@/utils/paths";
+
+type JWTCallback = {
+  user: any;
+  token: any;
+};
+
+type SignCallback = {
+  user: any;
+  account: any;
+};
 
 interface DecodedToken {
   id: string;
@@ -48,10 +60,17 @@ export const authOptions: NextAuthOptions = {
 
           const response = await authService.login(credentials);
 
-          if (!response?.access_token) return null;
+          if (!response?.access_token) {
+            signOut();
+
+            return null;
+          }
 
           // Decodifica o token para obter os dados do usuário
           const decodedToken = jwtDecode<DecodedToken>(response.access_token);
+
+          // Calcula o timestamp exato de expiração
+          const expiresAt = Date.now() + response.expires_in * 1000;
 
           // Retorna o usuário no formato esperado pelo NextAuth
           return {
@@ -62,6 +81,7 @@ export const authOptions: NextAuthOptions = {
             refreshToken: response.refresh_token,
             role: decodedToken.role,
             expiresIn: response.expires_in,
+            expiresAt,
             defaultPath:
               DEFAULT_ROLE_PATHS[
                 decodedToken?.role.toLowerCase() as keyof typeof DEFAULT_ROLE_PATHS
@@ -75,7 +95,7 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    async signIn({ user, account }) {
+    async signIn({ user, account }: SignCallback) {
       try {
         // Se for login social
         if (account?.provider === "google") {
@@ -90,13 +110,16 @@ export const authOptions: NextAuthOptions = {
 
           const decodedToken = jwtDecode<DecodedToken>(response.access_token);
 
-          user.expiresIn = response.expires_in;
+          // Calcula o timestamp exato de expiração
+          const expiresAt = Date.now() + response.expires_in * 1000;
+
           (user.email = decodedToken.email),
             (user.name = decodedToken.name),
             (user.accessToken = response.access_token),
             (user.refreshToken = response.refresh_token),
             (user.role = decodedToken.role);
           user.expiresIn = response.expires_in;
+          user.expiresAt = expiresAt;
           user.image = decodedToken.image;
           user.defaultPath =
             DEFAULT_ROLE_PATHS[
@@ -116,13 +139,16 @@ export const authOptions: NextAuthOptions = {
 
           const decodedToken = jwtDecode<DecodedToken>(response.access_token);
 
-          user.expiresIn = response.expires_in;
+          // Calcula o timestamp exato de expiração
+          const expiresAt = Date.now() + response.expires_in * 1000;
+
           (user.email = decodedToken.email),
             (user.name = decodedToken.name),
             (user.accessToken = response.access_token),
             (user.refreshToken = response.refresh_token),
             (user.role = decodedToken.role);
           user.expiresIn = response.expires_in;
+          user.expiresAt = expiresAt;
           user.image = decodedToken.image;
           user.defaultPath =
             DEFAULT_ROLE_PATHS[
@@ -136,18 +162,41 @@ export const authOptions: NextAuthOptions = {
         return false;
       }
     },
-    async jwt({ token, user, account }) {
+    async jwt({ token, user }: JWTCallback) {
       // Quando fizer login, adiciona os dados ao token
       if (user) {
         token.accessToken = user.accessToken;
         token.refreshToken = user.refreshToken;
+        token.expiresIn = user.expiresIn;
         token.role = user.role;
         token.id = user.id;
-        token.expiresIn = user.expiresIn;
         token.email = user.email;
         token.defaultPath = user.defaultPath;
         token.image = user.image ?? "";
+        token.expiresAt = user.expiresAt;
+
+        return token;
       }
+
+      const now = Date.now();
+
+      if (now > token.expiresAt) {
+        try {
+          const dataAuth = await authService.refreshToken(token?.refreshToken);
+
+          if (dataAuth?.access_token) {
+            const newExpiresAt = Date.now() + dataAuth.expires_in * 1000;
+
+            token.accessToken = dataAuth.access_token;
+            token.refreshToken = dataAuth.refresh_token;
+            token.expiresAt = newExpiresAt;
+          }
+        } catch (err) {
+          console.error("Erro ao renovar token:", (err as any)?.response?.data);
+          // console.error("Erro ao renovar token");
+        }
+      }
+
       return token;
     },
     async session({ session, token }) {
@@ -163,6 +212,7 @@ export const authOptions: NextAuthOptions = {
           defaultPath: token.defaultPath,
           expiresIn: token.expiresIn,
           email: token.email,
+          expiresAt: token.expiresAt,
         },
       };
     },
@@ -178,7 +228,6 @@ export const authOptions: NextAuthOptions = {
   },
   session: {
     strategy: "jwt",
-    maxAge: 3600, // 1 hour
-    updateAge: 3600, // 1 hour
+    maxAge: 30 * 24 * 60 * 60, // 30 days
   },
 };

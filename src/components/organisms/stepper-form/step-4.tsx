@@ -1,5 +1,7 @@
 "use client";
 
+import MyButton from "@/components/atoms/my-button";
+import MyIcon from "@/components/atoms/my-icon";
 import {
   MySelect,
   SelectContent,
@@ -9,11 +11,25 @@ import {
 } from "@/components/atoms/my-select";
 import MyTextInput from "@/components/atoms/my-text-input";
 import MyTypography from "@/components/atoms/my-typography";
+import { useStepperStore } from "@/store/useStepperStore";
 import { cn } from "@/utils/cn";
 import PATHS from "@/utils/paths";
 import React from "react";
 
-export default function Informacoes() {
+export default function Informacoes({
+  handleNext,
+  handleBack,
+}: {
+  handleNext: () => void;
+  handleBack: () => void;
+}) {
+  const { setStepData, bankAccount, bankAgency, bankName, payday } =
+    useStepperStore();
+
+  const handleNextStep = () => {
+    handleNext();
+  };
+
   return (
     <div
       className={cn(
@@ -37,6 +53,8 @@ export default function Informacoes() {
           label="Número da conta"
           placeholder="0987 2348 2348 1243"
           className="mt-2"
+          value={bankAccount}
+          onChange={(e) => setStepData(4, { bankAccount: e.target.value })}
         />
 
         <div className="flex gap-2">
@@ -44,14 +62,22 @@ export default function Informacoes() {
             label="Agência"
             placeholder="Digite sua agência"
             className="mt-2"
+            value={bankAgency}
+            onChange={(e) => setStepData(4, { bankAgency: e.target.value })}
           />
 
-          <MyTextInput label="Banco" placeholder="001" className="mt-2" />
+          <MyTextInput
+            label="Banco"
+            placeholder="001"
+            className="mt-2"
+            value={bankName}
+            onChange={(e) => setStepData(4, { bankName: e.target.value })}
+          />
         </div>
 
         <MySelect
-          //   value={}
-          //   onValueChange={}
+          value={String(payday) == "5" ? "05" : String(payday)}
+          onValueChange={(value) => setStepData(4, { payday: +value })}
           label="Data de Pagamento"
         >
           <SelectTrigger className="py-6 mt-1 mb-4">
@@ -63,6 +89,25 @@ export default function Informacoes() {
             <SelectItem value="15">Todo dia 15</SelectItem>
           </SelectContent>
         </MySelect>
+      </div>
+
+      <div className="flex justify-between items-center w-full max-w-3xl mx-auto p-4">
+        <MyButton
+          variant="default"
+          borderRadius="squared"
+          onClick={handleBack}
+          leftIcon={<MyIcon name="seta-direita" className="rotate-180" />}
+        >
+          Voltar
+        </MyButton>
+        <MyButton
+          variant="default"
+          borderRadius="squared"
+          onClick={handleNextStep}
+          rightIcon={<MyIcon name="seta-direita" />}
+        >
+          Próximo
+        </MyButton>
       </div>
     </div>
   );

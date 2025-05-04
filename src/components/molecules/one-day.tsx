@@ -10,8 +10,13 @@ import { MyCalendar } from "./my-calendar";
 import { ptBR } from "date-fns/locale/pt-BR";
 import MyTypography from "../atoms/my-typography";
 
-export function OneDay({ withlabel }: { withlabel?: string }) {
-  const [date, setDate] = React.useState<Date>();
+type OneDayProps = {
+  date?: Date;
+  setDate?: React.Dispatch<React.SetStateAction<Date | undefined>>;
+  withlabel?: string;
+};
+
+export function OneDay({ withlabel, date, setDate }: OneDayProps) {
   const [open, setOpen] = React.useState(false);
 
   return (
@@ -21,7 +26,7 @@ export function OneDay({ withlabel }: { withlabel?: string }) {
           variant="date"
           borderRadius="squared"
           className={cn(
-            "w-full justify-start text-sm items-center gap-2 py-6 border-gray-300 md:bg-white"
+            "w-full justify-start text-base items-center gap-2 py-6 border-gray-300 md:bg-white"
           )}
         >
           {!withlabel && <MyIcon name="date" />}

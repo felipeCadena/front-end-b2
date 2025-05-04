@@ -6,11 +6,18 @@ import MyTypography from "@/components/atoms/my-typography";
 import ActivitiesDetails from "@/components/organisms/activities-details";
 import ActivitiesFilter from "@/components/organisms/activities-filter";
 import SearchActivity from "@/components/organisms/search-activity";
+import { useQuery } from "@tanstack/react-query";
+import { adventures } from "@/services/api/adventures";
 
 export default function AvaliacoesMobile() {
+  const { data: activities } = useQuery({
+    queryKey: ["partnerActivities"],
+    queryFn: () => adventures.getAdventures(),
+  });
+
   return (
     <section className="space-y-8 my-6">
-      <SearchActivity />
+      {/* <SearchActivity /> */}
 
       <ActivitiesFilter admin />
 
@@ -19,14 +26,17 @@ export default function AvaliacoesMobile() {
           Favoritos dos nossos Clientes
         </MyTypography>
 
-        <ActivitiesDetails activities={activities.slice(0, 3)} type="admin" />
+        <ActivitiesDetails
+          activities={activities ? activities.slice(0, 3) : []}
+          type="admin"
+        />
 
         <MyTypography variant="subtitle1" weight="extrabold">
           Atividades com menor avaliação
         </MyTypography>
 
         <ActivitiesDetails
-          activities={activities.slice(4, 6)}
+          activities={activities ? activities.slice(4, 6) : []}
           lowRating
           type="admin"
         />
@@ -35,7 +45,10 @@ export default function AvaliacoesMobile() {
           Atividades mais procuradas
         </MyTypography>
 
-        <ActivitiesDetails activities={activities.slice(0, 4)} type="admin" />
+        <ActivitiesDetails
+          activities={activities ? activities.slice(0, 4) : []}
+          type="admin"
+        />
       </div>
     </section>
   );

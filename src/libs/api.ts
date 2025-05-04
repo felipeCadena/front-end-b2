@@ -1,5 +1,5 @@
+import { authService } from "@/services/api/auth";
 import axios from "axios";
-import { jwtDecode } from "jwt-decode";
 import { getSession, signIn } from "next-auth/react";
 
 export const api = axios.create({
@@ -10,49 +10,39 @@ export const api = axios.create({
 });
 
 api.interceptors.request.use(async (config) => {
-  const session = await getSession();
-
-  if (!session?.user.accessToken) return config;
-
-  // Se for rota de logout, usa refresh_token
-  if (config.url?.includes("/auth/logout")) {
-    if (session?.user.refreshToken) {
-      config.headers.Authorization = `Bearer ${session?.user.refreshToken}`;
-    }
-  } else {
-    const decodedToken = jwtDecode<{ exp: number }>(session.user.accessToken);
-
-    const isTokenExpired = Date.now() > decodedToken.exp * 1000;
-
-    if (isTokenExpired) {
-      try {
-        const refreshResponse = await axios.post(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/refresh`,
-          {},
-          {
-            headers: {
-              Authorization: `Bearer ${session?.user.refreshToken}`,
-            },
-          }
-        );
-
-        const { access_token, refresh_token } = refreshResponse.data;
-
-        // Atualiza a sessão do NextAuth
-        await signIn("credentials", {
-          redirect: false,
-          accessToken: access_token,
-          refreshToken: refresh_token,
-        });
-
-        config.headers.Authorization = `Bearer ${access_token}`;
-      } catch (error) {
-        console.error("Erro ao renovar token:", error);
-      }
-    } else {
-      config.headers.Authorization = `Bearer ${session.user.accessToken}`;
-    }
+  const session = await authService.getTokens();
+  if (!session) {
+    return config;
   }
 
+  // const now = Date.now();
+
+  // if (now > session.expiresAt && session?.refresh_token) {
+  //   try {
+  //     const dataAuth = await authService.refreshToken(session?.refresh_token);
+
+  //     if (dataAuth?.access_token) {
+  //       const newExpiresAt = Date.now() + dataAuth.expires_in * 1000;
+
+  //       await signIn("credentials", {
+  //         accessToken: dataAuth.access_token,
+  //         refreshToken: dataAuth.refresh_token,
+  //         expiresAt: newExpiresAt,
+  //         redirect: false,
+  //       });
+  //     }
+  //   } catch (err) {
+  //     console.error("Erro ao renovar token:", (err as any)?.response?.data);
+  //     // console.error("Erro ao renovar token");
+  //   }
+  // }
+
+  // const newSession = await authService.getTokens();
+  // Se for rota de logout ou refresh, usa refresh_token
+  if (config.url?.includes("/auth/logout")) {
+    config.headers.Authorization = `Bearer ${session?.refresh_token}`;
+  } else {
+    config.headers.Authorization = `Bearer ${session?.access_token}`;
+  }
   return config;
 });

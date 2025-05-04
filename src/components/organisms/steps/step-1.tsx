@@ -4,6 +4,7 @@ import MyTextInput from "@/components/atoms/my-text-input";
 import MyTextarea from "@/components/atoms/my-textarea";
 import MyTypography from "@/components/atoms/my-typography";
 import ActivitiesFilter from "@/components/organisms/activities-filter";
+import { TypeAdventure, useAdventureStore } from "@/store/useAdventureStore";
 import React from "react";
 
 export default function Step1({
@@ -13,6 +14,14 @@ export default function Step1({
   edit?: boolean;
   initialData?: any;
 }) {
+  const { setAdventureData, typeAdventure, description, title } =
+    useAdventureStore();
+
+  const handleSelectType = (value: TypeAdventure) => {
+    setAdventureData({
+      typeAdventure: value,
+    });
+  };
   return (
     <section className="">
       <MyTypography variant="heading2" weight="bold">
@@ -24,20 +33,36 @@ export default function Step1({
           : "Preencha os dados da sua primeira atividade"}
       </MyTypography>
 
-      <ActivitiesFilter withText={false} />
-
-      <MyTextInput
-        label="Nome da atividade"
-        placeholder="Nome da atividade"
-        className="mt-2"
+      <ActivitiesFilter
+        withText={false}
+        setSelected={handleSelectType}
+        selected={typeAdventure}
       />
 
-      <MyTextarea
-        placeholder="Lorem ipsum dolor sit amet, consectetur di..."
-        label="Descrição da atividade"
-        classNameLabel="text-black text-base font-bold mt-3"
-        rows={5}
-      />
+      <div className="space-y-4">
+        <MyTextInput
+          value={title}
+          onChange={(e) => setAdventureData({ title: e.target.value })}
+          label="Nome da atividade"
+          placeholder="Nome da atividade"
+          classNameLabel="text-black text-base"
+          className="mt-2"
+        />
+
+        <MyTextarea
+          value={description}
+          onChange={(e) =>
+            setAdventureData({
+              description: e.target.value,
+            })
+          }
+          label="Descrição da atividade"
+          placeholder="Lorem ipsum dolor sit amet, consectetur di..."
+          classNameLabel="text-black text-base font-bold"
+          rows={5}
+          maxLength={2000}
+        />
+      </div>
     </section>
   );
 }

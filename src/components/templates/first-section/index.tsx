@@ -1,24 +1,24 @@
+"use client";
+
 import MyButton from "@/components/atoms/my-button";
 import MyTypography from "@/components/atoms/my-typography";
 import CarouselImages from "@/components/organisms/carousel-images";
+import PATHS from "@/utils/paths";
+import { useRouter } from "next/navigation";
 import React from "react";
-import { Montserrat } from "next/font/google";
-
-const montserrat = Montserrat({
-  subsets: ["latin"],
-  display: "swap",
-  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
-});
 
 export default function FirstSection() {
+  const router = useRouter();
+
   const images = [
-    "/images/atividades/paraquedas.webp",
-    "/images/atividades/moto.webp",
-    "/images/atividades/cachoeira.webp",
-    "/images/atividades/parapente.webp",
-    "/images/atividades/escalada.webp",
-    "/images/atividades/sup.webp",
+    { url: "/images/atividades/paraquedas.webp" },
+    { url: "/images/atividades/moto.webp" },
+    { url: "/images/atividades/cachoeira.webp" },
+    { url: "/images/atividades/parapente.webp" },
+    { url: "/images/atividades/escalada.webp" },
+    { url: "/images/atividades/sup.webp" },
   ];
+
   return (
     <section className="mt-10 md:relative max-sm:px-4">
       <CarouselImages rounded images={images} />
@@ -35,6 +35,7 @@ export default function FirstSection() {
           size="md"
           borderRadius="squared"
           className="mt-4 md:absolute md:bottom-24 md:right-12"
+          onClick={() => router.push(PATHS.atividades)}
         >
           Descobrir agora
         </MyButton>

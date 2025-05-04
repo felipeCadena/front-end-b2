@@ -8,17 +8,30 @@ import { cn } from "@/utils/cn";
 import { useQuery } from "@tanstack/react-query";
 import { adventures } from "@/services/api/adventures";
 import { useDebounce } from "@/hooks/useDebounce";
+import useAdventures from "@/store/useAdventure";
 
-export default function SearchActivity({ className }: { className?: string }) {
+export default function SearchActivity({
+  className,
+  setFormData,
+}: {
+  className?: string;
+  setFormData: (adventures: any) => void;
+}) {
   const [chips, setChips] = React.useState<string[]>([]);
   const [search, setSearch] = React.useState("");
 
   const debouncedValue = useDebounce(search, 700);
 
   const { data: filterAdventure } = useQuery({
-    queryKey: ["user", debouncedValue],
-    queryFn: () => adventures.filterAdventures({ city: debouncedValue }),
+    queryKey: ["filterAdventure", debouncedValue],
+    queryFn: () => adventures.filterAdventures({ q: debouncedValue }),
+    enabled: Boolean(debouncedValue),
   });
+
+  const handleSearch = () => {
+    setFormData(filterAdventure ?? []);
+    setSearch("");
+  };
 
   return (
     <section className={cn("mt-2 md:w-2/3 md:mx-auto max-sm:px-4", className)}>
@@ -38,6 +51,7 @@ export default function SearchActivity({ className }: { className?: string }) {
               size="md"
               borderRadius="squared"
               className="mr-24 max-sm:hidden"
+              onClick={handleSearch}
             >
               Pesquisar
             </MyButton>

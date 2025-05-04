@@ -1,30 +1,54 @@
 "use client";
 import React from "react";
-import MyTextInput from "../atoms/my-text-input";
-import MyIcon from "../atoms/my-icon";
 import MyButton from "../atoms/my-button";
-import PeopleSelector from "./people-selector";
-import { MyDatePicker } from "../molecules/my-date-picker";
 import MyTypography from "../atoms/my-typography";
 import TimePickerModal from "../molecules/time-picker";
 import { OneDay } from "../molecules/one-day";
-import { useLoadScript } from "@react-google-maps/api";
-import GoogleMapsAutocomplete from "@/components/organisms/google-autocomplete";
-
-const libraries: "places"[] = ["places"];
+import GoogleAutoComplete, { LocationData } from "./google-autocomplete";
+import PublicPeopleSelector from "./public-people-selector";
+import { hours } from "@/common/constants/constants";
+import { useRouter } from "next/navigation";
+import PATHS from "@/utils/paths";
+import { toast } from "react-toastify";
+import { format } from "date-fns";
 
 export default function SearchInfoActivity() {
-  const [selectedLocation, setSelectedLocation] = React.useState(null);
-  //
+  const router = useRouter();
 
-  const { isLoaded, loadError } = useLoadScript({
-    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API || "",
-    libraries,
-  });
+  const [selectedLocation, setSelectedLocation] =
+    React.useState<LocationData | null>(null);
+  const [hour, setHour] = React.useState("");
+  const [date, setDate] = React.useState<Date>();
+
+  const [adults, setAdults] = React.useState(1);
+  const [children, setChildren] = React.useState(0);
 
   const handleLocationSelected = (location: any) => {
     console.log("Localização escolhida:", location);
     setSelectedLocation(location);
+  };
+
+  const handleSearch = () => {
+    console.log("Localização:", selectedLocation);
+    console.log("Data:", format(date ?? "", "yyyy-MM-dd"));
+    console.log("Duração:", hour);
+    console.log("Adultos:", adults);
+    console.log("Crianças:", children);
+
+    if (!selectedLocation || !date || !hour || !adults) {
+      toast.error("Por favor, preencha os campos obrigatórios.");
+      return;
+    }
+
+    const state = selectedLocation.completeAddress.addressState;
+    const formattedDate = format(date, "yyyy-MM-dd");
+
+    const total = adults + (children ?? 0);
+
+    router.push(
+      PATHS.atividades +
+        `?state=${state}&date=${formattedDate}&hour=${hour}&limitPersons=${String(total)}`
+    );
   };
 
   return (
@@ -44,24 +68,27 @@ export default function SearchInfoActivity() {
       </div>
       <div className="mx-auto space-y-5 p-4 max-sm:border max-sm:border-gray-300 rounded-lg">
         <div className="max-sm:mt-4">
-          {/* <MyTextInput
-            noHintText
-            placeholder="Localização"
-            className="placeholder:text-black"
-            leftIcon={<MyIcon name="localizacao" className="ml-3" />}
-          /> */}
-
-          <GoogleMapsAutocomplete
+          <GoogleAutoComplete
+            setFormData={setSelectedLocation}
+            formData={selectedLocation}
             onLocationSelected={handleLocationSelected}
-            isLoaded={isLoaded}
           />
         </div>
 
-        <OneDay />
+        <OneDay date={date} setDate={setDate} />
 
-        <TimePickerModal />
+        <TimePickerModal
+          selectedTime={hour}
+          setSelectedTime={setHour}
+          availableActivityTimes={hours.map((hour) => hour.value)}
+        />
 
-        <PeopleSelector />
+        <PublicPeopleSelector
+          adults={adults}
+          setAdults={setAdults}
+          children={children}
+          setChildren={setChildren}
+        />
       </div>
 
       <MyButton
@@ -69,6 +96,7 @@ export default function SearchInfoActivity() {
         borderRadius="squared"
         size="lg"
         className="w-full"
+        onClick={handleSearch}
       >
         Procurar atividades
       </MyButton>

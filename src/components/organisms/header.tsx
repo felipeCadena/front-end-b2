@@ -1,43 +1,54 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import Sidebar from "./sidebar";
 import MyLogo from "../atoms/my-logo";
 import LanguageDropdown from "./language-dropdown";
 import MyIcon from "../atoms/my-icon";
 import { usePathname, useRouter } from "next/navigation";
 import PATHS from "@/utils/paths";
-import useLogin from "@/app/(pages)/(cliente)/(acesso)/login/login-store";
 import Image from "next/image";
 import SideBarModal from "../molecules/side-bar-modal";
 import { cn } from "@/utils/cn";
-import { useAuthStore } from "@/store/useAuthStore";
+import { useSession } from "next-auth/react";
+import useLogin from "@/store/useLogin";
 import { useQuery } from "@tanstack/react-query";
 import { users } from "@/services/api/users";
-import { getSession, useSession } from "next-auth/react";
+import { useAuthStore } from "@/store/useAuthStore";
 
 export default function Header() {
   const router = useRouter();
   const pathname = usePathname();
   const { sideBarActive } = useLogin();
+  const { setUser } = useAuthStore();
   const { data: session } = useSession();
-  const { user } = useAuthStore();
+
+  const { data: fetchUser, refetch } = useQuery({
+    queryKey: ["fetchUser"],
+    enabled: !!session?.user,
+    queryFn: async () => {
+      const user = await users.getUserLogged();
+      setUser({
+        ...user,
+        photo: {
+          url: user?.photo?.url,
+          mimetype: user?.photo?.mimetype,
+          updatedAt: user?.photo?.updatedAt,
+        },
+      });
+      return user;
+    },
+  });
 
   const withoutHeaderMobile = () => {
     return (
       pathname === PATHS["sobre-a-empresa"] ||
       pathname === PATHS["cadastro-parceiro"] ||
       pathname === PATHS["informacoes-atividades"] ||
-      pathname === PATHS["cadastro-atividade"] ||
-      pathname.includes("editar")
+      pathname === PATHS["cadastro-atividade"]
+      // pathname.includes("editar")
     );
   };
-
-  const { data: userData } = useQuery({
-    queryKey: ["user", user],
-    queryFn: () => users.getUserLogged(),
-    enabled: Boolean(session?.user),
-  });
 
   return (
     <header
@@ -66,7 +77,7 @@ export default function Header() {
         <LanguageDropdown />
 
         <div className="max-sm:hidden">
-          {!userData && !userData?.role ? (
+          {!session?.user ? (
             <button
               onClick={() => router.push(PATHS.login)}
               className="text-sm flex items-center font-semibold gap-1 px-2 md:px-4 py-1 text-[0.9rem] text-white bg-black rounded-full shadow-md"
@@ -79,7 +90,8 @@ export default function Header() {
               <div className="flex items-center gap-1 cursor-pointer">
                 <MyIcon name="chevron-down" />
                 <Image
-                  src={userData?.photo?.url ?? "/user.png"}
+                  key={fetchUser?.photo?.updatedAt}
+                  src={`${fetchUser?.photo?.url}?v=${new Date(fetchUser?.photo?.updatedAt ?? Date.now()).getTime()}`}
                   alt="Avatar"
                   width={50}
                   height={50}

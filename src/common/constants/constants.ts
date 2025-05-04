@@ -55,7 +55,7 @@ export const dificulties = [
   "Grau 5 - Extremo / Muito Difícil",
 ];
 
-export const types = [
+export const isInGroupTypes = [
   {
     icon: "group",
     title: "Em grupo",
@@ -64,6 +64,9 @@ export const types = [
     icon: "person",
     title: "Individual",
   },
+];
+
+export const isChildrenAllowedTypes = [
   {
     icon: "baby",
     title: "Com crianças",

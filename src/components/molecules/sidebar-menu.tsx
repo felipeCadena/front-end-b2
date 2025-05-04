@@ -1,7 +1,6 @@
 "use client";
 
 import { useAuthStore } from "@/store/useAuthStore";
-import { notifications } from "@/common/constants/mock";
 import {
   sideBarAdmin,
   sideBarClient,
@@ -15,11 +14,14 @@ import {
 } from "@/components/molecules/my-toggle-group";
 import { cn } from "@/utils/cn";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect } from "react";
 import { authService } from "@/services/api/auth";
-import useLogin from "@/app/(pages)/(cliente)/(acesso)/login/login-store";
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
+import useLogin from "@/store/useLogin";
+import { useQuery } from "@tanstack/react-query";
+import { useCart } from "@/store/useCart";
+import { notificationsService } from "@/services/api/notifications";
+import { useRouter } from "next/navigation";
 
 export default function SidebarMenu({
   closeSidebar,
@@ -29,6 +31,7 @@ export default function SidebarMenu({
   const { user, clearUser } = useAuthStore();
   const { data: session } = useSession();
   const { setSideBarActive, sideBarActive } = useLogin();
+  const router = useRouter();
 
   useEffect(() => {
     switch (session?.user?.role) {
@@ -46,15 +49,30 @@ export default function SidebarMenu({
     }
   }, [user, session]);
 
-  const handleLogout = () => {
-    authService.logout();
+  const handleLogout = async () => {
+    await authService.logout(session?.user.refreshToken ?? "");
+    await signOut();
     clearUser();
+    router.push("/");
   };
 
   const handleCloseSidebar = (event: React.MouseEvent) => {
     event.stopPropagation();
     closeSidebar();
   };
+
+  const { getCartSize } = useCart();
+
+  const userId = session?.user.id;
+
+  const cartSize = getCartSize(userId ?? "");
+
+  const { data: notifications = { messagesUnred: 0 } } = useQuery({
+    queryKey: ["unread_notifications"],
+    queryFn: () => notificationsService.countUnreadNotifications(),
+
+    enabled: Boolean(session?.user),
+  });
 
   return (
     <div className="relative">
@@ -83,14 +101,16 @@ export default function SidebarMenu({
               </div>
 
               {item.label === "Notificações" && (
-                <span className="flex items-center justify-center bg-red-400 h-[1.1rem] w-[1.1rem] rounded-full text-white text-xs font-bold">
-                  {notifications?.length ?? 0}
+                <span
+                  className={`flex items-center justify-center ${notifications.messagesUnred > 0 ? "bg-red-400" : "bg-slate-300"} h-[1.1rem] w-[1.1rem] rounded-full text-white text-xs font-bold`}
+                >
+                  {notifications.messagesUnred}
                 </span>
               )}
 
               {item.label === "Carrinho de Compras" && (
                 <span className="flex items-center justify-center bg-primary-600 h-[1.1rem] w-[1.1rem] rounded-full text-white text-xs font-bold">
-                  1
+                  {cartSize ?? 0}
                 </span>
               )}
             </Link>

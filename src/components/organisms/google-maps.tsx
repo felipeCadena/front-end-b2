@@ -1,8 +1,9 @@
 "use client";
 
-import React from "react";
-import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
+import React, { useEffect, useRef } from "react";
+import { GoogleMap } from "@react-google-maps/api";
 import MyTypography from "../atoms/my-typography";
+import { useGoogleMaps } from "@/providers/google-provider";
 
 export default function GoogleMaps({
   location,
@@ -11,31 +12,58 @@ export default function GoogleMaps({
   location: { lat: number; lng: number };
   height?: string;
 }) {
-  const mapContainerStyle = {
-    width: "100%",
-    height: height,
-  };
+  const { isLoaded } = useGoogleMaps(); // Usa o contexto global
+  const mapRef = useRef<google.maps.Map | null>(null);
+  const markerRef = useRef<google.maps.marker.AdvancedMarkerElement | null>(
+    null
+  );
+
+  useEffect(() => {
+    async function loadMarker() {
+      if (isLoaded && mapRef.current) {
+        // Importa corretamente a biblioteca de marcadores avançados
+        const { AdvancedMarkerElement } = (await google.maps.importLibrary(
+          "marker"
+        )) as unknown as {
+          AdvancedMarkerElement: typeof google.maps.marker.AdvancedMarkerElement;
+        };
+
+        // Remove o marcador antigo, se existir
+        if (markerRef.current) {
+          markerRef.current.map = null;
+        }
+
+        // Cria um novo marcador
+        markerRef.current = new AdvancedMarkerElement({
+          position: location,
+          map: mapRef.current,
+        });
+      }
+    }
+
+    loadMarker();
+  }, [isLoaded, location]); // Agora o efeito roda sempre que `location` mudar!
+
+  if (!isLoaded) return <p>Carregando mapa...</p>;
 
   return (
-    <LoadScript googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API!}>
-      <div className="rounded-xl overflow-hidden">
-        <MyTypography variant="subtitle3" weight="bold" className="my-2">
-          Mapa da Localização
-        </MyTypography>
-        <GoogleMap
-          mapContainerStyle={mapContainerStyle}
-          center={location}
-          zoom={17}
-          options={{
-            // mapTypeControl: false, // Desativa a opção "Mapa / Satélite"
-            // fullscreenControl: false, // (Opcional) Remove o botão de tela cheia
-            // streetViewControl: false, // (Opcional) Remove o boneco do Street View
-            disableDefaultUI: true, // (Opcional) Remove todos os controles padrão
-          }}
-        >
-          {<Marker position={location} />}
-        </GoogleMap>
-      </div>
-    </LoadScript>
+    <div className="rounded-xl overflow-hidden">
+      <MyTypography variant="subtitle3" weight="bold" className="my-2">
+        Mapa da Localização
+      </MyTypography>
+      <GoogleMap
+        mapContainerStyle={{ width: "100%", height }}
+        center={location}
+        zoom={17}
+        options={{
+          disableDefaultUI: true,
+          mapId: process.env.NEXT_PUBLIC_GOOGLE_MAPS_MAP_ID,
+          keyboardShortcuts: false,
+        }}
+        onLoad={(map) => {
+          mapRef.current = map;
+        }}
+      />
+    </div>
   );
 }

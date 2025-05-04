@@ -50,7 +50,7 @@ export default function AdminMobile() {
   return (
     <main className=" space-y-8">
       {/* Busca */}
-      <SearchActivity />
+      {/* <SearchActivity /> */}
 
       {/* Filtro de Atividades */}
       <ActivitiesFilter admin />

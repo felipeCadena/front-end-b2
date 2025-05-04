@@ -1,12 +1,13 @@
 "use client";
 
+import { AdventureImage } from "@/services/api/adventures";
 import { cn } from "@/utils/cn";
 import Image from "next/image";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 
 type CarouselImagesProps = {
-  images: string[];
+  images: { url: string }[] | AdventureImage[];
   rounded?: boolean;
 };
 
@@ -51,7 +52,7 @@ export default function CarouselImages({
           );
         }}
       >
-        {images.map((image: any, index: number) => (
+        {images?.map((image: any, index: number) => (
           <div
             key={index}
             className={cn(
@@ -60,7 +61,7 @@ export default function CarouselImages({
           >
             <Image
               alt="Imagens de atividades"
-              src={image ?? ""}
+              src={`${image.url ?? "/images/atividades/ar/ar-1.jpeg"}?v=${Date.now()}`}
               width={250}
               height={300}
               className={cn(

@@ -5,15 +5,47 @@ import MyIcon from "@/components/atoms/my-icon";
 import MyLogo from "@/components/atoms/my-logo";
 import MyTextInput from "@/components/atoms/my-text-input";
 import MyTypography from "@/components/atoms/my-typography";
+import { useStepperStore } from "@/store/useStepperStore";
+import { formatPhoneNumber } from "@/utils/formatters";
 import PATHS from "@/utils/paths";
 import { useRouter } from "next/navigation";
 import React from "react";
+import { toast } from "react-toastify";
 
-export default function CadastroParceiro() {
-  const [visibility, setVisibility] = React.useState(false);
-  const [password, setPassword] = React.useState("");
-  const [confirmPassword, setConfirmPassword] = React.useState("");
+export default function CadastroParceiro({
+  handleNext,
+  handleBack,
+}: {
+  handleNext: () => void;
+  handleBack: () => void;
+}) {
   const router = useRouter();
+  const { setStepData, name, email, phone, password, confirmPassword } =
+    useStepperStore();
+
+  const [visibility, setVisibility] = React.useState(false);
+
+  const handleNextStep = () => {
+    if (!name || !email || !phone || !password || !confirmPassword) {
+      toast.error("Todos os campos são obrigatórios!");
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      toast.error("As senhas não coincidem!");
+      return;
+    }
+
+    setStepData(2, {
+      name,
+      email,
+      phone,
+      password,
+      confirmPassword,
+    });
+
+    handleNext();
+  };
 
   return (
     <section className="flex flex-col bg-white md:my-4 rounded-lg max-w-3xl m-auto w-full">
@@ -42,62 +74,66 @@ export default function CadastroParceiro() {
 
         <div className="space-y-2">
           <MyTextInput
+            onChange={(e) => setStepData(2, { name: e.target.value })}
+            value={name}
+            name="user.name"
             label="Nome Completo"
             placeholder="Nome Completo"
             className="mt-2"
           />
           <MyTextInput
+            onChange={(e) => setStepData(2, { email: e.target.value })}
+            value={email}
             type="email"
             label="E-mail"
             placeholder="b2adventure@gmail.com"
             className="mt-2"
           />
           <MyTextInput
+            onChange={(e) =>
+              setStepData(2, { phone: formatPhoneNumber(e.target.value) })
+            }
+            value={phone}
             label="Celular"
             placeholder="+XX (XX) XXXXX-XXXX"
             className="mt-2"
           />
           <MyTextInput
+            onChange={(e) => setStepData(2, { password: e.target.value })}
+            value={password}
             label="Senha"
             placeholder="******"
             type={visibility ? "text" : "password"}
             rightIcon={
               <MyIcon
                 name={visibility ? "hide" : "eye"}
-                className="mr-4 mt-2 cursor-pointer"
+                className="mr-4 mt-7 cursor-pointer"
                 onClick={() => setVisibility((prev) => !prev)}
               />
             }
             className="mt-2"
-            onChange={(e) => setPassword(e.target.value)}
           />
+
           <MyTextInput
+            onChange={(e) =>
+              setStepData(2, { confirmPassword: e.target.value })
+            }
+            value={confirmPassword}
             label="Confirmar Senha"
             placeholder="******"
             type={visibility ? "text" : "password"}
             rightIcon={
               <MyIcon
                 name={visibility ? "hide" : "eye"}
-                className="mr-4 mt-2 cursor-pointer"
+                className="mr-4 mt-7 cursor-pointer"
                 onClick={() => setVisibility((prev) => !prev)}
               />
             }
             className="mt-2"
-            onChange={(e) => setConfirmPassword(e.target.value)}
           />
         </div>
 
         <div className="flex flex-col">
-          {/* <MyButton
-            className=""
-            variant="default"
-            borderRadius="squared"
-            size="md"
-            onClick={() => router.push(PATHS["sobre-a-empresa"])}
-          >
-            Cadastrar Conta
-          </MyButton> */}
-
           <div className="text-center">
             <MyTypography
               variant="label"
@@ -115,6 +151,25 @@ export default function CadastroParceiro() {
             </MyButton>
           </div>
         </div>
+      </div>
+
+      <div className="flex justify-between items-center w-full max-w-3xl mx-auto p-4">
+        <MyButton
+          variant="default"
+          borderRadius="squared"
+          onClick={handleBack}
+          leftIcon={<MyIcon name="seta-direita" className="rotate-180" />}
+        >
+          Voltar
+        </MyButton>
+        <MyButton
+          variant="default"
+          borderRadius="squared"
+          onClick={handleNextStep}
+          rightIcon={<MyIcon name="seta-direita" />}
+        >
+          Próximo
+        </MyButton>
       </div>
     </section>
   );
