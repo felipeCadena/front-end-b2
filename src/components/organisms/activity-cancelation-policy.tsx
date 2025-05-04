@@ -1,10 +1,10 @@
-import { formatPrice } from "@/utils/formatters";
-import React from "react";
-import MyTypography from "../atoms/my-typography";
-import MyIcon from "../atoms/my-icon";
-import { WhatsappShareButton } from "react-share";
-import { useParams } from "next/navigation";
-import MyShareButton from "../atoms/my-share-button";
+import { formatPrice } from '@/utils/formatters';
+import React from 'react';
+import MyTypography from '../atoms/my-typography';
+import MyIcon from '../atoms/my-icon';
+import { WhatsappShareButton } from 'react-share';
+import { useParams } from 'next/navigation';
+import MyShareButton from '../atoms/my-share-button';
 
 type ActivityCancelationPolicyProps = {
   price: {
@@ -27,7 +27,23 @@ const ActivityCancelationPolicy = ({
   const { id } = useParams();
   const hoursToDays = hoursBeforeCancelation ? hoursBeforeCancelation / 24 : 3;
   const frontBaseURL =
-    process.env.NEXT_PUBLIC_PROD_URL ?? "http://localhost:3000";
+    process.env.NEXT_PUBLIC_PROD_URL ?? 'http://localhost:3000';
+
+  const formatHoursToDays = (hoursToD: number | undefined) => {
+    if (hoursToD) {
+      if (hoursToD > 1) {
+        return `${hoursToDays} dias`;
+      }
+
+      if (hoursToD === 1) {
+        return `${hoursToDays} dia`;
+      }
+
+      return `${hoursToDays * 24} horas`;
+    }
+
+    return '3 dias';
+  };
 
   return (
     <div className="flex flex-col justify-between">
@@ -44,7 +60,7 @@ const ActivityCancelationPolicy = ({
                 <MyTypography variant="subtitle4" weight="semibold">
                   Duração da atividade:
                 </MyTypography>
-                <MyTypography>{duration + " horas"}</MyTypography>
+                <MyTypography>{duration + ' horas'}</MyTypography>
               </div>
             </div>
             <MyShareButton url={`${frontBaseURL}/atividades/atividade/${id}`} />
@@ -57,7 +73,7 @@ const ActivityCancelationPolicy = ({
         </MyTypography>
         <MyTypography variant="body-big" weight="regular" className="mt-1">
           {`
-            Este agendamento só será reembolsado se cancelado até ${hoursToDays > 1 ? `${hoursToDays} dias` : `${hoursToDays} dia`} antes da
+            Este agendamento só será reembolsado se cancelado até ${formatHoursToDays(hoursToDays)} antes da
           data confirmada.
           `}
         </MyTypography>
@@ -78,7 +94,7 @@ const ActivityCancelationPolicy = ({
             weight="extrabold"
             className="text-primary-600 text-lg md:text-2xl"
           >
-            {formatPrice(price?.adult ?? "")}
+            {formatPrice(price?.adult ?? '')}
           </MyTypography>
         </div>
         {isChildrenAllowed && (
@@ -95,7 +111,7 @@ const ActivityCancelationPolicy = ({
               weight="extrabold"
               className="text-primary-600 text-lg md:text-2xl"
             >
-              {formatPrice(price?.children ?? "")}
+              {formatPrice(price?.children ?? '')}
             </MyTypography>
           </div>
         )}

@@ -17,10 +17,11 @@ export default function Historico() {
     queryKey: ['schedules'],
     queryFn: () =>
       ordersAdventuresService.getCustomerSchedules({
-        startDate: '2025-04-01T00:00:00-03:00',
         adventureStatus: 'realizado',
       }),
   });
+
+  console.log(schedules);
 
   const filteredActivities = schedules?.filter(
     (sch) => sch.adventure.typeAdventure === selected
