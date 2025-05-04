@@ -289,6 +289,8 @@ export default function Atividade() {
     }
   };
 
+  console.log(activity?.hoursBeforeSchedule);
+
   return (
     <section className="my-10">
       {/* Modal de Atividade Cadastrada */}

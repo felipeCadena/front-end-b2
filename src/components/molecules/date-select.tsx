@@ -13,24 +13,65 @@ type ComboxType = {
   disabledHours?: string[];
   selected: string[]; // Mantemos os números como string
   setSelected: (values: string[]) => void; // Atualiza os números selecionados
+  duration?: string;
 };
 
 export default function HoursSelect({
   options,
   placeholder,
   selected,
-  disabledHours,
+  duration,
   setSelected,
 }: ComboxType) {
   const [open, setOpen] = React.useState(false);
+  const [disabledTimes, setDisabledTimes] = React.useState<string[]>([]);
+
+  function parseDuration(duration?: string): number {
+    if (!duration) return 0;
+    console.log(parseFloat(duration.split(":")[0]));
+    return parseFloat(duration.split(":")[0]);
+  }
 
   // Alternar seleção do item
   const toggleSelection = (value: string) => {
-    setSelected(
-      selected.includes(value)
-        ? selected.filter((item) => item !== value) // Remove se já estiver selecionado
-        : [...selected, value] // Adiciona se não estiver selecionado
-    );
+    let updated: string[];
+
+    if (selected.includes(value)) {
+      // Remove se já estiver selecionado
+      updated = selected.filter((item) => item !== value);
+    } else {
+      // Adiciona se não estiver selecionado
+      updated = [...selected, value];
+    }
+
+    setSelected(updated);
+
+    console.log(updated);
+
+    // === Aqui começa o cálculo das horas a desabilitar ===
+    const dur = parseDuration(duration); // ex: "2h" → 2
+
+    const blocked = new Set<string>();
+
+    updated.forEach((val) => {
+      const [hourStr, minuteStr] = val.split(":");
+      const startHour = parseInt(hourStr, 10);
+      const minute = parseInt(minuteStr, 10);
+
+      for (let i = 1; i < dur; i++) {
+        const nextHour = startHour + i;
+        if (nextHour < 24) {
+          const nextTime = `${String(nextHour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`;
+          blocked.add(nextTime);
+        }
+      }
+    });
+
+    // Agora você pode usar esse array para aplicar estilos
+    const disabledArray = Array.from(blocked);
+    console.log("Horas desabilitadas:", disabledArray);
+    // Salve em estado se quiser, por exemplo:
+    setDisabledTimes(disabledArray);
   };
 
   const isVisible = React.useMemo(() => {
@@ -72,7 +113,10 @@ export default function HoursSelect({
                     className={cn(
                       "flex items-center justify-center p-2 border rounded-md cursor-pointer",
                       selected?.includes(option.value) &&
-                        "bg-primary-600 text-white"
+                        "bg-primary-600 text-white",
+                      disabledTimes &&
+                        disabledTimes.includes(option.value) &&
+                        "opacity-50 cursor-not-allowed"
                     )}
                   >
                     {option.label}

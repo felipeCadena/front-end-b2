@@ -7,17 +7,10 @@ import { cn } from "@/utils/cn";
 import { ptBR } from "react-day-picker/locale";
 import { format, isSameDay, parseISO } from "date-fns";
 import { toast } from "react-toastify";
-import {
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  MyDialog,
-} from "../molecules/my-dialog";
 import MyButton from "../atoms/my-button";
-import MultiSelect from "../molecules/combobox";
 import { hours } from "@/common/constants/constants";
 import HoursSelect from "../molecules/date-select";
+import ConfirmModal from "../molecules/confirm-modal";
 
 interface Schedule {
   id: string;
@@ -34,6 +27,7 @@ interface SchedulesByDate {
 }
 
 type CalendarProps = {
+  duration: string;
   schedules?: Schedule[];
   onCreateSchedule: (datetimes: string[]) => Promise<void>;
   onCancelSchedule: (scheduleId: string) => Promise<void>;
@@ -42,6 +36,7 @@ type CalendarProps = {
 } & Omit<DayPickerProps, "mode" | "selected" | "onSelect">;
 
 function CalendarAvailability({
+  duration,
   schedules,
   onCreateSchedule,
   onCancelSchedule,
@@ -54,6 +49,8 @@ function CalendarAvailability({
   const [isDesktop, setIsDesktop] = React.useState<boolean>(false);
   const [selectedDate, setSelectedDate] = React.useState<Date | undefined>();
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
+
+  const [isModalCancelOpen, setIsModalCancelOpen] = React.useState(false);
 
   const [isLoading, setIsLoading] = React.useState(false);
   const [isLoadingCancel, setIsLoadingCancel] = React.useState(false);
@@ -104,8 +101,6 @@ function CalendarAvailability({
     return schedulesByDate[dateStr] || [];
   };
 
-  console.log(schedules && schedules);
-
   const formatScheduleTimes = (
     date: Date,
     selectedTimes: string[]
@@ -128,7 +123,7 @@ function CalendarAvailability({
 
     // Formata os horários
     return filteredTimes.map(
-      (time) => `${baseDate}T${time}
+      (time) => `${baseDate}T${time}:00-03:00
     `
     );
   };
@@ -169,12 +164,19 @@ function CalendarAvailability({
   const handleCancel = async (id: string) => {
     setIsLoadingCancel(true);
 
-    try {
-      await onCancelSchedule(id);
-    } catch (error) {
-      console.log("Erro ao cancelar horário");
-    } finally {
-      setIsLoadingCancel(false);
+    // Verifica se tem cliente agendado
+    const schedule = schedules?.find((schedule) => schedule.id === id);
+    if (schedule && schedule.qntConfirmedPersons > 0) {
+      setIsModalCancelOpen(true);
+      return;
+    } else {
+      try {
+        await onCancelSchedule(id);
+      } catch (error) {
+        console.log("Erro ao cancelar horário");
+      } finally {
+        setIsLoadingCancel(false);
+      }
     }
   };
 
@@ -224,6 +226,8 @@ function CalendarAvailability({
   const availableHours = hours.filter(
     (hour) => !selectedTimesForDate.includes(hour.value)
   );
+
+  console.log(selectedTimes);
 
   return (
     <div className="">
@@ -339,22 +343,18 @@ function CalendarAvailability({
         {...props}
       />
 
-      <MyDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="max-w-sm md:max-w-lg">
-          <DialogHeader>
-            <DialogTitle>
-              {selectedDate && (
-                <span className="text-lg font-semibold">
-                  {format(selectedDate, "dd 'de' MMMM 'de' yyyy", {
-                    locale: ptBR,
-                  })}
-                </span>
-              )}
-            </DialogTitle>
-          </DialogHeader>
+      <section className="max-w-sm md:max-w-2xl mx-auto mt-16">
+        {selectedDate && (
+          <span className="text-lg font-semibold">
+            {format(selectedDate, "dd 'de' MMMM 'de' yyyy", {
+              locale: ptBR,
+            })}
+          </span>
+        )}
 
-          <div className="py-4 overflow-hidden">
-            {selectedDate && getSchedulesForDate(selectedDate).length > 0 ? (
+        <div className="py-4 overflow-hidden">
+          {selectedDate &&
+            (getSchedulesForDate(selectedDate).length > 0 ? (
               <>
                 <div className="space-y-4">
                   {getSchedulesForDate(selectedDate).map((schedule) => (
@@ -366,28 +366,44 @@ function CalendarAvailability({
                         {format(parseISO(schedule.datetime), "HH:mm")}
                       </span>
                       <div className="flex gap-2">
-                        <MyButton
-                          variant="red"
-                          size="sm"
-                          borderRadius="squared"
-                          onClick={() => handleCancel(schedule.id)}
-                          isLoading={isLoadingCancel}
+                        <ConfirmModal
+                          customDescription={
+                            schedule?.qntConfirmedPersons > 0
+                              ? "Esse horário já possui clientes agendados. Deseja cancelar mesmo assim?"
+                              : "Tem certeza que deseja cancelar esse horário?"
+                          }
+                          customTitle="Cancelar Horário"
+                          customConfirmMessage="Cancelar"
+                          iconName="cancel"
+                          callbackFn={() => handleCancel(schedule.id)}
                         >
-                          Cancelar
-                        </MyButton>
+                          <MyButton
+                            variant="red"
+                            size="sm"
+                            borderRadius="squared"
+                            isLoading={isLoadingCancel}
+                          >
+                            Cancelar
+                          </MyButton>
+                        </ConfirmModal>
                       </div>
                     </div>
                   ))}
                 </div>
 
-                <div className="mt-4 ">
-                  <MyButton
-                    variant="red"
-                    className="w-full "
-                    size="lg"
-                    borderRadius="squared"
-                    isLoading={isLoadingAllCancel}
-                    onClick={() =>
+                <div className="mt-4">
+                  <ConfirmModal
+                    customDescription={
+                      schedules?.find(
+                        (schedule) => schedule.qntConfirmedPersons > 0
+                      )
+                        ? "Um ou mais horários já possui clientes agendados. Deseja cancelar mesmo assim?"
+                        : "Tem certeza que deseja cancelar todos os horário?"
+                    }
+                    customTitle="Cancelar Horário"
+                    customConfirmMessage="Cancelar"
+                    iconName="cancel"
+                    callbackFn={() =>
                       handleCancelAllSchedules(
                         getSchedulesForDate(selectedDate).map(
                           (schedule) => schedule.id
@@ -395,16 +411,25 @@ function CalendarAvailability({
                       )
                     }
                   >
-                    Cancelar Todos os Horários
-                  </MyButton>
+                    <MyButton
+                      variant="red"
+                      size="md"
+                      className="w-full ml-auto"
+                      borderRadius="squared"
+                      isLoading={isLoadingAllCancel}
+                    >
+                      Cancelar Todos os Horários
+                    </MyButton>
+                  </ConfirmModal>
                 </div>
               </>
             ) : (
               <p className="text-center mb-4">
                 Nenhum horário disponível para esta data
               </p>
-            )}
+            ))}
 
+          {selectedDate && (
             <div className="mt-6 border-t pt-4">
               <h4 className="font-medium mb-2">Adicionar Novo Horário</h4>
               <div className="flex max-sm:flex-col gap-4 md:gap-2">
@@ -412,6 +437,7 @@ function CalendarAvailability({
                   placeholder="Selecione os horários"
                   options={availableHours}
                   selected={selectedTimes}
+                  duration={duration}
                   setSelected={handleScheduleSelection}
                 />
                 <MyButton
@@ -425,9 +451,9 @@ function CalendarAvailability({
                 </MyButton>
               </div>
             </div>
-          </div>
-        </DialogContent>
-      </MyDialog>
+          )}
+        </div>
+      </section>
     </div>
   );
 }

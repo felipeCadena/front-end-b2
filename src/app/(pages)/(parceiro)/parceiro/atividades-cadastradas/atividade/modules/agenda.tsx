@@ -14,7 +14,7 @@ export default function Agenda({ formData, setFormData, onClose }: ModalProps) {
     // Remove duplicate datetimes
     datetimes = Array.from(new Set(datetimes));
     const body = datetimes.map((datetime) => ({
-      datetime: datetime,
+      datetime: datetime.trim(),
       isAvailable: true,
     }));
 
@@ -76,6 +76,7 @@ export default function Agenda({ formData, setFormData, onClose }: ModalProps) {
       </MyTypography>
       <div className="relative mt-4 mb-10">
         <CalendarAvailability
+          duration={formData?.duration}
           schedules={getSchedulesActive}
           onCreateSchedule={handleCreateSchedule}
           onCancelSchedule={handleCancelSchedule}

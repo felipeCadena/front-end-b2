@@ -63,8 +63,6 @@ export default function MultiSelect({
     // === Aqui começa o cálculo das horas a desabilitar ===
     const dur = parseDuration(duration); // ex: "2h" → 2
 
-    console.log(dur);
-
     const blocked = new Set<string>();
 
     updated.forEach((val) => {

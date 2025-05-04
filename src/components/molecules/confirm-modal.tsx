@@ -1,4 +1,6 @@
+import { cn } from "@/utils/cn";
 import MyButton from "../atoms/my-button";
+import MyIcon, { IconsMapTypes } from "../atoms/my-icon";
 import MyTypography from "../atoms/my-typography";
 import {
   DialogClose,
@@ -11,66 +13,62 @@ import {
 
 type ConfirmModalProps = {
   children: React.ReactNode;
-  cancel?: boolean;
+  iconName: IconsMapTypes;
   customTitle?: string;
   customDescription?: string;
   customConfirmMessage?: string;
   callbackFn: () => void;
+  className?: string;
 };
 
 export default function ConfirmModal({
   children,
-  cancel,
+  iconName,
   customTitle,
   customDescription,
   customConfirmMessage,
   callbackFn,
+  className,
 }: ConfirmModalProps) {
   return (
     <MyDialog>
       <DialogTrigger>{children}</DialogTrigger>
 
-      <DialogContent>
-        <DialogTitle>
-          <MyTypography variant="subtitle2" weight="medium">
-            {customTitle ? (
-              customTitle
-            ) : (
-              <>
-                {!cancel
-                  ? "Tem certeza que deseja publicar?"
-                  : "Cancelamento de Atividade"}
-              </>
-            )}
-          </MyTypography>
-        </DialogTitle>
+      <DialogContent
+        className={cn(
+          "max-w-[90%] md:max-w-sm rounded-2xl py-10 px-6 text-center",
+          className
+        )}
+      >
+        <DialogHeader className="flex items-center gap-4 relative">
+          <MyIcon name={iconName} />
+          <DialogTitle className="text-lg font-bold">{customTitle}</DialogTitle>
+        </DialogHeader>
+
+        <DialogClose asChild className="absolute top-4 right-4 cursor-pointer">
+          <MyIcon name="x" />
+        </DialogClose>
 
         <div className="flex w-full flex-col gap-4">
-          <MyTypography lightness={600}>
-            {customDescription ? (
-              customDescription
-            ) : (
-              <>
-                {!cancel
-                  ? "Atividade agendada"
-                  : "Tem certeza que deseja cancelar essa atividade?"}
-              </>
-            )}
+          <MyTypography
+            variant="subtitle4"
+            lightness={500}
+            className="w-11/12 mx-auto"
+          >
+            {customDescription}
           </MyTypography>
           <DialogClose asChild>
-            <MyButton onClick={callbackFn}>
-              {customConfirmMessage ? (
-                customConfirmMessage
-              ) : (
-                <>{!cancel ? "Ver na agenda" : "Cancelar Atividade"}</>
-              )}
+            <MyButton
+              onClick={callbackFn}
+              variant="black-border"
+              borderRadius="squared"
+              size="lg"
+              className={cn("mt-4 w-11/12 mx-auto font-bold")}
+              // isLoading={isLoading ?? false}
+            >
+              {customConfirmMessage}
             </MyButton>
           </DialogClose>
-          {cancel && (
-            <DialogClose asChild>
-              <MyButton variant="outline">Não quero mais cancelar</MyButton>
-            </DialogClose>
-          )}
         </div>
       </DialogContent>
     </MyDialog>
