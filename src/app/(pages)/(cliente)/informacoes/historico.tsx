@@ -8,6 +8,9 @@ import { useQuery } from '@tanstack/react-query';
 import React from 'react';
 
 export default function Historico() {
+  const [selected, setSelected] = React.useState<'ar' | 'terra' | 'mar' | ''>(
+    ''
+  );
   // lista as 50 ultimas atividades agendadas
 
   const { data: schedules, isLoading } = useQuery({
@@ -19,9 +22,12 @@ export default function Historico() {
       }),
   });
 
-  const lastAdventures = schedules?.filter(
-    (sch) => sch.adventureStatus === 'realizado'
+  const filteredActivities = schedules?.filter(
+    (sch) => sch.adventure.typeAdventure === selected
   );
+
+  const showHistoricActivities =
+    selected === '' ? schedules : filteredActivities;
 
   return isLoading ? (
     <div className="w-full h-[30vh] flex justify-center items-center mb-16">
@@ -31,17 +37,23 @@ export default function Historico() {
     <section className="w-full">
       <div className="mx-4 space-y-8">
         <div className="md:hidden">{/* <SearchActivity /> */}</div>
-        <ActivitiesFilter withoutText />
+        <ActivitiesFilter
+          selected={selected}
+          setSelected={setSelected}
+          withoutText
+        />
 
-        {lastAdventures && lastAdventures.length > 0 ? (
+        {showHistoricActivities && showHistoricActivities.length > 0 ? (
           <>
             <div className="md:hidden">
-              <FullActivitiesHistoricMobile activities={lastAdventures} />
+              <FullActivitiesHistoricMobile
+                activities={showHistoricActivities}
+              />
             </div>
             <div className="max-sm:hidden">
               <FullActivitiesHistoric
                 isActivityDone
-                activities={lastAdventures}
+                activities={showHistoricActivities}
               />
             </div>
           </>
