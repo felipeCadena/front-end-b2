@@ -100,6 +100,11 @@ export default function Perfil() {
     },
   });
 
+  const isPhotoAvailable =
+    fetchUser?.photo?.url !== '' && fetchUser?.photo?.url;
+
+  console.log('photo available', fetchUser);
+
   const handleClickUpload = () => {
     inputRef.current?.click();
   };
@@ -201,7 +206,7 @@ export default function Perfil() {
             <Image
               key={fetchUser?.photo?.updatedAt}
               alt="avatar"
-              src={`${fetchUser?.photo?.url}?v=${new Date(fetchUser?.photo?.updatedAt ?? Date.now()).getTime()}`}
+              src={`${isPhotoAvailable ? `${fetchUser?.photo?.url}?v=${new Date(fetchUser?.photo?.updatedAt ?? Date.now()).getTime()}` : '/user.png'}`}
               width={28}
               height={28}
               className="w-24 h-24 rounded-full object-cover"

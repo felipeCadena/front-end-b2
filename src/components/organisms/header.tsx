@@ -1,20 +1,20 @@
-"use client";
+'use client';
 
-import React, { useEffect } from "react";
-import Sidebar from "./sidebar";
-import MyLogo from "../atoms/my-logo";
-import LanguageDropdown from "./language-dropdown";
-import MyIcon from "../atoms/my-icon";
-import { usePathname, useRouter } from "next/navigation";
-import PATHS from "@/utils/paths";
-import Image from "next/image";
-import SideBarModal from "../molecules/side-bar-modal";
-import { cn } from "@/utils/cn";
-import { useSession } from "next-auth/react";
-import useLogin from "@/store/useLogin";
-import { useQuery } from "@tanstack/react-query";
-import { users } from "@/services/api/users";
-import { useAuthStore } from "@/store/useAuthStore";
+import React from 'react';
+import Sidebar from './sidebar';
+import MyLogo from '../atoms/my-logo';
+import LanguageDropdown from './language-dropdown';
+import MyIcon from '../atoms/my-icon';
+import { usePathname, useRouter } from 'next/navigation';
+import PATHS from '@/utils/paths';
+import Image from 'next/image';
+import SideBarModal from '../molecules/side-bar-modal';
+import { cn } from '@/utils/cn';
+import { useSession } from 'next-auth/react';
+import useLogin from '@/store/useLogin';
+import { useQuery } from '@tanstack/react-query';
+import { users } from '@/services/api/users';
+import { useAuthStore } from '@/store/useAuthStore';
 
 export default function Header() {
   const router = useRouter();
@@ -23,8 +23,8 @@ export default function Header() {
   const { setUser } = useAuthStore();
   const { data: session } = useSession();
 
-  const { data: fetchUser, refetch } = useQuery({
-    queryKey: ["fetchUser"],
+  const { data: fetchUser } = useQuery({
+    queryKey: ['fetchUser'],
     enabled: !!session?.user,
     queryFn: async () => {
       const user = await users.getUserLogged();
@@ -40,12 +40,15 @@ export default function Header() {
     },
   });
 
+  const isPhotoAvailable =
+    fetchUser?.photo?.url !== '' && fetchUser?.photo?.url;
+
   const withoutHeaderMobile = () => {
     return (
-      pathname === PATHS["sobre-a-empresa"] ||
-      pathname === PATHS["cadastro-parceiro"] ||
-      pathname === PATHS["informacoes-atividades"] ||
-      pathname === PATHS["cadastro-atividade"]
+      pathname === PATHS['sobre-a-empresa'] ||
+      pathname === PATHS['cadastro-parceiro'] ||
+      pathname === PATHS['informacoes-atividades'] ||
+      pathname === PATHS['cadastro-atividade']
       // pathname.includes("editar")
     );
   };
@@ -53,13 +56,13 @@ export default function Header() {
   return (
     <header
       className={cn(
-        "top-0 z-50 h-[100px] w-full md:max-w-screen-custom md:mx-auto bg-white flex items-center justify-between px-4 md:px-6 mb-4",
-        withoutHeaderMobile() && "max-sm:hidden"
+        'top-0 z-50 h-[100px] w-full md:max-w-screen-custom md:mx-auto bg-white flex items-center justify-between px-4 md:px-6 mb-4',
+        withoutHeaderMobile() && 'max-sm:hidden'
       )}
     >
       <div
         className="max-sm:hidden cursor-pointer"
-        onClick={() => router.push("/")}
+        onClick={() => router.push('/')}
       >
         <MyLogo variant="web" width={122} height={40} />
       </div>
@@ -91,7 +94,7 @@ export default function Header() {
                 <MyIcon name="chevron-down" />
                 <Image
                   key={fetchUser?.photo?.updatedAt}
-                  src={`${fetchUser?.photo?.url}?v=${new Date(fetchUser?.photo?.updatedAt ?? Date.now()).getTime()}`}
+                  src={`${isPhotoAvailable ? `${fetchUser?.photo?.url}?v=${new Date(fetchUser?.photo?.updatedAt ?? Date.now()).getTime()}` : '/user.png'}`}
                   alt="Avatar"
                   width={50}
                   height={50}

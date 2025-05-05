@@ -1,10 +1,10 @@
 import React from 'react';
 import MyFormInput from '../atoms/my-form-input';
 import { UseFormReturn } from 'react-hook-form';
-import { FormData } from '@/app/(pages)/(cliente)/finalizar-compra/page';
+import { PurchaseOrderFormData } from '@/app/(pages)/(cliente)/finalizar-compra/page';
 
 type PreOrderFormProps = {
-  form: UseFormReturn<FormData>;
+  form: UseFormReturn<PurchaseOrderFormData>;
 };
 
 const PreOrderForm = ({ form }: PreOrderFormProps) => {

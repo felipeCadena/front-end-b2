@@ -24,6 +24,8 @@ export default function GaleriaDeFotos() {
     queryFn: () => adventures.getAdventures(),
   });
 
+  console.log(activities);
+
   return isLoading ? (
     <div className="w-full h-[30vh] flex justify-center items-center mb-16">
       <Loading />
