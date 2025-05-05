@@ -93,12 +93,22 @@ const PagamentoMobile = () => {
   const [selectedPayment, setSelectedPayment] = useState<string>('PIX');
   const [isLoading, setIsLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isPaymentMadeWithCard, setIsPaymentMadeWithCard] = useState(false);
   const router = useRouter();
   const { addToPaymentStore } = useFinishPayment();
   const queryClient = useQueryClient();
 
   const installmentsAvailable =
     process.env.NEXT_PUBLIC_B2_ENABLED_INSTALLMENT_PAY ?? 1;
+
+  const handleCardPaymentModal = () => {
+    router.push(PATHS.agenda);
+  };
+
+  const handleClosePaymentModal = () => {
+    setIsPaymentMadeWithCard(false);
+    router.push(PATHS.atividades);
+  };
 
   const handleModal = () => {
     setIsModalOpen((prev) => !prev);
@@ -244,6 +254,7 @@ const PagamentoMobile = () => {
             dueDate: data.db.dueDate,
           });
         }
+        clearCart(userId);
         toast.success('Pedido enviado com sucesso!');
         router.push(`/finalizar-compra/${data.db.id}`);
         return data;
@@ -255,7 +266,6 @@ const PagamentoMobile = () => {
       queryClient.invalidateQueries({
         queryKey: ['unread_notifications'],
       });
-      router.push(PATHS.atividades);
     } catch (error) {
       if (error instanceof AxiosError) {
         if (error.status === 401) {
@@ -361,6 +371,15 @@ const PagamentoMobile = () => {
           )}
         </form>
       </MyForm>
+      <ModalAlert
+        open={isPaymentMadeWithCard}
+        onClose={handleClosePaymentModal}
+        onAction={handleCardPaymentModal}
+        button="Ver na agenda"
+        title="Atividade agendada"
+        descrition="Parabéns! Sua atividade foi agendada com nosso parceiro e ja estamos cuidando de tudo, enquanto isso já vai se preparando para uma experiência inesquecível!"
+        iconName="sucess"
+      />
       <ModalAlert
         open={isModalOpen}
         onClose={handleModal}

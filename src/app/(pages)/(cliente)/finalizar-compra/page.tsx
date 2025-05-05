@@ -107,6 +107,11 @@ export default function FinalizarCompra() {
     router.push(PATHS.agenda);
   };
 
+  const handleClosePaymentModal = () => {
+    setIsPaymentMadeWithCard(false);
+    router.push(PATHS.atividades);
+  };
+
   const handleModal = () => {
     setIsModalOpen((prev) => !prev);
   };
@@ -277,7 +282,6 @@ export default function FinalizarCompra() {
       queryClient.invalidateQueries({
         queryKey: ['unread_notifications'],
       });
-      router.push(PATHS.atividades);
     } catch (error) {
       if (error instanceof AxiosError) {
         if (error.status === 401) {
@@ -463,7 +467,7 @@ export default function FinalizarCompra() {
       )}
       <ModalAlert
         open={isPaymentMadeWithCard}
-        onClose={() => setIsPaymentMadeWithCard(false)}
+        onClose={handleClosePaymentModal}
         onAction={handleCardPaymentModal}
         button="Ver na agenda"
         title="Atividade agendada"
