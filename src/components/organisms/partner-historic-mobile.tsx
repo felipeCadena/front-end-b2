@@ -3,25 +3,18 @@
 import { cn } from "@/utils/cn";
 import React from "react";
 import MyTypography from "../atoms/my-typography";
-import {
-  getData,
-  getHora,
-  getTimeInterval,
-  isPastActivity,
-} from "@/utils/formatters";
+import { getData, getHora, isPastActivity } from "@/utils/formatters";
 import Now from "../atoms/my-icon/elements/now";
 import PopupActivity from "./popup-activity";
 import { useRouter } from "next/navigation";
 import PATHS from "@/utils/paths";
 import Hide from "../atoms/my-icon/elements/hide";
 import ModalClient from "./modal-client";
-import { clientList } from "@/common/constants/mock";
-import User from "../atoms/my-icon/elements/user";
 import Pessoas from "../atoms/my-icon/elements/pessoas";
-import { schedules } from "@/services/api/schedules";
-import { getHours } from "date-fns";
-import MyButton from "../atoms/my-button";
 import MyBadge from "../atoms/my-badge";
+import GenericModal from "./generic-modal";
+import { partnerService } from "@/services/api/partner";
+import { useQuery } from "@tanstack/react-query";
 
 export default function PartnerHistoricMobile({
   activities,
@@ -35,6 +28,19 @@ export default function PartnerHistoricMobile({
   const router = useRouter();
   const [showModal, setShowModal] = React.useState(false);
   const [clientList, setClientList] = React.useState<any>([]);
+  const [showConfirmationModal, setShowConfirmationModal] =
+    React.useState(false);
+  const [confirmList, setConfirmList] = React.useState<any>([]);
+
+  const { data: parterSchedules } = useQuery({
+    queryKey: ["parterSchedules"],
+    queryFn: () =>
+      partnerService.getMySchedules({
+        limit: 50,
+        // isCanceled: false,
+        qntConfirmedPersons: "> 0",
+      }),
+  });
 
   const handleCancel = (id: string | number) => {
     router.push(PATHS.cancelarAtividade(id));
@@ -46,13 +52,27 @@ export default function PartnerHistoricMobile({
 
   const handleModalCustomers = async (id: string) => {
     try {
-      const clients = await schedules.getScheduleById(id);
+      const clients = await partnerService.getPartnerScheduleById(id);
       setClientList(clients);
       setShowModal(true);
     } catch (error) {
       console.error("Error fetching schedule data:", error);
     }
   };
+
+  const handleConfirm = async (scheduleId: string) => {
+    setShowConfirmationModal(true);
+
+    try {
+      const schedule = await partnerService.getPartnerScheduleById(scheduleId);
+      setConfirmList(schedule);
+      console.log("schedules", schedule);
+    } catch (error) {
+      console.error("Error fetching schedule data:", error);
+    }
+  };
+
+  const confirmSchedules = true;
 
   return (
     <section className="px-4">
@@ -66,6 +86,17 @@ export default function PartnerHistoricMobile({
           descrition="Confira a lista de clientes para esta atividade:"
           button="Fechar"
         />
+
+        <GenericModal
+          open={showConfirmationModal}
+          onClose={() => setShowConfirmationModal(false)}
+          data={confirmList?.ordersScheduleAdventure}
+          icon={<Pessoas stroke="#9F9F9F" />}
+          title="Lista de reservas a serem confirmadas"
+          descrition="Confira a lista reservas:"
+          button="Fechar"
+        />
+
         <div
           className={cn(
             "grid grid-cols-1 md:grid-cols-3 gap-5",
@@ -123,9 +154,16 @@ export default function PartnerHistoricMobile({
                     </MyTypography>
                   </div>
 
-                  {!activity?.isCanceled ? (
-                    <MyBadge variant="warning">Confirmar agendamento</MyBadge>
-                  ) : (
+                  {!activity?.isCanceled && confirmSchedules && (
+                    <MyBadge
+                      onClick={() => handleConfirm(activity?.id)}
+                      variant="warning"
+                    >
+                      Confirmar agendamento
+                    </MyBadge>
+                  )}
+
+                  {activity?.isCanceled && (
                     <MyBadge variant="error">Cancelada</MyBadge>
                   )}
                 </div>

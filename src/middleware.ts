@@ -28,9 +28,6 @@ export async function middleware(req: NextRequest) {
   // Se for pública, libera
   if (isPublic) return NextResponse.next();
 
-  console.log("isPublic", isPublic);
-  console.log("pathname", pathname);
-
   // Se não tiver token, redireciona
   if (!token) {
     const redirectUrl = req.nextUrl.clone();

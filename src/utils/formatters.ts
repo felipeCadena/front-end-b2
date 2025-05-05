@@ -163,15 +163,13 @@ export const formatCpfCnpj = (value: string) => {
 // Transforme minutos ou dias em horas
 export function convertToHours(timeString: string) {
   const mappings = {
-    "30 min": 0.5,
-    "1 hora": 1,
-    "3 horas": 3,
-    "5 horas": 5,
-    "12 horas": 12,
     "24 horas": 24,
     "48 horas": 48,
     "72 horas": 72,
+    "4 dias": 4 * 24,
     "5 dias": 5 * 24,
+    "6 dias": 6 * 24,
+    "7 dias": 7 * 24,
   } as const;
 
   return mappings[timeString as keyof typeof mappings] ?? null;
@@ -179,21 +177,19 @@ export function convertToHours(timeString: string) {
 
 export function convertToTimeString(hours: number) {
   const mappings = {
-    "30 min": 0.5,
-    "1 hora": 1,
-    "3 horas": 3,
-    "5 horas": 5,
-    "12 horas": 12,
     "24 horas": 24,
     "48 horas": 48,
     "72 horas": 72,
+    "4 dias": 4 * 24,
     "5 dias": 5 * 24,
+    "6 dias": 6 * 24,
+    "7 dias": 7 * 24,
   } as const;
 
   return (
     Object.keys(mappings).find(
       (key) => mappings[key as keyof typeof mappings] === Number(hours)
-    ) ?? null
+    ) ?? ""
   );
 }
 
