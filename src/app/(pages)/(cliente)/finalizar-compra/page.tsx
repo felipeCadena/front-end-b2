@@ -32,10 +32,7 @@ const formSchema = z.object({
   creditCard: z
     .object({
       holderName: z.string().trim().optional(),
-      number: z
-        .string()
-        .min(16, { message: 'Número do cartão precisa ter 16 digitos' })
-        .trim(),
+      number: z.string().trim().optional(),
       expiryMonth: z.string().optional(),
       expiryYear: z.string().optional(),
       ccv: z.string().optional(),
@@ -49,8 +46,12 @@ const formSchema = z.object({
       postalCode: z.string(),
       addressNumber: z.string().optional(),
       addressComplement: z.string().nullable().optional(),
-      phone: z.string().optional(),
-      mobilePhone: z.string(),
+      phone: z
+        .string()
+        .optional()
+        .nullable()
+        .transform((v) => v ?? ''),
+      mobilePhone: z.string().optional(),
     })
     .optional(),
   adventures: z
@@ -88,7 +89,7 @@ const paymentDefaultValues = {
   },
 };
 
-export type FormData = z.infer<typeof formSchema>;
+export type PurchaseOrderFormData = z.infer<typeof formSchema>;
 
 export default function FinalizarCompra() {
   const router = useRouter();
@@ -96,10 +97,20 @@ export default function FinalizarCompra() {
   const [isLoading, setIsLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isReadyToPay, setIsReadyToPay] = useState(false);
+  const [isPaymentMadeWithCard, setIsPaymentMadeWithCard] = useState(false);
   const { addToPaymentStore } = useFinishPayment();
   const queryClient = useQueryClient();
   const installmentsAvailable =
     process.env.NEXT_PUBLIC_B2_ENABLED_INSTALLMENT_PAY ?? 1;
+
+  const handleCardPaymentModal = () => {
+    router.push(PATHS.agenda);
+  };
+
+  const handleClosePaymentModal = () => {
+    setIsPaymentMadeWithCard(false);
+    router.push(PATHS.atividades);
+  };
 
   const handleModal = () => {
     setIsModalOpen((prev) => !prev);
@@ -167,7 +178,7 @@ export default function FinalizarCompra() {
     },
   ];
 
-  const form = useForm<FormData>({
+  const form = useForm<PurchaseOrderFormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       ...paymentDefaultValues,
@@ -192,7 +203,7 @@ export default function FinalizarCompra() {
     }
   }, [userId, purchaseOrder?.length]);
 
-  const handleSubmit = async (formData: FormData) => {
+  const handleSubmit = async (formData: PurchaseOrderFormData) => {
     setIsLoading(true);
     const formattedOrder = {
       ...formData,
@@ -212,6 +223,7 @@ export default function FinalizarCompra() {
           '.',
           ''
         ),
+        phone: formData.creditCardHolderInfo?.mobilePhone?.replace(/\D/g, ''),
         mobilePhone: formData.creditCardHolderInfo?.mobilePhone?.replace(
           /\D/g,
           ''
@@ -265,25 +277,23 @@ export default function FinalizarCompra() {
       }
 
       await ordersAdventuresService.create(formattedOrder, userIP);
-      toast.success('Pedido enviado com sucesso!');
+      setIsPaymentMadeWithCard(true);
       clearCart(userId);
       queryClient.invalidateQueries({
         queryKey: ['unread_notifications'],
       });
-      router.push(PATHS.atividades);
     } catch (error) {
       if (error instanceof AxiosError) {
-        if (error.status === 400) {
-          toast.error(error.response?.data.message);
-          return;
-        }
         if (error.status === 401) {
           toast.error('Token inválido ou expirado. Faça login novamente.');
+          console.error(error);
+          return;
+        } else {
+          toast.error(error.response?.data.message);
+          console.error(error);
           return;
         }
       }
-      toast.error('Um erro inesperado ocorreu!');
-      console.error(error);
     } finally {
       setIsLoading(false);
     }
@@ -456,8 +466,18 @@ export default function FinalizarCompra() {
         </div>
       )}
       <ModalAlert
+        open={isPaymentMadeWithCard}
+        onClose={handleClosePaymentModal}
+        onAction={handleCardPaymentModal}
+        button="Ver na agenda"
+        title="Atividade agendada"
+        descrition="Parabéns! Sua atividade foi agendada com nosso parceiro e ja estamos cuidando de tudo, enquanto isso já vai se preparando para uma experiência inesquecível!"
+        iconName="sucess"
+      />
+      <ModalAlert
         open={isModalOpen}
         onClose={handleModal}
+        onAction={handleModal}
         button="Fechar"
         title="Atenção!"
         descrition="Não será aceito parcelamento para pagamento de mais de uma atividade."

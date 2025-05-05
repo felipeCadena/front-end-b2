@@ -3,9 +3,10 @@
 import React from "react";
 import MyTypography from "@/components/atoms/my-typography";
 import useLogin from "@/store/useLogin";
+import { useAuthStore } from "@/store/useAuthStore";
 
 export default function TermosCondicoes() {
-  const { email } = useLogin();
+  const { user } = useAuthStore();
 
   return (
     <section>
@@ -16,7 +17,7 @@ export default function TermosCondicoes() {
       >
         Termos de Serviço
       </MyTypography>
-      {!email.includes("parceiro") ? (
+      {user?.role == "customer" ? (
         <div className="p-6 max-w-3xl mx-auto">
           <p className="mb-4">
             Estes Termos de Serviço ("Termos") são um acordo legal vinculante

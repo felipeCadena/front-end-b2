@@ -34,10 +34,7 @@ export default function CancelarAtividade() {
     queryFn: () => schedules.getScheduleById(id as string),
   });
 
-  const hasClient = parterSchedules.ordersScheduleAdventure;
-
-  console.log(selectedJustificativa);
-
+  const hasClient = parterSchedules?.ordersScheduleAdventure;
   const handleCancel = async () => {
     try {
       await partnerService.cancelSchedule(
@@ -129,7 +126,8 @@ export default function CancelarAtividade() {
 
         <ModalAlert
           open={isModalOpen}
-          onClose={handleCancel}
+          onClose={() => setIsModalOpen(false)}
+          onAction={handleCancel}
           iconName="cancel"
           title="Cancelamento de Atividade"
           descrition={

@@ -1,71 +1,57 @@
-"use client";
+'use client';
 
-import MyButton from "@/components/atoms/my-button";
-import MyCheckbox from "@/components/atoms/my-checkbox";
-import { MyForm } from "@/components/atoms/my-form";
-import MyIcon, { IconsMapTypes } from "@/components/atoms/my-icon";
-import MySpinner from "@/components/atoms/my-spinner";
-import MyTypography from "@/components/atoms/my-typography";
-import CardPaymentOption from "@/components/organisms/card-payment-option";
-import PreOrderForm from "@/components/organisms/pre-order-form";
-import { cn } from "@/utils/cn";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import React, { useEffect, useState } from "react";
-import { ordersAdventuresService } from "@/services/api/orders";
-import { users } from "@/services/api/users";
-import { useCart } from "@/store/useCart";
-import { useRouter } from "next/navigation";
-import { useFinishPayment } from "@/store/useFinishPayment";
-import PATHS from "@/utils/paths";
-import { useQueryClient, useQuery } from "@tanstack/react-query";
-import { AxiosError } from "axios";
-import { toast } from "react-toastify";
-import ModalAlert from "@/components/molecules/modal-alert";
+import MyButton from '@/components/atoms/my-button';
+import MyCheckbox from '@/components/atoms/my-checkbox';
+import { MyForm } from '@/components/atoms/my-form';
+import MyIcon, { IconsMapTypes } from '@/components/atoms/my-icon';
+import MySpinner from '@/components/atoms/my-spinner';
+import MyTypography from '@/components/atoms/my-typography';
+import CardPaymentOption from '@/components/organisms/card-payment-option';
+import PreOrderForm from '@/components/organisms/pre-order-form';
+import { cn } from '@/utils/cn';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import React, { useEffect, useState } from 'react';
+import { ordersAdventuresService } from '@/services/api/orders';
+import { users } from '@/services/api/users';
+import { useCart } from '@/store/useCart';
+import { useRouter } from 'next/navigation';
+import { useFinishPayment } from '@/store/useFinishPayment';
+import PATHS from '@/utils/paths';
+import { useQueryClient, useQuery } from '@tanstack/react-query';
+import { AxiosError } from 'axios';
+import { toast } from 'react-toastify';
+import ModalAlert from '@/components/molecules/modal-alert';
 
 const formSchema = z.object({
   paymentMethod: z.string().optional(),
   installmentCount: z.string().optional(),
-
   creditCard: z
     .object({
       holderName: z.string().trim().optional(),
-      number: z.string().trim(),
+      number: z.string().trim().optional(),
       expiryMonth: z.string().optional(),
       expiryYear: z.string().optional(),
       ccv: z.string().optional(),
     })
     .optional(),
-
   creditCardHolderInfo: z
     .object({
       name: z.string().trim(),
       email: z.string().email().trim(),
-      cpfCnpj: z
-        .string({
-          required_error: "CPF/CNPJ é obrigatório.",
-        })
-        .refine((doc) => {
-          const replacedDoc = doc.replace(/\D/g, "");
-          return replacedDoc.length >= 11;
-        }, "CPF/CNPJ deve conter no mínimo 11 caracteres.")
-        .refine((doc) => {
-          const replacedDoc = doc.replace(/\D/g, "");
-          return replacedDoc.length <= 14;
-        }, "CPF/CNPJ deve conter no máximo 14 caracteres.")
-        .refine((doc) => {
-          const replacedDoc = doc.replace(/\D/g, "");
-          return !!Number(replacedDoc);
-        }, "CPF/CNPJ deve conter apenas números."),
+      cpfCnpj: z.string(),
       postalCode: z.string(),
       addressNumber: z.string().optional(),
       addressComplement: z.string().nullable().optional(),
-      phone: z.string().optional(),
-      mobilePhone: z.string(),
+      phone: z
+        .string()
+        .optional()
+        .nullable()
+        .transform((v) => v ?? ''),
+      mobilePhone: z.string().optional(),
     })
     .optional(),
-
   adventures: z
     .array(
       z.object({
@@ -80,36 +66,49 @@ const formSchema = z.object({
 });
 
 const paymentDefaultValues = {
-  paymentMethod: "PIX",
-  installmentCount: "1",
+  paymentMethod: 'PIX',
+  installmentCount: '1',
   creditCard: {
-    holderName: "",
-    number: "",
-    expiryMonth: "",
-    expiryYear: "",
-    ccv: "",
+    holderName: '',
+    number: '',
+    expiryMonth: '',
+    expiryYear: '',
+    ccv: '',
   },
   creditCardHolderInfo: {
-    name: "",
-    email: "",
-    cpfCnpj: "",
-    postalCode: "",
-    addressNumber: "000",
+    name: '',
+    email: '',
+    cpfCnpj: '',
+    postalCode: '',
+    addressNumber: '000',
     addressComplement: null,
-    phone: "4738010919",
-    mobilePhone: "",
+    phone: '4738010919',
+    mobilePhone: '',
   },
 };
 
 export type FormData = z.infer<typeof formSchema>;
 
 const PagamentoMobile = () => {
-  const [selectedPayment, setSelectedPayment] = useState<string>("PIX");
+  const [selectedPayment, setSelectedPayment] = useState<string>('PIX');
   const [isLoading, setIsLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isPaymentMadeWithCard, setIsPaymentMadeWithCard] = useState(false);
   const router = useRouter();
   const { addToPaymentStore } = useFinishPayment();
   const queryClient = useQueryClient();
+
+  const installmentsAvailable =
+    process.env.NEXT_PUBLIC_B2_ENABLED_INSTALLMENT_PAY ?? 1;
+
+  const handleCardPaymentModal = () => {
+    router.push(PATHS.agenda);
+  };
+
+  const handleClosePaymentModal = () => {
+    setIsPaymentMadeWithCard(false);
+    router.push(PATHS.atividades);
+  };
 
   const handleModal = () => {
     setIsModalOpen((prev) => !prev);
@@ -118,22 +117,22 @@ const PagamentoMobile = () => {
   const { carts, clearCart } = useCart();
 
   const { data: loggedUser } = useQuery({
-    queryKey: ["logged_user"],
+    queryKey: ['logged_user'],
     queryFn: () => users.getUserLogged(),
   });
 
-  const { data: userIP = "" } = useQuery({
-    queryKey: ["user_ip_address"],
+  const { data: userIP = '' } = useQuery({
+    queryKey: ['user_ip_address'],
     queryFn: () => users.getIP(),
   });
 
-  const userId = loggedUser?.id ?? "";
+  const userId = loggedUser?.id ?? '';
 
   const userCart = carts.find((cart) => cart.userId === userId);
 
   const purchaseOrder = userCart?.cart.map((item) => {
     if (item) {
-      const [hour, minute] = item.schedule.scheduleTime.split(":");
+      const [hour, minute] = item.schedule.scheduleTime.split(':');
       const scheduleDate = new Date(item.schedule.scheduleDate as Date);
       scheduleDate.setHours(Number(hour));
       scheduleDate.setMinutes(Number(minute));
@@ -152,28 +151,28 @@ const PagamentoMobile = () => {
   useQuery({
     queryKey: [purchaseOrder],
     queryFn: () => {
-      if (purchaseOrder && purchaseOrder.length > 1) {
+      if (Number(installmentsAvailable) > 1) {
         setIsModalOpen(true);
       }
-      return true;
+      return purchaseOrder ?? [];
     },
   });
 
   const payments: { name: string; label: string; icon: IconsMapTypes }[] = [
     {
-      name: "PIX",
-      label: "Pix",
-      icon: "pix",
+      name: 'PIX',
+      label: 'Pix',
+      icon: 'pix',
     },
     {
-      name: "BOLETO",
-      label: "Boleto",
-      icon: "boleto",
+      name: 'BOLETO',
+      label: 'Boleto',
+      icon: 'boleto',
     },
     {
-      name: "CREDIT_CARD",
-      label: "Cartão de crédito",
-      icon: "card",
+      name: 'CREDIT_CARD',
+      label: 'Cartão de crédito',
+      icon: 'card',
     },
   ];
 
@@ -209,32 +208,32 @@ const PagamentoMobile = () => {
       installmentCount: Number(formData.installmentCount),
       creditCard: {
         ...formData.creditCard,
-        number: formData.creditCard?.number?.replaceAll(" ", ""),
+        number: formData.creditCard?.number?.replaceAll(' ', ''),
       },
       creditCardHolderInfo: {
         ...formData.creditCardHolderInfo,
         cpfCnpj: formData.creditCardHolderInfo?.cpfCnpj
-          .replaceAll("-", "")
-          .replaceAll("/", "")
-          .replaceAll(".", "")
-          .replaceAll(" ", ""),
+          .replaceAll('-', '')
+          .replaceAll('/', '')
+          .replaceAll('.', '')
+          .replaceAll(' ', ''),
         postalCode: formData.creditCardHolderInfo?.postalCode.replaceAll(
-          ".",
-          ""
+          '.',
+          ''
         ),
       },
     };
 
     try {
-      if (selectedPayment === "BOLETO" || selectedPayment === "PIX") {
+      if (selectedPayment === 'BOLETO' || selectedPayment === 'PIX') {
         const { data } = await ordersAdventuresService.create(
           formattedOrder,
           userIP
         );
         queryClient.invalidateQueries({
-          queryKey: ["unread_notifications"],
+          queryKey: ['unread_notifications'],
         });
-        if (selectedPayment === "PIX") {
+        if (selectedPayment === 'PIX') {
           addToPaymentStore({
             id: data.db.id,
             paymentMethod: data.db.paymentMethod,
@@ -246,7 +245,7 @@ const PagamentoMobile = () => {
             pixCopyPaste: data.pixResponse.payload,
           });
         }
-        if (selectedPayment === "BOLETO") {
+        if (selectedPayment === 'BOLETO') {
           addToPaymentStore({
             id: data.db.id,
             paymentMethod: data.db.paymentMethod,
@@ -255,31 +254,30 @@ const PagamentoMobile = () => {
             dueDate: data.db.dueDate,
           });
         }
-        toast.success("Pedido enviado com sucesso!");
+        clearCart(userId);
+        toast.success('Pedido enviado com sucesso!');
         router.push(`/finalizar-compra/${data.db.id}`);
         return data;
       }
 
       await ordersAdventuresService.create(formattedOrder, userIP);
-      toast.success("Pedido enviado com sucesso!");
+      toast.success('Pedido enviado com sucesso!');
       clearCart(userId);
       queryClient.invalidateQueries({
-        queryKey: ["unread_notifications"],
+        queryKey: ['unread_notifications'],
       });
-      router.push(PATHS.atividades);
     } catch (error) {
       if (error instanceof AxiosError) {
-        if (error.status === 400) {
-          toast.error(error.response?.data.message);
-          return;
-        }
         if (error.status === 401) {
-          toast.error("Token inválido ou expirado. Faça login novamente.");
+          toast.error('Token inválido ou expirado. Faça login novamente.');
+          console.error(error);
+          return;
+        } else {
+          toast.error(error.response?.data.message);
+          console.error(error);
           return;
         }
       }
-      toast.error("Um erro inesperado ocorreu!");
-      console.error(error);
     } finally {
       setIsLoading(false);
     }
@@ -287,7 +285,7 @@ const PagamentoMobile = () => {
 
   const handleSelectPaymentOption = (paymentName: string) => {
     setSelectedPayment(paymentName);
-    form.setValue("paymentMethod", paymentName);
+    form.setValue('paymentMethod', paymentName);
   };
 
   return (
@@ -303,7 +301,7 @@ const PagamentoMobile = () => {
       <MyForm {...form}>
         <form
           onSubmit={form.handleSubmit(handleSubmit)}
-          className={cn("md:flex md:flex-col md:w-full")}
+          className={cn('md:flex md:flex-col md:w-full')}
         >
           <PreOrderForm form={form} />
           <div className="my-4 px-4 md:px-0">
@@ -311,7 +309,7 @@ const PagamentoMobile = () => {
               Selecione o método de pagamento:
             </MyTypography>
           </div>
-          <div className={cn("flex flex-col gap-4 mb-4 px-4 md:px-0")}>
+          <div className={cn('flex flex-col gap-4 mb-4 px-4 md:px-0')}>
             {payments.map((payment) => (
               <MyButton
                 key={payment.name}
@@ -319,9 +317,9 @@ const PagamentoMobile = () => {
                 type="button"
                 borderRadius="squared"
                 className={cn(
-                  "flex justify-between p-4 md:max-w-[200px]",
+                  'flex justify-between p-4 md:max-w-[200px]',
                   selectedPayment === payment.name &&
-                    "bg-primary-900 opacity-100 border border-primary-600"
+                    'bg-primary-900 opacity-100 border border-primary-600'
                 )}
                 size="lg"
                 value={selectedPayment}
@@ -333,7 +331,7 @@ const PagamentoMobile = () => {
             ))}
           </div>
 
-          {selectedPayment === "CREDIT_CARD" && (
+          {selectedPayment === 'CREDIT_CARD' && (
             <CardPaymentOption
               userCart={userCart ? userCart.cart : []}
               form={form}
@@ -343,16 +341,11 @@ const PagamentoMobile = () => {
           {selectedPayment && (
             <div
               className={cn(
-                "mt-6 md:mt-4 col-start-2 px-4",
-                selectedPayment === "CREDIT_CARD" &&
-                  "md:col-span-2 md:col-start-2"
+                'mt-6 md:mt-4 col-start-2 px-4',
+                selectedPayment === 'CREDIT_CARD' &&
+                  'md:col-span-2 md:col-start-2'
               )}
             >
-              <MyCheckbox
-                className=""
-                label="Salvar os dados para a próxima compra"
-              />
-
               {isLoading ? (
                 <MyButton
                   variant="default"
@@ -379,8 +372,18 @@ const PagamentoMobile = () => {
         </form>
       </MyForm>
       <ModalAlert
+        open={isPaymentMadeWithCard}
+        onClose={handleClosePaymentModal}
+        onAction={handleCardPaymentModal}
+        button="Ver na agenda"
+        title="Atividade agendada"
+        descrition="Parabéns! Sua atividade foi agendada com nosso parceiro e ja estamos cuidando de tudo, enquanto isso já vai se preparando para uma experiência inesquecível!"
+        iconName="sucess"
+      />
+      <ModalAlert
         open={isModalOpen}
         onClose={handleModal}
+        onAction={handleModal}
         button="Fechar"
         title="Atenção!"
         descrition="Não será aceito parcelamento para pagamento de mais de uma atividade."

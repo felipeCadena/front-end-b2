@@ -29,6 +29,7 @@ const ROOTS_TERMOS_PARCEIRO = '/parceiro/termos-de-uso';
 const ROOTS_CARRINHO = '/carrinho';
 const ROOTS_FINALIZAR_COMPRA_MOBILE = '/carrinho/pagamento';
 const ROOTS_FINALIZAR_COMPRA = '/finalizar-compra';
+const ROOTS_SCHEDULES = '/informacoes?tab=reservas';
 // Agrupa Favoritos, Histórico, Reservas e Fotos (Na Web)
 const ROOTS_INFOS = '/informacoes';
 
@@ -112,6 +113,7 @@ const PATHS = {
   'esqueci-minha-senha': ROOTS_SENHA,
   'resetar-senha': ROOTS_RESETAR_SENHA,
   atividades: ROOTS_ATIVIDADES,
+  agenda: ROOTS_SCHEDULES,
   informacoes: ROOTS_INFOS,
   quemSomos: ROOTS_QUEMSOMOS,
   carrinho: ROOTS_CARRINHO,
@@ -205,6 +207,7 @@ export const PATHS_CONFIG: PathsConfig = {
     customer: [
       ROOTS_CARRINHO,
       ROOTS_FINALIZAR_COMPRA,
+      ROOTS_SCHEDULES,
       ROOTS_FINALIZAR_COMPRA_MOBILE,
       ROOTS_INFOS,
       '/notificacoes/notificacao/*',

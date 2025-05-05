@@ -9,12 +9,6 @@ import { jwtDecode } from "jwt-decode";
 import { DEFAULT_ROLE_PATHS } from "@/utils/paths";
 import { signOut } from "next-auth/react";
 
-declare module "next-auth" {
-  interface User {
-    expiresIn?: number;
-  }
-}
-
 type JWTCallback = {
   user: any;
   token: any;
@@ -182,6 +176,7 @@ export const authOptions: NextAuthOptions = {
 
       if (now > token.expiresAt) {
         try {
+          console.log("refreshToken " + token?.refreshToken);
           const dataAuth = await authService.refreshToken(token?.refreshToken);
 
           if (dataAuth?.access_token) {
@@ -222,7 +217,7 @@ export const authOptions: NextAuthOptions = {
   },
   pages: {
     signIn: "/login",
-    error: "/",
+    error: "/login",
     signOut: "/",
     verifyRequest: "/",
   },

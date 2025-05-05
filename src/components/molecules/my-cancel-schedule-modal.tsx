@@ -1,19 +1,20 @@
-"use client";
+'use client';
 
-import MyButton from "@/components/atoms/my-button";
-import MyIcon from "@/components/atoms/my-icon";
+import MyButton from '@/components/atoms/my-button';
+import MyIcon, { IconsMapTypes } from '@/components/atoms/my-icon';
 import {
   DialogContent,
   DialogHeader,
   DialogTitle,
   MyDialog,
-} from "@/components/molecules/my-dialog";
-import MyTypography from "../atoms/my-typography";
+} from '@/components/molecules/my-dialog';
+import MyTypography from '../atoms/my-typography';
 
 interface ModalAlertProps {
   open: boolean;
   title?: string;
   subtitle?: string;
+  iconName: IconsMapTypes;
   buttonTitle?: string;
   onClose: () => void;
   onSubmit: () => void;
@@ -25,6 +26,7 @@ export default function MyCancelScheduleModal({
   onClose,
   title,
   subtitle,
+  iconName,
   buttonTitle,
   onSubmit,
   isLoading,
@@ -33,18 +35,10 @@ export default function MyCancelScheduleModal({
     <MyDialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-w-[90%] md:max-w-sm rounded-2xl py-20 px-6 text-center">
         <DialogHeader className="flex items-center gap-4">
-          <MyIcon name="cancel" />
-          <DialogTitle className="text-lg font-bold">
-            Cancelamento de Atividade
-          </DialogTitle>
+          <MyIcon name={iconName} />
+          <DialogTitle className="text-lg font-bold">{title}</DialogTitle>
         </DialogHeader>
-        <MyTypography
-          variant="subtitle4"
-          lightness={500}
-          className="w-11/12 mx-auto"
-        >
-          {title}
-        </MyTypography>
+
         <MyTypography
           variant="subtitle4"
           lightness={500}
@@ -66,7 +60,7 @@ export default function MyCancelScheduleModal({
         <MyButton
           variant="ghost"
           size="lg"
-          className="absolute top-0 right-0 mt-4 w-fit mx-auto font-bold "
+          className="absolute top-0 right-0 mt-4 w-fit mx-auto font-bold"
           onClick={onClose}
         >
           <MyIcon name="x" />

@@ -118,6 +118,8 @@ export default function Dashboard() {
 
   const incomeData = partnerIncome?.[type];
 
+  const incomeYearData = partnerIncomeYear?.[type];
+
   const activities = [
     {
       id: 1,

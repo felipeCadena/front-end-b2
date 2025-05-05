@@ -21,6 +21,9 @@ import React from "react";
 export default function Step3() {
   const { difficult, setAdventureData, duration } = useAdventureStore();
 
+  console.log("Dificuldade", difficult);
+  console.log("Duração", duration);
+
   // Converte de "HH:mm" para "Xh" ou "XhYY"
   const formatDuration = (hours: string) => {
     if (!hours) return "";

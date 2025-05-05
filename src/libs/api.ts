@@ -15,33 +15,12 @@ api.interceptors.request.use(async (config) => {
     return config;
   }
 
-  // const now = Date.now();
-
-  // if (now > session.expiresAt && session?.refresh_token) {
-  //   try {
-  //     const dataAuth = await authService.refreshToken(session?.refresh_token);
-
-  //     if (dataAuth?.access_token) {
-  //       const newExpiresAt = Date.now() + dataAuth.expires_in * 1000;
-
-  //       await signIn("credentials", {
-  //         accessToken: dataAuth.access_token,
-  //         refreshToken: dataAuth.refresh_token,
-  //         expiresAt: newExpiresAt,
-  //         redirect: false,
-  //       });
-  //     }
-  //   } catch (err) {
-  //     console.error("Erro ao renovar token:", (err as any)?.response?.data);
-  //     // console.error("Erro ao renovar token");
-  //   }
-  // }
-
-  // const newSession = await authService.getTokens();
-  // Se for rota de logout ou refresh, usa refresh_token
   if (config.url?.includes("/auth/logout")) {
+    console.log("session?.refresh_token", session?.refresh_token);
+
     config.headers.Authorization = `Bearer ${session?.refresh_token}`;
   } else {
+    console.log("session?.access_token", session?.access_token);
     config.headers.Authorization = `Bearer ${session?.access_token}`;
   }
   return config;

@@ -136,6 +136,7 @@ export default function Reservas() {
       <ModalAlert
         open={isModalOpen}
         onClose={handleClose}
+        onAction={handleClose}
         iconName="warning"
         title="Atividade cancelada"
         descrition="A atividade foi cancelada."

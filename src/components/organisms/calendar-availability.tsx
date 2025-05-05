@@ -11,6 +11,16 @@ import MyButton from "../atoms/my-button";
 import { hours } from "@/common/constants/constants";
 import HoursSelect from "../molecules/date-select";
 import ConfirmModal from "../molecules/confirm-modal";
+import ModalAlert from "../molecules/modal-alert";
+import MyTypography from "../atoms/my-typography";
+
+const justificativas = [
+  "Houve um imprevisto e irei precisar cancelar nossa atividade, desculpe!",
+  "Condições climáticas desfavoráveis para a realização da atividade.",
+  "Problemas técnicos com equipamentos necessários.",
+  "Número insuficiente de participantes.",
+  "Motivos de força maior/emergência.",
+];
 
 interface Schedule {
   id: string;
@@ -30,8 +40,14 @@ type CalendarProps = {
   duration: string;
   schedules?: Schedule[];
   onCreateSchedule: (datetimes: string[]) => Promise<void>;
-  onCancelSchedule: (scheduleId: string) => Promise<void>;
-  onCancelAllSchedules: (chedulesId: string[]) => Promise<void>;
+  onCancelSchedule: (
+    scheduleId: string,
+    justificativa?: string
+  ) => Promise<void>;
+  onCancelAllSchedules: (
+    chedulesId: string[],
+    justificativa?: string
+  ) => Promise<void>;
   className?: string;
 } & Omit<DayPickerProps, "mode" | "selected" | "onSelect">;
 
@@ -48,13 +64,18 @@ function CalendarAvailability({
 }: CalendarProps) {
   const [isDesktop, setIsDesktop] = React.useState<boolean>(false);
   const [selectedDate, setSelectedDate] = React.useState<Date | undefined>();
-  const [isDialogOpen, setIsDialogOpen] = React.useState(false);
+  const [selectedJustificativa, setSelectedJustificativa] =
+    React.useState<string>("");
+  const [hasClient, setHasClient] = React.useState(false);
 
   const [isModalCancelOpen, setIsModalCancelOpen] = React.useState(false);
 
   const [isLoading, setIsLoading] = React.useState(false);
   const [isLoadingCancel, setIsLoadingCancel] = React.useState(false);
   const [isLoadingAllCancel, setIsLoadingAllCancel] = React.useState(false);
+
+  const [cancelAllSchedules, setCancelAllSchedules] = React.useState(false);
+  const [confirmCancelAll, setConfirmCancelAll] = React.useState(false);
 
   const [selectedTimes, setSelectedTimes] = React.useState<string[]>([]);
 
@@ -93,7 +114,6 @@ function CalendarAvailability({
 
   const handleDayClick = (date: Date) => {
     setSelectedDate(date);
-    setIsDialogOpen(true);
   };
 
   const getSchedulesForDate = (date: Date): Schedule[] => {
@@ -161,35 +181,52 @@ function CalendarAvailability({
     setSelectedTimes(times); // Atualiza o estado`local
   };
 
-  const handleCancel = async (id: string) => {
+  const handleCancel = async (id: string, justificativa?: string) => {
     setIsLoadingCancel(true);
 
     // Verifica se tem cliente agendado
-    const schedule = schedules?.find((schedule) => schedule.id === id);
-    if (schedule && schedule.qntConfirmedPersons > 0) {
+
+    try {
+      await onCancelSchedule(id, justificativa);
       setIsModalCancelOpen(true);
-      return;
-    } else {
-      try {
-        await onCancelSchedule(id);
-      } catch (error) {
-        console.log("Erro ao cancelar horário");
-      } finally {
-        setIsLoadingCancel(false);
-      }
+    } catch (error) {
+      console.log("Erro ao cancelar horário");
+    } finally {
+      setIsLoadingCancel(false);
+      setHasClient(false);
+      setSelectedJustificativa("");
     }
   };
 
-  const handleCancelAllSchedules = async (ids: string[]) => {
+  const handleCloseModal = () => {
+    setIsModalCancelOpen(false);
+    setSelectedDate(undefined);
+    setSelectedTimes([]);
+  };
+
+  const handleCancelAllSchedules = async (
+    ids: string[],
+    selectedJustificativa?: string
+  ) => {
     setIsLoadingAllCancel(true);
 
     try {
-      await onCancelAllSchedules(ids);
+      await onCancelAllSchedules(ids, selectedJustificativa);
+      setCancelAllSchedules(false);
+      setConfirmCancelAll(true);
     } catch (error) {
       console.log("Erro ao cancelar horários");
     } finally {
       setIsLoadingAllCancel(false);
     }
+  };
+
+  const handleCancelAll = () => {
+    selectedDate &&
+      handleCancelAllSchedules(
+        getSchedulesForDate(selectedDate).map((schedule) => schedule.id),
+        selectedJustificativa
+      );
   };
 
   // Função para extrair apenas os horários de uma data específica
@@ -227,10 +264,50 @@ function CalendarAvailability({
     (hour) => !selectedTimesForDate.includes(hour.value)
   );
 
-  console.log(selectedTimes);
+  const hasSomeClient = () => {
+    const hasClient = schedules?.some(
+      (schedule) => schedule.qntConfirmedPersons > 0
+    );
+
+    if (hasClient) {
+      setHasClient(true);
+    } else {
+      setCancelAllSchedules(true);
+    }
+  };
 
   return (
     <div className="">
+      <ModalAlert
+        open={isModalCancelOpen}
+        onClose={() => setIsModalCancelOpen(false)}
+        onAction={handleCloseModal}
+        button="Fechar"
+        title="Horário cancelado"
+        descrition="O horário foi cancelado com sucesso."
+        iconName="cancel"
+      />
+
+      <ModalAlert
+        open={cancelAllSchedules}
+        onClose={() => setCancelAllSchedules(false)}
+        onAction={handleCancelAll}
+        button="Cancelar"
+        title="Cancelar todos os horários"
+        descrition="Deseja cancelar todos os horários?"
+        iconName="warning"
+      />
+
+      <ModalAlert
+        open={confirmCancelAll}
+        onClose={() => setConfirmCancelAll(false)}
+        onAction={() => setConfirmCancelAll(false)}
+        button="Fechar"
+        title="Horários Cancelados"
+        descrition="Todos os horários foram cancelados com sucesso."
+        iconName="cancel"
+      />
+
       <DayPicker
         mode="single"
         selected={selectedDate}
@@ -352,75 +429,109 @@ function CalendarAvailability({
           </span>
         )}
 
-        <div className="py-4 overflow-hidden">
+        <div className="py-4 overflow-hidden w-full">
           {selectedDate &&
             (getSchedulesForDate(selectedDate).length > 0 ? (
               <>
                 <div className="space-y-4">
                   {getSchedulesForDate(selectedDate).map((schedule) => (
-                    <div
-                      key={schedule.id}
-                      className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
-                    >
-                      <span className="font-medium">
-                        {format(parseISO(schedule.datetime), "HH:mm")}
-                      </span>
-                      <div className="flex gap-2">
-                        <ConfirmModal
-                          customDescription={
-                            schedule?.qntConfirmedPersons > 0
-                              ? "Esse horário já possui clientes agendados. Deseja cancelar mesmo assim?"
-                              : "Tem certeza que deseja cancelar esse horário?"
-                          }
-                          customTitle="Cancelar Horário"
-                          customConfirmMessage="Cancelar"
-                          iconName="cancel"
-                          callbackFn={() => handleCancel(schedule.id)}
-                        >
-                          <MyButton
-                            variant="red"
-                            size="sm"
-                            borderRadius="squared"
-                            isLoading={isLoadingCancel}
-                          >
-                            Cancelar
-                          </MyButton>
-                        </ConfirmModal>
+                    <div key={schedule.id}>
+                      <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                        <span className="font-medium">
+                          {format(parseISO(schedule.datetime), "HH:mm")}
+                        </span>
+                        <div className="flex gap-2">
+                          {schedule?.qntConfirmedPersons > 0 ? (
+                            <MyButton
+                              variant="red"
+                              size="sm"
+                              borderRadius="squared"
+                              onClick={() => setHasClient(true)}
+                            >
+                              Cancelar
+                            </MyButton>
+                          ) : (
+                            <ConfirmModal
+                              customDescription={
+                                schedule?.qntConfirmedPersons > 0
+                                  ? "Esse horário já possui clientes agendados. Deseja cancelar mesmo assim?"
+                                  : "Tem certeza que deseja cancelar esse horário?"
+                              }
+                              customTitle="Cancelar Horário"
+                              customConfirmMessage="Cancelar"
+                              iconName="warning"
+                              callbackFn={() => handleCancel(schedule.id)}
+                            >
+                              <MyButton
+                                variant="red"
+                                size="sm"
+                                borderRadius="squared"
+                                isLoading={isLoadingCancel}
+                              >
+                                Cancelar
+                              </MyButton>
+                            </ConfirmModal>
+                          )}
+                        </div>
                       </div>
+                      {/* Seção de Justificativa */}
+                      {hasClient && (
+                        <div className="py-6">
+                          <MyTypography
+                            variant="subtitle3"
+                            weight="bold"
+                            className="mb-4"
+                          >
+                            Atenção: Esse horário já possui clientes agendados.
+                            Justifique o cancelamento:
+                          </MyTypography>
+
+                          <div className="space-y-3">
+                            {justificativas.map((justificativa, index) => (
+                              <div
+                                key={index}
+                                className={`p-4 rounded-lg border cursor-pointer transition-all border-l-8 ${
+                                  selectedJustificativa === justificativa
+                                    ? "border-black bg-gray-50"
+                                    : "border-gray-200 bg-gray-50 opacity-80"
+                                }`}
+                                onClick={() =>
+                                  setSelectedJustificativa(justificativa)
+                                }
+                              >
+                                <MyTypography variant="body-big">
+                                  {justificativa}
+                                </MyTypography>
+                              </div>
+                            ))}
+                          </div>
+
+                          <div className="flex gap-4">
+                            <MyButton
+                              variant="red"
+                              size="md"
+                              className="w-full ml-auto mt-4"
+                              borderRadius="squared"
+                              onClick={() =>
+                                handleCancel(schedule.id, selectedJustificativa)
+                              }
+                            >
+                              Confirmar Cancelamento de Horário
+                            </MyButton>
+                            <MyButton
+                              variant="outline-neutral"
+                              size="md"
+                              className="w-full ml-auto mt-4"
+                              borderRadius="squared"
+                              onClick={() => setHasClient(false)}
+                            >
+                              Não quero cancelar mais
+                            </MyButton>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   ))}
-                </div>
-
-                <div className="mt-4">
-                  <ConfirmModal
-                    customDescription={
-                      schedules?.find(
-                        (schedule) => schedule.qntConfirmedPersons > 0
-                      )
-                        ? "Um ou mais horários já possui clientes agendados. Deseja cancelar mesmo assim?"
-                        : "Tem certeza que deseja cancelar todos os horário?"
-                    }
-                    customTitle="Cancelar Horário"
-                    customConfirmMessage="Cancelar"
-                    iconName="cancel"
-                    callbackFn={() =>
-                      handleCancelAllSchedules(
-                        getSchedulesForDate(selectedDate).map(
-                          (schedule) => schedule.id
-                        )
-                      )
-                    }
-                  >
-                    <MyButton
-                      variant="red"
-                      size="md"
-                      className="w-full ml-auto"
-                      borderRadius="squared"
-                      isLoading={isLoadingAllCancel}
-                    >
-                      Cancelar Todos os Horários
-                    </MyButton>
-                  </ConfirmModal>
                 </div>
               </>
             ) : (
@@ -430,25 +541,135 @@ function CalendarAvailability({
             ))}
 
           {selectedDate && (
-            <div className="mt-6 border-t pt-4">
-              <h4 className="font-medium mb-2">Adicionar Novo Horário</h4>
-              <div className="flex max-sm:flex-col gap-4 md:gap-2">
-                <HoursSelect
-                  placeholder="Selecione os horários"
-                  options={availableHours}
-                  selected={selectedTimes}
-                  duration={duration}
-                  setSelected={handleScheduleSelection}
-                />
-                <MyButton
-                  variant="default"
-                  borderRadius="squared"
-                  size="md"
-                  onClick={handleSaveNewSchedules}
-                  isLoading={isLoading}
-                >
-                  Adicionar Novo Horário
-                </MyButton>
+            <div className="mt-4 w-full">
+              {getSchedulesForDate(selectedDate).length > 0 && (
+                <div className="border-t pt-4 w-full flex justify-center items-center">
+                  <MyButton
+                    variant="red"
+                    size="md"
+                    className="w-full"
+                    borderRadius="squared"
+                    onClick={hasSomeClient}
+                  >
+                    Cancelar todos os horários
+                  </MyButton>
+
+                  {/* Seção de Justificativa */}
+                  {hasClient && (
+                    <div className="py-6">
+                      <MyTypography
+                        variant="subtitle3"
+                        weight="bold"
+                        className="mb-4"
+                      >
+                        Atenção: Esse horário já possui clientes agendados.
+                        Justifique o cancelamento:
+                      </MyTypography>
+
+                      <div className="space-y-3">
+                        {justificativas.map((justificativa, index) => (
+                          <div
+                            key={index}
+                            className={`p-4 rounded-lg border cursor-pointer transition-all border-l-8 ${
+                              selectedJustificativa === justificativa
+                                ? "border-black bg-gray-50"
+                                : "border-gray-200 bg-gray-50 opacity-80"
+                            }`}
+                            onClick={() =>
+                              setSelectedJustificativa(justificativa)
+                            }
+                          >
+                            <MyTypography variant="body-big">
+                              {justificativa}
+                            </MyTypography>
+                          </div>
+                        ))}
+                      </div>
+
+                      <div className="flex gap-4">
+                        <MyButton
+                          variant="red"
+                          size="md"
+                          className="w-full ml-auto mt-4"
+                          borderRadius="squared"
+                          onClick={() =>
+                            handleCancelAllSchedules(
+                              getSchedulesForDate(selectedDate).map(
+                                (schedule) => schedule.id
+                              ),
+                              selectedJustificativa
+                            )
+                          }
+                        >
+                          Confirmar Cancelamento de todos os horários
+                        </MyButton>
+                        <MyButton
+                          variant="outline-neutral"
+                          size="md"
+                          className="w-full ml-auto mt-4"
+                          borderRadius="squared"
+                          onClick={() => setHasClient(false)}
+                        >
+                          Não quero cancelar mais
+                        </MyButton>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* (
+                     <ConfirmModal 
+                      className="w-full"
+                      customDescription={
+                        schedules?.find(
+                          (schedule) => schedule.qntConfirmedPersons > 0
+                        )
+                          ? "Um ou mais horários já possui clientes agendados. Deseja cancelar mesmo assim?"
+                          : "Tem certeza que deseja cancelar todos os horário?"
+                      }
+                      customTitle="Cancelar Horário"
+                      customConfirmMessage="Cancelar"
+                      iconName="cancel"
+                      callbackFn={() =>
+                        handleCancelAllSchedules(
+                          getSchedulesForDate(selectedDate).map(
+                            (schedule) => schedule.id
+                          )
+                        )
+                      }
+                    >
+                      <MyButton
+                        variant="red"
+                        size="md"
+                        className="w-full"
+                        borderRadius="squared"
+                        isLoading={isLoadingAllCancel}
+                      >
+                        Cancelar todos os horários
+                      </MyButton>
+                    </ConfirmModal>
+                  )} */}
+                </div>
+              )}
+              <div className="mt-4 border-t pt-4">
+                <h4 className="font-medium mb-2">Adicionar Novo Horário</h4>
+                <div className="flex max-sm:flex-col gap-4 md:gap-2">
+                  <HoursSelect
+                    placeholder="Selecione os horários"
+                    options={availableHours}
+                    selected={selectedTimes}
+                    duration={duration}
+                    setSelected={handleScheduleSelection}
+                  />
+                  <MyButton
+                    variant="default"
+                    borderRadius="squared"
+                    size="md"
+                    onClick={handleSaveNewSchedules}
+                    isLoading={isLoading}
+                  >
+                    Adicionar Novo Horário
+                  </MyButton>
+                </div>
               </div>
             </div>
           )}

@@ -78,9 +78,16 @@ export default function Notificacao() {
           </MyTypography>
           <div className="flex justify-start items-center">
             <div className="flex flex-col gap-4 ml-2 mt-2 w-full">
-              <p
-                dangerouslySetInnerHTML={{ __html: notification?.text || '' }}
-              />
+              <p className="text-wrap">{notification?.text}</p>
+              {notification?.link && (
+                <a
+                  className="text-blue-500 underline text-wrap"
+                  href={notification.link}
+                  target="_blank"
+                >
+                  Clique aqui!
+                </a>
+              )}
             </div>
           </div>
         </div>

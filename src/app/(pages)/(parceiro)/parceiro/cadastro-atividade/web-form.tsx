@@ -105,8 +105,8 @@ export default function WebForm({
 
   const inputRef = React.useRef<HTMLInputElement>(null);
 
-  console.log(recurrences);
-  console.log(availableDates);
+  console.log(hoursBeforeCancellation);
+  console.log(hoursBeforeSchedule);
 
   // Atualiza as datas para um bloco específico
   const handleDateChange = (blockId: number, dates: Date[]) => {
@@ -167,7 +167,7 @@ export default function WebForm({
           newDate.setMilliseconds(0);
 
           availableDates.push({
-            datetime: format(newDate, "yyyy-MM-dd'T'HH:mm:ss"),
+            datetime: `${format(newDate, "yyyy-MM-dd'T'HH:mm:ss")}-03:00`,
             isAvailable: true,
           });
         });
@@ -296,6 +296,8 @@ export default function WebForm({
     }
     router.push(PATHS["informacoes-atividades"]);
   };
+
+  console.log(String(convertToTimeString(hoursBeforeSchedule)));
 
   return (
     <main className="space-y-10 my-6">

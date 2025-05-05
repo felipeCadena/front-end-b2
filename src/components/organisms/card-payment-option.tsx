@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { Card } from './card';
-import { FormData } from '@/app/(pages)/(cliente)/finalizar-compra/page';
+import { PurchaseOrderFormData } from '@/app/(pages)/(cliente)/finalizar-compra/page';
 import { UseFormReturn } from 'react-hook-form';
 import MyFormInput from '../atoms/my-form-input';
 import MyFormSelect from '../atoms/my-form-select';
@@ -10,7 +10,7 @@ import { AddToCartAdventure } from '@/services/api/adventures';
 import MyTypography from '../atoms/my-typography';
 
 type CardPaymentOptionProps = {
-  form: UseFormReturn<FormData>;
+  form: UseFormReturn<PurchaseOrderFormData>;
   userCart: AddToCartAdventure[];
 };
 
@@ -57,6 +57,7 @@ const CardPaymentOption = ({ form, userCart }: CardPaymentOptionProps) => {
           />
           <div className="min-h-[22px]">
             {creditCard &&
+              creditCard.number &&
               creditCard.number.length > 0 &&
               creditCard.number.length < 19 && (
                 <MyTypography variant="label" className="text-red-600">
@@ -68,7 +69,7 @@ const CardPaymentOption = ({ form, userCart }: CardPaymentOptionProps) => {
 
         <MyFormSelect
           form={form}
-          disabled={userCart.length > 1}
+          disabled={Number(instamentsAvailable) > 1}
           label="Parcelas"
           name="installmentCount"
           options={instalmentOptions}

@@ -13,6 +13,7 @@ import MyTypography from "../atoms/my-typography";
 interface ModalAlertProps {
   open: boolean;
   onClose: () => void;
+  onAction: () => void;
   iconName: IconsMapTypes;
   title: string;
   descrition: string;
@@ -23,6 +24,7 @@ interface ModalAlertProps {
 export default function ModalAlert({
   open,
   onClose,
+  onAction,
   title,
   descrition,
   iconName,
@@ -31,13 +33,18 @@ export default function ModalAlert({
 }: ModalAlertProps) {
   return (
     <MyDialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-[90%] md:max-w-sm rounded-2xl py-20 px-6 text-center">
+      <DialogContent className="max-w-[90%] md:max-w-sm rounded-2xl py-12 px-6 text-center">
+        <MyIcon
+          name="x"
+          className="absolute top-4 right-4 cursor-pointer"
+          onClick={onClose}
+        />
         <DialogHeader className="flex items-center gap-4">
           <MyIcon name={iconName} />
           <DialogTitle className="text-lg font-bold">{title}</DialogTitle>
         </DialogHeader>
         <MyTypography
-          variant="subtitle3"
+          variant="subtitle4"
           lightness={500}
           className="w-11/12 mx-auto"
         >
@@ -48,7 +55,7 @@ export default function ModalAlert({
           borderRadius="squared"
           size="lg"
           className="mt-4 w-11/12 mx-auto font-bold"
-          onClick={onClose}
+          onClick={onAction}
           isLoading={isLoading ?? false}
         >
           {button}

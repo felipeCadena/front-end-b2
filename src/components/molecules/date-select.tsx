@@ -80,7 +80,26 @@ export default function HoursSelect({
     );
   }, [options, selected]);
 
-  console.log(selected);
+  React.useEffect(() => {
+    const dur = parseDuration(duration); // duração em horas
+    const blocked = new Set<string>();
+
+    selected.forEach((val) => {
+      const [hourStr, minuteStr] = val.split(":");
+      const startHour = parseInt(hourStr, 10);
+      const minute = parseInt(minuteStr, 10);
+
+      for (let i = 1; i < dur; i++) {
+        const nextHour = startHour + i;
+        if (nextHour < 24) {
+          const nextTime = `${String(nextHour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`;
+          blocked.add(nextTime);
+        }
+      }
+    });
+
+    setDisabledTimes(Array.from(blocked));
+  }, [selected, duration]);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
