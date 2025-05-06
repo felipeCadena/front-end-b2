@@ -20,7 +20,11 @@ const FourthSection = () => {
   const { data: adventuresState = [] } = useQuery({
     queryKey: ["user_state-from-ip", userStateFromIp],
     queryFn: () =>
-      adventures.filterAdventures({ state: userStateFromIp, limit: 3 }),
+      adventures.filterAdventures({
+        state: userStateFromIp,
+        limit: 3,
+        orderBy: "createdAt desc",
+      }),
     enabled: !!userStateFromIp,
   });
 
