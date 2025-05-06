@@ -114,6 +114,7 @@ export interface MySchedule {
 export interface MyScheduleParams {
   adventureId?: number;
   adventureStatus?: string;
+  scheduleId?: string;
   startDate?: string;
   endDate?: string;
   limit?: number;
@@ -290,6 +291,16 @@ export const partnerService = {
     }
   },
 
+  async getPartnerScheduleById(id: string, params?: MyScheduleParams) {
+    try {
+      const response = await api.get(`/schedules/${id}/partner`, { params });
+      return response.data;
+    } catch (error) {
+      console.error("Error listing partner schedules:", error);
+      throw error;
+    }
+  },
+
   async getOrderSchedulesById(
     id: string,
     params?: {
@@ -309,6 +320,7 @@ export const partnerService = {
   },
 
   async listPartnerSchedules(params?: MyScheduleParams) {
+    console.log(params);
     try {
       const response = await api.get(
         `/ordersAdventures/orderSchedule/partner`,
@@ -320,7 +332,6 @@ export const partnerService = {
       throw error;
     }
   },
-
   cancelSchedule: async (
     orderScheduleId: string,
     adventureId: string,

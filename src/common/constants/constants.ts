@@ -9,15 +9,13 @@ export const daysOfWeek = [
 ];
 
 export const days = [
-  "30 min",
-  "1 hora",
-  "3 horas",
-  "5 horas",
-  "12 horas",
   "24 horas",
   "48 horas",
   "72 horas",
+  "4 dias",
   "5 dias",
+  "6 dias",
+  "7 dias",
 ];
 
 export const hours = [

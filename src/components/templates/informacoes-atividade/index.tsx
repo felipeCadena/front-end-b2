@@ -86,6 +86,8 @@ export default function InformacoesAtividade({
 
   const [isLoading, setIsLoading] = React.useState(false);
 
+  console.log(availableDates);
+
   const b2Tax = process.env.NEXT_PUBLIC_PERCENTAGE_TAX_B2;
   const tax = process.env.NEXT_PUBLIC_PERCENTAGE_TAX;
 

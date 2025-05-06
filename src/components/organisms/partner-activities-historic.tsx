@@ -15,9 +15,8 @@ import Calendar from "../atoms/my-icon/elements/calendar";
 import PopupActivity from "./popup-activity";
 import ModalClient from "./modal-client";
 import Pessoas from "../atoms/my-icon/elements/pessoas";
-import { schedules } from "@/services/api/schedules";
-import { ordersAdventuresService } from "@/services/api/orders";
-import { toast } from "react-toastify";
+import GenericModal from "./generic-modal";
+import { partnerService } from "@/services/api/partner";
 
 export default function PartnerActivitiesHistoric({
   activities,
@@ -28,6 +27,9 @@ export default function PartnerActivitiesHistoric({
   const pathname = usePathname();
   const [showModal, setShowModal] = React.useState(false);
   const [clientList, setClientList] = React.useState<any>([]);
+  const [showConfirmationModal, setShowConfirmationModal] =
+    React.useState(false);
+  const [confirmList, setConfirmList] = React.useState<any>([]);
 
   const handleCancel = (id: string | number) => {
     router.push(PATHS.cancelarAtividade(id));
@@ -39,7 +41,7 @@ export default function PartnerActivitiesHistoric({
 
   const handleModalCustomers = async (id: string) => {
     try {
-      const clients = await schedules.getScheduleById(id);
+      const clients = await partnerService.getPartnerScheduleById(id);
       console.log(clients);
       setClientList(clients);
       setShowModal(true);
@@ -48,7 +50,17 @@ export default function PartnerActivitiesHistoric({
     }
   };
 
-  console.log(activities);
+  const handleConfirm = async (scheduleId: string) => {
+    setShowConfirmationModal(true);
+
+    try {
+      const schedule = await partnerService.getPartnerScheduleById(scheduleId);
+      setConfirmList(schedule);
+      console.log("schedules", schedule);
+    } catch (error) {
+      console.error("Error fetching schedule data:", error);
+    }
+  };
 
   const calculateTotalCost = (ordersScheduleAdventure: any) => {
     const totalCost = ordersScheduleAdventure?.reduce(
@@ -59,24 +71,6 @@ export default function PartnerActivitiesHistoric({
       style: "currency",
       currency: "BRL",
     }).format(totalCost);
-  };
-
-  const handleConfirmSchedule = async (
-    scheduleId: string,
-    orderScheduleAdventureId: string
-  ) => {
-    try {
-      const response = await ordersAdventuresService.partnerConfirmSchedule(
-        scheduleId,
-        orderScheduleAdventureId
-      );
-      if (response) {
-        toast.success("Agendamento confirmado com sucesso!");
-      }
-    } catch (error) {
-      console.error("Error confirming schedule:", error);
-      toast.error("Erro ao confirmar agendamento!");
-    }
   };
 
   return (
@@ -90,6 +84,17 @@ export default function PartnerActivitiesHistoric({
         descrition="Confira a lista de clientes para esta atividade:"
         button="Fechar"
       />
+
+      <GenericModal
+        open={showConfirmationModal}
+        onClose={() => setShowConfirmationModal(false)}
+        data={confirmList?.ordersScheduleAdventure}
+        icon={<Pessoas stroke="#9F9F9F" />}
+        title="Lista de reservas a serem confirmadas"
+        descrition="Confira a lista reservas:"
+        button="Fechar"
+      />
+
       {activities &&
         activities.map((activity: any, index: number) => (
           <div
@@ -189,14 +194,13 @@ export default function PartnerActivitiesHistoric({
                     borderRadius="squared"
                     size="sm"
                     className="mx-12"
-                    onClick={() =>
-                      handleConfirmSchedule(
-                        activity?.id,
-                        activity?.ordersScheduleAdventure[0]?.id
-                      )
-                    }
+                    onClick={() => {
+                      console.log(activity);
+                      handleConfirm(activity?.id);
+                    }}
                   >
                     Confirmar agendamento
+                    {activity?.scheduleId}
                   </MyButton>
                 )}
 
