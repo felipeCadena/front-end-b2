@@ -48,8 +48,6 @@ export default function Parceiro() {
     queryFn: () => adminService.getPartnerById(id as string),
   });
 
-  console.log(session);
-
   React.useEffect(() => {
     if (fetchPartner) {
       setPartnerData({

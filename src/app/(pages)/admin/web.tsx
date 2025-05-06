@@ -58,8 +58,6 @@ export default function AdminWeb() {
     return "total_value_paid" in partner;
   }
 
-  console.log(Object.values(pendingPayments?.partners));
-
   return (
     <main>
       <div className="max-sm:hidden md:my-10">{/* <SearchActivity /> */}</div>
@@ -90,16 +88,18 @@ export default function AdminWeb() {
                   </MyTypography>
                 </div>
               ) : (
-                Object.values(pendingPayments?.partners).map((payment: any) => (
-                  <PartnerPaymentCard
-                    key={payment?.ordersSchedules}
-                    name={payment?.partnerFantasyName}
-                    amount={payment?.total_value_pending}
-                    avatar={payment?.partnerLogo}
-                    status={hasTotalValuePaid(payment) ? "paid" : "pending"}
-                    onPay={() => console.log(`Pagar ${payment.name}`)}
-                  />
-                ))
+                Object.values(pendingPayments?.partners ?? {}).map(
+                  (payment: any) => (
+                    <PartnerPaymentCard
+                      key={payment?.ordersSchedules}
+                      name={payment?.partnerFantasyName}
+                      amount={payment?.total_value_pending}
+                      avatar={payment?.partnerLogo}
+                      status={hasTotalValuePaid(payment) ? "paid" : "pending"}
+                      onPay={() => console.log(`Pagar ${payment.name}`)}
+                    />
+                  )
+                )
               )}
             </div>
           </TabsContent>
