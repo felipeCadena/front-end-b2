@@ -3,13 +3,13 @@
 import { MyTabs, TabsList, TabsTrigger } from "@/components/molecules/my-tabs";
 import { TabsContent } from "@radix-ui/react-tabs";
 import React from "react";
-import SearchActivity from "@/components/organisms/search-activity";
 import PartnerPaymentCard from "@/components/molecules/partner-payment";
 import MyTypography from "@/components/atoms/my-typography";
 import PartnerApprovalCard from "@/components/molecules/partner-approval";
-import MyButton from "@/components/atoms/my-button";
 import { useRouter } from "next/navigation";
 import ActivityStatusCard from "@/components/molecules/activity-status";
+import { adminService } from "@/services/api/admin";
+import { useQuery } from "@tanstack/react-query";
 
 export default function AdminWeb() {
   const router = useRouter();
@@ -45,22 +45,18 @@ export default function AdminWeb() {
     },
   ];
 
-  const newPartners = [
-    {
-      id: 1,
-      name: "Luis Otávio Menezes",
-      activitiesCount: 2,
-      avatar: "/images/avatar3.png",
-      isNew: true,
-    },
-    {
-      id: 2,
-      name: "Vitória Batista",
-      activitiesCount: 1,
-      avatar: "/images/avatar1.png",
-      isNew: false,
-    },
-  ];
+  const { data: pendingPayments, isLoading } = useQuery({
+    queryKey: ["pendingPayments"],
+    queryFn: () =>
+      adminService.listPendingPaidPartners({
+        startsAt: "2025-05-01T00:00:00",
+        endsAt: "2025-05-30T23:59:59",
+      }),
+  });
+
+  function hasTotalValuePaid(partner: Record<string, any>): boolean {
+    return "total_value_paid" in partner;
+  }
 
   return (
     <main>
@@ -68,35 +64,46 @@ export default function AdminWeb() {
 
       {
         <MyTabs defaultValue="pagamento" className="mb-10">
-          <TabsList className="mb-10 grid grid-cols-3">
+          <TabsList className="mb-10 grid grid-cols-2">
             <TabsTrigger value="pagamento" className="">
               Pagamento de parceiros
             </TabsTrigger>
-            <TabsTrigger value="parceiros">
-              Aprovação de novos parceiros
-            </TabsTrigger>
+            {/* <TabsTrigger value="parceiros">
+              Aprovação de novas atividades
+            </TabsTrigger> */}
             <TabsTrigger value="atividades">
               Aprovação de atividades
             </TabsTrigger>
           </TabsList>
           <TabsContent value="pagamento">
             <div className="space-y-3 max-w-4xl mx-auto">
-              <MyTypography variant="subtitle3" weight="bold" className="my-4">
+              {/* <MyTypography variant="subtitle3" weight="bold" className="my-4">
                 Pagamentos de Parceiros
-              </MyTypography>
-              {payments.map((payment) => (
-                <PartnerPaymentCard
-                  key={payment.id}
-                  name={payment.name}
-                  amount={payment.amount}
-                  avatar={payment.avatar}
-                  status={payment.status}
-                  onPay={() => console.log(`Pagar ${payment.name}`)}
-                />
-              ))}
+              </MyTypography> */}
+
+              {pendingPayments?.total_orders == 0 && !isLoading ? (
+                <div className="flex items-center justify-center h-[250px]">
+                  <MyTypography variant="subtitle4" weight="bold">
+                    Você ainda não possui pagamentos.
+                  </MyTypography>
+                </div>
+              ) : (
+                Object.values(pendingPayments?.partners ?? {}).map(
+                  (payment: any) => (
+                    <PartnerPaymentCard
+                      key={payment?.ordersSchedules}
+                      name={payment?.partnerFantasyName}
+                      amount={payment?.total_value_pending}
+                      avatar={payment?.partnerLogo}
+                      status={hasTotalValuePaid(payment) ? "paid" : "pending"}
+                      onPay={() => console.log(`Pagar ${payment.name}`)}
+                    />
+                  )
+                )
+              )}
             </div>
           </TabsContent>
-          <TabsContent value="parceiros">
+          {/* <TabsContent value="parceiros">
             <div className="space-y-10 max-w-4xl mx-auto">
               <div>
                 <MyTypography
@@ -116,14 +123,14 @@ export default function AdminWeb() {
                       avatar={partner.avatar}
                       isNew={partner.isNew}
                       onClick={() =>
-                        router.push(`/admin/parceiros/${partner.id}`)
+                        router.push(`/admin/aprovar-atividade/${partner.id}`)
                       }
                     />
                   ))}
                 </div>
-              </div>
+              </div> */}
 
-              <div>
+          {/* <div>
                 <MyTypography
                   variant="subtitle3"
                   weight="bold"
@@ -148,9 +155,9 @@ export default function AdminWeb() {
                     />
                   ))}
                 </div>
-              </div>
-            </div>
-          </TabsContent>
+              </div> */}
+          {/* </div> */}
+          {/* </TabsContent> */}
           <TabsContent value="atividades">
             <div className="space-y-10 max-w-5xl mx-auto">
               {/* Nova Atividade */}

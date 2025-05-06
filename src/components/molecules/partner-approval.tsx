@@ -28,6 +28,7 @@ export default function PartnerApprovalCard({
   rating,
   onClick,
 }: PartnerApprovalCardProps) {
+  console.log(rating);
   return (
     <section className="flex gap-4">
       <div
@@ -49,7 +50,7 @@ export default function PartnerApprovalCard({
               fill
               className="rounded-full object-cover"
             />
-            <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-white" />
+            {/* <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-white" /> */}
           </div>
 
           <div className="flex-1 min-w-0">
@@ -65,18 +66,18 @@ export default function PartnerApprovalCard({
             </MyTypography>
           </div>
 
-          {rating && rating > 0 && (
+          {typeof rating === "number" && (
             <div className="flex-shrink-0">
               <StarRating rating={rating} />
             </div>
           )}
         </div>
 
-        {isNew && (
+        {/* {isNew && (
           <MyButton borderRadius="squared" size="sm" className="text-sm p-2">
             Novo
           </MyButton>
-        )}
+        )} */}
       </div>
 
       {withButton && (
