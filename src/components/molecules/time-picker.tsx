@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import React, { useEffect, useRef, useState } from "react";
-import MyButton from "../atoms/my-button";
-import { Popover, PopoverContent, PopoverTrigger } from "../atoms/my-popover";
-import { cn } from "@/utils/cn";
-import MyTypography from "../atoms/my-typography";
-import { MyScrollArea } from "../atoms/my-scroll-area";
-import Time from "../atoms/my-icon/elements/time";
+import React, { useEffect, useRef, useState } from 'react';
+import MyButton from '../atoms/my-button';
+import { Popover, PopoverContent, PopoverTrigger } from '../atoms/my-popover';
+import { cn } from '@/utils/cn';
+import MyTypography from '../atoms/my-typography';
+import { MyScrollArea } from '../atoms/my-scroll-area';
+import Time from '../atoms/my-icon/elements/time';
 
 interface TimePickerModalProps {
   iconColor?: string;
@@ -22,7 +22,7 @@ export default function TimePickerModal({
   availableActivityTimes = [],
 }: TimePickerModalProps) {
   const [open, setOpen] = useState(false);
-  const [initialTime, setInitialTime] = useState("");
+  const [initialTime, setInitialTime] = useState('');
 
   const timeRef = useRef<HTMLDivElement>(null);
 
@@ -35,8 +35,8 @@ export default function TimePickerModal({
             `[data-value="${selectedTime}"]`
           );
           selectedElement?.scrollIntoView({
-            block: "center",
-            behavior: "smooth",
+            block: 'center',
+            behavior: 'smooth',
           });
         }
       }, 100);
@@ -44,7 +44,7 @@ export default function TimePickerModal({
   }, [open, selectedTime]);
 
   useEffect(() => {
-    if (availableActivityTimes.length > 0 && selectedTime === "") {
+    if (availableActivityTimes.length > 0 && selectedTime === '') {
       setInitialTime(availableActivityTimes[0]);
       setSelectedTime(availableActivityTimes[0]);
     }
@@ -66,7 +66,7 @@ export default function TimePickerModal({
           className="w-full justify-start text-sm items-center gap-2 py-6 border-gray-300 md:bg-white disabled:bg-slate-100"
           disabled={availableActivityTimes.length === 0}
         >
-          <Time fill={iconColor ?? "#8DC63F"} />
+          <Time fill={iconColor ?? '#8DC63F'} />
           {availableActivityTimes.length !== 0 ? (
             <span className="text-black">
               {selectedTime !== initialTime ? selectedTime : initialTime}
@@ -77,8 +77,8 @@ export default function TimePickerModal({
               weight="regular"
               lightness={500}
               className={cn(
-                "text-sm",
-                iconColor ? `text-neutral-400` : "text-black"
+                'text-sm',
+                iconColor ? `text-neutral-400` : 'text-black'
               )}
             >
               Escolha o dia da atividade
@@ -96,15 +96,15 @@ export default function TimePickerModal({
             className="h-48 w-36 flex items-center justify-center rounded-lg overflow-hidden"
           >
             <div className="flex flex-col justify-center items-center min-h-48 w-full ">
-              {availableActivityTimes?.map((time) => (
+              {availableActivityTimes?.map((time, i) => (
                 <div
-                  key={time}
+                  key={`${time} - ${i}`}
                   data-value={time}
                   className={cn(
                     `text-center py-[9px] w-full cursor-pointer transition-all`,
                     selectedTime === time
-                      ? "border border-primary-600 rounded-md"
-                      : "opacity-50"
+                      ? 'border border-primary-600 rounded-md'
+                      : 'opacity-50'
                   )}
                   onClick={() => setSelectedTime(time)}
                 >

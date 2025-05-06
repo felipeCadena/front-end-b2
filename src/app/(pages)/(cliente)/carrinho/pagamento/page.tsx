@@ -261,7 +261,7 @@ const PagamentoMobile = () => {
       }
 
       await ordersAdventuresService.create(formattedOrder, userIP);
-      toast.success('Pedido enviado com sucesso!');
+      setIsPaymentMadeWithCard(true);
       clearCart(userId);
       queryClient.invalidateQueries({
         queryKey: ['unread_notifications'],

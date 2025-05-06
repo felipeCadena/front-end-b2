@@ -1,30 +1,60 @@
 'use client';
 
 import Loading from '@/app/loading';
-import { activities, album } from '@/common/constants/mock';
+import { activities, album, mockAlbum } from '@/common/constants/mock';
 import MyBadge from '@/components/atoms/my-badge';
 import MyButton from '@/components/atoms/my-button';
 import MyIcon from '@/components/atoms/my-icon';
 import Calendar from '@/components/atoms/my-icon/elements/calendar';
 import MyTypography from '@/components/atoms/my-typography';
 import StarRating from '@/components/molecules/my-stars';
-import { adventures } from '@/services/api/adventures';
+import { ordersAdventuresService } from '@/services/api/orders';
+import { schedules } from '@/services/api/schedules';
 import { cn } from '@/utils/cn';
 import { getData, handleNameActivity } from '@/utils/formatters';
+import PATHS from '@/utils/paths';
+import downloadImagesAsZip from '@/utils/zipPhotos';
 import { useQuery } from '@tanstack/react-query';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import React from 'react';
 
 export default function GaleriaDeFotos() {
   const [open, setOpen] = React.useState(false);
   const [selected, setSelected] = React.useState('');
+  const router = useRouter();
 
-  const { data: activities, isLoading } = useQuery({
+  const { data: activities = [], isLoading } = useQuery({
     queryKey: ['activities'],
-    queryFn: () => adventures.getAdventures(),
+    queryFn: () =>
+      ordersAdventuresService.getCustomerSchedules({
+        adventureStatus: 'realizado',
+      }),
   });
 
-  console.log(activities);
+  const { data: activityPhotos = [], isLoading: isLoadingPhotos } = useQuery({
+    queryKey: ['activity_photos'],
+    queryFn: async () => {
+      if (selected !== '') {
+        const response = await schedules.getScheduleMedias(selected);
+        return response;
+      }
+
+      return [];
+    },
+  });
+
+  const handleFetchPhotos = (id: string, downloadAll?: boolean) => {
+    setOpen(!open);
+    setSelected(id);
+    if (downloadAll && id !== '') {
+      if (activityPhotos.length === 0) {
+        setOpen(false);
+        return;
+      }
+      downloadImagesAsZip(activityPhotos);
+    }
+  };
 
   return isLoading ? (
     <div className="w-full h-[30vh] flex justify-center items-center mb-16">
@@ -32,10 +62,10 @@ export default function GaleriaDeFotos() {
     </div>
   ) : (
     <section className="space-y-12 mb-10">
-      {activities &&
+      {activities && activities.length > 0 ? (
         activities.map((activity) => (
           <div key={activity?.id} className="flex md:flex-col gap-4">
-            <div className="border border-gray-300 rounded-lg h-[220px] flex items-center gap-5 p-4 overflow-hidden cursor-pointer">
+            <div className="border border-gray-300 rounded-lg h-[220px] flex items-center gap-5 p-4 overflow-hidden">
               <MyButton
                 variant={'secondary-text'}
                 borderRadius="squared"
@@ -49,31 +79,38 @@ export default function GaleriaDeFotos() {
               </MyButton>
               <Image
                 src={
-                  activity?.images[0]?.url ??
+                  activity?.adventure.images[0].url ??
                   '/images/atividades/cachoeira.webp'
                 }
-                alt={activity?.title}
+                alt={activity?.adventure.title}
                 width={300}
                 height={300}
-                className="h-[186px] w-[186px] rounded-lg object-cover"
+                className="h-[186px] w-[186px] rounded-lg object-cover cursor-pointer"
+                onClick={() =>
+                  router.push(
+                    PATHS.visualizarAtividade(activity?.adventure?.id)
+                  )
+                }
               />
               <div className="w-full flex justify-between items-center gap-4">
                 <div className="flex flex-col gap-4">
                   <div className="flex flex-col gap-3">
                     <MyTypography variant="body-big" weight="bold">
-                      {activity?.title}
+                      {activity?.adventure?.title}
                     </MyTypography>
                     <div className="flex gap-2 items-center max-sm:hidden">
                       <Image
                         alt="avatar"
-                        src={activity?.partner.logo?.url ?? '/user.png'}
+                        src={
+                          activity?.adventure?.partner?.logo.url ?? '/user.png'
+                        }
                         width={10}
                         height={10}
                         className="w-10 h-10 rounded-full object-cover"
                       />
                       <div>
                         <MyTypography variant="button" weight="semibold">
-                          {activity?.partner.fantasyName}
+                          {activity?.adventure?.partner?.fantasyName}
                         </MyTypography>
                         <MyTypography
                           variant="button"
@@ -85,13 +122,15 @@ export default function GaleriaDeFotos() {
                       </div>
                     </div>
                     <MyTypography variant="body-big" weight="regular">
-                      {activity?.description.slice(0, 40).concat('...')}
+                      {activity?.adventure?.description
+                        .slice(0, 40)
+                        .concat('...')}
                     </MyTypography>
                     <div className="flex gap-2">
                       <MyBadge variant="outline" className="p-2">
-                        {handleNameActivity(activity?.typeAdventure)}
+                        {handleNameActivity(activity?.adventure?.typeAdventure)}
                       </MyBadge>
-                      <StarRating rating={activity?.averageRating} />
+                      <StarRating rating={activity?.adventure?.averageRating} />
                     </div>
                   </div>
                 </div>
@@ -103,10 +142,7 @@ export default function GaleriaDeFotos() {
                     className="px-[4rem]"
                     size="lg"
                     rightIcon={<MyIcon name="white-eye" className="" />}
-                    onClick={() => {
-                      setOpen(!open);
-                      setSelected(String(activity.id));
-                    }}
+                    onClick={() => handleFetchPhotos(activity?.id)}
                   >
                     Ver fotos
                   </MyButton>
@@ -116,45 +152,59 @@ export default function GaleriaDeFotos() {
                     className="px-8"
                     size="lg"
                     rightIcon={<MyIcon name="download-green" className="" />}
+                    onClick={() => handleFetchPhotos(activity.id, true)}
                   >
                     Baixar Imagens
                   </MyButton>
                 </div>
               </div>
             </div>
-            {String(activity.id) == selected && (
+            {activity?.id === selected && (
               <div
                 className={cn(
                   'mt-4 flex flex-col justify-center items-center space-y-4',
                   !open && 'hidden'
                 )}
               >
-                <MyIcon name="chevron-down-green" className="mt-2" />
-                <div className="grid grid-cols-6 gap-4">
-                  {album.map((image, index) => (
-                    <div className="relative group" key={index}>
-                      <Image
-                        src={image}
-                        alt={activity?.title}
-                        width={300}
-                        height={300}
-                        className="h-[168px] w-[168px] rounded-lg object-cover"
-                      />
-                      <MyIcon
-                        name="x-red"
-                        className="absolute top-2 left-2 bg-white p-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 cursor-pointer"
-                      />
-                      <MyIcon
-                        name="download-green"
-                        className="absolute top-2 right-2 bg-white p-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 cursor-pointer"
-                      />
-                    </div>
-                  ))}
-                </div>
+                <MyIcon
+                  name="chevron-down-green"
+                  className="mt-2 cursor-pointer"
+                  onClick={() => setOpen(false)}
+                />
+                {isLoadingPhotos ? (
+                  <Loading />
+                ) : (
+                  <div className="grid grid-cols-6 gap-4">
+                    {activityPhotos.map((photo, index) => (
+                      <div className="relative group" key={index}>
+                        <Image
+                          src={photo?.url}
+                          alt={photo?.title ?? 'Foto da atividade'}
+                          width={300}
+                          height={300}
+                          className="h-[168px] w-[168px] rounded-lg object-cover"
+                        />
+                        <a href={photo.url} download={`foto-${index + 1}.jpg`}>
+                          <MyIcon
+                            name="download-green"
+                            className="absolute top-2 right-2 bg-white p-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 cursor-pointer"
+                          />
+                        </a>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             )}
           </div>
-        ))}
+        ))
+      ) : (
+        <div className="w-full flex justify-center items-center h-[100%] md:h-[30vh]">
+          <MyTypography variant="subtitle3" weight="bold">
+            Você ainda não possui atividades realizadas
+          </MyTypography>
+        </div>
+      )}
     </section>
   );
 }

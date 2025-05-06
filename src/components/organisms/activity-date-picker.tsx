@@ -56,7 +56,7 @@ const ActivityDatePicker = ({
 
   const activityRecurrence = activity?.recurrence ?? [];
 
-  // console.log('SCH', activity?.schedules);
+  console.log('SCH', activity);
 
   const groupedRecurrences = agruparRecorrencias(activityRecurrence);
 
@@ -111,6 +111,7 @@ const ActivityDatePicker = ({
               isChildrenAllowed={isChildrenAllowed}
               price={price}
               schedule={schedule}
+              personsLimit={activity?.personsLimit}
               setSchedule={setSchedule}
             />
           </div>

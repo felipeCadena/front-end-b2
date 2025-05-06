@@ -123,6 +123,7 @@ import TextIcon from './elements/text';
 import Atention from './elements/atention';
 import Marketing from './elements/marketing';
 import MobileFullHeart from './mobile-full-heart';
+import DeactivatedSum from './elements/deactivated-sum';
 
 export type IconsMapTypes = keyof typeof IconsMap;
 
@@ -159,6 +160,7 @@ const IconsMap = {
   left: <ChevronLeft />,
   right: <ChevronRight />,
   soma: <Sum />,
+  somaDesativada: <DeactivatedSum />,
   subtracao: <Decrease />,
   subtracaoDesativada: <DecreaseEmpty />,
   save: <Save />,
