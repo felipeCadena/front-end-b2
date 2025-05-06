@@ -26,7 +26,7 @@ export default function GoogleMapsMultiple({
       <GoogleMap
         mapContainerStyle={mapContainerStyle}
         center={center}
-        zoom={12}
+        zoom={11}
         options={{
           disableDefaultUI: true, // Remove controles padrão para um design mais limpo
         }}

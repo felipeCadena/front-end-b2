@@ -39,7 +39,9 @@
     "cmdk": "^1.0.0",
     "cookies-next": "^4.2.1",
     "date-fns": "^3.6.0",
+    "file-saver": "^2.0.5",
     "framer-motion": "^12.5.0",
+    "jszip": "^3.10.1",
     "jwt-decode": "^4.0.0",
     "next": "14.2.4",
     "next-auth": "^4.24.11",
@@ -62,6 +64,7 @@
   "devDependencies": {
     "@hookform/devtools": "^4.3.1",
     "@tailwindcss/typography": "^0.5.15",
+    "@types/file-saver": "^2.0.7",
     "@types/googlemaps": "^3.43.3",
     "@types/node": "^20",
     "@types/react": "^18",

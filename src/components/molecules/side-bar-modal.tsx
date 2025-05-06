@@ -12,7 +12,7 @@ import MyIcon from "../atoms/my-icon";
 import { useAuthStore } from "@/store/useAuthStore";
 import { authService } from "@/services/api/auth";
 import { signOut, useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 export default function SideBarModal({
   children,
   sideBar,
@@ -22,14 +22,19 @@ export default function SideBarModal({
 }) {
   const { clearUser } = useAuthStore();
   const { data: session } = useSession();
-  const router = useRouter();
   const handleExit = async (item: any) => {
     if (item === "Sair") {
-      console.log(item);
-      router.push("/");
-      await authService.logout(session?.user.refreshToken ?? "");
-      await signOut();
-      clearUser();
+      try {
+        await authService.logout(session?.user.refreshToken ?? "");
+        signOut({
+          callbackUrl: "/",
+          redirect: true,
+        });
+        clearUser();
+      } catch (error) {
+        console.error("Error during logout:", error);
+        toast.error("Erro ao fazer logout. Tente novamente.");
+      }
     }
   };
 

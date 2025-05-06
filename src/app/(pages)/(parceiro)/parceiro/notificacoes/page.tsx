@@ -78,7 +78,7 @@ export default function Notificacoes() {
   }, {});
 
   return (
-    <section className="mx-6">
+    <section className="px-4">
       <div className="flex gap-4 items-center my-6">
         <MyIcon
           name="voltar-black"
@@ -91,9 +91,13 @@ export default function Notificacoes() {
       </div>
 
       {notifications.length === 0 ? (
-        <div className="w-full h-[30vh] flex justify-center items-center">
-          <p>Você não possui notificações.</p>
-        </div>
+        <MyTypography
+          variant="subtitle3"
+          weight="bold"
+          className="w-full h-[20vh] flex justify-center items-center"
+        >
+          Você não possui notificações.
+        </MyTypography>
       ) : (
         <div className="my-12">
           {Object.entries(groupedNotifications).map(

@@ -6,11 +6,12 @@ import MyTypography from "@/components/atoms/my-typography";
 import { cn } from "@/utils/cn";
 import PATHS from "@/utils/paths";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import React from "react";
 
 export default function Footer() {
   const pathname = usePathname();
+  const router = useRouter();
 
   const withFooter = () => {
     return pathname == PATHS.initial || pathname == PATHS.atividades;
@@ -48,12 +49,21 @@ export default function Footer() {
             {process.env.NEXT_PUBLIC_EMAIL_B2 ?? "contato@b2adventure.com"}
           </MyTypography>
         </div>
-        <div className="flex justify-center gap-4 my-10 relative">
-          <MyIcon name="linkedin" className="bg-primary-900 rounded-md" />
-          <MyIcon name="messenger" className="bg-primary-900 rounded-md" />
-          <MyIcon name="youtube" className="bg-primary-900 rounded-md" />
-          <MyIcon name="instagram" className="bg-primary-900 rounded-md" />
-          <MyIcon name="facebookGray" className="bg-primary-900 rounded-md" />
+        <div className="flex justify-center gap-4 my-6 relative">
+          {/* <MyIcon name="linkedin" className="bg-primary-900 rounded-md" /> */}
+          {/* <MyIcon name="messenger" className="bg-primary-900 rounded-md" /> */}
+          {/* <MyIcon name="youtube" className="bg-primary-900 rounded-md" /> */}
+          <Link
+            href="https://www.instagram.com/b2adventure/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <MyIcon
+              name="instagram"
+              className="bg-primary-900 rounded-md cursor-pointer"
+            />
+          </Link>
+          {/* <MyIcon name="facebookGray" className="bg-primary-900 rounded-md" /> */}
           <MyIcon
             name="scroll-mouse"
             title="Voltar ao topo"

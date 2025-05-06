@@ -17,12 +17,14 @@ type PeopleSelectorProps = {
     children: string | undefined;
   };
   isChildrenAllowed: boolean;
+  personsLimit: number | undefined;
 };
 
 export default function PeopleSelector({
   schedule,
   setSchedule,
   price,
+  personsLimit,
   isChildrenAllowed,
 }: PeopleSelectorProps) {
   const [open, setOpen] = useState(false);
@@ -102,8 +104,17 @@ export default function PeopleSelector({
                 />
               </button>
               <span>{adults}</span>
-              <button onClick={() => handleChange('adult', 'increase')}>
-                <MyIcon name="soma" />
+              <button
+                disabled={adults + children === personsLimit}
+                onClick={() => handleChange('adult', 'increase')}
+              >
+                <MyIcon
+                  name={
+                    personsLimit && adults + children < personsLimit
+                      ? 'soma'
+                      : 'somaDesativada'
+                  }
+                />
               </button>
             </div>
           </div>

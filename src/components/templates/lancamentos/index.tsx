@@ -29,12 +29,14 @@ import React from "react";
 export default function Lancamentos({
   data,
   withoutFilters = false,
+  backButton = false,
   title = "Seus lançamentos",
   filters,
   setFilters,
 }: {
   data: any;
   withoutFilters?: boolean;
+  backButton?: boolean;
   title?: string;
   filters: any;
   setFilters: React.Dispatch<
@@ -47,7 +49,13 @@ export default function Lancamentos({
 }) {
   const router = useRouter();
 
-  console.log(filters);
+  if (data?.length === 0) {
+    <div className="flex items-center justify-center h-[250px]">
+      <MyTypography variant="body-big" weight="bold">
+        Você ainda não possui lançamentos
+      </MyTypography>
+    </div>;
+  }
 
   return (
     <section className="mx-auto py-2 md:py-8 px-4 overflow-hidden">
@@ -58,23 +66,26 @@ export default function Lancamentos({
           withoutFilters ? "gap-4" : "justify-between"
         )}
       >
-        {withoutFilters && (
-          <MyIcon
-            name="voltar-black"
-            className="cursor-pointer"
-            onClick={() => router.back()}
-          />
-        )}
-        <MyTypography
-          variant="heading3"
-          weight="bold"
-          className={cn(
-            "text-[1rem] md:text-[1.3rem]",
-            !withoutFilters && "underline decoration-primary-600"
+        <div className="flex gap-2 items-center">
+          {backButton && (
+            <MyIcon
+              name="voltar-black"
+              className="cursor-pointer"
+              onClick={() => router.back()}
+            />
           )}
-        >
-          {title}
-        </MyTypography>
+
+          <MyTypography
+            variant="heading3"
+            weight="bold"
+            className={cn(
+              "text-[1.1rem] md:text-[1.3rem]",
+              !withoutFilters && "underline decoration-primary-600"
+            )}
+          >
+            {title}
+          </MyTypography>
+        </div>
 
         {!withoutFilters && (
           <div className="flex gap-4 max-sm:hidden">
@@ -168,7 +179,7 @@ export default function Lancamentos({
           </TableRow>
         </TableHeader>
         <TableBody>
-          {data ? (
+          {data && data.length > 0 ? (
             data.map((lancamento: any) => (
               <TableRow
                 key={lancamento?.id}
@@ -241,8 +252,12 @@ export default function Lancamentos({
           ) : (
             <TableRow>
               <TableCell colSpan={5} className="text-center">
-                <MyTypography variant="body" weight="bold">
-                  Nenhum lançamento encontrado
+                <MyTypography
+                  variant="subtitle3"
+                  weight="bold"
+                  className="my-12"
+                >
+                  Você ainda não possui lançamentos
                 </MyTypography>
               </TableCell>
             </TableRow>
@@ -251,7 +266,7 @@ export default function Lancamentos({
       </MyTable>
 
       {/* Footer com valor total */}
-      {data && data.length && filters?.report != "cancelada" && (
+      {data && data?.length > 0 && filters?.report != "cancelada" && (
         <div className="flex justify-between items-center bg-[#a0e2ff46] py-4 px-2 rounded-lg mt-4 relative">
           <MyTypography variant="body" weight="bold" className="md:px-2">
             Valor {filters?.report == "receber" ? "a receber" : "recebido"}:

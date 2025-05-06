@@ -103,8 +103,6 @@ export default function Perfil() {
   const isPhotoAvailable =
     fetchUser?.photo?.url !== '' && fetchUser?.photo?.url;
 
-  console.log('photo available', fetchUser);
-
   const handleClickUpload = () => {
     inputRef.current?.click();
   };

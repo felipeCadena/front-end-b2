@@ -1,6 +1,7 @@
 "use client";
 
 import { activities } from "@/common/constants/mock";
+import MyButton from "@/components/atoms/my-button";
 import MyIcon from "@/components/atoms/my-icon";
 import MyTypography from "@/components/atoms/my-typography";
 import ActivitiesPhotos from "@/components/organisms/activities-photos";
@@ -32,16 +33,30 @@ export default function FotosDePasseios() {
         </MyTypography>
       </div>
 
-      <MyTypography
-        variant="body-big"
-        weight="regular"
-        lightness={500}
-        className="mt-4"
-      >
-        Enviar fotos ou vídeos da atividade
-      </MyTypography>
+      {partnerOrders?.length > 0 && (
+        <MyTypography
+          variant="body-big"
+          weight="regular"
+          lightness={500}
+          className="mt-4"
+        >
+          Enviar fotos ou vídeos da atividade
+        </MyTypography>
+      )}
 
-      <ActivitiesPhotos activities={partnerOrders} />
+      {partnerOrders?.length === 0 && (
+        <MyTypography
+          variant="subtitle3"
+          weight="bold"
+          className="w-full h-[20vh] flex justify-center items-center"
+        >
+          Você ainda não tem passeios realizados
+        </MyTypography>
+      )}
+
+      {partnerOrders?.length > 0 && (
+        <ActivitiesPhotos activities={partnerOrders} />
+      )}
     </main>
   );
 }

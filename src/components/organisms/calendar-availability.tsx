@@ -67,6 +67,7 @@ function CalendarAvailability({
   const [selectedJustificativa, setSelectedJustificativa] =
     React.useState<string>("");
   const [hasClient, setHasClient] = React.useState(false);
+  const [hasClientAllCancel, setHasClientAllCancel] = React.useState(false);
 
   const [isModalCancelOpen, setIsModalCancelOpen] = React.useState(false);
 
@@ -139,8 +140,6 @@ function CalendarAvailability({
     // Filtra os horários que aparecem só 1 vez
     const filteredTimes = selectedTimes.filter((time) => countMap[time] === 1);
 
-    console.log(filteredTimes);
-
     // Formata os horários
     return filteredTimes.map(
       (time) => `${baseDate}T${time}:00-03:00
@@ -149,8 +148,11 @@ function CalendarAvailability({
   };
 
   const handleSaveNewSchedules = async () => {
+    if (!selectedDate || selectedTimes.length === 0) {
+      toast.info("Selecione uma data e horário.");
+      return;
+    }
     setIsLoading(true);
-    if (!selectedDate || selectedTimes.length === 0) return;
 
     const existingTimes = getSchedulesForDate(selectedDate).map((s) =>
       format(parseISO(s.datetime), "HH:mm")
@@ -265,12 +267,33 @@ function CalendarAvailability({
   );
 
   const hasSomeClient = () => {
-    const hasClient = schedules?.some(
-      (schedule) => schedule.qntConfirmedPersons > 0
-    );
+    const dateToCheck = new Date(selectedDate!);
 
-    if (hasClient) {
-      setHasClient(true);
+    const hasConfirmedSchedule = schedules?.some((schedule) => {
+      const scheduleDate = new Date(schedule.datetime);
+
+      // Verifica se é a mesma data (desconsiderando horário)
+      const sameDay =
+        scheduleDate.getDate() === dateToCheck.getDate() &&
+        scheduleDate.getMonth() === dateToCheck.getMonth() &&
+        scheduleDate.getFullYear() === dateToCheck.getFullYear();
+
+      if (!sameDay) return false;
+
+      // Pega o horário no formato HH:MM
+      const scheduleTime = scheduleDate.toTimeString().slice(0, 5);
+
+      // Verifica se o horário está entre os horários informados e tem confirmados
+      return (
+        selectedTimesForDate.includes(scheduleTime) &&
+        schedule.qntConfirmedPersons > 0
+      );
+    });
+
+    console.log(hasConfirmedSchedule);
+
+    if (hasConfirmedSchedule) {
+      setHasClientAllCancel(true);
     } else {
       setCancelAllSchedules(true);
     }
@@ -543,7 +566,7 @@ function CalendarAvailability({
           {selectedDate && (
             <div className="mt-4 w-full">
               {getSchedulesForDate(selectedDate).length > 0 && (
-                <div className="border-t pt-4 w-full flex justify-center items-center">
+                <div className="border-t pt-4 w-full flex flex-col gap-4 justify-center items-center">
                   <MyButton
                     variant="red"
                     size="md"
@@ -555,15 +578,15 @@ function CalendarAvailability({
                   </MyButton>
 
                   {/* Seção de Justificativa */}
-                  {hasClient && (
+                  {hasClientAllCancel && (
                     <div className="py-6">
                       <MyTypography
                         variant="subtitle3"
                         weight="bold"
                         className="mb-4"
                       >
-                        Atenção: Esse horário já possui clientes agendados.
-                        Justifique o cancelamento:
+                        Atenção: Um ou mais horários já possui clientes
+                        agendados. Justifique o cancelamento:
                       </MyTypography>
 
                       <div className="space-y-3">
@@ -608,7 +631,7 @@ function CalendarAvailability({
                           size="md"
                           className="w-full ml-auto mt-4"
                           borderRadius="squared"
-                          onClick={() => setHasClient(false)}
+                          onClick={() => setHasClientAllCancel(false)}
                         >
                           Não quero cancelar mais
                         </MyButton>

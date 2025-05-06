@@ -30,6 +30,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <meta
+          name="facebook-domain-verification"
+          content="zqjcoi9kslkxzreeg9w2vchootdjwg"
+        />
+      </head>
       <body
         suppressHydrationWarning={true}
         className={`${inter.className} antialiased md:min-h-screen`}

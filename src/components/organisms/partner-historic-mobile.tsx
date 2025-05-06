@@ -30,17 +30,7 @@ export default function PartnerHistoricMobile({
   const [clientList, setClientList] = React.useState<any>([]);
   const [showConfirmationModal, setShowConfirmationModal] =
     React.useState(false);
-  const [confirmList, setConfirmList] = React.useState<any>([]);
-
-  const { data: parterSchedules } = useQuery({
-    queryKey: ["parterSchedules"],
-    queryFn: () =>
-      partnerService.getMySchedules({
-        limit: 50,
-        // isCanceled: false,
-        qntConfirmedPersons: "> 0",
-      }),
-  });
+  const [id, setId] = React.useState<string>("");
 
   const handleCancel = (id: string | number) => {
     router.push(PATHS.cancelarAtividade(id));
@@ -62,17 +52,15 @@ export default function PartnerHistoricMobile({
 
   const handleConfirm = async (scheduleId: string) => {
     setShowConfirmationModal(true);
-
-    try {
-      const schedule = await partnerService.getPartnerScheduleById(scheduleId);
-      setConfirmList(schedule);
-      console.log("schedules", schedule);
-    } catch (error) {
-      console.error("Error fetching schedule data:", error);
-    }
+    setId(scheduleId);
   };
 
-  const confirmSchedules = true;
+  const handleConfirmed = (ordersScheduleAdventure: any) => {
+    if (!ordersScheduleAdventure) return null;
+    return ordersScheduleAdventure?.some(
+      (order: any) => !order?.partnerConfirmed
+    );
+  };
 
   return (
     <section className="px-4">
@@ -90,7 +78,7 @@ export default function PartnerHistoricMobile({
         <GenericModal
           open={showConfirmationModal}
           onClose={() => setShowConfirmationModal(false)}
-          data={confirmList?.ordersScheduleAdventure}
+          id={id}
           icon={<Pessoas stroke="#9F9F9F" />}
           title="Lista de reservas a serem confirmadas"
           descrition="Confira a lista reservas:"
@@ -154,14 +142,16 @@ export default function PartnerHistoricMobile({
                     </MyTypography>
                   </div>
 
-                  {!activity?.isCanceled && confirmSchedules && (
-                    <MyBadge
-                      onClick={() => handleConfirm(activity?.id)}
-                      variant="warning"
-                    >
-                      Confirmar agendamento
-                    </MyBadge>
-                  )}
+                  {!activity?.adventure?.deleted &&
+                    !activity.isCanceled &&
+                    handleConfirmed(activity?.ordersScheduleAdventure) && (
+                      <MyBadge
+                        onClick={() => handleConfirm(activity?.id)}
+                        variant="warning"
+                      >
+                        Confirmar agendamento
+                      </MyBadge>
+                    )}
 
                   {activity?.isCanceled && (
                     <MyBadge variant="error">Cancelada</MyBadge>

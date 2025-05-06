@@ -29,7 +29,8 @@ export default function PartnerActivitiesHistoric({
   const [clientList, setClientList] = React.useState<any>([]);
   const [showConfirmationModal, setShowConfirmationModal] =
     React.useState(false);
-  const [confirmList, setConfirmList] = React.useState<any>([]);
+
+  const [id, setId] = React.useState<string>("");
 
   const handleCancel = (id: string | number) => {
     router.push(PATHS.cancelarAtividade(id));
@@ -52,14 +53,7 @@ export default function PartnerActivitiesHistoric({
 
   const handleConfirm = async (scheduleId: string) => {
     setShowConfirmationModal(true);
-
-    try {
-      const schedule = await partnerService.getPartnerScheduleById(scheduleId);
-      setConfirmList(schedule);
-      console.log("schedules", schedule);
-    } catch (error) {
-      console.error("Error fetching schedule data:", error);
-    }
+    setId(scheduleId);
   };
 
   const calculateTotalCost = (ordersScheduleAdventure: any) => {
@@ -71,6 +65,13 @@ export default function PartnerActivitiesHistoric({
       style: "currency",
       currency: "BRL",
     }).format(totalCost);
+  };
+
+  const handleConfirmed = (ordersScheduleAdventure: any) => {
+    if (!ordersScheduleAdventure) return null;
+    return ordersScheduleAdventure?.some(
+      (order: any) => !order?.partnerConfirmed
+    );
   };
 
   return (
@@ -88,7 +89,7 @@ export default function PartnerActivitiesHistoric({
       <GenericModal
         open={showConfirmationModal}
         onClose={() => setShowConfirmationModal(false)}
-        data={confirmList?.ordersScheduleAdventure}
+        id={id}
         icon={<Pessoas stroke="#9F9F9F" />}
         title="Lista de reservas a serem confirmadas"
         descrition="Confira a lista reservas:"
@@ -126,7 +127,7 @@ export default function PartnerActivitiesHistoric({
               </MyButton>
             )}
 
-            <div className="relative z-10 flex-shrink-0 overflow-hidden w-[265px] h-[265px] hover:cursor-pointer rounded-md">
+            <div className="relative z-10 flex-shrink-0 overflow-hidden w-[220px] h-[220px] hover:cursor-pointer rounded-md">
               <Image
                 alt="Imagem da atividade"
                 src={
@@ -148,8 +149,8 @@ export default function PartnerActivitiesHistoric({
               />
             </div>
 
-            <div className="w-full space-y-2 max-h-[265px]">
-              <div className="w-full flex justify-between mb-4 relative">
+            <div className="flex flex-col justify-between w-full h-[220px] max-h-[220px]">
+              <div className="w-full flex justify-between relative">
                 <div
                   className={cn(
                     "flex flex-col gap-2 cursor-pointer",
@@ -181,28 +182,28 @@ export default function PartnerActivitiesHistoric({
                     {activity?.adventure?.title}
                   </MyTypography>
 
-                  <MyTypography variant="label" className="">
+                  <MyTypography variant="label" className="md:w-2/3">
                     {activity?.adventure?.description
-                      ?.slice(0, 40)
+                      ?.slice(0, 150)
                       .concat("...") ?? ""}
                   </MyTypography>
                 </div>
 
-                {!activity?.adventure?.deleted && !activity.isCanceled && (
-                  <MyButton
-                    variant="outline-neutral"
-                    borderRadius="squared"
-                    size="sm"
-                    className="mx-12"
-                    onClick={() => {
-                      console.log(activity);
-                      handleConfirm(activity?.id);
-                    }}
-                  >
-                    Confirmar agendamento
-                    {activity?.scheduleId}
-                  </MyButton>
-                )}
+                {!activity?.adventure?.deleted &&
+                  !activity.isCanceled &&
+                  handleConfirmed(activity?.ordersScheduleAdventure) && (
+                    <MyButton
+                      variant="outline-neutral"
+                      borderRadius="squared"
+                      size="sm"
+                      className="mx-12"
+                      onClick={() => {
+                        handleConfirm(activity?.id);
+                      }}
+                    >
+                      Confirmar reservas
+                    </MyButton>
+                  )}
 
                 {!withDate && (
                   <MyButton
@@ -316,7 +317,7 @@ export default function PartnerActivitiesHistoric({
                 </div>
               </div>
 
-              <div
+              {/* <div
                 onClick={() =>
                   router.push(PATHS["enviar-fotos"](activity?.schedule?.id))
                 }
@@ -335,7 +336,7 @@ export default function PartnerActivitiesHistoric({
                   </MyTypography>
                 </div>
                 <MyIcon name="seta" />
-              </div>
+              </div> */}
             </div>
           </div>
         ))}

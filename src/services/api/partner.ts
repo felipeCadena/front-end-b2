@@ -369,6 +369,7 @@ export const partnerService = {
   getOrders: async (params?: {
     startsAt?: string;
     endsAt?: string;
+    typeAdventure?: string;
   }): Promise<PartnerIncome | null> => {
     try {
       const response = await api.get<PartnerIncome>(`/admin/partner/orders`, {

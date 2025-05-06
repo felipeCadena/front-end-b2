@@ -1,4 +1,4 @@
-import { api } from "@/libs/api";
+import { api } from '@/libs/api';
 
 export type Media = {
   id: string;
@@ -26,10 +26,10 @@ export const schedules = {
     skip?: number;
   }) => {
     try {
-      const response = await api.get("/schedules", { params });
+      const response = await api.get('/schedules', { params });
       return response.data;
     } catch (error) {
-      console.error("Error fetching schedules:", error);
+      console.error('Error fetching schedules:', error);
       throw error;
     }
   },
@@ -44,7 +44,7 @@ export const schedules = {
     }
   },
 
-  getScheduleMedias: async (id: string) => {
+  getScheduleMedias: async (id: string): Promise<Media[]> => {
     try {
       const response = await api.get(`/schedules/${id}/medias`);
       return response.data;
@@ -80,15 +80,15 @@ export const schedules = {
         data.map(async (uploadData, index) => {
           const file = files[index];
           const res = await fetch(uploadData.uploadUrl, {
-            method: "PUT",
+            method: 'PUT',
             body: file.file,
             headers: {
-              "Content-Type": file.mimetype,
+              'Content-Type': file.mimetype,
             },
           });
 
           if (!res.ok) {
-            console.error("Failed to upload media", res);
+            console.error('Failed to upload media', res);
             throw new Error(`Failed to upload file ${file.filename}`);
           }
         })
@@ -125,14 +125,14 @@ export const schedules = {
         }
       );
       await fetch(response.data.uploadUrl, {
-        method: "PUT",
+        method: 'PUT',
         body: body.file,
         headers: {
-          "Content-Type": body.mimetype,
+          'Content-Type': body.mimetype,
         },
       }).then((res) => {
         if (!res.ok) {
-          console.log("Failed to upload media", res);
+          console.log('Failed to upload media', res);
         }
         return res;
       });

@@ -22,6 +22,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useCart } from "@/store/useCart";
 import { notificationsService } from "@/services/api/notifications";
 import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
 export default function SidebarMenu({
   closeSidebar,
@@ -31,7 +32,6 @@ export default function SidebarMenu({
   const { user, clearUser } = useAuthStore();
   const { data: session } = useSession();
   const { setSideBarActive, sideBarActive } = useLogin();
-  const router = useRouter();
 
   useEffect(() => {
     switch (session?.user?.role) {
@@ -50,10 +50,17 @@ export default function SidebarMenu({
   }, [user, session]);
 
   const handleLogout = async () => {
-    await authService.logout(session?.user.refreshToken ?? "");
-    await signOut();
-    clearUser();
-    router.push("/");
+    try {
+      await authService.logout(session?.user.refreshToken ?? "");
+      signOut({
+        callbackUrl: "/",
+        redirect: true,
+      });
+      clearUser();
+    } catch (error) {
+      console.error("Error during logout:", error);
+      toast.error("Erro ao fazer logout. Tente novamente.");
+    }
   };
 
   const handleCloseSidebar = (event: React.MouseEvent) => {

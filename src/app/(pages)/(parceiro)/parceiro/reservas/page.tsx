@@ -18,6 +18,9 @@ import { useQuery } from "@tanstack/react-query";
 import { parseISO } from "date-fns";
 import { partnerService } from "@/services/api/partner";
 import PartnerHistoricMobile from "@/components/organisms/partner-historic-mobile";
+import LoadingSpinner from "@/components/atoms/loading-spinner";
+import Loading from "@/components/molecules/loading";
+import Image from "next/image";
 
 export default function Reservas() {
   const router = useRouter();
@@ -26,7 +29,7 @@ export default function Reservas() {
 
   const { handleClose, isModalOpen } = useAlert();
 
-  const { data: parterSchedules } = useQuery({
+  const { data: parterSchedules, isLoading } = useQuery({
     queryKey: ["parterSchedules", date],
     queryFn: () =>
       partnerService.getMySchedules({
@@ -58,7 +61,7 @@ export default function Reservas() {
 
   return (
     <main className="my-6">
-      <div className="m-6 flex items-center justify-between md:my-12">
+      <div className="px-4 flex items-center justify-between md:my-12">
         <div className="flex gap-2 items-center md:w-1/2">
           <MyIcon
             name="voltar-black"
@@ -95,7 +98,6 @@ export default function Reservas() {
           </MyButton> */}
         </div>
       </div>
-
       <div className="relative px-2">
         <MyFullCalendarMultiple
           // mode="single"
@@ -107,6 +109,7 @@ export default function Reservas() {
           required
         />
       </div>
+
       <div className="h-1 w-1/3 mx-auto bg-gray-200 rounded-xl my-6" />
 
       <div className="md:hidden w-full flex justify-center gap-4 px-4">
@@ -142,6 +145,28 @@ export default function Reservas() {
         descrition="A atividade foi cancelada."
         button="Voltar ao início"
       />
+
+      {!renderActivities && !isLoading && (
+        <MyTypography
+          variant="subtitle3"
+          weight="bold"
+          className="w-full h-[20vh] flex justify-center items-center"
+        >
+          Ainda não há atividades agendadas
+        </MyTypography>
+      )}
+
+      {isLoading && (
+        <div className="w-full h-[40vh] flex justify-center items-center relative">
+          <Image
+            src="/logo.png"
+            alt="B2 Adventure Logo"
+            width={250}
+            height={250}
+            className="object-contain animate-pulse"
+          />
+        </div>
+      )}
 
       <div className="md:hidden">
         <PartnerHistoricMobile activities={renderActivities} />

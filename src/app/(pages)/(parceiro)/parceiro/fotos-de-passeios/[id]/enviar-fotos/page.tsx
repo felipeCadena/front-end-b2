@@ -2,6 +2,7 @@
 
 import MyIcon from "@/components/atoms/my-icon";
 import MyTypography from "@/components/atoms/my-typography";
+import ModalAlert from "@/components/molecules/modal-alert";
 import SendImages from "@/components/organisms/send-images";
 import { schedules } from "@/services/api/schedules";
 import { getData } from "@/utils/formatters";
@@ -15,6 +16,7 @@ export default function EnviarFotos() {
   const { id } = useParams();
   const [isLoading, setIsLoading] = React.useState(false);
   const [sendImages, setSendImages] = React.useState(false);
+  const [modalImages, setModalImages] = React.useState(false);
   const queryClient = useQueryClient();
 
   const handleSendImages = async (files: File[]) => {
@@ -69,10 +71,18 @@ export default function EnviarFotos() {
 
   const limitDateForMedias = schedule?.limitDateForMedias;
 
-  console.log(getData(limitDateForMedias));
-
   return (
     <main className="my-6 mx-4">
+      <ModalAlert
+        open={modalImages}
+        onClose={() => setModalImages(false)}
+        onAction={() => setModalImages(false)}
+        button="Voltar ao início"
+        title="Fotos Enviadas"
+        descrition="As fotos dessa atividade foram enviadas para os seus clientes que participaram neste dia com sucesso."
+        iconName="sucess"
+      />
+
       <div className="flex gap-4 items-center">
         <MyIcon
           name="voltar-black"
