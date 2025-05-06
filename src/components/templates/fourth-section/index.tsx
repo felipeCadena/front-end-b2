@@ -3,7 +3,6 @@
 import React from "react";
 import MyTypography from "@/components/atoms/my-typography";
 import MyIcon from "@/components/atoms/my-icon";
-import Image from "next/image";
 import SearchInfoActivity from "@/components/organisms/search-with-info";
 import MyButton from "@/components/atoms/my-button";
 import GoogleMapsMultiple from "@/components/organisms/google-maps-multiple";

@@ -32,7 +32,7 @@ export interface Partner {
 
 export const adminService = {
   //Partners
-  async searchPartners(params: { includePhoto?: boolean; orderBy?: string }) {
+  async searchPartners(params?: { includePhoto?: string; orderBy?: string }) {
     try {
       const response = await api.get("/partners/search", { params });
       return response.data;
@@ -44,7 +44,7 @@ export const adminService = {
 
   async updatePartner(id: string, data: Partner) {
     try {
-      const response = await api.put(`/partners/${id}`, data);
+      const response = await api.patch(`/partners/${id}`, data);
       return response.data;
     } catch (error) {
       console.error("Error updating partner:", error);
@@ -234,10 +234,10 @@ export const adminService = {
   },
 
   // Payments
-  async listPendingPaidPartners(params: {
-    startsAt: string;
-    endsAt: string;
-    partnerIsPaid: boolean;
+  async listPendingPaidPartners(params?: {
+    startsAt?: string;
+    endsAt?: string;
+    partnerIsPaid?: boolean;
   }) {
     try {
       const response = await api.get("/admin/partners/orders", { params });

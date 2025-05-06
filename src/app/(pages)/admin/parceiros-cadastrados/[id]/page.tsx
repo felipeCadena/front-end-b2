@@ -14,98 +14,89 @@ import MyTextInput from "@/components/atoms/my-text-input";
 import MyTypography from "@/components/atoms/my-typography";
 import StarRating from "@/components/molecules/my-stars";
 import ActivitiesHidden from "@/components/organisms/activities-hidden";
+import { adminService } from "@/services/api/admin";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 import React from "react";
+import { toast } from "react-toastify";
 
 export default function Parceiro() {
   const router = useRouter();
   const { id } = useParams();
+  const queryClient = useQueryClient();
 
-  const partnes = [
-    {
-      id: 1,
-      name: "Vitória Batista",
-      activitiesCount: 0,
-      avatar: "/images/avatar1.png",
-      isNew: true,
-      star: 5,
-    },
-    {
-      id: 2,
-      name: "Vera Oliveira",
-      activitiesCount: 0,
-      avatar: "/images/avatar1.png",
-      isNew: true,
-      star: 4,
-    },
-    {
-      id: 3,
-      name: "Bruna Almeida",
-      activitiesCount: 0,
-      avatar: "/images/avatar1.png",
-      isNew: true,
-      star: 3,
-    },
-    {
-      id: 4,
-      name: "Luis Otávio Menezes",
-      activitiesCount: 20,
-      avatar: "/images/avatar3.png",
-      isNew: false,
-      star: 5,
-    },
-    {
-      id: 5,
-      name: "Vitória Batista",
-      activitiesCount: 15,
-      avatar: "/images/avatar1.png",
-      isNew: false,
-      star: 4,
-    },
-    {
-      id: 6,
-      name: "Vitória Batista",
-      activitiesCount: 5,
-      avatar: "/images/avatar1.png",
-      isNew: false,
-      star: 3,
-    },
-    {
-      id: 7,
-      name: "Vitória Batista",
-      activitiesCount: 13,
-      avatar: "/images/avatar1.png",
-      isNew: false,
-      star: 1,
-    },
-    {
-      id: 8,
-      name: "Vitória Batista",
-      activitiesCount: 15,
-      avatar: "/images/avatar1.png",
-      isNew: false,
-      star: 4,
-    },
-    {
-      id: 9,
-      name: "Vitória Batista",
-      activitiesCount: 5,
-      avatar: "/images/avatar1.png",
-      isNew: false,
-      star: 3,
-    },
-    {
-      id: 10,
-      name: "Vitória Batista",
-      activitiesCount: 13,
-      avatar: "/images/avatar1.png",
-      isNew: false,
-      star: 5,
-    },
-  ];
+  const { data: session } = useSession();
 
-  const partner = partnes.find((partner) => partner.id === +id);
+  const [loading, setLoading] = React.useState(false);
+  const [parterData, setPartnerData] = React.useState<any>({
+    logo: { url: "/user.png" },
+    // companyName: "",
+    // businessEmail: "",
+    bankAccount: "",
+    bankAgency: "",
+    bankName: "",
+    cnpj: "",
+    payday: "5",
+    averageRating: 0,
+    qntRatings: 0,
+  });
+
+  const { data: fetchPartner } = useQuery({
+    queryKey: ["fetchPartner"],
+    queryFn: () => adminService.getPartnerById(id as string),
+  });
+
+  console.log(session);
+
+  React.useEffect(() => {
+    if (fetchPartner) {
+      setPartnerData({
+        payday: String(fetchPartner?.payday),
+        bankAccount: fetchPartner?.bankAccount ?? "",
+        bankAgency: fetchPartner?.bankAgency ?? "",
+        bankName: fetchPartner?.bankName ?? "",
+        cnpj: fetchPartner?.cnpj ?? "",
+        companyName: fetchPartner?.companyName ?? "",
+        businessEmail: fetchPartner?.businessEmail ?? "",
+      });
+    }
+  }, [fetchPartner]);
+
+  const handleUpdatePartner = async () => {
+    setLoading(true);
+
+    const data = {
+      ...parterData,
+      payday: Number(parterData.payday),
+    };
+    try {
+      await adminService.updatePartner(id as string, data);
+      queryClient.invalidateQueries({ queryKey: ["fetchPartner"] });
+      toast.success("Parceiro atualizado com sucesso!");
+    } catch (error) {
+      console.error("Erro ao atualizar parceiro:", error);
+      toast.error("Erro ao atualizar parceiro");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDeletePartner = async () => {
+    setLoading(true);
+    try {
+      await adminService.deletePartner(id as string);
+      queryClient.invalidateQueries({ queryKey: ["fetchPartner"] });
+      toast.success("Parceiro excluído com sucesso!");
+      router.back();
+    } catch (error) {
+      console.error("Erro ao excluir parceiro:", error);
+      toast.error("Erro ao excluir parceiro");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <main className="space-y-6 px-4 mb-8">
@@ -133,12 +124,12 @@ export default function Parceiro() {
           <div className="absolute max-sm:hidden -bottom-14 left-16">
             <Image
               alt="avatar"
-              src={partner?.avatar ?? ""}
+              src={fetchPartner?.logo?.url ?? "/user.png"}
               width={28}
               height={28}
-              className="w-32 h-32 rounded-full object-fit relative border-4 border-white"
+              className="w-28 h-28 rounded-full object-fit relative border-4 border-white"
             />
-            <div className="absolute -top-1 -right-1 w-10 h-10 bg-primary-400 rounded-full border-4 border-white" />
+            {/* <div className="absolute -top-1 -right-1 w-10 h-10 bg-primary-400 rounded-full border-4 border-white" /> */}
           </div>
         </div>
 
@@ -147,7 +138,7 @@ export default function Parceiro() {
             <div className="md:hidden relative">
               <Image
                 alt="avatar"
-                src={partner?.avatar ?? ""}
+                src={fetchPartner?.logo?.url ?? "/user.png"}
                 width={28}
                 height={28}
                 className="w-28 h-28 rounded-full object-fit border-4 border-white"
@@ -157,7 +148,7 @@ export default function Parceiro() {
 
             <div className="relative">
               <MyTypography variant="label" weight="semibold">
-                {partner?.name}
+                {fetchPartner?.companyName}
               </MyTypography>
               <MyIcon
                 name="chat-web"
@@ -180,14 +171,14 @@ export default function Parceiro() {
                 lightness={400}
                 className="mt-2"
               >
-                {partner?.activitiesCount} Atividades
+                {fetchPartner?._count?.adventures ?? "0"} Atividades
               </MyTypography>
             </div>
 
             <div className="flex gap-2 items-center">
-              <StarRating rating={partner?.star ?? 0} />
-              <span className="font-bold">{partner?.star.toFixed(1)}</span>(
-              {partner?.activitiesCount} Avaliações)
+              <StarRating rating={fetchPartner?.averageRating ?? 0} />
+              <span className="font-bold">{fetchPartner?.averageRating}</span>(
+              {fetchPartner?.qntRatings} Avaliações)
             </div>
           </div>
 
@@ -211,34 +202,43 @@ export default function Parceiro() {
                   label="E-mail"
                   placeholder="b2adventure@gmail.com"
                   className="mt-2"
-                  //   value={email ?? ""}
+                  value={parterData?.businessEmail ?? ""}
+                  disabled
                 />
                 <MyTextInput
                   label="Nome Completo"
                   placeholder="Nome Completo"
-                  // value={activity?.parceiro?.nome}
+                  value={parterData?.companyName ?? ""}
                   className="mt-2"
+                  onChange={(e) =>
+                    setPartnerData({
+                      ...parterData,
+                      companyName: e.target.value,
+                    })
+                  }
                 />
-                {/* <MyTextInput
-          label="Senha cadastrada"
-          placeholder="******"
-          type={visibility ? "text" : "password"}
-          rightIcon={<MyIcon name={visibility ? "hide" : "eye"} className="mr-4 mt-2 cursor-pointer" onClick={() => setVisibility(prev => !prev)} />}
-          className="mt-2"
-        /> */}
 
                 <MyTextInput
                   type="empresa"
                   label="Nome da empresa/pessoa"
                   placeholder="Nome completo"
                   className="mt-2"
-                  //   value={email ?? ""}
+                  value={parterData?.companyName ?? ""}
+                  onChange={(e) =>
+                    setPartnerData({
+                      ...parterData,
+                      companyName: e.target.value,
+                    })
+                  }
                 />
                 <MyTextInput
                   label="CNPJ ou CPF"
                   placeholder="CNPJ ou CPF"
-                  // value={activity?.parceiro?.nome}
+                  value={parterData?.cnpj ?? ""}
                   className="mt-2"
+                  onChange={(e) =>
+                    setPartnerData({ ...parterData, cnpj: e.target.value })
+                  }
                 />
               </div>
             </div>
@@ -253,8 +253,15 @@ export default function Parceiro() {
               </MyTypography>
               <MyTextInput
                 label="Número da conta"
-                placeholder="0987 2348 2348 1243"
+                placeholder="0987-6"
                 className="mt-2"
+                value={parterData?.bankAccount ?? ""}
+                onChange={(e) =>
+                  setPartnerData({
+                    ...parterData,
+                    bankAccount: e.target.value,
+                  })
+                }
               />
 
               <div className="flex gap-4">
@@ -262,21 +269,41 @@ export default function Parceiro() {
                   label="Agência"
                   placeholder="Digite sua agência"
                   className="mt-2"
+                  value={parterData?.bankAgency ?? ""}
+                  onChange={(e) =>
+                    setPartnerData({
+                      ...parterData,
+                      bankAgency: e.target.value,
+                    })
+                  }
                 />
 
-                <MyTextInput label="Banco" placeholder="001" className="mt-2" />
+                <MyTextInput
+                  label="Banco"
+                  placeholder="001"
+                  className="mt-2"
+                  value={parterData?.bankName ?? ""}
+                  onChange={(e) =>
+                    setPartnerData({
+                      ...parterData,
+                      bankName: e.target.value,
+                    })
+                  }
+                />
               </div>
 
               <MySelect
-                //   value={}
-                //   onValueChange={}
+                value={String(parterData?.payday) ?? ""}
+                onValueChange={(value) =>
+                  setPartnerData({ ...parterData, payday: value })
+                }
                 label="Data de Pagamento"
               >
                 <SelectTrigger className="py-6 mt-1 mb-4">
                   <SelectValue placeholder="Selecione" />
                 </SelectTrigger>
                 <SelectContent className="">
-                  <SelectItem value="05">Todo dia 05</SelectItem>
+                  <SelectItem value="5">Todo dia 05</SelectItem>
                   <SelectItem value="10">Todo dia 10</SelectItem>
                   <SelectItem value="15">Todo dia 15</SelectItem>
                 </SelectContent>
@@ -289,10 +316,12 @@ export default function Parceiro() {
                 borderRadius="squared"
                 size="lg"
                 className="w-full"
+                onClick={handleUpdatePartner}
+                isLoading={loading}
               >
                 Atualizar
               </MyButton>
-              {partner?.isNew && (
+              {/* {partner?.isNew && (
                 <MyButton
                   variant="partner"
                   className="w-full"
@@ -301,16 +330,20 @@ export default function Parceiro() {
                 >
                   Aprovar
                 </MyButton>
+              )} */}
+              {session && session?.user?.role == "superadmin" && (
+                <MyButton
+                  variant="red"
+                  borderRadius="squared"
+                  size="lg"
+                  className="w-full"
+                  leftIcon={<MyIcon name="trash" className="" />}
+                  onClick={handleDeletePartner}
+                  isLoading={loading}
+                >
+                  Excluir
+                </MyButton>
               )}
-              <MyButton
-                variant="red"
-                borderRadius="squared"
-                size="lg"
-                className="w-full"
-                leftIcon={<MyIcon name="trash" className="" />}
-              >
-                Excluir
-              </MyButton>
             </div>
           </div>
         </div>

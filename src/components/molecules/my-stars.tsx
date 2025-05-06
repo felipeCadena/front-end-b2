@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { cn } from '@/utils/cn';
-import MyIcon from '../atoms/my-icon';
-import Star from '../atoms/my-icon/elements/star';
-import BigStar from '../atoms/my-icon/elements/big-star';
+import { cn } from "@/utils/cn";
+import MyIcon from "../atoms/my-icon";
+import Star from "../atoms/my-icon/elements/star";
+import BigStar from "../atoms/my-icon/elements/big-star";
 
 const StarRating = ({
   rating,
@@ -18,14 +18,14 @@ const StarRating = ({
   return (
     <div
       className={cn(
-        'flex items-center my-2',
-        bigStars ? 'gap-2' : 'w-[6.5rem]'
+        "flex items-center my-2",
+        bigStars ? "gap-2" : "w-[6.5rem]"
       )}
     >
       {stars.map((star) => {
         const isFilled = star <= rating;
         const fillColor =
-          rating <= 2 ? '#ff5f6f' : rating >= 3 ? '#8DC63F' : 'transparent';
+          rating <= 2 ? "#ff5f6f" : rating >= 3 ? "#8DC63F" : "transparent";
 
         return bigStars ? (
           isFilled ? (
