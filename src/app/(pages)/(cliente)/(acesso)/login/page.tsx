@@ -62,7 +62,7 @@ export default function Login() {
           if (defaultPath) {
             toast.success("Login realizado com sucesso!");
             console.log("Redirecionando para:", defaultPath);
-            router.replace(defaultPath);
+            router.push(defaultPath);
           }
         } catch (error) {
           console.error("Erro ao processar sessão:", error);

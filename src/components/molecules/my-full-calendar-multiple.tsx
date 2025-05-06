@@ -37,8 +37,6 @@ function MyFullCalendarMultiple({
     return () => window.removeEventListener("resize", checkScreenSize);
   }, []);
 
-  console.log(markedDates);
-
   const handleDayClick = (date: Date, modifiers: any) => {
     if (modifiers.booked) {
       onSelect(date);
@@ -83,7 +81,7 @@ function MyFullCalendarMultiple({
             ),
         }}
         modifiersClassNames={{
-          booked: "bg-primary-600 rounded-lg text-white",
+          booked: "bg-primary-600 rounded-md text-white",
         }}
         styles={{
           months: { display: "flex", justifyContent: "center", width: "100%" },

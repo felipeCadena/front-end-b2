@@ -162,8 +162,6 @@ export default function PerfiParceiro() {
 
   const avatar = userData?.photo?.url ?? fetchPartner?.logo?.url;
 
-  console.log("avatar", avatar);
-
   return (
     <section className="px-6 my-8">
       <div className="relative flex gap-4 items-center">
@@ -190,7 +188,11 @@ export default function PerfiParceiro() {
             <Image
               key={user?.photo?.updatedAt}
               alt="avatar"
-              src={`${user?.photo?.url}?v=${new Date(user?.photo?.updatedAt ?? Date.now()).getTime()}`}
+              src={
+                user?.photo?.url
+                  ? `${user?.photo?.url}?v=${new Date(user?.photo?.updatedAt ?? Date.now()).getTime()}`
+                  : "/user.png"
+              }
               width={28}
               height={28}
               className="w-24 h-24 rounded-full object-cover"

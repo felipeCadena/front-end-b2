@@ -7,27 +7,33 @@ import Image from "next/image";
 import SearchInfoActivity from "@/components/organisms/search-with-info";
 import MyButton from "@/components/atoms/my-button";
 import GoogleMapsMultiple from "@/components/organisms/google-maps-multiple";
+import { useQuery } from "@tanstack/react-query";
+import { users } from "@/services/api/users";
+import { adventures } from "@/services/api/adventures";
 
 const FourthSection = () => {
-  const locations = [
-    {
-      name: "Monte Cristo Redentor",
-      city: "Rio de Janeiro",
-      coords: { lat: -22.9519, lng: -43.2105 },
-    },
-    {
-      name: "Praia de Copacabana",
-      city: "Rio de Janeiro",
-      coords: { lat: -22.9711, lng: -43.1822 },
-    },
-    {
-      name: "Praia de Ipanema",
-      city: "Rio de Janeiro",
-      coords: { lat: -22.9839, lng: -43.2045 },
-    },
-  ];
+  const { data: userStateFromIp = "" } = useQuery({
+    queryKey: ["user_state-from-ip"],
+    queryFn: () => users.getStateFromIP(),
+  });
 
-  const coords = locations.map((location) => location.coords);
+  const { data: adventuresState = [] } = useQuery({
+    queryKey: ["user_state-from-ip", userStateFromIp],
+    queryFn: () =>
+      adventures.filterAdventures({ state: userStateFromIp, limit: 3 }),
+    enabled: !!userStateFromIp,
+  });
+
+  const transformCoordinates = (
+    coordinateString: string
+  ): { lat: number; lng: number } => {
+    const [lat, lng] = coordinateString.split(":").map(Number); // Divide e converte para número
+    return { lat, lng };
+  };
+
+  const transformedCoordinates = adventuresState
+    ?.map((coor) => coor.coordinates)
+    .map(transformCoordinates);
 
   return (
     <section className="max-sm:px-4">
@@ -57,40 +63,45 @@ const FourthSection = () => {
                 Temos atividades perto de você!
               </MyTypography>
             </div>
-            {locations.map((location, index) => (
-              <div
-                key={index}
-                className="flex items-center md:gap-8 md:justify-between p-2 bg-gray-500 border border-primary-600/30 md:border-black border-opacity-80 rounded-lg shadow-sm hover:bg-gray-100 relative"
-              >
-                <div className="absolute inset-y-0 left-0 w-3 md:w-16 bg-primary-900 rounded-l-lg">
+            {adventuresState &&
+              adventuresState?.length > 0 &&
+              adventuresState?.map((location, index) => (
+                <div
+                  key={index}
+                  className="flex items-center md:gap-8 md:justify-between p-2 bg-gray-500 border border-primary-600/30 md:border-black border-opacity-80 rounded-lg shadow-sm hover:bg-gray-100 relative"
+                >
+                  <div className="absolute inset-y-0 left-0 w-3 md:w-16 bg-primary-900 rounded-l-lg">
+                    <MyIcon
+                      name="localizacaoRedonda"
+                      className="absolute left-5 top-5 w-6 h-6 text-primary-900 max-sm:hidden"
+                    />
+                  </div>
                   <MyIcon
                     name="localizacaoRedonda"
-                    className="absolute left-5 top-5 w-6 h-6 text-primary-900 max-sm:hidden"
+                    className="w-6 h-6 text-primary-900 ml-3 md:hidden"
                   />
+                  <div className="ml-3 md:ml-16 text-nowrap">
+                    <MyTypography
+                      variant="body-big"
+                      weight="regular"
+                      className="md:font-semibold text-wrap"
+                    >
+                      {location?.title}{" "}
+                      <span className="md:hidden">
+                        - {location?.addressState}
+                      </span>
+                    </MyTypography>
+                    <MyTypography
+                      variant="body"
+                      weight="regular"
+                      lightness={400}
+                      className="max-sm:hidden"
+                    >
+                      {location?.addressCity}
+                    </MyTypography>
+                  </div>
                 </div>
-                <MyIcon
-                  name="localizacaoRedonda"
-                  className="w-6 h-6 text-primary-900 ml-3 md:hidden"
-                />
-                <div className="ml-3 md:ml-16 text-nowrap">
-                  <MyTypography
-                    variant="body-big"
-                    weight="regular"
-                    className="text-center md:font-semibold"
-                  >
-                    {location.name} <span className="md:hidden">- {location?.city}</span>
-                  </MyTypography>
-                  <MyTypography
-                    variant="body"
-                    weight="regular"
-                    lightness={400}
-                    className="max-sm:hidden"
-                  >
-                    {location?.city}
-                  </MyTypography>
-                </div>
-              </div>
-            ))}
+              ))}
             <MyButton
               variant="text"
               borderRadius="squared"
@@ -103,13 +114,13 @@ const FourthSection = () => {
           </div>
 
           <div className="max-sm:hidden w-full h-full md:min-h-[410px]">
-          <GoogleMapsMultiple locations={coords} />
+            <GoogleMapsMultiple locations={transformedCoordinates} />
           </div>
         </div>
 
         {/* Map */}
         <div className="w-full md:hidden">
-          <GoogleMapsMultiple locations={coords} />
+          <GoogleMapsMultiple locations={transformedCoordinates} />
         </div>
       </div>
     </section>

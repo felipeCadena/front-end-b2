@@ -7,7 +7,7 @@ import {
   sideBarPartnet,
 } from "@/common/constants/sideBar";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import React, { useEffect } from "react";
 import MyIcon from "../atoms/my-icon";
 import { useAuthStore } from "@/store/useAuthStore";
@@ -17,6 +17,7 @@ import { notificationsService } from "@/services/api/notifications";
 import { useQuery } from "@tanstack/react-query";
 import { useCart } from "@/store/useCart";
 import useLogin from "@/store/useLogin";
+import { toast } from "react-toastify";
 
 export default function SidebarMenuWeb({}) {
   const pathname = usePathname();
@@ -25,7 +26,6 @@ export default function SidebarMenuWeb({}) {
   const { data: session } = useSession();
   const { getCartSize } = useCart();
   const userId = session?.user.id;
-  const router = useRouter();
 
   const cartSize = getCartSize(userId ?? "");
 
@@ -53,10 +53,17 @@ export default function SidebarMenuWeb({}) {
   });
 
   const handleLogout = async () => {
-    await authService.logout(session?.user.refreshToken ?? "");
-    await signOut();
-    clearUser();
-    router.push("/");
+    try {
+      await authService.logout(session?.user.refreshToken ?? "");
+      signOut({
+        callbackUrl: "/",
+        redirect: true,
+      });
+      clearUser();
+    } catch (error) {
+      console.error("Error during logout:", error);
+      toast.error("Erro ao fazer logout. Tente novamente.");
+    }
   };
 
   const iconInclude = ["Notificações", "Carrinho de Compras"];

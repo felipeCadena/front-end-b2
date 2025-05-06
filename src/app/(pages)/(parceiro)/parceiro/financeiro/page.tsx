@@ -126,34 +126,38 @@ export default function Dashboard() {
       name: "Atividades Aquáticas",
       icon: "mar",
       color: "#00C6FB",
-      progress: incomeData?.marPercent,
+      progress: incomeData?.marPercent ?? 0,
     },
     {
       id: 2,
       name: "Atividades na Terra",
       icon: "terra",
       color: "#FFA500",
-      progress: incomeData?.terraPercent,
+      progress: incomeData?.terraPercent ?? 0,
     },
     {
       id: 3,
       name: "Atividades no Ar",
       icon: "ar",
       color: "#FF66B2",
-      progress: incomeData?.arPercent,
+      progress: incomeData?.arPercent ?? 0,
     },
   ];
 
   const pieData = [
     {
       name: "Atividades Aquáticas",
-      value: incomeData?.marTotal,
+      value: incomeData?.marTotal ?? 0,
       color: "#00C6FB",
     },
-    { name: "Atividades no Ar", value: incomeData?.arTotal, color: "#FF66B2" },
+    {
+      name: "Atividades no Ar",
+      value: incomeData?.arTotal ?? 0,
+      color: "#FF66B2",
+    },
     {
       name: "Atividades na Terra",
-      value: incomeData?.terraTotal,
+      value: incomeData?.terraTotal ?? 0,
       color: "#FFA500",
     },
   ];
@@ -182,73 +186,72 @@ export default function Dashboard() {
         <MyCard className="md:h-full">
           <CardContent className="space-y-4">
             <h2 className="text-lg font-semibold">Atividades</h2>
-            {incomeData &&
-              activities.map((activity, index) => (
-                <div
-                  key={index}
-                  className="flex flex-col gap-4 md:cursor-pointer"
-                  onClick={() =>
-                    router.push(PATHS.relatorioAtividade(activity.id))
-                  }
-                >
-                  <div className="flex items-center gap-4 relative">
+            {activities.map((activity, index) => (
+              <div
+                key={index}
+                className="flex flex-col gap-4 md:cursor-pointer"
+                onClick={() =>
+                  router.push(PATHS.relatorioAtividade(activity?.icon))
+                }
+              >
+                <div className="flex items-center gap-4 relative">
+                  <MyTypography
+                    variant="caption"
+                    className="text-sm font-semibold absolute top-[39%] left-[7%]"
+                  >
+                    {activity.progress}%
+                  </MyTypography>
+                  <ResponsiveContainer width={70} height={70}>
+                    <PieChart>
+                      <Pie
+                        data={[
+                          { name: activity.name, value: activity.progress },
+                          {
+                            name: "Restante",
+                            value: 100 - (activity.progress ?? 0),
+                          },
+                        ]}
+                        dataKey="value"
+                        innerRadius={28}
+                        outerRadius={35}
+                        startAngle={90}
+                        endAngle={450}
+                        isAnimationActive={false}
+                      >
+                        <Cell fill={activity.color} />
+                        <Cell fill="#E5E7EB" />
+                      </Pie>
+                    </PieChart>
+                  </ResponsiveContainer>
+                  <div className="flex-1">
                     <MyTypography
-                      variant="caption"
-                      className="text-sm font-semibold absolute top-[39%] left-[7%]"
+                      variant="body-big"
+                      weight="semibold"
+                      className="flex items-center space-x-2"
                     >
-                      {activity.progress}%
+                      <MyIcon
+                        name={activity.icon as IconsMapTypes}
+                        className="text-gray-700"
+                      />
+                      <span>{activity.name}</span>
                     </MyTypography>
-                    <ResponsiveContainer width={70} height={70}>
-                      <PieChart>
-                        <Pie
-                          data={[
-                            { name: activity.name, value: activity.progress },
-                            {
-                              name: "Restante",
-                              value: 100 - (activity.progress ?? 0),
-                            },
-                          ]}
-                          dataKey="value"
-                          innerRadius={28}
-                          outerRadius={35}
-                          startAngle={90}
-                          endAngle={450}
-                          isAnimationActive={false}
-                        >
-                          <Cell fill={activity.color} />
-                          <Cell fill="#E5E7EB" />
-                        </Pie>
-                      </PieChart>
-                    </ResponsiveContainer>
-                    <div className="flex-1">
-                      <MyTypography
-                        variant="body-big"
-                        weight="semibold"
-                        className="flex items-center space-x-2"
-                      >
-                        <MyIcon
-                          name={activity.icon as IconsMapTypes}
-                          className="text-gray-700"
-                        />
-                        <span>{activity.name}</span>
-                      </MyTypography>
-                      <MyTypography
-                        variant="body-big"
-                        lightness={500}
-                        className="mt-1 ml-1"
-                      >
-                        % das atividades realizadas{" "}
-                        <span className="text-xs text-neutral-400">
-                          Saiba Mais
-                        </span>
-                      </MyTypography>
-                    </div>
+                    <MyTypography
+                      variant="body-big"
+                      lightness={500}
+                      className="mt-1 ml-1"
+                    >
+                      % das atividades realizadas{" "}
+                      <span className="text-xs text-neutral-400">
+                        Saiba Mais
+                      </span>
+                    </MyTypography>
                   </div>
-                  {index !== activities.length - 1 && (
-                    <div className="w-full h-1 border-t border-dashed" />
-                  )}
                 </div>
-              ))}
+                {index !== activities.length - 1 && (
+                  <div className="w-full h-1 border-t border-dashed" />
+                )}
+              </div>
+            ))}
           </CardContent>
         </MyCard>
 
@@ -279,46 +282,56 @@ export default function Dashboard() {
               </div>
             </div>
 
-            <ResponsiveContainer width="100%" height={250}>
-              <PieChart>
-                <Pie
-                  data={filteredPieData}
-                  dataKey="value"
-                  nameKey="name"
-                  cx="50%"
-                  cy="50%"
-                  outerRadius={110} // Aumentando o tamanho do gráfico
-                  innerRadius={80} // Deixando mais fino
-                  minAngle={20} // Define o ângulo mínimo para exibição
-                  startAngle={-45} // Define que o maior segmento começa de cima
-                  endAngle={320} // Garante a distribuição no sentido anti-horário
-                  fill="#8884d8"
-                  labelLine={false}
-                  isAnimationActive={false}
-                  label={renderCustomizedLabel}
-                  stroke="none" // Remove contorno para melhor visualização
-                >
-                  {filteredPieData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
-                  ))}
-                </Pie>
-              </PieChart>
-            </ResponsiveContainer>
-            <div className="text-center absolute top-[35%] left-[35%] md:left-[33%] opacity-6">
-              <MyTypography variant="body-big" lightness={400} className="">
-                Total
-              </MyTypography>
-              <MyTypography
-                variant="subtitle2"
-                weight="bold"
-                className="text-[1.125rem] md:text-[1.3rem]"
-              >
-                {incomeData?.sumTotal.toLocaleString("pt-BR", {
-                  style: "currency",
-                  currency: "BRL",
-                })}
-              </MyTypography>
-            </div>
+            {filteredPieData && filteredPieData?.length > 0 ? (
+              <>
+                <ResponsiveContainer width="100%" height={250}>
+                  <PieChart>
+                    <Pie
+                      data={filteredPieData}
+                      dataKey="value"
+                      nameKey="name"
+                      cx="50%"
+                      cy="50%"
+                      outerRadius={110} // Aumentando o tamanho do gráfico
+                      innerRadius={80} // Deixando mais fino
+                      minAngle={20} // Define o ângulo mínimo para exibição
+                      startAngle={-45} // Define que o maior segmento começa de cima
+                      endAngle={320} // Garante a distribuição no sentido anti-horário
+                      fill="#8884d8"
+                      labelLine={false}
+                      isAnimationActive={false}
+                      label={renderCustomizedLabel}
+                      stroke="none" // Remove contorno para melhor visualização
+                    >
+                      {filteredPieData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Pie>
+                  </PieChart>
+                </ResponsiveContainer>
+                <div className="text-center absolute top-[35%] left-[35%] md:left-[33%] opacity-6">
+                  <MyTypography variant="body-big" lightness={400} className="">
+                    Total
+                  </MyTypography>
+                  <MyTypography
+                    variant="subtitle2"
+                    weight="bold"
+                    className="text-[1.125rem] md:text-[1.3rem]"
+                  >
+                    {incomeData?.sumTotal.toLocaleString("pt-BR", {
+                      style: "currency",
+                      currency: "BRL",
+                    })}
+                  </MyTypography>
+                </div>
+              </>
+            ) : (
+              <div className="flex items-center justify-center h-[250px]">
+                <MyTypography variant="body-big" weight="bold">
+                  Você ainda não possui rendimentos
+                </MyTypography>
+              </div>
+            )}
 
             <div className="flex flex-col gap-2 w-2/3 mx-auto items-start">
               {pieData.map((entry, index) => (

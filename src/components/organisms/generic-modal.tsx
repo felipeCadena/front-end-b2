@@ -14,26 +14,32 @@ import User from "../atoms/my-icon/elements/user";
 import X from "../atoms/my-icon/elements/x";
 import { toast } from "react-toastify";
 import { ordersAdventuresService } from "@/services/api/orders";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { partnerService } from "@/services/api/partner";
 
 interface ModalAlertProps {
   open: boolean;
   onClose: () => void;
-  data: any[];
+  // data: any[];
   icon: React.ReactNode;
   title: string;
   descrition: string;
   button: string;
+  id: string;
 }
 
 export default function GenericModal({
   open,
   onClose,
-  data,
+  // data,
   icon,
   title,
   descrition,
   button,
+  id,
 }: ModalAlertProps) {
+  const queryClient = useQueryClient();
+
   const handleConfirmSchedule = async (
     scheduleId: string,
     orderScheduleAdventureId: string
@@ -46,11 +52,20 @@ export default function GenericModal({
       if (response) {
         toast.success("Agendamento confirmado com sucesso!");
       }
+
+      queryClient.invalidateQueries({ queryKey: ["clientList"] });
+      queryClient.invalidateQueries({ queryKey: ["parterSchedules"] });
     } catch (error) {
       console.error("Error confirming schedule:", error);
       toast.error("Erro ao confirmar agendamento!");
     }
   };
+
+  const { data: clientList } = useQuery({
+    queryKey: ["clientList", id],
+    queryFn: () => partnerService.getPartnerScheduleById(id),
+    enabled: !!id,
+  });
 
   return (
     <MyDialog open={open} onOpenChange={onClose}>
@@ -67,32 +82,32 @@ export default function GenericModal({
           </DialogDescription>
         </DialogHeader>
 
-        {data &&
-          data.map(
-            (schedule: any, index: number) =>
-              !schedule?.partnerConfirmed && (
-                <div
-                  key={index}
-                  className="flex items-center justify-start gap-4 py-2 border-b border-gray-200"
-                >
-                  {icon}
-                  <div className="flex items-center justify-between w-full">
-                    <div>
-                      <MyTypography
-                        variant="subtitle2"
-                        lightness={500}
-                        className="text-base md:text-lg"
-                      >
-                        {schedule?.orderAdventure?.customer?.name}
-                      </MyTypography>
-                      <MyTypography
-                        variant="subtitle3"
-                        lightness={500}
-                        className="text-base md:text-lg"
-                      >
-                        Pessoas: {schedule?.qntAdults + schedule?.qntChildren}
-                      </MyTypography>
-                    </div>
+        {clientList &&
+          clientList?.ordersScheduleAdventure.map(
+            (schedule: any, index: number) => (
+              <div
+                key={index}
+                className="flex items-center justify-start gap-4 py-2 border-b border-gray-200"
+              >
+                {icon}
+                <div className="flex items-center justify-between w-full">
+                  <div>
+                    <MyTypography
+                      variant="subtitle2"
+                      lightness={500}
+                      className="text-base md:text-lg"
+                    >
+                      {schedule?.orderAdventure?.customer?.name}
+                    </MyTypography>
+                    <MyTypography
+                      variant="subtitle3"
+                      lightness={500}
+                      className="text-base md:text-lg"
+                    >
+                      Pessoas: {schedule?.qntAdults + schedule?.qntChildren}
+                    </MyTypography>
+                  </div>
+                  {!schedule?.partnerConfirmed ? (
                     <MyButton
                       onClick={() =>
                         handleConfirmSchedule(
@@ -106,9 +121,17 @@ export default function GenericModal({
                     >
                       Confirmar
                     </MyButton>
-                  </div>
+                  ) : (
+                    <MyTypography
+                      variant="subtitle3"
+                      className="text-base md:text-lg mx-2"
+                    >
+                      Confirmado
+                    </MyTypography>
+                  )}
                 </div>
-              )
+              </div>
+            )
           )}
 
         <div>
