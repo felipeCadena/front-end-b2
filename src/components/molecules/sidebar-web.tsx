@@ -18,6 +18,8 @@ import { useQuery } from "@tanstack/react-query";
 import { useCart } from "@/store/useCart";
 import useLogin from "@/store/useLogin";
 import { toast } from "react-toastify";
+import { adminService } from "@/services/api/admin";
+import { cn } from "@/utils/cn";
 
 export default function SidebarMenuWeb({}) {
   const pathname = usePathname();
@@ -45,12 +47,27 @@ export default function SidebarMenuWeb({}) {
     }
   }, [user, session]);
 
+  const customerOrPartner =
+    session?.user.role === "partner" || session?.user.role === "customer";
+
+  const adminOrSuperAdmin =
+    session?.user.role === "admin" || session?.user.role === "superadmin";
+
   const { data: notifications = { messagesUnred: 0 } } = useQuery({
     queryKey: ["unread_notifications"],
     queryFn: () => notificationsService.countUnreadNotifications(),
-
-    enabled: Boolean(session?.user),
+    enabled: customerOrPartner,
   });
+
+  const { data: adminNotifications = { messagesUnred: 0 } } = useQuery({
+    queryKey: ["unread_admin_notifications"],
+    queryFn: () => adminService.countUnreadNotificationsAdmin(),
+    enabled: adminOrSuperAdmin,
+  });
+
+  const notificationsCount = customerOrPartner
+    ? notifications.messagesUnred
+    : adminNotifications.messagesUnred;
 
   const handleLogout = async () => {
     try {
@@ -105,9 +122,15 @@ export default function SidebarMenuWeb({}) {
 
                 {item.label == "Notificações" && (
                   <div
-                    className={`absolute flex justify-center items-center bottom-4 left-3 ${notifications.messagesUnred > 0 ? "bg-red-400 h-[1.125rem]" : "bg-slate-300 h-[1.125rem]"} w-[1.125rem] rounded-full text-white text-xs font-bold`}
+                    className={cn(
+                      `absolute flex justify-center items-center bottom-4 left-3 w-[1.125rem] rounded-full text-white text-xs font-bold`,
+                      notificationsCount > 0
+                        ? "bg-red-400 h-[1.125rem]"
+                        : "bg-slate-300 h-[1.125rem]",
+                      notificationsCount > 10 && "h-[1.3rem] w-[1.6rem]"
+                    )}
                   >
-                    {notifications.messagesUnred}
+                    {notificationsCount}
                   </div>
                 )}
 

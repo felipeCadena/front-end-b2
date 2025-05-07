@@ -148,9 +148,18 @@ export const adminService = {
   },
 
   // Notifications
-  async listNotifications(params: { isRead: boolean }) {
+  async listNotifications(params?: { limit?: number }) {
     try {
       const response = await api.get("/notifications/admin", { params });
+      return response.data;
+    } catch (error) {
+      console.error("Error listing notifications:", error);
+      throw error;
+    }
+  },
+  async countUnreadNotificationsAdmin(params?: { limit?: number }) {
+    try {
+      const response = await api.get("/notifications/admin/count", { params });
       return response.data;
     } catch (error) {
       console.error("Error listing notifications:", error);
