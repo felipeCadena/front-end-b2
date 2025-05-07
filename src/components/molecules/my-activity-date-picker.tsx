@@ -6,7 +6,6 @@ import { Popover, PopoverContent, PopoverTrigger } from '../atoms/my-popover';
 import MyButton from '../atoms/my-button';
 import { cn } from '@/utils/cn';
 import MyIcon from '../atoms/my-icon';
-import { MyCalendar } from './my-calendar';
 import { ptBR } from 'date-fns/locale/pt-BR';
 import MyTypography from '../atoms/my-typography';
 import { MyActivityCalendar } from './my-activity-calendar';

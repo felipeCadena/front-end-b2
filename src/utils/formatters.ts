@@ -505,6 +505,7 @@ export const formatRecurrencesToDates = (
             }
 
             acc[rec.groupId] = group;
+
             return acc;
           },
           {} as Record<
@@ -529,7 +530,7 @@ export const formatRecurrencesToDates = (
   }
 
   const weeklyRecurrences = reducedRecur
-    ?.filter((rec) => rec.dates.length === 0)
+    ?.filter((rec) => rec.recurrenceWeekly.length > 0)
     .map(({ recurrenceWeekly }) => recurrenceWeekly)
     .flat();
 
@@ -685,7 +686,7 @@ export const getPartnerAvailableSchedules = (
   if (activity) {
     const partnerSchedules = activity.schedules?.reduce(
       (acc, schedule) => {
-        if (schedule.isAvailable) {
+        if (schedule.isAvailable && !schedule.isCanceled) {
           // formata a data para UTC-3
           const forceStringDate = String(schedule.datetime);
           const localDateTime = new Date(schedule.datetime);
