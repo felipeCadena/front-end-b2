@@ -56,8 +56,6 @@ export default function Atividade() {
     queryFn: () => adventures.getAdventureById(Number(id)),
   });
 
-  console.log('ACTIVITY', fetchedActivity);
-
   const price = {
     adult: fetchedActivity?.priceAdult,
     children: fetchedActivity?.priceChildren,
@@ -161,7 +159,17 @@ export default function Atividade() {
       <Loading />
     </div>
   ) : !fetchedActivity ? (
-    <NotFound />
+    <div className="w-full h-[30vh] flex flex-col justify-center items-center">
+      <MyTypography variant="subtitle3" weight="bold" className="mb-16">
+        Atividade não encontrada!
+      </MyTypography>
+      <MyButton
+        onClick={() => router.push(PATHS.atividades)}
+        borderRadius="squared"
+      >
+        Ir para atividades
+      </MyButton>
+    </div>
   ) : (
     <section className="my-10">
       <div className="relative">
