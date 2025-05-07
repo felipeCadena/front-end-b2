@@ -2,7 +2,11 @@ import {
   GroupedRecurrences,
   Recurrence,
 } from '@/components/organisms/activity-date-picker';
-import { Adventure, AdventureSchedule } from '@/services/api/adventures';
+import {
+  Adventure,
+  AdventureSchedule,
+  Schedules,
+} from '@/services/api/adventures';
 import { format, parseISO } from 'date-fns';
 
 export const getYearsArray = (): string[] => {
@@ -771,4 +775,61 @@ export const formatCardNumber = (cardNumber: string): string => {
     .replace(/\D/g, '')
     .replace(/(.{4})/g, '$1 ')
     .trim();
+};
+
+export const formatDateToUTC3 = (dateTime: string) => {
+  const localDateTime = new Date(dateTime);
+  const localHours = localDateTime.getHours().toString().padStart(2, '0');
+  const localMinutes = localDateTime.getMinutes().toString().padStart(2, '0');
+  const justDate = localDateTime.toISOString().slice(0, 10);
+  const updatedSelectedDate = justDate + 'T' + localHours + ':' + localMinutes;
+
+  return updatedSelectedDate;
+};
+
+export const formatSchedulesToUTC3 = (activitySchedules: Schedules[]) => {
+  const formattedSchedules = activitySchedules.map((sch) => {
+    const localDateTime = formatDateToUTC3(sch.datetime);
+
+    return { ...sch, datetime: localDateTime };
+  });
+
+  return formattedSchedules;
+};
+
+export const findAvailableVacancies = (
+  activitySchedules: Schedules[] | undefined,
+  qtdLimitPersons: number | undefined,
+  selectedDate: Date | undefined,
+  selectedTime: string
+) => {
+  if (activitySchedules && activitySchedules.length > 0) {
+    const formattedSchedulesToUTC3 = formatSchedulesToUTC3(activitySchedules);
+
+    if (selectedDate) {
+      const time = selectedTime.split(':');
+      const hour = Number(time[0]);
+      const minutes = time[1];
+      const justDate = selectedDate.toISOString().slice(0, 10);
+      const updatedSelectedDate = justDate + 'T' + hour + ':' + minutes;
+
+      const selectedDateSchedule = formattedSchedulesToUTC3?.filter(
+        (sch) => sch.datetime === updatedSelectedDate
+      )[0];
+
+      console.log('SELECTED', selectedDateSchedule);
+
+      if (selectedDateSchedule) {
+        return (
+          selectedDateSchedule.qntLimitPersons -
+          selectedDateSchedule.qntConfirmedPersons
+        );
+      }
+
+      return qtdLimitPersons;
+    }
+
+    return qtdLimitPersons;
+  }
+  return qtdLimitPersons;
 };

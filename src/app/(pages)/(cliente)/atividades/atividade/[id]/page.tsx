@@ -27,8 +27,6 @@ import ActivityTags from '@/components/organisms/actitity-tags';
 import ActivityHeader from '@/components/organisms/activity-header';
 import { v4 as uuidv4 } from 'uuid';
 import Loading from '@/app/loading';
-import NotFound from '@/app/not-found';
-import { schedules } from '@/services/api/schedules';
 
 const initialScheduleState = {
   qntAdults: 0,
@@ -55,6 +53,8 @@ export default function Atividade() {
     queryKey: ['this_activity'],
     queryFn: () => adventures.getAdventureById(Number(id)),
   });
+
+  console.log('act', fetchedActivity);
 
   const price = {
     adult: fetchedActivity?.priceAdult,

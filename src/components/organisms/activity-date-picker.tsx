@@ -8,6 +8,7 @@ import { MyActivityDatePicker } from '../molecules/my-activity-date-picker';
 import {
   addPartnerScheduledTimeToSelectedDateTime,
   agruparRecorrencias,
+  findAvailableVacancies,
   getPartnerAvailableSchedules,
   getWeeklyRecurrenceTime,
 } from '@/utils/formatters';
@@ -71,6 +72,15 @@ const ActivityDatePicker = ({
     availablePartnerSchedules
   );
 
+  const availableVacancies = findAvailableVacancies(
+    activity?.schedules,
+    activity?.personsLimit,
+    selectedDate,
+    selectedTime
+  );
+
+  console.log('ava', availableVacancies);
+
   useQuery({
     queryKey: ['schedule', selectedDate, selectedTime],
     queryFn: () => {
@@ -109,7 +119,7 @@ const ActivityDatePicker = ({
               isChildrenAllowed={isChildrenAllowed}
               price={price}
               schedule={schedule}
-              personsLimit={activity?.personsLimit}
+              personsLimit={availableVacancies}
               setSchedule={setSchedule}
             />
           </div>
