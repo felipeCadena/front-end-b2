@@ -96,6 +96,20 @@ export default function Parceiro() {
     }
   };
 
+  const handleChat = async (userId: string) => {
+    setLoading(true);
+    try {
+      await adminService.createChat({ userToId: userId });
+      toast.success("Chat criado com sucesso!");
+      router.push(`/chat?user=${fetchPartner?.userId}`);
+    } catch (error) {
+      console.error("Erro ao criar chat:", error);
+      toast.error("Erro ao criar chat");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <main className="space-y-6 px-4 mb-8">
       <div className="flex items-center gap-3 bg-white">
@@ -159,6 +173,7 @@ export default function Parceiro() {
                 borderRadius="squared"
                 className="max-sm:hidden absolute top-0 right-0"
                 leftIcon={<MyIcon name="chat-web" className="" />}
+                onClick={() => handleChat(fetchPartner?.userId)}
               >
                 Falar com parceiro
               </MyButton>
@@ -175,8 +190,10 @@ export default function Parceiro() {
 
             <div className="flex gap-2 items-center">
               <StarRating rating={fetchPartner?.averageRating ?? 0} />
-              <span className="font-bold">{fetchPartner?.averageRating}</span>(
-              {fetchPartner?.qntRatings} Avaliações)
+              <span className="font-bold">
+                {fetchPartner?.averageRating?.toFixed(2)}
+              </span>
+              ({fetchPartner?.qntRatings} Avaliações)
             </div>
           </div>
 

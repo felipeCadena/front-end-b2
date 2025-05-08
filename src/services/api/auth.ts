@@ -1,6 +1,7 @@
 import { api } from "@/libs/api";
 import axios from "axios";
 import { getSession } from "next-auth/react";
+import { toast } from "react-toastify";
 
 export interface TokenResponse {
   access_token: string;
@@ -75,6 +76,7 @@ export const authService = {
 
       return response.data;
     } catch (error) {
+      toast.error("É necessário logar novamente!");
       throw error;
     }
   },

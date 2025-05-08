@@ -18,7 +18,7 @@ import { cn } from "@/utils/cn";
 import PATHS from "@/utils/paths";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useEffect } from "react";
 import { toast } from "react-toastify";
 
 export default function InformacoesAtividade({
@@ -85,8 +85,6 @@ export default function InformacoesAtividade({
   } = useStepperStore();
 
   const [isLoading, setIsLoading] = React.useState(false);
-
-  console.log(availableDates);
 
   const b2Tax = process.env.NEXT_PUBLIC_PERCENTAGE_TAX_B2;
   const tax = process.env.NEXT_PUBLIC_PERCENTAGE_TAX;
@@ -304,6 +302,8 @@ export default function InformacoesAtividade({
       return;
     }
 
+    // console.log(availableDates);
+
     try {
       // 1. Cria a aventura
 
@@ -416,6 +416,12 @@ export default function InformacoesAtividade({
       setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (window) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }, []);
 
   return (
     <main className="w-full max-w-md md:max-w-3xl mx-auto md:p-4">

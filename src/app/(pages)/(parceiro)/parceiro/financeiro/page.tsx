@@ -66,7 +66,7 @@ export default function Dashboard() {
   const [filters, setFilters] = React.useState({
     report: "pago",
     year: "2025",
-    month: "04",
+    month: "05",
   });
   const [typeGroup, setTypeGroup] = React.useState("month");
   const [income, setIncome] = React.useState<IncomeType | null>();
@@ -83,8 +83,8 @@ export default function Dashboard() {
     queryKey: ["partnerOrders"],
     queryFn: () =>
       partnerService.getOrders({
-        startsAt: "2025-04-01T00:00:00",
-        endsAt: "2025-04-30T23:59:59",
+        startsAt: "2025-05-01T00:00:00",
+        endsAt: "2025-05-30T23:59:59",
       }),
   });
 
@@ -92,8 +92,8 @@ export default function Dashboard() {
     queryKey: ["partnerIncome", typeGroup],
     queryFn: async () => {
       const income = await partnerService.getIncome({
-        startsAt: "2025-04-01T00:00:00",
-        endsAt: "2025-04-30T23:59:59",
+        startsAt: "2025-05-01T00:00:00",
+        endsAt: "2025-05-30T23:59:59",
         typeGroup,
       });
       setIncome(income);
@@ -114,7 +114,7 @@ export default function Dashboard() {
     },
   });
 
-  const type = typeGroup === "month" ? "2025-04" : "week-1-2025-04";
+  const type = typeGroup === "month" ? "2025-05" : "week-1-2025-05";
 
   const incomeData = partnerIncome?.[type];
 

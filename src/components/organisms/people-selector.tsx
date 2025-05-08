@@ -140,8 +140,17 @@ export default function PeopleSelector({
                   />
                 </button>
                 <span>{children}</span>
-                <button onClick={() => handleChange('child', 'increase')}>
-                  <MyIcon name="soma" />
+                <button
+                  disabled={adults + children === personsLimit}
+                  onClick={() => handleChange('child', 'increase')}
+                >
+                  <MyIcon
+                    name={
+                      personsLimit && adults + children < personsLimit
+                        ? 'soma'
+                        : 'somaDesativada'
+                    }
+                  />
                 </button>
               </div>
             </div>

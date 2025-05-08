@@ -14,7 +14,7 @@ import MyTypography from "@/components/atoms/my-typography";
 import { useStepperStore } from "@/store/useStepperStore";
 import { cn } from "@/utils/cn";
 import PATHS from "@/utils/paths";
-import React from "react";
+import React, { useEffect } from "react";
 
 export default function Informacoes({
   handleNext,
@@ -30,67 +30,74 @@ export default function Informacoes({
     handleNext();
   };
 
+  useEffect(() => {
+    if (window) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }, []);
+
   return (
-    <div
-      className={cn(
-        "md:space-y-8 md:border-2 md:border-gray-200 md:rounded-xl md:p-12 md:my-4"
-      )}
-    >
-      <div className="hidden md:block space-y-2">
-        <MyTypography variant="heading2" weight="bold">
-          Precisamos de só mais algumas informações
-        </MyTypography>
-        <MyTypography variant="subtitle3" weight="regular" lightness={400}>
-          Precisamos de seus dados bancários agora.
-        </MyTypography>
-      </div>
-
-      <div className="space-y-2">
-        <MyTypography variant="subtitle3" weight="semibold" className="mb-3">
-          Dados Bancários
-        </MyTypography>
-        <MyTextInput
-          label="Número da conta"
-          placeholder="0987 2348 2348 1243"
-          className="mt-2"
-          value={bankAccount}
-          onChange={(e) => setStepData(4, { bankAccount: e.target.value })}
-        />
-
-        <div className="flex gap-2">
-          <MyTextInput
-            label="Agência"
-            placeholder="Digite sua agência"
-            className="mt-2"
-            value={bankAgency}
-            onChange={(e) => setStepData(4, { bankAgency: e.target.value })}
-          />
-
-          <MyTextInput
-            label="Banco"
-            placeholder="001"
-            className="mt-2"
-            value={bankName}
-            onChange={(e) => setStepData(4, { bankName: e.target.value })}
-          />
+    <>
+      <div
+        className={cn(
+          "md:space-y-8 md:border-2 md:border-gray-200 md:rounded-xl md:p-12 md:my-4"
+        )}
+      >
+        <div className="hidden md:block space-y-2">
+          <MyTypography variant="heading2" weight="bold">
+            Precisamos de só mais algumas informações
+          </MyTypography>
+          <MyTypography variant="subtitle3" weight="regular" lightness={400}>
+            Precisamos de seus dados bancários agora.
+          </MyTypography>
         </div>
 
-        <MySelect
-          value={String(payday) == "5" ? "05" : String(payday)}
-          onValueChange={(value) => setStepData(4, { payday: +value })}
-          label="Data de Pagamento"
-        >
-          <SelectTrigger className="py-6 mt-1 mb-4">
-            <SelectValue placeholder="Selecione" />
-          </SelectTrigger>
-          <SelectContent className="">
-            <SelectItem value="05">Todo dia 05</SelectItem>
-            <SelectItem value="10">Todo dia 10</SelectItem>
-            <SelectItem value="15">Todo dia 15</SelectItem>
-          </SelectContent>
-        </MySelect>
-      </div>
+        <div className="space-y-2">
+          <MyTypography variant="subtitle3" weight="semibold" className="mb-3">
+            Dados Bancários
+          </MyTypography>
+          <MyTextInput
+            label="Número da conta"
+            placeholder="09874-5"
+            className="mt-2"
+            value={bankAccount}
+            onChange={(e) => setStepData(4, { bankAccount: e.target.value })}
+          />
 
+          <div className="flex gap-2">
+            <MyTextInput
+              label="Agência"
+              placeholder="Digite sua agência"
+              className="mt-2"
+              value={bankAgency}
+              onChange={(e) => setStepData(4, { bankAgency: e.target.value })}
+            />
+
+            <MyTextInput
+              label="Banco"
+              placeholder="001"
+              className="mt-2"
+              value={bankName}
+              onChange={(e) => setStepData(4, { bankName: e.target.value })}
+            />
+          </div>
+
+          <MySelect
+            value={String(payday) == "5" ? "05" : String(payday)}
+            onValueChange={(value) => setStepData(4, { payday: +value })}
+            label="Data de Pagamento"
+          >
+            <SelectTrigger className="py-6 mt-1 mb-4">
+              <SelectValue placeholder="Selecione" />
+            </SelectTrigger>
+            <SelectContent className="">
+              <SelectItem value="05">Todo dia 05</SelectItem>
+              <SelectItem value="10">Todo dia 10</SelectItem>
+              <SelectItem value="15">Todo dia 15</SelectItem>
+            </SelectContent>
+          </MySelect>
+        </div>
+      </div>
       <div className="flex justify-between items-center w-full max-w-3xl mx-auto p-4">
         <MyButton
           variant="default"
@@ -109,6 +116,6 @@ export default function Informacoes({
           Próximo
         </MyButton>
       </div>
-    </div>
+    </>
   );
 }

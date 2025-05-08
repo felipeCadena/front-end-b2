@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { DayPicker, formatDay } from 'react-day-picker';
+import { DayPicker } from 'react-day-picker';
 import type { DayPickerProps } from 'react-day-picker';
 import { cn } from '@/utils/cn';
 import { ptBR } from 'react-day-picker/locale';

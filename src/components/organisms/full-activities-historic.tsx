@@ -21,6 +21,7 @@ import MyCancelScheduleModal from '../molecules/my-cancel-schedule-modal';
 import { AxiosError } from 'axios';
 import { toast } from 'react-toastify';
 import { useQueryClient } from '@tanstack/react-query';
+import { addHours } from 'date-fns';
 
 type FullActivitiesHistoricProps = {
   withDate?: boolean;
@@ -44,25 +45,43 @@ export default function FullActivitiesHistoric({
   const pathname = usePathname();
   const [showModal, setShowModal] = useState(false);
   const [showCanceledModal, setShowCanceledModal] = useState(false);
+  const [isOffCancelLimit, setIsOffCancelLimit] = useState(false);
   const [cancelOrder, setCancelOrder] = useState<CancelSchedule | null>(null);
   const queryClient = useQueryClient();
 
-  const handleModal = (
-    orderAdventuresId: string,
-    orderScheduleAdventureId: string
-  ) => {
+  const handleFindCancelLimit = (activity: CustomerSchedule) => {
+    const today = new Date();
+    const hoursBeforeCancellation = activity.adventure.hoursBeforeCancellation;
+
+    const todayPlusHours = addHours(today, hoursBeforeCancellation).getTime();
+
+    const scheduleDateTime = new Date(activity.schedule.datetime).getTime();
+
+    const isOffLimit = todayPlusHours > scheduleDateTime;
+
+    setIsOffCancelLimit(isOffLimit);
+  };
+
+  console.log(isOffCancelLimit);
+
+  const handleModal = (activity: CustomerSchedule) => {
+    const orderAdventuresId = String(activity.orderAdventureId);
+    const orderScheduleAdventureId = activity.id;
     setShowModal(true);
     setCancelOrder({ orderAdventuresId, orderScheduleAdventureId });
+    handleFindCancelLimit(activity);
   };
 
   const handleClose = () => {
     setCancelOrder(null);
     setShowModal(false);
+    setIsOffCancelLimit(false);
   };
 
   const handleCloseSecondModal = () => {
     setCancelOrder(null);
     setShowCanceledModal(false);
+    setIsOffCancelLimit(false);
   };
 
   const handleCancelSchedule = async () => {
@@ -86,6 +105,7 @@ export default function FullActivitiesHistoric({
       } finally {
         setCancelOrder(null);
         setShowModal(false);
+        setIsOffCancelLimit(false);
         setTimeout(() => {
           setShowCanceledModal(true);
         }, 500);
@@ -234,12 +254,7 @@ export default function FullActivitiesHistoric({
                 {withOptions && (
                   <div className="cursor-pointer z-20">
                     <PopupCancelActivity
-                      onCancelar={() =>
-                        handleModal(
-                          String(activity.orderAdventureId),
-                          activity.id
-                        )
-                      }
+                      onCancelar={() => handleModal(activity)}
                     />
                   </div>
                 )}
@@ -344,7 +359,11 @@ export default function FullActivitiesHistoric({
 
       <MyCancelScheduleModal
         title="Cancelamento de atividade"
-        subtitle="Tem certeza que deseja cancelar essa atividade? Não será possível remarcar na mesma data ou reembolsar o valor pago."
+        subtitle={
+          isOffCancelLimit
+            ? 'O limite para cancelamento com reembolso foi ultrapassado! Tem certeza que ainda assim deseja cancelar essa atividade? Não será possível reembolsar o valor pago.'
+            : 'Tem certeza que deseja cancelar essa atividade?'
+        }
         buttonTitle="Cancelar atividade"
         iconName="cancel"
         open={showModal}
@@ -353,7 +372,11 @@ export default function FullActivitiesHistoric({
       />
       <MyCancelScheduleModal
         title="Atividade cancelada"
-        subtitle="A atividade já foi cancelada e em breve seu estorno estará disponível na mesma forma de pagamento realizada."
+        subtitle={
+          isOffCancelLimit
+            ? 'Atividade cancelada!'
+            : 'Atividade cancelada! Em breve o seu estorno estará disponível na mesma forma de pagamento realizada.'
+        }
         buttonTitle="Voltar"
         iconName="warning"
         open={showCanceledModal}

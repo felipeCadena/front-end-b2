@@ -11,8 +11,13 @@ export const chatService = {
     }
   },
 
-  sendMessage: async (id: string, body: { text: string }) => {
+  sendMessage: async (
+    id: string,
+    body: { text: string },
+    session_token: string
+  ) => {
     try {
+      api.defaults.headers.common["session_token"] = session_token;
       const response = await api.post(`/chats/${id}/send-message`, body);
       return response.data;
     } catch (error) {
@@ -44,9 +49,14 @@ export const chatService = {
     }
   },
 
-  listMessages: async (id: string) => {
+  listMessages: async (
+    id: string,
+    session_token: string,
+    params?: { orderBy?: string; datetime?: string }
+  ) => {
     try {
-      const response = await api.get(`/chats/${id}/messages`);
+      api.defaults.headers.common["session_token"] = session_token;
+      const response = await api.get(`/chats/${id}/messages`, { params });
       return response.data;
     } catch (error) {
       console.error("Error listing messages:", error);

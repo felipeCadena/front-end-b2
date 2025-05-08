@@ -28,7 +28,6 @@ export default function PartnerApprovalCard({
   rating,
   onClick,
 }: PartnerApprovalCardProps) {
-  console.log(rating);
   return (
     <section className="flex gap-4">
       <div
@@ -59,7 +58,7 @@ export default function PartnerApprovalCard({
               weight="semibold"
               className="whitespace-nowrap"
             >
-              {name}
+              {name ?? "Nome do Parceiro"}
             </MyTypography>
             <MyTypography variant="body-big" lightness={500}>
               {activitiesCount} Atividades

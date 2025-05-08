@@ -1,16 +1,17 @@
-import React, { useState } from "react";
-import MyTypography from "../atoms/my-typography";
-import TimePickerModal from "../molecules/time-picker";
-import PeopleSelector from "./people-selector";
-import { Adventure, ClientSchedule } from "@/services/api/adventures";
-import { useQuery } from "@tanstack/react-query";
-import { MyActivityDatePicker } from "../molecules/my-activity-date-picker";
+import React, { useState } from 'react';
+import MyTypography from '../atoms/my-typography';
+import TimePickerModal from '../molecules/time-picker';
+import PeopleSelector from './people-selector';
+import { Adventure, ClientSchedule } from '@/services/api/adventures';
+import { useQuery } from '@tanstack/react-query';
+import { MyActivityDatePicker } from '../molecules/my-activity-date-picker';
 import {
   addPartnerScheduledTimeToSelectedDateTime,
   agruparRecorrencias,
+  findAvailableVacancies,
   getPartnerAvailableSchedules,
   getWeeklyRecurrenceTime,
-} from "@/utils/formatters";
+} from '@/utils/formatters';
 
 export type Recurrence = {
   adventureId: number;
@@ -22,12 +23,12 @@ export type Recurrence = {
 
 export type GroupedRecurrences = {
   semanal: {
-    tipo: "semanal";
+    tipo: 'semanal';
     dias: number[];
     horarios: string[];
   }[];
   mensal: {
-    tipo: "mensal";
+    tipo: 'mensal';
     dias: number[];
     horarios: string[];
   }[];
@@ -45,7 +46,7 @@ const ActivityDatePicker = ({
   setSchedule,
 }: ActivityDatePickerProps) => {
   const [selectedDate, setSelectedDate] = useState<Date>();
-  const [selectedTime, setSelectedTime] = useState("");
+  const [selectedTime, setSelectedTime] = useState('');
 
   const price = {
     adult: activity?.priceAdult,
@@ -71,8 +72,17 @@ const ActivityDatePicker = ({
     availablePartnerSchedules
   );
 
+  const availableVacancies = findAvailableVacancies(
+    activity?.schedules,
+    activity?.personsLimit,
+    selectedDate,
+    selectedTime
+  );
+
+  console.log('ava', availableVacancies);
+
   useQuery({
-    queryKey: ["schedule", selectedDate, selectedTime],
+    queryKey: ['schedule', selectedDate, selectedTime],
     queryFn: () => {
       const updated = {
         ...schedule,
@@ -109,7 +119,7 @@ const ActivityDatePicker = ({
               isChildrenAllowed={isChildrenAllowed}
               price={price}
               schedule={schedule}
-              personsLimit={activity?.personsLimit}
+              personsLimit={availableVacancies}
               setSchedule={setSchedule}
             />
           </div>

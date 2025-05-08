@@ -18,11 +18,12 @@ import React, { useEffect } from "react";
 import { authService } from "@/services/api/auth";
 import { signOut, useSession } from "next-auth/react";
 import useLogin from "@/store/useLogin";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useCart } from "@/store/useCart";
 import { notificationsService } from "@/services/api/notifications";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
+import { adminService } from "@/services/api/admin";
 
 export default function SidebarMenu({
   closeSidebar,
@@ -30,6 +31,7 @@ export default function SidebarMenu({
   closeSidebar: () => void;
 }) {
   const { user, clearUser } = useAuthStore();
+  const queryClient = useQueryClient();
   const { data: session } = useSession();
   const { setSideBarActive, sideBarActive } = useLogin();
 
@@ -74,12 +76,27 @@ export default function SidebarMenu({
 
   const cartSize = getCartSize(userId ?? "");
 
+  const customerOrPartner =
+    session?.user.role === "partner" || session?.user.role === "customer";
+
+  const adminOrSuperAdmin =
+    session?.user.role === "admin" || session?.user.role === "superadmin";
+
   const { data: notifications = { messagesUnred: 0 } } = useQuery({
     queryKey: ["unread_notifications"],
     queryFn: () => notificationsService.countUnreadNotifications(),
-
-    enabled: Boolean(session?.user),
+    enabled: customerOrPartner,
   });
+
+  const { data: adminNotifications = { messagesUnred: 0 } } = useQuery({
+    queryKey: ["unread_admin_notifications"],
+    queryFn: () => adminService.countUnreadNotificationsAdmin(),
+    enabled: adminOrSuperAdmin,
+  });
+
+  const notificationsCount = customerOrPartner
+    ? notifications.messagesUnred
+    : adminNotifications.messagesUnred;
 
   return (
     <div className="relative">
@@ -109,9 +126,13 @@ export default function SidebarMenu({
 
               {item.label === "Notificações" && (
                 <span
-                  className={`flex items-center justify-center ${notifications.messagesUnred > 0 ? "bg-red-400" : "bg-slate-300"} h-[1.1rem] w-[1.1rem] rounded-full text-white text-xs font-bold`}
+                  className={cn(
+                    `flex items-center justify-center h-[1.1rem] w-[1.1rem] rounded-full text-white text-xs font-bold`,
+                    notificationsCount > 0 ? "bg-red-400" : "bg-slate-300",
+                    notificationsCount > 10 && "h-[1.2rem] w-[1.3rem]"
+                  )}
                 >
-                  {notifications.messagesUnred}
+                  {notificationsCount}
                 </span>
               )}
 
