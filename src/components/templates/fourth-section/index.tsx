@@ -87,9 +87,9 @@ const FourthSection = () => {
                     <MyTypography
                       variant="body-big"
                       weight="regular"
-                      className="md:font-semibold text-wrap"
+                      className="md:font-semibold text-wrap capitalize"
                     >
-                      {location?.title}{" "}
+                      {location?.title.toLowerCase()}{" "}
                       <span className="md:hidden">
                         - {location?.addressState}
                       </span>

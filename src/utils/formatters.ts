@@ -1,13 +1,18 @@
 import {
   GroupedRecurrences,
   Recurrence,
-} from '@/components/organisms/activity-date-picker';
+} from "@/components/organisms/activity-date-picker";
 import {
   Adventure,
   AdventureSchedule,
   Schedules,
-} from '@/services/api/adventures';
-import { format, parseISO } from 'date-fns';
+} from "@/services/api/adventures";
+import { format, parseISO } from "date-fns";
+
+export function capitalizeFirstLetter(str: string): string {
+  const lower = str.toLowerCase();
+  return lower.charAt(0).toUpperCase() + lower.slice(1);
+}
 
 export const getYearsArray = (): string[] => {
   const currentYear = new Date().getFullYear();
@@ -34,8 +39,8 @@ export function isPastActivity(date: string | Date): boolean {
 
 export function getData(timestamp: string, year?: boolean) {
   const date = new Date(timestamp);
-  const dia = String(date.getDate()).padStart(2, '0');
-  const mes = String(date.getMonth() + 1).padStart(2, '0');
+  const dia = String(date.getDate()).padStart(2, "0");
+  const mes = String(date.getMonth() + 1).padStart(2, "0");
   const ano = String(date.getFullYear()); // Pegando os últimos dois dígitos do ano
 
   return year ? `${dia}/${mes}/${ano}` : `${dia}/${mes}`;
@@ -43,8 +48,8 @@ export function getData(timestamp: string, year?: boolean) {
 
 export function getHora(timestamp: string) {
   const date = new Date(timestamp);
-  const horas = String(date.getHours()).padStart(2, '0'); // Hora com 2 dígitos
-  const minutos = String(date.getMinutes()).padStart(2, '0'); // Minutos com 2 dígitos
+  const horas = String(date.getHours()).padStart(2, "0"); // Hora com 2 dígitos
+  const minutos = String(date.getMinutes()).padStart(2, "0"); // Minutos com 2 dígitos
   return `${horas}:${minutos}`; // Formato HH:mm
 }
 
@@ -56,7 +61,7 @@ export function getTimeInterval(
   const startDate = new Date(timestamp);
 
   // Função auxiliar para formatar números com dois dígitos
-  const pad = (n: number) => n.toString().padStart(2, '0');
+  const pad = (n: number) => n.toString().padStart(2, "0");
 
   // Obtém as horas e minutos iniciais
   const startHours = pad(startDate.getHours());
@@ -80,7 +85,7 @@ export function isDateInPast(timestamp: string) {
 }
 
 export function formatDate(timestamp: string, year?: boolean): string {
-  if (!timestamp) return '';
+  if (!timestamp) return "";
 
   const date = new Date(timestamp);
   const now = new Date();
@@ -88,7 +93,7 @@ export function formatDate(timestamp: string, year?: boolean): string {
   const diffMinutes = Math.floor(diffMs / 60000);
 
   if (diffMinutes <= 20) {
-    return 'Agora pouco';
+    return "Agora pouco";
   }
 
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
@@ -98,15 +103,15 @@ export function formatDate(timestamp: string, year?: boolean): string {
   dayBeforeYesterday.setDate(today.getDate() - 2);
 
   if (date >= today) {
-    return 'Hoje ';
+    return "Hoje ";
   } else if (date >= yesterday) {
-    return 'Ontem ';
+    return "Ontem ";
   } else if (date >= dayBeforeYesterday) {
-    return 'Anteontem ';
+    return "Anteontem ";
   }
 
-  const dia = String(date.getDate()).padStart(2, '0');
-  const mes = String(date.getMonth() + 1).padStart(2, '0');
+  const dia = String(date.getDate()).padStart(2, "0");
+  const mes = String(date.getMonth() + 1).padStart(2, "0");
   const ano = String(date.getFullYear()); // Pegando os últimos dois dígitos do ano
 
   return year ? `${dia}/${mes}/${ano}` : `${dia}/${mes}`;
@@ -114,49 +119,49 @@ export function formatDate(timestamp: string, year?: boolean): string {
 
 export const formatPhoneNumber = (phoneNumberString?: string) => {
   if (!phoneNumberString) {
-    return '';
+    return "";
   }
   return phoneNumberString
-    .replace(/\D/g, '')
-    .replace(/(\d{2})(\d)/, '($1) $2')
-    .replace(/(\d{5})(\d)/, '$1-$2')
-    .replace(/(-\d{4})\d+?$/, '$1');
+    .replace(/\D/g, "")
+    .replace(/(\d{2})(\d)/, "($1) $2")
+    .replace(/(\d{5})(\d)/, "$1-$2")
+    .replace(/(-\d{4})\d+?$/, "$1");
 };
 
 export const formatCEP = (value: string) => {
   return value
-    .replace(/\D/g, '')
-    .replace(/^(\d{5})(\d)/, '$1-$2')
+    .replace(/\D/g, "")
+    .replace(/^(\d{5})(\d)/, "$1-$2")
     .slice(0, 9);
 };
 
 export const formatCPF = (value: string | null) => {
-  if (!value) return '';
+  if (!value) return "";
 
   const newValue = value
-    .replace(/\D/g, '')
-    .replace(/(\d{3})(\d)/, '$1.$2')
-    .replace(/(\d{3})(\d)/, '$1.$2')
-    .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+    .replace(/\D/g, "")
+    .replace(/(\d{3})(\d)/, "$1.$2")
+    .replace(/(\d{3})(\d)/, "$1.$2")
+    .replace(/(\d{3})(\d{1,2})$/, "$1-$2");
 
   return newValue;
 };
 
 export const formatCNPJ = (value?: string | null) => {
-  if (!value) return '';
+  if (!value) return "";
 
   const newValue = value
-    .replace(/\D/g, '')
-    .replace(/(\d{2})(\d)/, '$1.$2')
-    .replace(/(\d{3})(\d)/, '$1.$2')
-    .replace(/(\d{3})(\d)/, '$1/$2')
-    .replace(/(\d{4})(\d{1,2})$/, '$1-$2');
+    .replace(/\D/g, "")
+    .replace(/(\d{2})(\d)/, "$1.$2")
+    .replace(/(\d{3})(\d)/, "$1.$2")
+    .replace(/(\d{3})(\d)/, "$1/$2")
+    .replace(/(\d{4})(\d{1,2})$/, "$1-$2");
 
   return newValue;
 };
 
 export const formatCpfCnpj = (value: string) => {
-  if (!value) return '';
+  if (!value) return "";
   if (value?.length <= 14) {
     return formatCPF(value);
   } else {
@@ -167,13 +172,13 @@ export const formatCpfCnpj = (value: string) => {
 // Transforme minutos ou dias em horas
 export function convertToHours(timeString: string) {
   const mappings = {
-    '24 horas': 24,
-    '48 horas': 48,
-    '72 horas': 72,
-    '4 dias': 4 * 24,
-    '5 dias': 5 * 24,
-    '6 dias': 6 * 24,
-    '7 dias': 7 * 24,
+    "24 horas": 24,
+    "48 horas": 48,
+    "72 horas": 72,
+    "4 dias": 4 * 24,
+    "5 dias": 5 * 24,
+    "6 dias": 6 * 24,
+    "7 dias": 7 * 24,
   } as const;
 
   return mappings[timeString as keyof typeof mappings] ?? null;
@@ -181,29 +186,29 @@ export function convertToHours(timeString: string) {
 
 export function convertToTimeString(hours: number) {
   const mappings = {
-    '24 horas': 24,
-    '48 horas': 48,
-    '72 horas': 72,
-    '4 dias': 4 * 24,
-    '5 dias': 5 * 24,
-    '6 dias': 6 * 24,
-    '7 dias': 7 * 24,
+    "24 horas": 24,
+    "48 horas": 48,
+    "72 horas": 72,
+    "4 dias": 4 * 24,
+    "5 dias": 5 * 24,
+    "6 dias": 6 * 24,
+    "7 dias": 7 * 24,
   } as const;
 
   return (
     Object.keys(mappings).find(
       (key) => mappings[key as keyof typeof mappings] === Number(hours)
-    ) ?? ''
+    ) ?? ""
   );
 }
 
 export const getDifficultyDescription = (number: number) => {
   const dificulties = [
-    'Grau 1 - Iniciante / Muito Leve',
-    'Grau 2 - Leve',
-    'Grau 3 - Moderado / Intenso',
-    'Grau 4 - Avançado / Difícil',
-    'Grau 5 - Extremo / Muito Difícil',
+    "Grau 1 - Iniciante / Muito Leve",
+    "Grau 2 - Leve",
+    "Grau 3 - Moderado / Intenso",
+    "Grau 4 - Avançado / Difícil",
+    "Grau 5 - Extremo / Muito Difícil",
   ];
 
   return dificulties[number - 1] || null;
@@ -211,11 +216,11 @@ export const getDifficultyDescription = (number: number) => {
 
 export const getDifficultyNumber = (description: string) => {
   const dificulties = [
-    'Grau 1 - Iniciante / Muito Leve',
-    'Grau 2 - Leve',
-    'Grau 3 - Moderado / Intenso',
-    'Grau 4 - Avançado / Difícil',
-    'Grau 5 - Extremo / Muito Difícil',
+    "Grau 1 - Iniciante / Muito Leve",
+    "Grau 2 - Leve",
+    "Grau 3 - Moderado / Intenso",
+    "Grau 4 - Avançado / Difícil",
+    "Grau 5 - Extremo / Muito Difícil",
   ];
 
   const index = dificulties.indexOf(description);
@@ -224,14 +229,14 @@ export const getDifficultyNumber = (description: string) => {
 
 export const handleNameActivity = (name: string) => {
   switch (name) {
-    case 'ar':
-      return 'Atividades Aéreas';
-    case 'terra':
-      return 'Atividades Terrestres';
-    case 'mar':
-      return 'Atividades Aquáticas';
+    case "ar":
+      return "Atividades Aéreas";
+    case "terra":
+      return "Atividades Terrestres";
+    case "mar":
+      return "Atividades Aquáticas";
     default:
-      return '';
+      return "";
   }
 };
 
@@ -257,7 +262,7 @@ export function formatAddress(address: {
   } = address;
 
   const number =
-    addressNumber && addressNumber !== 'SN' ? addressNumber : 's/n';
+    addressNumber && addressNumber !== "SN" ? addressNumber : "s/n";
 
   const parts = [
     `${addressStreet}, ${number}`,
@@ -265,45 +270,45 @@ export function formatAddress(address: {
     addressNeighborhood,
     `${addressCity} - ${addressState}`,
     addressPostalCode,
-    addressCountry === 'BR' ? 'Brasil' : addressCountry,
+    addressCountry === "BR" ? "Brasil" : addressCountry,
   ];
 
   // Remove qualquer parte que esteja vazia, nula ou undefined
-  return parts.filter(Boolean).join(', ');
+  return parts.filter(Boolean).join(", ");
 }
 
 export const formatSearchFilter = (search: string) => {
-  if (search === 'ar') {
-    return 'Mostrando: Atividades aéreas';
+  if (search === "ar") {
+    return "Mostrando: Atividades aéreas";
   }
 
-  if (search === 'mar') {
-    return 'Mostrando: Atividades aquáticas';
+  if (search === "mar") {
+    return "Mostrando: Atividades aquáticas";
   }
 
-  if (search === 'terra') {
-    return 'Mostrando: Atividades terrestres';
+  if (search === "terra") {
+    return "Mostrando: Atividades terrestres";
   }
 
-  if (search === '') {
-    return 'Atividades recém adicionadas:';
+  if (search === "") {
+    return "Atividades recém adicionadas:";
   }
 
   return `Esses são os resultados da sua busca: ${search}`;
 };
 
 export const formatPrice = (price: string | number) => {
-  const formattedPrice = Number(price).toLocaleString('pt-BR', {
-    style: 'currency',
-    currency: 'BRL',
+  const formattedPrice = Number(price).toLocaleString("pt-BR", {
+    style: "currency",
+    currency: "BRL",
   });
 
   return formattedPrice;
 };
 
 export const formatTime = (scheduleTime: string) => {
-  const splitTime = scheduleTime.split(':');
-  const timeOfDay = Number(splitTime[0]) > 12 ? ' da tarde.' : ' da manhã.';
+  const splitTime = scheduleTime.split(":");
+  const timeOfDay = Number(splitTime[0]) > 12 ? " da tarde." : " da manhã.";
   const formattedTime = scheduleTime + timeOfDay;
 
   return formattedTime;
@@ -311,22 +316,22 @@ export const formatTime = (scheduleTime: string) => {
 
 export const formatDificultyTag = (difficulty: number) => {
   if (difficulty >= 0 && difficulty < 3) {
-    return 'bg-primary-900';
+    return "bg-primary-900";
   }
   if (difficulty >= 3 && difficulty <= 4) {
-    return 'bg-orange-200';
+    return "bg-orange-200";
   }
 
-  return 'bg-red-200';
+  return "bg-red-200";
 };
 
 export const formatIconName = (name: string) => {
   const lowerName = name?.toLowerCase();
-  if (lowerName === 'fotos' || lowerName === 'foto') {
-    return 'fotografia';
+  if (lowerName === "fotos" || lowerName === "foto") {
+    return "fotografia";
   }
   const accentRegex = /[\u0300-\u036f]/g;
-  return lowerName?.normalize('NFD').replace(accentRegex, '');
+  return lowerName?.normalize("NFD").replace(accentRegex, "");
 };
 
 export const selectActivityImage = (activity: Adventure) => {
@@ -373,22 +378,22 @@ export const extractActivityPrice = (notficationText: string) => {
   return (
     notficationText &&
     formatNotificationText(notficationText)
-      .filter((text) => text.includes('Valor total do pedido'))[0]
-      .split(':')[1]
+      .filter((text) => text.includes("Valor total do pedido"))[0]
+      .split(":")[1]
       .trim()
   );
 };
 
 export const formatOrderStatus = (orderResponse: string) => {
   switch (orderResponse) {
-    case 'Pedido Realizado':
-      return 'realizada';
-    case 'Pedido Cancelado':
-      return 'cancelada';
-    case 'Pedido Pendente':
-      return 'pendente';
+    case "Pedido Realizado":
+      return "realizada";
+    case "Pedido Cancelado":
+      return "cancelada";
+    case "Pedido Pendente":
+      return "pendente";
     default:
-      return '';
+      return "";
   }
 };
 
@@ -410,11 +415,11 @@ export const agruparRecorrencias = (
       hours: [],
     };
 
-    if (rec.type === 'WEEKLY') {
+    if (rec.type === "WEEKLY") {
       grupo.weekly.push(rec.value);
-    } else if (rec.type === 'MONTHLY') {
+    } else if (rec.type === "MONTHLY") {
       grupo.monthly.push(rec.value);
-    } else if (rec.type === 'HOUR') {
+    } else if (rec.type === "HOUR") {
       grupo.hours.push(rec.value);
     }
 
@@ -422,13 +427,13 @@ export const agruparRecorrencias = (
   });
 
   const semanal: {
-    tipo: 'semanal';
+    tipo: "semanal";
     dias: number[];
     horarios: string[];
   }[] = [];
 
   const mensal: {
-    tipo: 'mensal';
+    tipo: "mensal";
     dias: number[];
     horarios: string[];
   }[] = [];
@@ -438,15 +443,15 @@ export const agruparRecorrencias = (
       .map((h) => {
         const hora = Math.floor(h / 100);
         const minuto = h % 100;
-        return `${hora.toString().padStart(2, '0')}:${minuto
+        return `${hora.toString().padStart(2, "0")}:${minuto
           .toString()
-          .padStart(2, '0')}`;
+          .padStart(2, "0")}`;
       })
       .sort();
 
     if (weekly.length > 0) {
       semanal.push({
-        tipo: 'semanal',
+        tipo: "semanal",
         dias: weekly.sort(),
         horarios: horariosFormatados,
       });
@@ -454,7 +459,7 @@ export const agruparRecorrencias = (
 
     if (monthly.length > 0) {
       mensal.push({
-        tipo: 'mensal',
+        tipo: "mensal",
         dias: monthly.sort((a, b) => a - b),
         horarios: horariosFormatados,
       });
@@ -466,7 +471,7 @@ export const agruparRecorrencias = (
 
 export const formatRecurrencesToDates = (
   recurrences: Recurrence[],
-  type?: 'weekly' | 'monthly'
+  type?: "weekly" | "monthly"
 ) => {
   const reducedRecur = recurrences
     ? Object.values(
@@ -483,7 +488,7 @@ export const formatRecurrencesToDates = (
             const baseYear = new Date().getFullYear();
             const baseDay = new Date().getDate();
 
-            if (rec.type === 'WEEKLY') {
+            if (rec.type === "WEEKLY") {
               const date = new Date(baseYear, baseMonth, baseDay);
               while (date.getFullYear() === baseYear) {
                 if (rec.value === date.getDay()) {
@@ -491,20 +496,20 @@ export const formatRecurrencesToDates = (
                 }
                 date.setDate(date.getDate() + 1);
               }
-            } else if (rec.type === 'MONTHLY') {
+            } else if (rec.type === "MONTHLY") {
               const day = Number(rec.value);
 
               for (let i = baseMonth; i < 12; i += 1) {
                 const date = new Date(baseYear, i, day);
                 group.dates.push(date);
               }
-            } else if (rec.type === 'HOUR') {
+            } else if (rec.type === "HOUR") {
               const hours = Math.floor(rec.value / 100);
               const minutes = rec.value % 100;
               group.recurrenceHour.push(
-                `${hours.toString().padStart(2, '0')}:${minutes
+                `${hours.toString().padStart(2, "0")}:${minutes
                   .toString()
-                  .padStart(2, '0')}`
+                  .padStart(2, "0")}`
               );
             }
 
@@ -525,7 +530,7 @@ export const formatRecurrencesToDates = (
       )
     : [];
 
-  if (type === 'monthly') {
+  if (type === "monthly") {
     const monthlyRecurrences = reducedRecur
       ?.filter((rec) => rec.dates.length > 0)
       .map(({ dates }) => dates)
@@ -562,7 +567,7 @@ export const getWeeklyRecurrenceTime = (
 };
 
 export const separateDecimals = (formattedPrice: string) => {
-  const splitPrice = formattedPrice.split(',');
+  const splitPrice = formattedPrice.split(",");
   return { reais: splitPrice[0], centavos: splitPrice[1] };
 };
 
@@ -637,17 +642,17 @@ export const formatInstallmentOptions = (
     if (initialInstallmentCount > 1) {
       const taxPercentage =
         initialInstallmentCount >= 2 && initialInstallmentCount <= 6
-          ? ASAAS_TAXES['credito_2x6'].percent
-          : ASAAS_TAXES['credito_7x12'].percent;
+          ? ASAAS_TAXES["credito_2x6"].percent
+          : ASAAS_TAXES["credito_7x12"].percent;
       const taxFixedValue =
         initialInstallmentCount >= 2 && initialInstallmentCount <= 6
-          ? ASAAS_TAXES['credito_2x6'].value
-          : ASAAS_TAXES['credito_7x12'].value;
+          ? ASAAS_TAXES["credito_2x6"].value
+          : ASAAS_TAXES["credito_7x12"].value;
 
       const value = encontrarValorBrutoIdeal(
         totalPrice,
         initialInstallmentCount,
-        ASAAS_TAXES['antecipacao'].percent,
+        ASAAS_TAXES["antecipacao"].percent,
         taxFixedValue,
         taxPercentage
       );
@@ -697,11 +702,11 @@ export const getPartnerAvailableSchedules = (
           const localHours = localDateTime
             .getHours()
             .toString()
-            .padStart(2, '0');
+            .padStart(2, "0");
           const localMinutes = localDateTime
             .getMinutes()
             .toString()
-            .padStart(2, '0');
+            .padStart(2, "0");
 
           const availableScheduleDateTime = `${localHours}:${localMinutes}`;
 
@@ -751,7 +756,7 @@ export const addPartnerScheduledTimeToSelectedDateTime = (
 ) => {
   if (selectedDate) {
     const partnerScheduleSelected = availablePartnerSchedules?.find(
-      (sch) => sch.date === format(selectedDate, 'yyyy-MM-dd')
+      (sch) => sch.date === format(selectedDate, "yyyy-MM-dd")
     );
 
     if (partnerScheduleSelected) {
@@ -772,17 +777,17 @@ export const addPartnerScheduledTimeToSelectedDateTime = (
 
 export const formatCardNumber = (cardNumber: string): string => {
   return cardNumber
-    .replace(/\D/g, '')
-    .replace(/(.{4})/g, '$1 ')
+    .replace(/\D/g, "")
+    .replace(/(.{4})/g, "$1 ")
     .trim();
 };
 
 export const formatDateToUTC3 = (dateTime: string) => {
   const localDateTime = new Date(dateTime);
-  const localHours = localDateTime.getHours().toString().padStart(2, '0');
-  const localMinutes = localDateTime.getMinutes().toString().padStart(2, '0');
+  const localHours = localDateTime.getHours().toString().padStart(2, "0");
+  const localMinutes = localDateTime.getMinutes().toString().padStart(2, "0");
   const justDate = localDateTime.toISOString().slice(0, 10);
-  const updatedSelectedDate = justDate + 'T' + localHours + ':' + localMinutes;
+  const updatedSelectedDate = justDate + "T" + localHours + ":" + localMinutes;
 
   return updatedSelectedDate;
 };
@@ -807,17 +812,17 @@ export const findAvailableVacancies = (
     const formattedSchedulesToUTC3 = formatSchedulesToUTC3(activitySchedules);
 
     if (selectedDate) {
-      const time = selectedTime.split(':');
+      const time = selectedTime.split(":");
       const hour = Number(time[0]);
       const minutes = time[1];
       const justDate = selectedDate.toISOString().slice(0, 10);
-      const updatedSelectedDate = justDate + 'T' + hour + ':' + minutes;
+      const updatedSelectedDate = justDate + "T" + hour + ":" + minutes;
 
       const selectedDateSchedule = formattedSchedulesToUTC3?.filter(
         (sch) => sch.datetime === updatedSelectedDate
       )[0];
 
-      console.log('SELECTED', selectedDateSchedule);
+      console.log("SELECTED", selectedDateSchedule);
 
       if (selectedDateSchedule) {
         return (

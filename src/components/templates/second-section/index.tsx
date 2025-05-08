@@ -1,18 +1,18 @@
-'use client';
+"use client";
 
-import MyTypography from '@/components/atoms/my-typography';
-import ActivitiesFilter from '@/components/organisms/activities-filter';
-import React from 'react';
-import CarouselCustom from './carousel-custom';
-import { useQuery } from '@tanstack/react-query';
-import { adventures as adventuresService } from '@/services/api/adventures';
-import useAdventures from '@/store/useAdventure';
-import { handleNameActivity } from '@/utils/formatters';
-import Loading from '@/app/loading';
+import MyTypography from "@/components/atoms/my-typography";
+import ActivitiesFilter from "@/components/organisms/activities-filter";
+import React from "react";
+import CarouselCustom from "./carousel-custom";
+import { useQuery } from "@tanstack/react-query";
+import { adventures as adventuresService } from "@/services/api/adventures";
+import useAdventures from "@/store/useAdventure";
+import { handleNameActivity } from "@/utils/formatters";
+import Loading from "@/app/loading";
 
 export default function SecondSection() {
-  const [selected, setSelected] = React.useState<'ar' | 'terra' | 'mar' | ''>(
-    ''
+  const [selected, setSelected] = React.useState<"ar" | "terra" | "mar" | "">(
+    ""
   );
   const {
     setAdventures,
@@ -23,7 +23,7 @@ export default function SecondSection() {
 
   // adventures
   const { isLoading } = useQuery({
-    queryKey: ['adventures', selected],
+    queryKey: ["adventures", selected],
     queryFn: async () => {
       const filterAdventures = await adventuresService.filterAdventures({
         typeAdventure: selected ? selected : undefined,
@@ -38,10 +38,12 @@ export default function SecondSection() {
 
   // adventures
   const { data: popularAdventures = [] } = useQuery({
-    queryKey: ['popularAdventures'],
+    queryKey: ["popularAdventures"],
     queryFn: async () =>
-      await adventuresService.getAdventures({ orderBy: 'qntTotalSales desc' }),
+      await adventuresService.getAdventures({ orderBy: "qntTotalSales desc" }),
   });
+
+  console.log(adventures);
 
   return isLoading ? (
     <Loading />
@@ -60,7 +62,7 @@ export default function SecondSection() {
         <CarouselCustom
           activities={adventures.map((activity) => ({
             ...activity,
-            addressComplement: activity.addressComplement || '',
+            addressComplement: activity.addressComplement || "",
           }))}
         />
 
@@ -76,7 +78,7 @@ export default function SecondSection() {
         <CarouselCustom
           activities={popularAdventures.map((activity) => ({
             ...activity,
-            addressComplement: activity.addressComplement || '',
+            addressComplement: activity.addressComplement || "",
           }))}
         />
       </div>
