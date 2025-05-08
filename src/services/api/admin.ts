@@ -32,7 +32,11 @@ export interface Partner {
 
 export const adminService = {
   //Partners
-  async searchPartners(params?: { includePhoto?: string; orderBy?: string }) {
+  async searchPartners(params?: {
+    includePhoto?: string;
+    orderBy?: string;
+    limit?: number;
+  }) {
     try {
       const response = await api.get("/partners/search", { params });
       return response.data;

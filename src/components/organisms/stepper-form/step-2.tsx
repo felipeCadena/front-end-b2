@@ -9,7 +9,7 @@ import { useStepperStore } from "@/store/useStepperStore";
 import { formatPhoneNumber } from "@/utils/formatters";
 import PATHS from "@/utils/paths";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useEffect } from "react";
 import { toast } from "react-toastify";
 
 export default function CadastroParceiro({
@@ -24,6 +24,7 @@ export default function CadastroParceiro({
     useStepperStore();
 
   const [visibility, setVisibility] = React.useState(false);
+  const [visibilityConfirm, setVisibilityConfirm] = React.useState(false);
 
   const handleNextStep = () => {
     if (!name || !email || !phone || !password || !confirmPassword) {
@@ -46,6 +47,12 @@ export default function CadastroParceiro({
 
     handleNext();
   };
+
+  useEffect(() => {
+    if (window) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }, []);
 
   return (
     <section className="flex flex-col bg-white md:my-4 rounded-lg max-w-3xl m-auto w-full">
@@ -95,7 +102,7 @@ export default function CadastroParceiro({
             }
             value={phone}
             label="Celular"
-            placeholder="+XX (XX) XXXXX-XXXX"
+            placeholder="(00) 00000-0000"
             className="mt-2"
           />
           <MyTextInput
@@ -121,12 +128,12 @@ export default function CadastroParceiro({
             value={confirmPassword}
             label="Confirmar Senha"
             placeholder="******"
-            type={visibility ? "text" : "password"}
+            type={visibilityConfirm ? "text" : "password"}
             rightIcon={
               <MyIcon
-                name={visibility ? "hide" : "eye"}
+                name={visibilityConfirm ? "hide" : "eye"}
                 className="mr-4 mt-7 cursor-pointer"
-                onClick={() => setVisibility((prev) => !prev)}
+                onClick={() => setVisibilityConfirm((prev) => !prev)}
               />
             }
             className="mt-2"

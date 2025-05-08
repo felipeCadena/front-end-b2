@@ -105,8 +105,7 @@ export default function WebForm({
 
   const inputRef = React.useRef<HTMLInputElement>(null);
 
-  console.log(hoursBeforeCancellation);
-  console.log(hoursBeforeSchedule);
+  console.log(availableDates);
 
   // Atualiza as datas para um bloco específico
   const handleDateChange = (blockId: number, dates: Date[]) => {
@@ -297,7 +296,11 @@ export default function WebForm({
     router.push(PATHS["informacoes-atividades"]);
   };
 
-  console.log(String(convertToTimeString(hoursBeforeSchedule)));
+  useEffect(() => {
+    if (window) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }, []);
 
   return (
     <main className="space-y-10 my-6">
@@ -734,22 +737,19 @@ export default function WebForm({
               onChange={(files) => files && handleImages(files)}
               multiple={true}
               accept="jpg, png, image/*"
+              className="h-[12vh]  overflow-hidden"
             >
               <div
-                className="flex cursor-pointer flex-col items-center justify-center gap-y-2"
+                className="flex h-[12vh] cursor-pointer flex-col items-center justify-center gap-y-1"
                 onClick={handleClickUpload}
               >
                 <MyIcon name="upload" />
                 <div className="text-center space-y-2">
-                  <MyTypography variant="body-big" lightness={400}>
-                    Enviar imagens
+                  <MyTypography variant="body" lightness={400}>
+                    Enviar imagens ou arraste os arquivos aqui
                   </MyTypography>
                   <MyTypography lightness={400}>
-                    ou arraste os arquivos aqui
-                  </MyTypography>
-                  <MyTypography lightness={400}>JPG e PNG</MyTypography>
-                  <MyTypography lightness={400}>
-                    Tamanho máximo de cada imagem: 1MB
+                    JPG e PNG. Tamanho máximo de cada imagem: 1MB
                   </MyTypography>
                 </div>
               </div>

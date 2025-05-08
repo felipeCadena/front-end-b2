@@ -2,7 +2,6 @@
 
 import Loading from "@/app/loading";
 import MyIcon from "@/components/atoms/my-icon";
-import MySpinner from "@/components/atoms/my-spinner";
 import MyTypography from "@/components/atoms/my-typography";
 import { notificationsService } from "@/services/api/notifications";
 import { cn } from "@/utils/cn";

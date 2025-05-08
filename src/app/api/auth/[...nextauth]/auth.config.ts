@@ -7,7 +7,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { authService } from "@/services/api/auth";
 import { jwtDecode } from "jwt-decode";
 import { DEFAULT_ROLE_PATHS } from "@/utils/paths";
-import { signOut } from "next-auth/react";
+import { signIn, signOut } from "next-auth/react";
 
 type JWTCallback = {
   user: any;
@@ -188,7 +188,11 @@ export const authOptions: NextAuthOptions = {
           }
         } catch (err) {
           console.error("Erro ao renovar token:", (err as any)?.response?.data);
-          // console.error("Erro ao renovar token");
+          // signIn("credentials", {
+          //   email: token.email,
+          //   password: token.password,
+          //   redirect: false,
+          // });
         }
       }
 

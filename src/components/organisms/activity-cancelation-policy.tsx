@@ -1,10 +1,12 @@
-import { formatPrice } from '@/utils/formatters';
-import React from 'react';
-import MyTypography from '../atoms/my-typography';
-import MyIcon from '../atoms/my-icon';
-import { WhatsappShareButton } from 'react-share';
-import { useParams } from 'next/navigation';
-import MyShareButton from '../atoms/my-share-button';
+import { formatPrice } from "@/utils/formatters";
+import React from "react";
+import MyTypography from "../atoms/my-typography";
+import MyIcon from "../atoms/my-icon";
+import { WhatsappShareButton } from "react-share";
+import { useParams } from "next/navigation";
+import MyShareButton from "../atoms/my-share-button";
+import MyButton from "../atoms/my-button";
+import Link from "next/link";
 
 type ActivityCancelationPolicyProps = {
   price: {
@@ -27,7 +29,12 @@ const ActivityCancelationPolicy = ({
   const { id } = useParams();
   const hoursToDays = hoursBeforeCancelation ? hoursBeforeCancelation / 24 : 3;
   const frontBaseURL =
-    process.env.NEXT_PUBLIC_PROD_URL ?? 'http://localhost:3000';
+    process.env.NEXT_PUBLIC_PROD_URL ?? "http://localhost:3000";
+
+  const getAddress = (address: string) => {
+    const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
+    return googleMapsUrl;
+  };
 
   const formatHoursToDays = (hoursToD: number | undefined) => {
     if (hoursToD) {
@@ -42,7 +49,7 @@ const ActivityCancelationPolicy = ({
       return `${hoursToDays * 24} horas`;
     }
 
-    return '3 dias';
+    return "3 dias";
   };
 
   return (
@@ -51,7 +58,15 @@ const ActivityCancelationPolicy = ({
         <div>
           <div className="flex justify-start items-center mt-4 bg-slate-100 border-[1px] border-primary-900 rounded-lg  w-fit py-2 px-6">
             <MyIcon name="localizacaoRedonda" />
-            <MyTypography className="ml-2">{address}</MyTypography>
+            <MyTypography className="ml-2">
+              <Link
+                href={getAddress(address)}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {address}
+              </Link>
+            </MyTypography>
           </div>
           <div className="flex justify-between items-center mt-4">
             <div className="flex justify-start items-center">
@@ -60,7 +75,7 @@ const ActivityCancelationPolicy = ({
                 <MyTypography variant="subtitle4" weight="semibold">
                   Duração da atividade:
                 </MyTypography>
-                <MyTypography>{duration + ' horas'}</MyTypography>
+                <MyTypography>{duration + " horas"}</MyTypography>
               </div>
             </div>
             <MyShareButton url={`${frontBaseURL}/atividades/atividade/${id}`} />
@@ -94,7 +109,7 @@ const ActivityCancelationPolicy = ({
             weight="extrabold"
             className="text-primary-600 text-lg md:text-2xl"
           >
-            {formatPrice(price?.adult ?? '')}
+            {formatPrice(price?.adult ?? "")}
           </MyTypography>
         </div>
         {isChildrenAllowed && (
@@ -111,7 +126,7 @@ const ActivityCancelationPolicy = ({
               weight="extrabold"
               className="text-primary-600 text-lg md:text-2xl"
             >
-              {formatPrice(price?.children ?? '')}
+              {formatPrice(price?.children ?? "")}
             </MyTypography>
           </div>
         )}

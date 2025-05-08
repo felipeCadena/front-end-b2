@@ -55,6 +55,7 @@ export default function UpdateImages({ formData, onClose }: UpdateImagesProps) {
       }
     }
   };
+
   return (
     <section className="my-12">
       <div className="flex gap-4 items-center mb-8">

@@ -6,7 +6,7 @@ import MyTextInput from "@/components/atoms/my-text-input";
 import MyTypography from "@/components/atoms/my-typography";
 import { useStepperStore } from "@/store/useStepperStore";
 import { formatCNPJ } from "@/utils/formatters";
-import React from "react";
+import React, { useEffect } from "react";
 import { toast } from "react-toastify";
 
 export default function Sobre({
@@ -31,6 +31,12 @@ export default function Sobre({
 
     handleNext();
   };
+
+  useEffect(() => {
+    if (window) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }, []);
 
   return (
     <>

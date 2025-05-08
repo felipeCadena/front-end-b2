@@ -14,7 +14,8 @@ export default function ParceiroCadastrados() {
 
   const { data: allPartners } = useQuery({
     queryKey: ["allPartners"],
-    queryFn: () => adminService.searchPartners(),
+    queryFn: () =>
+      adminService.searchPartners({ limit: 50, orderBy: "createdAt asc" }),
   });
 
   return (
@@ -60,10 +61,10 @@ export default function ParceiroCadastrados() {
           allPartners.map((partner: any) => (
             <PartnerApprovalCard
               key={partner?.id}
-              name={partner?.companyName}
+              name={partner?.companyName ?? "Nome do Parceiro"}
               activitiesCount={partner?._count?.adventures}
               rating={partner?.averageRating}
-              avatar={partner?.user?.url ?? "/user.png"}
+              avatar={partner?.logo?.url ?? "/user.png"}
               onClick={() =>
                 router.push(`/admin/parceiros-cadastrados/${partner?.id}`)
               }

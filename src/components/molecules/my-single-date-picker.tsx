@@ -23,14 +23,10 @@ export function MySingleDatePicker({
 }: MySingleDatePickerProps) {
   const [open, setOpen] = React.useState(false);
 
-  const handleDateSelect = (date?: Date) => {
-    if (!date) return;
-
-    // Apenas 1 data por vez
-    setSelectedDates([date]);
+  const handleDateSelect = (dates?: Date[]) => {
+    if (!dates) return;
+    setSelectedDates(dates);
   };
-
-  const selectedDate = selectedDates && selectedDates[0];
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -44,11 +40,14 @@ export function MySingleDatePicker({
         >
           {!withlabel && <MyIcon name="date" />}
           {withlabel ? (
-            selectedDate ? (
-              <span className="text-black">
-                {format(selectedDate, "dd/MM/yyyy", { locale: ptBR })}
-              </span>
+            selectedDates && selectedDates.length > 0 ? (
+              selectedDates
+                .map((date) => format(date, "dd/MM/yyyy", { locale: ptBR }))
+                .slice(0, 3)
+                .join(", ")
+                .concat("...")
             ) : (
+              // {selectedDates.length > 3 && ", ..."}
               <MyTypography
                 variant="body"
                 weight="regular"
@@ -58,10 +57,12 @@ export function MySingleDatePicker({
                 {withlabel}
               </MyTypography>
             )
-          ) : selectedDate ? (
-            <span className="text-black">
-              {format(selectedDate, "dd/MM", { locale: ptBR })}
-            </span>
+          ) : selectedDates && selectedDates.length > 0 ? (
+            selectedDates
+              .map((date) => format(date, "dd/MM/yyyy", { locale: ptBR }))
+              .slice(0, 3)
+              .join(", ")
+              .concat("...")
           ) : (
             <MyTypography variant="body" weight="regular" className="text-sm">
               Data da Atividade
@@ -74,8 +75,8 @@ export function MySingleDatePicker({
         align="center"
       >
         <MyCalendar
-          mode="single"
-          selected={selectedDate}
+          mode="multiple"
+          selected={selectedDates}
           onSelect={handleDateSelect}
           locale={ptBR}
           className="capitalize"
