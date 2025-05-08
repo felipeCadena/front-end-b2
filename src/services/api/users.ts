@@ -109,15 +109,14 @@ export const users = {
   },
   getStateFromIP: async (): Promise<string | null> => {
     try {
-      const { data: dataIp } = await axios.get(
+      const { data: ipData } = await axios.get(
         "https://api.ipify.org?format=json"
       );
 
-      const { data } = await axios.get(
-        `http://ip-api.com/json/${dataIp.ip}?fields=regionName,status,message`
-      );
-      if (data.status === "success") {
-        return data.regionName; // Ex: "Minas Gerais"
+      const { data } = await axios.get(`https://ipwho.is/${ipData.ip}`);
+
+      if (data.success) {
+        return data.region; // Ex: "Minas Gerais"
       } else {
         console.warn("Erro na geolocalização:", data.message);
         return null;
