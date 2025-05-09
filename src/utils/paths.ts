@@ -8,6 +8,7 @@ type PathsConfig = {
 };
 
 // Rotas Públicas
+
 const ROOTS_INITIAL = "/";
 const ROOTS_LOGIN = "/login";
 const ROOTS_CADASTRO = "/cadastro";
@@ -16,9 +17,9 @@ const ROOTS_RESETAR_SENHA = "/recuperacao/novasenha";
 const ROOTS_QUEMSOMOS = "/quem-somos";
 const ROOTS_FALE_CONOSCO = "/fale-conosco";
 const ROOTS_ATIVIDADES = "/atividades";
-const ROOTS_TERMOS = "/termos-de-servico";
 const ROOTS_PARCEIRO = "/parceiro";
 const ROOTS_PERFIL = "/perfil";
+const ROOTS_TERMOS = "/termos-de-uso";
 const ROOTS_CADASTRO_PARCEIRO = "/parceiro/cadastro";
 const ROOTS_CADASTRO_FLUXO_PARCEIRO = "/parceiro/cadastro-parceiro";
 const ROOTS_LOGIN_PARCEIRO = "/parceiro/login";

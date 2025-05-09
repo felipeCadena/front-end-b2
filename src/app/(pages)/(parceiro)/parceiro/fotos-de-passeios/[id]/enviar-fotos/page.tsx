@@ -7,7 +7,6 @@ import SendImages from "@/components/organisms/send-images";
 import { schedules } from "@/services/api/schedules";
 import { getData } from "@/utils/formatters";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 import React from "react";
 import { toast } from "react-toastify";

@@ -47,8 +47,8 @@ export default function Chat() {
           ) : (
             <div className="flex flex-col items-center justify-center gap-4 mt-12">
               <MyLogo variant="web" />
-              {chats && chats?.lenght > 0 ? (
-                <p className="">Selecione um chat para começar</p>
+              {chats && chats?.length > 0 ? (
+                <p className="font-bold">Selecione um chat para começar</p>
               ) : (
                 <div className="flex flex-col items-center justify-center gap-4 mt-2">
                   <p className="text-center font-bold">

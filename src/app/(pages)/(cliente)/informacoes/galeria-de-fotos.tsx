@@ -1,7 +1,6 @@
 'use client';
 
 import Loading from '@/app/loading';
-import { activities, album, mockAlbum } from '@/common/constants/mock';
 import MyBadge from '@/components/atoms/my-badge';
 import MyButton from '@/components/atoms/my-button';
 import MyIcon from '@/components/atoms/my-icon';
@@ -33,7 +32,7 @@ export default function GaleriaDeFotos() {
   });
 
   const { data: activityPhotos = [], isLoading: isLoadingPhotos } = useQuery({
-    queryKey: ['activity_photos'],
+    queryKey: ['activity_photos', selected],
     queryFn: async () => {
       if (selected !== '') {
         const response = await schedules.getScheduleMedias(selected);
@@ -44,6 +43,12 @@ export default function GaleriaDeFotos() {
     },
   });
 
+  console.log(activityPhotos);
+
+  const handleDownloadImage = async (imageURL: string, fileTitle: string) => {
+    const response = await fetch(imageURL);
+    console.log('res', response);
+  };
   const handleFetchPhotos = (id: string, downloadAll?: boolean) => {
     setOpen(!open);
     setSelected(id);
@@ -142,7 +147,7 @@ export default function GaleriaDeFotos() {
                     className="px-[4rem]"
                     size="lg"
                     rightIcon={<MyIcon name="white-eye" className="" />}
-                    onClick={() => handleFetchPhotos(activity?.id)}
+                    onClick={() => handleFetchPhotos(activity.scheduleId)}
                   >
                     Ver fotos
                   </MyButton>
@@ -152,14 +157,14 @@ export default function GaleriaDeFotos() {
                     className="px-8"
                     size="lg"
                     rightIcon={<MyIcon name="download-green" className="" />}
-                    onClick={() => handleFetchPhotos(activity.id, true)}
+                    onClick={() => handleFetchPhotos(activity.scheduleId, true)}
                   >
                     Baixar Imagens
                   </MyButton>
                 </div>
               </div>
             </div>
-            {activity?.id === selected && (
+            {activity.scheduleId === selected && (
               <div
                 className={cn(
                   'mt-4 flex flex-col justify-center items-center space-y-4',
@@ -184,10 +189,17 @@ export default function GaleriaDeFotos() {
                           height={300}
                           className="h-[168px] w-[168px] rounded-lg object-cover"
                         />
-                        <a href={photo.url} download={`foto-${index + 1}.jpg`}>
+
+                        <a href={photo.url} download={photo.title}>
                           <MyIcon
                             name="download-green"
-                            className="absolute top-2 right-2 bg-white p-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 cursor-pointer"
+                            className="absolute top-2 right-2 bg-white p-2 rounded-lg  group-hover:opacity-100 transition-opacity duration-300 cursor-pointer"
+                            // onClick={() =>
+                            //   handleDownloadImage(
+                            //     photo.url,
+                            //     photo.title as string
+                            //   )
+                            // }
                           />
                         </a>
                       </div>
