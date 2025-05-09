@@ -16,6 +16,7 @@ const ROOTS_RESETAR_SENHA = "/recuperacao/novasenha";
 const ROOTS_QUEMSOMOS = "/quem-somos";
 const ROOTS_FALE_CONOSCO = "/fale-conosco";
 const ROOTS_ATIVIDADES = "/atividades";
+const ROOTS_TERMOS = "/termos-de-servico";
 const ROOTS_PARCEIRO = "/parceiro";
 const ROOTS_PERFIL = "/perfil";
 const ROOTS_CADASTRO_PARCEIRO = "/parceiro/cadastro";
@@ -175,6 +176,7 @@ export const PATHS_CONFIG: PathsConfig = {
     ROOTS_TERMOS_PARCEIRO,
     ROOTS_FALE_CONOSCO,
     ROOTS_PERFIL,
+    ROOTS_TERMOS,
     "/atividades/atividade/*",
   ],
   private: {

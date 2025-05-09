@@ -56,7 +56,7 @@ export default function Parceiro() {
         bankAgency: fetchPartner?.bankAgency ?? "",
         bankName: fetchPartner?.bankName ?? "",
         cnpj: fetchPartner?.cnpj ?? "",
-        companyName: fetchPartner?.companyName ?? "",
+        fantasyName: fetchPartner?.fantasyName ?? "",
         businessEmail: fetchPartner?.businessEmail ?? "",
       });
     }
@@ -217,32 +217,27 @@ export default function Parceiro() {
                   label="E-mail"
                   placeholder="b2adventure@gmail.com"
                   className="mt-2"
-                  value={parterData?.businessEmail ?? ""}
+                  value={fetchPartner?.user?.email ?? ""}
                   disabled
                 />
                 <MyTextInput
                   label="Nome Completo"
                   placeholder="Nome Completo"
-                  value={parterData?.companyName ?? ""}
+                  value={fetchPartner?.user?.name ?? ""}
                   className="mt-2"
-                  onChange={(e) =>
-                    setPartnerData({
-                      ...parterData,
-                      companyName: e.target.value,
-                    })
-                  }
+                  disabled
                 />
 
                 <MyTextInput
                   type="empresa"
-                  label="Nome da empresa/pessoa"
-                  placeholder="Nome completo"
+                  label="Nome Fantasia"
+                  placeholder="Nome Fantasia"
                   className="mt-2"
-                  value={parterData?.companyName ?? ""}
+                  value={parterData?.fantasyName ?? ""}
                   onChange={(e) =>
                     setPartnerData({
                       ...parterData,
-                      companyName: e.target.value,
+                      fantasyName: e.target.value,
                     })
                   }
                 />

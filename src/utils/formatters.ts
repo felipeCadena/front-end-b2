@@ -7,13 +7,36 @@ import {
   AdventureSchedule,
   Schedules,
 } from "@/services/api/adventures";
-import { format, parseISO } from "date-fns";
+import {
+  format,
+  isToday,
+  isYesterday,
+  differenceInHours,
+  parseISO,
+} from "date-fns";
+import { ptBR } from "date-fns/locale";
 
-export function capitalizeFirstLetter(str: string): string {
-  const lower = str.toLowerCase();
-  return lower.charAt(0).toUpperCase() + lower.slice(1);
+export function formatSmartDateTime(datetime: string | Date): string {
+  const date = typeof datetime === "string" ? parseISO(datetime) : datetime;
+  const now = new Date();
+
+  const diffHours = differenceInHours(now, date);
+
+  if (isToday(date)) {
+    if (diffHours < 4) {
+      if (diffHours < 1) return "1 hora atrás";
+      return `${diffHours} ${diffHours <= 1 ? "hora" : "horas"} atrás`;
+    } else {
+      return `hoje às ${format(date, "HH:mm")}`;
+    }
+  }
+
+  if (isYesterday(date)) {
+    return "ontem";
+  }
+
+  return format(date, "dd/MM/yyyy", { locale: ptBR });
 }
-
 export const getYearsArray = (): string[] => {
   const currentYear = new Date().getFullYear();
   const years = [];

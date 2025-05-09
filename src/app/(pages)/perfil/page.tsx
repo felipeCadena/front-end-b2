@@ -1,66 +1,66 @@
-'use client';
+"use client";
 
-import MyIcon from '@/components/atoms/my-icon';
-import MyTextInput from '@/components/atoms/my-text-input';
-import MyTypography from '@/components/atoms/my-typography';
-import Image from 'next/image';
-import { useRouter } from 'next/navigation';
-import React, { useEffect } from 'react';
-import MyButton from '@/components/atoms/my-button';
-import { users } from '@/services/api/users';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { Dropzone } from '@/components/molecules/drop-zone';
-import Camera from '@/components/atoms/my-icon/elements/camera';
-import { useAuthStore } from '@/store/useAuthStore';
-import { toast } from 'react-toastify';
-import { MyForm } from '@/components/atoms/my-form';
-import MyFormInput from '@/components/atoms/my-form-input';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { AxiosError } from 'axios';
-import MySpinner from '@/components/atoms/my-spinner';
-import Loading from '@/app/loading';
+import MyIcon from "@/components/atoms/my-icon";
+import MyTextInput from "@/components/atoms/my-text-input";
+import MyTypography from "@/components/atoms/my-typography";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import React, { useEffect } from "react";
+import MyButton from "@/components/atoms/my-button";
+import { users } from "@/services/api/users";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { Dropzone } from "@/components/molecules/drop-zone";
+import Camera from "@/components/atoms/my-icon/elements/camera";
+import { useAuthStore } from "@/store/useAuthStore";
+import { toast } from "react-toastify";
+import { MyForm } from "@/components/atoms/my-form";
+import MyFormInput from "@/components/atoms/my-form-input";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { AxiosError } from "axios";
+import MySpinner from "@/components/atoms/my-spinner";
+import Loading from "@/app/loading";
 
-const formSchema = z
-  .object({
-    password: z.string().superRefine((value, ctx) => {
-      if (value.length < 6) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.too_small,
-          minimum: 6,
-          type: 'string',
-          inclusive: true,
-          message: 'A senha deve ter no mínimo 6 caracteres.',
-        });
-      }
-      if (!/[A-Z]/.test(value)) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message: 'A senha deve conter pelo menos uma letra maiúscula.',
-        });
-      }
-      if (!/[\W_]/.test(value)) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message:
-            'A senha deve conter pelo menos um caractere especial e um número.',
-        });
-      }
-    }),
-    confirmPassword: z.string(),
-  })
-  .superRefine((data, ctx) => {
-    if (data.password !== data.confirmPassword) {
-      ctx.addIssue({
-        code: 'custom',
-        message: 'As senhas não coincidem',
-        path: ['confirmPassword'],
-      });
-    }
-  });
+// const formSchema = z
+//   .object({
+//     password: z.string().superRefine((value, ctx) => {
+//       if (value.length < 6) {
+//         ctx.addIssue({
+//           code: z.ZodIssueCode.too_small,
+//           minimum: 6,
+//           type: 'string',
+//           inclusive: true,
+//           message: 'A senha deve ter no mínimo 6 caracteres.',
+//         });
+//       }
+//       if (!/[A-Z]/.test(value)) {
+//         ctx.addIssue({
+//           code: z.ZodIssueCode.custom,
+//           message: 'A senha deve conter pelo menos uma letra maiúscula.',
+//         });
+//       }
+//       if (!/[\W_]/.test(value)) {
+//         ctx.addIssue({
+//           code: z.ZodIssueCode.custom,
+//           message:
+//             'A senha deve conter pelo menos um caractere especial e um número.',
+//         });
+//       }
+//     }),
+//     confirmPassword: z.string(),
+//   })
+//   .superRefine((data, ctx) => {
+//     if (data.password !== data.confirmPassword) {
+//       ctx.addIssue({
+//         code: 'custom',
+//         message: 'As senhas não coincidem',
+//         path: ['confirmPassword'],
+//       });
+//     }
+//   });
 
-type FormData = z.infer<typeof formSchema>;
+// type FormData = z.infer<typeof formSchema>;
 
 export default function Perfil() {
   const router = useRouter();
@@ -70,22 +70,22 @@ export default function Perfil() {
   const queryClient = useQueryClient();
   const { setUser, user } = useAuthStore();
 
-  const form = useForm<FormData>({
-    resolver: zodResolver(formSchema),
-    mode: 'onChange',
-    criteriaMode: 'all',
-    defaultValues: {
-      password: '',
-      confirmPassword: '',
-    },
-  });
+  // const form = useForm<FormData>({
+  //   resolver: zodResolver(formSchema),
+  //   mode: 'onChange',
+  //   criteriaMode: 'all',
+  //   defaultValues: {
+  //     password: '',
+  //     confirmPassword: '',
+  //   },
+  // });
 
   const {
     data: fetchUser,
     isLoading: loadingPage,
     refetch,
   } = useQuery({
-    queryKey: ['fetchUser'],
+    queryKey: ["fetchUser"],
     queryFn: async () => {
       const user = await users.getUserLogged();
       setUser({
@@ -101,7 +101,7 @@ export default function Perfil() {
   });
 
   const isPhotoAvailable =
-    fetchUser?.photo?.url !== '' && fetchUser?.photo?.url;
+    fetchUser?.photo?.url !== "" && fetchUser?.photo?.url;
 
   const handleClickUpload = () => {
     inputRef.current?.click();
@@ -113,23 +113,23 @@ export default function Perfil() {
     }
   };
 
-  const handleSubmit = async (formData: FormData) => {
-    setIsLoading(true);
-    try {
-      await users.updatePassword({
-        password: formData.password,
-      });
+  // const handleSubmit = async (formData: FormData) => {
+  //   setIsLoading(true);
+  //   try {
+  //     await users.updatePassword({
+  //       password: formData.password,
+  //     });
 
-      toast.success('Senha alterada com sucesso!');
-    } catch (error) {
-      if (error instanceof AxiosError) {
-        console.error(error.response?.data.message);
-      }
-    }
+  //     toast.success('Senha alterada com sucesso!');
+  //   } catch (error) {
+  //     if (error instanceof AxiosError) {
+  //       console.error(error.response?.data.message);
+  //     }
+  //   }
 
-    setIsLoading(false);
-    queryClient.invalidateQueries({ queryKey: ['fetchUser'] });
-  };
+  //   setIsLoading(false);
+  //   queryClient.invalidateQueries({ queryKey: ['fetchUser'] });
+  // };
 
   useEffect(() => {
     const handleSendPhoto = async () => {
@@ -152,15 +152,15 @@ export default function Perfil() {
             });
           }
 
-          toast.success('Imagem alterada com sucesso!');
+          toast.success("Imagem alterada com sucesso!");
 
           queryClient.invalidateQueries({
-            queryKey: ['fetchUser'],
+            queryKey: ["fetchUser"],
           });
 
           refetch();
         } catch (error) {
-          console.error('Erro ao enviar imagem', error);
+          console.error("Erro ao enviar imagem", error);
         }
       }
     };
@@ -195,7 +195,7 @@ export default function Perfil() {
           {file ? (
             <Image
               alt="avatar"
-              src={URL.createObjectURL(file[0]) ?? '/user.png'}
+              src={URL.createObjectURL(file[0]) ?? "/user.png"}
               width={28}
               height={28}
               className="w-24 h-24 rounded-full object-cover"
@@ -204,7 +204,7 @@ export default function Perfil() {
             <Image
               key={fetchUser?.photo?.updatedAt}
               alt="avatar"
-              src={`${isPhotoAvailable ? `${fetchUser?.photo?.url}?v=${new Date(fetchUser?.photo?.updatedAt ?? Date.now()).getTime()}` : '/user.png'}`}
+              src={`${isPhotoAvailable ? `${fetchUser?.photo?.url}?v=${new Date(fetchUser?.photo?.updatedAt ?? Date.now()).getTime()}` : "/user.png"}`}
               width={28}
               height={28}
               className="w-24 h-24 rounded-full object-cover"
@@ -258,7 +258,7 @@ export default function Perfil() {
           disabled
         />
 
-        <MyForm {...form}>
+        {/* <MyForm {...form}>
           <form onSubmit={form.handleSubmit(handleSubmit)} className="w-full">
             <MyTypography
               variant="body-big"
@@ -292,7 +292,7 @@ export default function Perfil() {
               {isLoading ? <MySpinner /> : 'Atualizar'}
             </MyButton>
           </form>
-        </MyForm>
+        </MyForm> */}
       </div>
     </section>
   );

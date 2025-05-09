@@ -125,6 +125,10 @@ import Marketing from "./elements/marketing";
 import MobileFullHeart from "./mobile-full-heart";
 import DeactivatedSum from "./elements/deactivated-sum";
 import SendMessage from "./elements/send-message";
+import AudioIcon from "./elements/audio";
+import Coins from "./elements/coins";
+import Play from "./elements/play";
+import Pause from "./elements/pause";
 
 export type IconsMapTypes = keyof typeof IconsMap;
 
@@ -260,6 +264,10 @@ const IconsMap = {
   atention: <Atention />,
   marketing: <Marketing />,
   "send-message": <SendMessage />,
+  audio: <AudioIcon />,
+  coins: <Coins />,
+  play: <Play />,
+  pause: <Pause />,
 };
 
 export default function MyIcon({

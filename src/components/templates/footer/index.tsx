@@ -39,7 +39,7 @@ export default function Footer() {
           weight="regular"
           className="mt-4 mb-6 md:mt-8 md:w-2/3 md:mx-auto"
         >
-          Entre em contato com nosso atendimento por emal e confira nossas
+          Entre em contato com nosso atendimento por e-mail e confira as
           novidades em nossas redes sociais:
         </MyTypography>
 

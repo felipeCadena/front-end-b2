@@ -28,7 +28,7 @@ export default function Step5() {
         value={transportIncluded ? "true" : "false"}
         onValueChange={(value) =>
           setAdventureData({
-            transportIncluded: Boolean(value) ?? false,
+            transportIncluded: value === "true",
           })
         }
       >
@@ -47,7 +47,7 @@ export default function Step5() {
         value={waterIncluded ? "true" : "false"}
         onValueChange={(value) =>
           setAdventureData({
-            waterIncluded: Boolean(value) ?? false,
+            waterIncluded: value === "true",
           })
         }
       >
@@ -66,7 +66,7 @@ export default function Step5() {
         value={foodIncluded ? "true" : "false"}
         onValueChange={(value) =>
           setAdventureData({
-            foodIncluded: Boolean(value) ?? false,
+            foodIncluded: value === "true",
           })
         }
       >
@@ -85,7 +85,7 @@ export default function Step5() {
         value={fuelIncluded ? "true" : "false"}
         onValueChange={(value) =>
           setAdventureData({
-            fuelIncluded: Boolean(value) ?? false,
+            fuelIncluded: value === "true",
           })
         }
       >
@@ -104,7 +104,7 @@ export default function Step5() {
         value={picturesIncluded ? "true" : "false"}
         onValueChange={(value) =>
           setAdventureData({
-            picturesIncluded: Boolean(value) ?? false,
+            picturesIncluded: value === "true",
           })
         }
       >

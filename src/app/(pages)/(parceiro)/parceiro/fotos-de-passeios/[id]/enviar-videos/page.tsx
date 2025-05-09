@@ -22,6 +22,16 @@ export default function EnviarVideos() {
   const [isLoading, setIsLoading] = React.useState(false);
   const [modalVideos, setModalVideos] = useState(false);
 
+  const { data: schedulesMedia } = useQuery({
+    queryKey: ["schedulesMedia"],
+    queryFn: () => schedules.listScheduleMedias(id as string),
+  });
+
+  const { data: schedule } = useQuery({
+    queryKey: ["schedule"],
+    queryFn: () => schedules.getScheduleById(id as string),
+  });
+
   const handleSendImages = async (files: File[]) => {
     setIsLoading(true);
     try {
@@ -46,16 +56,6 @@ export default function EnviarVideos() {
     }
   };
 
-  const { data: schedulesMedia } = useQuery({
-    queryKey: ["schedulesMedia"],
-    queryFn: () => schedules.listScheduleMedias(id as string),
-  });
-
-  const { data: schedule } = useQuery({
-    queryKey: ["schedule"],
-    queryFn: () => schedules.getScheduleById(id as string),
-  });
-
   const handleDeleteMedia = async (mediaId: string) => {
     try {
       setIsLoading(true);
@@ -75,7 +75,7 @@ export default function EnviarVideos() {
   const limitDateForMedias = schedule?.limitDateForMedias;
 
   return (
-    <main className="mt-6 mx-4">
+    <main className="my-6 mx-4">
       <div className="flex gap-4 items-center">
         <MyIcon
           name="voltar-black"
@@ -91,14 +91,20 @@ export default function EnviarVideos() {
         <MyTypography variant="subtitle3" weight="bold" className="">
           Enviar vídeos da atividade
         </MyTypography>
-        <MyTypography variant="label" lightness={500} className="">
-          Enviar as fotos da atividade{" "}
-          <span className="font-bold">
-            {limitDateForMedias
-              ? `até ${getData(limitDateForMedias)}`
-              : "em até 7 dias após a realização da atividade"}
-          </span>
-        </MyTypography>
+        {schedule?.dateMediasPosted ? (
+          <MyTypography variant="label" lightness={500} className="">
+            Vídeos enviados no dia {getData(schedule?.dateMediasPosted)}
+          </MyTypography>
+        ) : (
+          <MyTypography variant="label" lightness={500} className="">
+            Enviar os vídeos da atividade{" "}
+            <span className="font-bold">
+              {limitDateForMedias
+                ? `até ${getData(limitDateForMedias)}`
+                : "em até 7 dias após a realização da atividade"}
+            </span>
+          </MyTypography>
+        )}
       </div>
 
       <SendVideos

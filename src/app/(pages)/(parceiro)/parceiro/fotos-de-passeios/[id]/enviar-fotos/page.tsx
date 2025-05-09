@@ -7,6 +7,7 @@ import SendImages from "@/components/organisms/send-images";
 import { schedules } from "@/services/api/schedules";
 import { getData } from "@/utils/formatters";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 import React from "react";
 import { toast } from "react-toastify";
@@ -98,14 +99,20 @@ export default function EnviarFotos() {
         <MyTypography variant="subtitle3" weight="bold" className="">
           Enviar fotos da atividade
         </MyTypography>
-        <MyTypography variant="label" lightness={500} className="">
-          Enviar as fotos da atividade{" "}
-          <span className="font-bold">
-            {limitDateForMedias
-              ? `até ${getData(limitDateForMedias)}`
-              : "em até 7 dias após a realização da atividade"}
-          </span>
-        </MyTypography>
+        {schedule?.dateMediasPosted ? (
+          <MyTypography variant="label" lightness={500} className="">
+            Imagens enviadas no dia {getData(schedule?.dateMediasPosted)}
+          </MyTypography>
+        ) : (
+          <MyTypography variant="label" lightness={500} className="">
+            Enviar as fotos da atividade{" "}
+            <span className="font-bold">
+              {limitDateForMedias
+                ? `até ${getData(limitDateForMedias)}`
+                : "em até 7 dias após a realização da atividade"}
+            </span>
+          </MyTypography>
+        )}
       </div>
 
       <SendImages

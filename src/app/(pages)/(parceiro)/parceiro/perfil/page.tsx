@@ -21,46 +21,47 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { AxiosError } from "axios";
 import MySpinner from "@/components/atoms/my-spinner";
 import { partnerService } from "@/services/api/partner";
+import StarRating from "@/components/molecules/my-stars";
 
-const formSchema = z
-  .object({
-    password: z.string().superRefine((value, ctx) => {
-      if (value.length < 6) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.too_small,
-          minimum: 6,
-          type: "string",
-          inclusive: true,
-          message: "A senha deve ter no mínimo 6 caracteres.",
-        });
-      }
-      if (!/[A-Z]/.test(value)) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message: "A senha deve conter pelo menos uma letra maiúscula.",
-        });
-      }
-      if (!/[\W_]/.test(value)) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message:
-            "A senha deve conter pelo menos um caractere especial e um número.",
-        });
-      }
-    }),
-    confirmPassword: z.string(),
-  })
-  .superRefine((data, ctx) => {
-    if (data.password !== data.confirmPassword) {
-      ctx.addIssue({
-        code: "custom",
-        message: "As senhas não coincidem",
-        path: ["confirmPassword"],
-      });
-    }
-  });
+// const formSchema = z
+//   .object({
+//     password: z.string().superRefine((value, ctx) => {
+//       if (value.length < 6) {
+//         ctx.addIssue({
+//           code: z.ZodIssueCode.too_small,
+//           minimum: 6,
+//           type: "string",
+//           inclusive: true,
+//           message: "A senha deve ter no mínimo 6 caracteres.",
+//         });
+//       }
+//       if (!/[A-Z]/.test(value)) {
+//         ctx.addIssue({
+//           code: z.ZodIssueCode.custom,
+//           message: "A senha deve conter pelo menos uma letra maiúscula.",
+//         });
+//       }
+//       if (!/[\W_]/.test(value)) {
+//         ctx.addIssue({
+//           code: z.ZodIssueCode.custom,
+//           message:
+//             "A senha deve conter pelo menos um caractere especial e um número.",
+//         });
+//       }
+//     }),
+//     confirmPassword: z.string(),
+//   })
+//   .superRefine((data, ctx) => {
+//     if (data.password !== data.confirmPassword) {
+//       ctx.addIssue({
+//         code: "custom",
+//         message: "As senhas não coincidem",
+//         path: ["confirmPassword"],
+//       });
+//     }
+//   });
 
-type FormData = z.infer<typeof formSchema>;
+// type FormData = z.infer<typeof formSchema>;
 
 export default function PerfiParceiro() {
   const router = useRouter();
@@ -70,15 +71,15 @@ export default function PerfiParceiro() {
   const queryClient = useQueryClient();
   const { setUser, user } = useAuthStore();
 
-  const form = useForm<FormData>({
-    resolver: zodResolver(formSchema),
-    mode: "onChange",
-    criteriaMode: "all",
-    defaultValues: {
-      password: "",
-      confirmPassword: "",
-    },
-  });
+  // const form = useForm<FormData>({
+  //   resolver: zodResolver(formSchema),
+  //   mode: "onChange",
+  //   criteriaMode: "all",
+  //   defaultValues: {
+  //     password: "",
+  //     confirmPassword: "",
+  //   },
+  // });
 
   const { data: fetchPartner } = useQuery({
     queryKey: ["fetchPartner"],
@@ -141,29 +142,25 @@ export default function PerfiParceiro() {
     }
   };
 
-  const handleSubmit = async (formData: FormData) => {
-    setIsLoading(true);
-    try {
-      await users.updatePassword({
-        password: formData.password,
-      });
+  // const handleSubmit = async (formData: FormData) => {
+  //   setIsLoading(true);
+  //   try {
+  //     await users.updatePassword({
+  //       password: formData.password,
+  //     });
 
-      toast.success("Senha alterada com sucesso!");
-    } catch (error) {
-      if (error instanceof AxiosError) {
-        console.error(error.response?.data.message);
-      }
-    }
-    setIsLoading(false);
-    queryClient.invalidateQueries({ queryKey: ["fetchPartner"] });
-  };
-
-  const userData = fetchPartner ?? user;
-
-  const avatar = userData?.photo?.url ?? fetchPartner?.logo?.url;
+  //     toast.success("Senha alterada com sucesso!");
+  //   } catch (error) {
+  //     if (error instanceof AxiosError) {
+  //       console.error(error.response?.data.message);
+  //     }
+  //   }
+  //   setIsLoading(false);
+  //   queryClient.invalidateQueries({ queryKey: ["fetchPartner"] });
+  // };
 
   return (
-    <section className="px-6 my-8">
+    <section className="px-6 mt-8 mb-16">
       <div className="relative flex gap-4 items-center">
         <MyIcon
           name="seta"
@@ -204,7 +201,6 @@ export default function PerfiParceiro() {
           small
           className="cursor-pointer"
           onChange={(fileList) => {
-            console.log(fileList);
             if (fileList) {
               uploadImage(fileList[0]);
               setFile(Array.from(fileList));
@@ -227,13 +223,23 @@ export default function PerfiParceiro() {
             lightness={400}
             className="mt-2"
           >
-            250 Atividades realizadas
+            {fetchPartner?._count?.adventures} Atividades realizadas
           </MyTypography>
+
+          <div className="flex gap-2 items-center">
+            <StarRating rating={fetchPartner?.averageRating ?? 0} />
+            <MyTypography variant="label" weight="semibold">
+              {fetchPartner?.averageRating?.toFixed(2)}
+            </MyTypography>
+            <MyTypography variant="label">
+              ({fetchPartner?.qntRatings} Avaliações)
+            </MyTypography>
+          </div>
         </div>
       </div>
 
-      <div className="w-full my-6 md:max-w-2xl md:mx-auto flex flex-col gap-1 items-center">
-        <MyTypography variant="subtitle1" weight="bold" className="mb-4">
+      <div className="w-full space-y-2 my-6 md:max-w-2xl md:mx-auto flex flex-col gap-1 items-center">
+        <MyTypography variant="subtitle3" weight="bold" className="mb-4">
           Dados cadastrais
         </MyTypography>
         <MyTextInput
@@ -252,7 +258,7 @@ export default function PerfiParceiro() {
           disabled
         />
 
-        <MyForm {...form}>
+        {/* <MyForm {...form}>
           <form onSubmit={form.handleSubmit(handleSubmit)} className="w-full">
             <MyTypography
               variant="body-big"
@@ -286,7 +292,7 @@ export default function PerfiParceiro() {
               {isLoading ? <MySpinner /> : "Atualizar"}
             </MyButton>
           </form>
-        </MyForm>
+        </MyForm> */}
       </div>
     </section>
   );

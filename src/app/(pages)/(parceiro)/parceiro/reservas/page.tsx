@@ -146,7 +146,7 @@ export default function Reservas() {
         button="Voltar ao início"
       />
 
-      {!renderActivities && !isLoading && (
+      {renderActivities?.length === 0 && !isLoading && (
         <MyTypography
           variant="subtitle3"
           weight="bold"

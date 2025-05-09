@@ -36,8 +36,6 @@ export default function Step2() {
     duration,
   } = useAdventureStore();
 
-  console.log(hoursBeforeCancellation, hoursBeforeSchedule);
-
   // Atualiza as datas para um bloco específico
   const handleDateChange = (blockId: number, dates: Date[]) => {
     updateSelectionBlock(blockId, "dates", dates);

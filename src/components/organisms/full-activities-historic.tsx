@@ -1,33 +1,48 @@
-'use client';
+"use client";
 
-import Image from 'next/image';
-import React, { useState } from 'react';
-import MyBadge from '../atoms/my-badge';
-import StarRating from '../molecules/my-stars';
-import MyTypography from '../atoms/my-typography';
-import MyIcon from '../atoms/my-icon';
-import { getData, getHora, handleNameActivity } from '@/utils/formatters';
-import MyButton from '../atoms/my-button';
-import { usePathname, useRouter } from 'next/navigation';
-import PATHS from '@/utils/paths';
-import { cn } from '@/utils/cn';
+import Image from "next/image";
+import React, { useState } from "react";
+import MyBadge from "../atoms/my-badge";
+import StarRating from "../molecules/my-stars";
+import MyTypography from "../atoms/my-typography";
+import MyIcon from "../atoms/my-icon";
+import { getData, getHora, handleNameActivity } from "@/utils/formatters";
+import MyButton from "../atoms/my-button";
+import { usePathname, useRouter } from "next/navigation";
+import PATHS from "@/utils/paths";
+import { cn } from "@/utils/cn";
 import {
   CustomerSchedule,
   ordersAdventuresService,
-} from '@/services/api/orders';
-import PopupCancelActivity from './popup-cancel-activity';
+} from "@/services/api/orders";
+import PopupCancelActivity from "./popup-cancel-activity";
 
-import MyCancelScheduleModal from '../molecules/my-cancel-schedule-modal';
-import { AxiosError } from 'axios';
-import { toast } from 'react-toastify';
-import { useQueryClient } from '@tanstack/react-query';
-import { addHours } from 'date-fns';
+import MyCancelScheduleModal from "../molecules/my-cancel-schedule-modal";
+import { AxiosError } from "axios";
+import { toast } from "react-toastify";
+import { useQueryClient } from "@tanstack/react-query";
+import { addHours } from "date-fns";
+
+type ChatType = {
+  id: string;
+  openIn: string; // ISO date string
+  closeIn: string; // ISO date string
+  type: "adventure" | string; // restrito a "adventure", ou aberto se houver outros tipos
+  orderAdventureId: number;
+  userToId: string;
+  userToName: string;
+  userToPhoto: string;
+  userToLastOnline: string; // ISO date string
+  lastMessage: string | null;
+  session_token: string;
+};
 
 type FullActivitiesHistoricProps = {
   withDate?: boolean;
   withOptions?: boolean;
   isActivityDone: boolean;
   activities: CustomerSchedule[] | undefined;
+  chat?: ChatType[] | [];
 };
 
 type CancelSchedule = {
@@ -40,6 +55,7 @@ export default function FullActivitiesHistoric({
   withOptions,
   activities,
   isActivityDone,
+  chat,
 }: FullActivitiesHistoricProps) {
   const router = useRouter();
   const pathname = usePathname();
@@ -61,8 +77,6 @@ export default function FullActivitiesHistoric({
 
     setIsOffCancelLimit(isOffLimit);
   };
-
-  console.log(isOffCancelLimit);
 
   const handleModal = (activity: CustomerSchedule) => {
     const orderAdventuresId = String(activity.orderAdventureId);
@@ -93,7 +107,7 @@ export default function FullActivitiesHistoric({
           orderScheduleAdventureId
         );
         queryClient.invalidateQueries({
-          queryKey: ['schedules'],
+          queryKey: ["schedules"],
         });
       } catch (error) {
         if (error instanceof AxiosError) {
@@ -119,25 +133,25 @@ export default function FullActivitiesHistoric({
         activities.map((activity, index: number) => (
           <div
             className={cn(
-              'flex items-center gap-4 mt-20 mb-20 w-full',
-              activity?.adventureStatus == 'cancelado_pelo_cliente' &&
-                'opacity-60 pointer-events-none'
+              "flex items-center gap-4 mt-20 mb-20 w-full",
+              activity?.adventureStatus == "cancelado_pelo_cliente" &&
+                "opacity-60 pointer-events-none"
             )}
             key={index}
           >
             <div
-              className={`relative z-10 flex-shrink-0 overflow-hidden w-[265px] ${isActivityDone ? 'h-[265px]' : 'h-[161px]'} hover:cursor-pointer rounded-md`}
+              className={`relative z-10 flex-shrink-0 overflow-hidden w-[265px] ${isActivityDone ? "h-[265px]" : "h-[161px]"} hover:cursor-pointer rounded-md`}
             >
               <Image
                 alt="sample_file"
                 src={
                   activity.adventure.images[0]?.url.length > 0
                     ? activity.adventure.images[0]?.url
-                    : '/images/atividades/paraquedas.webp'
+                    : "/images/atividades/paraquedas.webp"
                 }
                 width={250}
                 height={300}
-                className={`object-cover w-[265px] ${isActivityDone ? 'h-[265px]' : 'h-[161px]'}`}
+                className={`object-cover w-[265px] ${isActivityDone ? "h-[265px]" : "h-[161px]"}`}
                 onClick={() =>
                   router.push(PATHS.visualizarAtividade(activity.adventure.id))
                 }
@@ -212,44 +226,51 @@ export default function FullActivitiesHistoric({
 
                 <div
                   className={cn(
-                    'flex gap-4',
-                    pathname.includes('parceiro') && 'hidden'
+                    "flex gap-4",
+                    pathname.includes("parceiro") && "hidden"
                   )}
                 >
-                  {withDate && (
-                    <>
-                      <MyButton
-                        variant="message"
-                        borderRadius="squared"
-                        size="md"
-                        className="px-4"
-                        leftIcon={<MyIcon name="message" className="" />}
-                      >
-                        Mensagem
-                      </MyButton>
-                      {activity?.adventureStatus == 'cancelado_pelo_cliente' ? (
+                  {withDate &&
+                    chat &&
+                    chat[index]?.orderAdventureId ==
+                      activity?.orderAdventureId && (
+                      <>
                         <MyButton
-                          variant="red"
+                          variant="message"
                           borderRadius="squared"
                           size="md"
                           className="px-4"
+                          leftIcon={<MyIcon name="message" className="" />}
+                          onClick={() =>
+                            router.push(`/chat?user=${chat[index]?.userToName}`)
+                          }
                         >
-                          Atividade cancelada
+                          Mensagem
                         </MyButton>
-                      ) : (
-                        <MyButton
-                          variant="outline"
-                          borderRadius="squared"
-                          disabled
-                          size="md"
-                          className="p-4 py-5 ml-4 text-md border-primary-900 border-[3px]"
-                          leftIcon={<MyIcon name="calendar" />}
-                        >
-                          {getData(activity.schedule.datetime, true)}
-                        </MyButton>
-                      )}
-                    </>
-                  )}
+                        {activity?.adventureStatus ==
+                        "cancelado_pelo_cliente" ? (
+                          <MyButton
+                            variant="red"
+                            borderRadius="squared"
+                            size="md"
+                            className="px-4"
+                          >
+                            Atividade cancelada
+                          </MyButton>
+                        ) : (
+                          <MyButton
+                            variant="outline"
+                            borderRadius="squared"
+                            disabled
+                            size="md"
+                            className="p-4 py-5 ml-4 text-md border-primary-900 border-[3px]"
+                            leftIcon={<MyIcon name="calendar" />}
+                          >
+                            {getData(activity.schedule.datetime, true)}
+                          </MyButton>
+                        )}
+                      </>
+                    )}
                 </div>
                 {withOptions && (
                   <div className="cursor-pointer z-20">
@@ -260,10 +281,10 @@ export default function FullActivitiesHistoric({
                 )}
               </div>
               <div
-                className={`w-full flex justify-between items-center p-3 ${isActivityDone ? 'bg-[#F1F0F587]' : 'bg-[#D2F1FF]'} border border-primary-600/30 border-opacity-80 rounded-lg shadow-sm relative`}
+                className={`w-full flex justify-between items-center p-3 ${isActivityDone ? "bg-[#F1F0F587]" : "bg-[#D2F1FF]"} border border-primary-600/30 border-opacity-80 rounded-lg shadow-sm relative`}
               >
                 <div
-                  className={`absolute inset-y-0 left-0 w-3 ${isActivityDone ? 'bg-primary-900' : 'bg-[#2DADE4]'} rounded-l-lg`}
+                  className={`absolute inset-y-0 left-0 w-3 ${isActivityDone ? "bg-primary-900" : "bg-[#2DADE4]"} rounded-l-lg`}
                 ></div>
 
                 <div className="flex flex-col">
@@ -275,11 +296,11 @@ export default function FullActivitiesHistoric({
                     weight="regular"
                     className="ml-3"
                   >
-                    {getData(activity?.schedule?.datetime)} -{' '}
-                    {getHora(activity?.schedule?.datetime)}{' '}
-                    {+getHora(activity?.schedule?.datetime).split(':')[0] > 12
-                      ? 'tarde'
-                      : 'manhã'}
+                    {getData(activity?.schedule?.datetime)} -{" "}
+                    {getHora(activity?.schedule?.datetime)}{" "}
+                    {+getHora(activity?.schedule?.datetime).split(":")[0] > 12
+                      ? "tarde"
+                      : "manhã"}
                   </MyTypography>
                 </div>
                 <div className="flex items-center gap-1">
@@ -289,7 +310,7 @@ export default function FullActivitiesHistoric({
                       Duração da atividade
                     </MyTypography>
                     <MyTypography variant="body" weight="regular" className="">
-                      {activity?.adventure?.duration ?? '3'} horas
+                      {activity?.adventure?.duration ?? "3"} horas
                     </MyTypography>
                   </div>
                 </div>
@@ -321,10 +342,10 @@ export default function FullActivitiesHistoric({
                   </MyTypography>
                   <MyTypography variant="body" weight="bold" className="">
                     {Number(activity.orderAdventure.totalCost).toLocaleString(
-                      'pt-BR',
+                      "pt-BR",
                       {
-                        style: 'currency',
-                        currency: 'BRL',
+                        style: "currency",
+                        currency: "BRL",
                       }
                     )}
                   </MyTypography>
@@ -361,8 +382,8 @@ export default function FullActivitiesHistoric({
         title="Cancelamento de atividade"
         subtitle={
           isOffCancelLimit
-            ? 'O limite para cancelamento com reembolso foi ultrapassado! Tem certeza que ainda assim deseja cancelar essa atividade? Não será possível reembolsar o valor pago.'
-            : 'Tem certeza que deseja cancelar essa atividade?'
+            ? "O limite para cancelamento com reembolso foi ultrapassado! Tem certeza que ainda assim deseja cancelar essa atividade? Não será possível reembolsar o valor pago."
+            : "Tem certeza que deseja cancelar essa atividade?"
         }
         buttonTitle="Cancelar atividade"
         iconName="cancel"
@@ -374,8 +395,8 @@ export default function FullActivitiesHistoric({
         title="Atividade cancelada"
         subtitle={
           isOffCancelLimit
-            ? 'Atividade cancelada!'
-            : 'Atividade cancelada! Em breve o seu estorno estará disponível na mesma forma de pagamento realizada.'
+            ? "Atividade cancelada!"
+            : "Atividade cancelada! Em breve o seu estorno estará disponível na mesma forma de pagamento realizada."
         }
         buttonTitle="Voltar"
         iconName="warning"

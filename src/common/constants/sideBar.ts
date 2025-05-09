@@ -161,6 +161,13 @@ export const sideBarPartnet: any[] = [
     menu: true,
   },
   {
+    label: "Pagamentos",
+    link: "/parceiro/pagamentos",
+    icon: "coins",
+    web: false,
+    menu: true,
+  },
+  {
     label: "Chat",
     link: "/chat",
     icon: "chat",

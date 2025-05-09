@@ -46,8 +46,6 @@ export default function HoursSelect({
 
     setSelected(updated);
 
-    console.log(updated);
-
     // === Aqui começa o cálculo das horas a desabilitar ===
     const dur = parseDuration(duration); // ex: "2h" → 2
 

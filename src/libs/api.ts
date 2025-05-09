@@ -16,11 +16,8 @@ api.interceptors.request.use(async (config) => {
   }
 
   if (config.url?.includes("/auth/logout")) {
-    console.log("session?.refresh_token", session?.refresh_token);
-
     config.headers.Authorization = `Bearer ${session?.refresh_token}`;
   } else {
-    console.log("session?.access_token", session?.access_token);
     config.headers.Authorization = `Bearer ${session?.access_token}`;
   }
   return config;

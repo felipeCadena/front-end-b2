@@ -38,7 +38,7 @@ export default function ActivitiesPhotos({
           <div key={index}>
             <div
               className="flex max-sm:flex-col md:justify-between gap-2 cursor-pointer my-6 space-y-2"
-              onClick={() => admin && handleImagesAdmin(activity?.schedule?.id)}
+              onClick={() => admin && handleImagesAdmin(activity?.scheduleId)}
             >
               <div className="w-full flex gap-2 cursor-pointer">
                 <div
@@ -96,7 +96,8 @@ export default function ActivitiesPhotos({
                     {`Data: ${getData(activity?.schedule?.datetime)} - ${getHora(activity?.schedule?.datetime)}`}
                   </MyTypography>
                   {!admin &&
-                    (activity?.schedule?.limitDateForMedias ? (
+                    (activity?.schedule?.limitDateForMedias &&
+                    !activity?.schedule?.dateMediasPosted ? (
                       <MyTypography
                         variant="body"
                         weight="regular"
@@ -116,8 +117,8 @@ export default function ActivitiesPhotos({
                         lightness={500}
                         className=""
                       >
-                        Enviar fotos ou vídeos da atividade até 7 dias após a
-                        data da realização
+                        Fotos e vídeos enviados no dia{" "}
+                        {getData(activity?.schedule?.dateMediasPosted)}
                       </MyTypography>
                     ))}
                 </div>
@@ -146,7 +147,7 @@ export default function ActivitiesPhotos({
                     leftIcon={<MyIcon name="video" />}
                     className="w-full"
                     onClick={() =>
-                      router.push(PATHS["enviar-videos"](activity?.id))
+                      router.push(PATHS["enviar-videos"](activity?.scheduleId))
                     }
                   >
                     {activity?.schedule?.dateMediasPosted

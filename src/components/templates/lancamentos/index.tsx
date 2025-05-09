@@ -33,29 +33,38 @@ export default function Lancamentos({
   title = "Seus lançamentos",
   filters,
   setFilters,
+  setSelectedDate,
 }: {
   data: any;
   withoutFilters?: boolean;
   backButton?: boolean;
   title?: string;
   filters: any;
+  setSelectedDate?: React.Dispatch<React.SetStateAction<Date>>;
   setFilters: React.Dispatch<
     React.SetStateAction<{
       report: string;
       year: string;
       month: string;
+      typeDate: string;
     }>
   >;
 }) {
   const router = useRouter();
 
-  if (data?.length === 0) {
-    <div className="flex items-center justify-center h-[250px]">
-      <MyTypography variant="body-big" weight="bold">
-        Você ainda não possui lançamentos
-      </MyTypography>
-    </div>;
-  }
+  const handleMonthChange = (value: string) => {
+    setFilters((prev) => ({ ...prev, month: value, typeDate: "month" }));
+    // if (setSelectedDate) {
+    //   const selectedDate = new Date();
+    //   selectedDate.setMonth(Number(value) - 1);
+    //   console.log(selectedDate);
+    //   setSelectedDate(selectedDate);
+    //   setFilters((prev) => ({
+    //     ...prev,
+    //     typeDate: "month",
+    //   }));
+    // }
+  };
 
   return (
     <section className="mx-auto py-2 md:py-8 px-4 overflow-hidden">
@@ -92,7 +101,6 @@ export default function Lancamentos({
             <MySelect
               value={filters?.report}
               onValueChange={(value) => {
-                console.log(value);
                 setFilters((prev) => ({ ...prev, report: value }));
               }}
             >
@@ -100,9 +108,9 @@ export default function Lancamentos({
                 <SelectValue placeholder="Selecione" />
               </SelectTrigger>
               <SelectContent className="rounded-lg">
-                <SelectItem value="receber">A receber</SelectItem>
-                <SelectItem value="pago">Recebido</SelectItem>
-                <SelectItem value="cancelada">Cancelada</SelectItem>
+                <SelectItem value="a_receber">A receber</SelectItem>
+                <SelectItem value="recebido">Recebido</SelectItem>
+                <SelectItem value="cancelado">Cancelada</SelectItem>
               </SelectContent>
             </MySelect>
 
@@ -120,7 +128,11 @@ export default function Lancamentos({
               value={filters?.year}
               onValueChange={(value) => {
                 console.log(value);
-                setFilters((prev) => ({ ...prev, year: value }));
+                setFilters((prev) => ({
+                  ...prev,
+                  year: value,
+                  typeDate: "year",
+                }));
               }}
             >
               <SelectTrigger className="rounded-2xl w-[150px] text-[#848A9C] text-xs">
@@ -137,10 +149,7 @@ export default function Lancamentos({
 
             <MySelect
               value={filters?.month}
-              onValueChange={(value) => {
-                console.log(value);
-                setFilters((prev) => ({ ...prev, month: value }));
-              }}
+              onValueChange={(value) => handleMonthChange(value)}
             >
               <SelectTrigger className="rounded-2xl w-[150px] text-[#848A9C] text-xs">
                 <SelectValue placeholder="Mês" />
@@ -175,19 +184,19 @@ export default function Lancamentos({
             <TableHead className="max-sm:hidden text-center">
               Quant. de pessoas
             </TableHead>
-            <TableHead className="text-center">Total:</TableHead>
+            <TableHead className="text-center">Total s/ taxas:</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {data && data.length > 0 ? (
-            data.map((lancamento: any) => (
+          {data && data.ordersSchedules.length > 0 ? (
+            data.ordersSchedules.map((lancamento: any) => (
               <TableRow
                 key={lancamento?.id}
                 className={cn(
                   "relative bg-gray-100 text-xs md:text-sm text-center",
-                  lancamento?.adventureStatus === "realizado" &&
-                    "bg-primary-800",
-                  lancamento?.adventureStatus === "cancelado" && "bg-[#FFE3E3]"
+                  lancamento?.partnerIsPaid === "realizado" && "bg-primary-800",
+                  lancamento?.adventureStatus.includes("cancelado") &&
+                    "bg-[#FFE3E3]"
                 )}
               >
                 <TableCell className="max-sm:px-2 max-sm:py-3 rounded-l-md">
@@ -207,7 +216,7 @@ export default function Lancamentos({
                       variant="body"
                       weight="bold"
                       className={cn(
-                        lancamento?.adventureStatus === "cancelado" &&
+                        lancamento?.adventureStatus.includes("cancelado") &&
                           "line-through"
                       )}
                     >
@@ -231,15 +240,14 @@ export default function Lancamentos({
                 <TableCell
                   className={cn(
                     "border-r-8 rounded-r-md border-opacity-50 border-gray-300",
-                    lancamento?.adventureStatus === "realizado" &&
-                      "border-[#C0E197]",
-                    lancamento?.adventureStatus === "cancelado" &&
+                    lancamento?.partnerIsPaid && " border-[#C0E197]",
+                    lancamento?.adventureStatus.includes("cancelado") &&
                       "border-[#FF5757]"
                   )}
                 >
-                  {lancamento?.adventureStatus === "cancelado"
+                  {lancamento?.adventureStatus.includes("cancelado")
                     ? "Cancelado"
-                    : `${Number(lancamento?.adventureFinalPrice).toLocaleString(
+                    : `${Number(lancamento?.partnerValue).toLocaleString(
                         "pt-BR",
                         {
                           style: "currency",
@@ -257,7 +265,13 @@ export default function Lancamentos({
                   weight="bold"
                   className="my-12"
                 >
-                  Você ainda não possui lançamentos
+                  Não há lançamentos{" "}
+                  {filters?.report == "cancelado"
+                    ? "cancelados"
+                    : filters?.report == "a_receber"
+                      ? "a receber"
+                      : "recebidos"}{" "}
+                  {/* para este período */}
                 </MyTypography>
               </TableCell>
             </TableRow>
@@ -266,28 +280,53 @@ export default function Lancamentos({
       </MyTable>
 
       {/* Footer com valor total */}
-      {data && data?.length > 0 && filters?.report != "cancelada" && (
-        <div className="flex justify-between items-center bg-[#a0e2ff46] py-4 px-2 rounded-lg mt-4 relative">
-          <MyTypography variant="body" weight="bold" className="md:px-2">
-            Valor {filters?.report == "receber" ? "a receber" : "recebido"}:
-          </MyTypography>
-          <span className="text-[#00A3FF] text-xs max-sm:hidden">
-            ----------------------------------------------------------------------------------------------------------------
-          </span>
-          <MyTypography
-            variant="body"
-            weight="bold"
-            className="text-[#00A3FF] px-4"
-          >
-            R$ 350,00
-          </MyTypography>
-          <div
-            className={cn(
-              "absolute right-0 top-0 h-full w-2 rounded-r-md opacity-50 bg-[#00A3FF]"
-            )}
-          />
-        </div>
-      )}
+      {data &&
+        data?.ordersSchedules?.length > 0 &&
+        filters?.report != "cancelado" && (
+          <div className="flex justify-between items-center bg-[#a0e2ff46] p-4 rounded-lg mt-4 relative">
+            <MyTypography variant="body" weight="bold" className="md:px-2">
+              Valor{" "}
+              {filters?.report == "receber"
+                ? "a receber"
+                : filters?.report == ""
+                  ? ""
+                  : "recebido"}
+              :
+            </MyTypography>
+            <span className="text-[#00A3FF] text-xs max-sm:hidden">
+              ----------------------------------------------------------------------------------------------------------------
+            </span>
+            <MyTypography
+              variant="body"
+              weight="bold"
+              className="text-[#00A3FF] px-4"
+            >
+              {filters?.report == "a_receber" ? (
+                new Intl.NumberFormat("pt-BR", {
+                  style: "currency",
+                  currency: "BRL",
+                }).format(data?.total_value_pending)
+              ) : filters?.report == "recebido" ? (
+                new Intl.NumberFormat("pt-BR", {
+                  style: "currency",
+                  currency: "BRL",
+                }).format(data?.total_value_paid)
+              ) : (
+                <span className="">
+                  {new Intl.NumberFormat("pt-BR", {
+                    style: "currency",
+                    currency: "BRL",
+                  }).format(data?.total_value_paid + data?.total_value_pending)}
+                </span>
+              )}
+            </MyTypography>
+            <div
+              className={cn(
+                "absolute right-0 top-0 h-full w-2 rounded-r-md opacity-50 bg-[#00A3FF]"
+              )}
+            />
+          </div>
+        )}
     </section>
   );
 }

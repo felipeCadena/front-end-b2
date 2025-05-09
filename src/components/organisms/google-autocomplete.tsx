@@ -112,7 +112,6 @@ export default function AutocompleteCombobox({
         onPlacesChanged={() => {
           if (searchBoxRef) {
             const places = searchBoxRef.getPlaces();
-            console.log("Places:", places);
             if (places && places.length > 0) {
               handlePlaceSelect(places[0]);
             }

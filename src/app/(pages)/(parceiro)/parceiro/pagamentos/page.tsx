@@ -5,10 +5,9 @@ import { partnerService } from "@/services/api/partner";
 import { useQuery } from "@tanstack/react-query";
 import React from "react";
 import { startOfMonth, endOfMonth, format } from "date-fns";
-import useSearchQueryService from "@/services/use-search-query-service";
 import { useParams } from "next/navigation";
 
-export default function RelatorioAtividade() {
+export default function RelatorioPagamentos() {
   const [selectedDate, setSelectedDate] = React.useState<Date>(new Date());
   const { id: typeAdventure } = useParams();
 

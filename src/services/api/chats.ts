@@ -38,10 +38,28 @@ export const chatService = {
 
   sendMedia: async (
     id: string,
+    file: Blob | Buffer,
+    session_token: string,
     body: { text: string; media: { mimetype: string; filename: string } }
   ) => {
     try {
+      api.defaults.headers.common["session_token"] = session_token;
+
       const response = await api.post(`/chats/${id}/send-media`, body);
+
+      await fetch(response.data.uploadUrl, {
+        method: "PUT",
+        body: file,
+        headers: {
+          "Content-Type": body.media.mimetype,
+        },
+      }).then((res) => {
+        if (!res.ok) {
+          console.log("Failed to upload media", res);
+        }
+        return res;
+      });
+
       return response.data;
     } catch (error) {
       console.error("Error sending media:", error);

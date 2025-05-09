@@ -105,8 +105,6 @@ export default function WebForm({
 
   const inputRef = React.useRef<HTMLInputElement>(null);
 
-  console.log(availableDates);
-
   // Atualiza as datas para um bloco específico
   const handleDateChange = (blockId: number, dates: Date[]) => {
     updateSelectionBlock(blockId, "dates", dates);
@@ -625,11 +623,11 @@ export default function WebForm({
               label="Transporte Incluso"
               className="text-base text-black"
               value={transportIncluded ? "true" : "false"}
-              onValueChange={(value) =>
+              onValueChange={(value) => {
                 setAdventureData({
-                  transportIncluded: Boolean(value) ?? false,
-                })
-              }
+                  transportIncluded: value === "true",
+                });
+              }}
             >
               <SelectTrigger className="py-6 my-1">
                 <SelectValue placeholder="Selecione" />
@@ -646,7 +644,7 @@ export default function WebForm({
               value={waterIncluded ? "true" : "false"}
               onValueChange={(value) =>
                 setAdventureData({
-                  waterIncluded: Boolean(value) ?? false,
+                  waterIncluded: value === "true",
                 })
               }
             >
@@ -665,7 +663,7 @@ export default function WebForm({
               value={foodIncluded ? "true" : "false"}
               onValueChange={(value) =>
                 setAdventureData({
-                  foodIncluded: Boolean(value) ?? false,
+                  foodIncluded: value === "true",
                 })
               }
             >
@@ -684,7 +682,7 @@ export default function WebForm({
               value={fuelIncluded ? "true" : "false"}
               onValueChange={(value) =>
                 setAdventureData({
-                  fuelIncluded: Boolean(value) ?? false,
+                  fuelIncluded: value === "true",
                 })
               }
             >
@@ -703,7 +701,7 @@ export default function WebForm({
               value={picturesIncluded ? "true" : "false"}
               onValueChange={(value) =>
                 setAdventureData({
-                  picturesIncluded: Boolean(value) ?? false,
+                  picturesIncluded: value === "true",
                 })
               }
             >

@@ -11,7 +11,11 @@ import ModalAlert from "@/components/molecules/modal-alert";
 import { useAlert } from "@/hooks/useAlert";
 import { adventures } from "@/services/api/adventures";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { formatAddress, handleNameActivity } from "@/utils/formatters";
+import {
+  formatAddress,
+  formatPrice,
+  handleNameActivity,
+} from "@/utils/formatters";
 import {
   ActivityEditMenu,
   EditSection,
@@ -20,6 +24,7 @@ import { partnerService } from "@/services/api/partner";
 import PATHS from "@/utils/paths";
 import { toast } from "react-toastify";
 import MyButton from "@/components/atoms/my-button";
+import Link from "next/link";
 
 export default function Atividade() {
   const router = useRouter();
@@ -55,6 +60,11 @@ export default function Atividade() {
     },
   });
 
+  const getAddress = (address: string) => {
+    const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
+    return googleMapsUrl;
+  };
+
   const handleEdit = (section: EditSection) => {
     if (section == "cancel") {
       setCancel(true);
@@ -71,100 +81,100 @@ export default function Atividade() {
     );
   };
 
-  const formattedActivity = React.useMemo(() => {
-    if (!activity) return null;
+  // const formattedActivity = React.useMemo(() => {
+  //   if (!activity) return null;
 
-    const today = new Date();
-    const baseYear = today.getFullYear();
-    const baseMonth = today.getMonth();
+  //   const today = new Date();
+  //   const baseYear = today.getFullYear();
+  //   const baseMonth = today.getMonth();
 
-    return {
-      id: activity.id,
-      title: activity.title,
-      addressStreet: activity.addressStreet,
-      addressPostalCode: activity.addressPostalCode,
-      addressNumber: activity.addressNumber,
-      addressComplement: activity.addressComplement,
-      addressNeighborhood: activity.addressNeighborhood,
-      addressCity: activity.addressCity,
-      addressState: activity.addressState,
-      addressCountry: activity.addressCountry,
-      address: formatAddress({
-        addressStreet: activity.addressStreet,
-        addressNumber: activity.addressNumber,
-        addressNeighborhood: activity.addressNeighborhood,
-        addressCity: activity.addressCity,
-        addressState: activity.addressState,
-        addressPostalCode: activity.addressPostalCode,
-        addressCountry: activity.addressCountry,
-      }),
-      coordinates: {
-        lat: Number(activity.coordinates.split(":")[0]),
-        lng: Number(activity.coordinates.split(":")[1]),
-      },
-      pointRefAddress: activity.pointRefAddress,
-      description: activity.description,
-      itemsIncluded: activity.itemsIncluded,
-      duration: activity.duration,
-      priceAdult: activity.priceAdult,
-      priceChildren: activity.priceChildren,
-      transportIncluded: activity.transportIncluded,
-      picturesIncluded: activity.picturesIncluded,
-      typeAdventure: activity.typeAdventure,
-      personsLimit: activity.personsLimit,
-      partnerId: activity.partnerId,
-      isInGroup: activity.isInGroup,
-      isChildrenAllowed: activity.isChildrenAllowed,
-      difficult: activity.difficult,
-      hoursBeforeSchedule: activity.hoursBeforeSchedule,
-      hoursBeforeCancellation: activity.hoursBeforeCancellation,
-      isRepeatable: activity.isRepeatable,
-      images: activity.images,
-      schedules: activity.schedules,
-      recurrences: activity.recurrence
-        ? Object.values(
-            activity.recurrence.reduce(
-              (acc, rec) => {
-                const group = acc[rec.groupId] || {
-                  groupId: rec.groupId,
-                  recurrenceWeekly: [],
-                  dates: [],
-                  recurrenceHour: [],
-                };
+  //   return {
+  //     id: activity.id,
+  //     title: activity.title,
+  //     addressStreet: activity.addressStreet,
+  //     addressPostalCode: activity.addressPostalCode,
+  //     addressNumber: activity.addressNumber,
+  //     addressComplement: activity.addressComplement,
+  //     addressNeighborhood: activity.addressNeighborhood,
+  //     addressCity: activity.addressCity,
+  //     addressState: activity.addressState,
+  //     addressCountry: activity.addressCountry,
+  //     address: formatAddress({
+  //       addressStreet: activity.addressStreet,
+  //       addressNumber: activity.addressNumber,
+  //       addressNeighborhood: activity.addressNeighborhood,
+  //       addressCity: activity.addressCity,
+  //       addressState: activity.addressState,
+  //       addressPostalCode: activity.addressPostalCode,
+  //       addressCountry: activity.addressCountry,
+  //     }),
+  //     coordinates: {
+  //       lat: Number(activity.coordinates.split(":")[0]),
+  //       lng: Number(activity.coordinates.split(":")[1]),
+  //     },
+  //     pointRefAddress: activity.pointRefAddress,
+  //     description: activity.description,
+  //     itemsIncluded: activity.itemsIncluded,
+  //     duration: activity.duration,
+  //     priceAdult: activity.priceAdult,
+  //     priceChildren: activity.priceChildren,
+  //     transportIncluded: activity.transportIncluded,
+  //     picturesIncluded: activity.picturesIncluded,
+  //     typeAdventure: activity.typeAdventure,
+  //     personsLimit: activity.personsLimit,
+  //     partnerId: activity.partnerId,
+  //     isInGroup: activity.isInGroup,
+  //     isChildrenAllowed: activity.isChildrenAllowed,
+  //     difficult: activity.difficult,
+  //     hoursBeforeSchedule: activity.hoursBeforeSchedule,
+  //     hoursBeforeCancellation: activity.hoursBeforeCancellation,
+  //     isRepeatable: activity.isRepeatable,
+  //     images: activity.images,
+  //     schedules: activity.schedules,
+  //     recurrences: activity.recurrence
+  //       ? Object.values(
+  //           activity.recurrence.reduce(
+  //             (acc, rec) => {
+  //               const group = acc[rec.groupId] || {
+  //                 groupId: rec.groupId,
+  //                 recurrenceWeekly: [],
+  //                 dates: [],
+  //                 recurrenceHour: [],
+  //               };
 
-                if (rec.type === "WEEKLY") {
-                  group.recurrenceWeekly.push(String(rec.value));
-                } else if (rec.type === "MONTHLY") {
-                  const day = Number(rec.value);
-                  const date = new Date(baseYear, baseMonth, day); // Converte para Date real
-                  group.dates.push(date);
-                } else if (rec.type === "HOUR") {
-                  const hours = Math.floor(rec.value / 100);
-                  const minutes = rec.value % 100;
-                  group.recurrenceHour.push(
-                    `${hours.toString().padStart(2, "0")}:${minutes
-                      .toString()
-                      .padStart(2, "0")}`
-                  );
-                }
+  //               if (rec.type === "WEEKLY") {
+  //                 group.recurrenceWeekly.push(String(rec.value));
+  //               } else if (rec.type === "MONTHLY") {
+  //                 const day = Number(rec.value);
+  //                 const date = new Date(baseYear, baseMonth, day); // Converte para Date real
+  //                 group.dates.push(date);
+  //               } else if (rec.type === "HOUR") {
+  //                 const hours = Math.floor(rec.value / 100);
+  //                 const minutes = rec.value % 100;
+  //                 group.recurrenceHour.push(
+  //                   `${hours.toString().padStart(2, "0")}:${minutes
+  //                     .toString()
+  //                     .padStart(2, "0")}`
+  //                 );
+  //               }
 
-                acc[rec.groupId] = group;
-                return acc;
-              },
-              {} as Record<
-                string,
-                {
-                  dates: Date[];
-                  recurrenceHour: string[];
-                  recurrenceWeekly: string[];
-                  groupId: string;
-                }
-              >
-            )
-          )
-        : null,
-    };
-  }, [activity, activity?.images]);
+  //               acc[rec.groupId] = group;
+  //               return acc;
+  //             },
+  //             {} as Record<
+  //               string,
+  //               {
+  //                 dates: Date[];
+  //                 recurrenceHour: string[];
+  //                 recurrenceWeekly: string[];
+  //                 groupId: string;
+  //               }
+  //             >
+  //           )
+  //         )
+  //       : null,
+  //   };
+  // }, [activity, activity?.images]);
 
   if (!activity) {
     return isLoadingActivity ? (
@@ -298,7 +308,7 @@ export default function Atividade() {
         onAction={handleClose}
         iconName="success"
         title="Atividade cadastrada"
-        descrition="Parabéns! Sua nova atividade já foi cadastrada e já pode ser visualizada pelos nossos clientes."
+        descrition="Parabéns! Sua nova atividade já foi cadastrada. Você pode editá-la a qualquer momento."
         button="Voltar ao início"
       />
 
@@ -537,7 +547,7 @@ export default function Atividade() {
         </div>
 
         <div className="md:grid md:grid-cols-2 gap-8">
-          <div className="md:w-2/3">
+          <div className="md:w-full">
             <div className="max-sm:my-6 flex items-center p-3 bg-[#F1F0F587] border border-primary-600/30 border-opacity-80 rounded-lg shadow-sm hover:bg-gray-100 relative">
               <div className="absolute inset-y-0 left-0 w-3 bg-primary-900 rounded-l-lg"></div>
               <MyIcon
@@ -546,7 +556,15 @@ export default function Atividade() {
               />
               <div className="ml-3">
                 <MyTypography variant="body-big" weight="regular">
-                  {formatAddress(address)}
+                  {/* {formatAddress(address)} */}
+
+                  <Link
+                    href={getAddress(formatAddress(address))}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {formatAddress(address)}
+                  </Link>
                 </MyTypography>
                 <MyTypography
                   variant="body"
@@ -616,16 +634,41 @@ export default function Atividade() {
               </div>
 
               <div className="space-y-4">
-                <MyTypography variant="subtitle3" weight="regular">
-                  <span className="font-bold">Valor por adulto:</span> R${" "}
-                  {activity?.priceAdult}
-                </MyTypography>
-
-                {activity.isChildrenAllowed && (
-                  <MyTypography variant="subtitle3" weight="regular">
-                    <span className="font-bold">Valor por criança:</span> R${" "}
-                    {activity?.priceChildren}
+                <div className="flex justify-between items-center mt-1">
+                  <MyTypography
+                    variant="subtitle3"
+                    weight="bold"
+                    className="text-md md:text-lg"
+                  >
+                    Valor por adulto:
                   </MyTypography>
+
+                  <MyTypography
+                    variant="heading2"
+                    weight="extrabold"
+                    className="text-primary-600 text-lg md:text-2xl"
+                  >
+                    {formatPrice(activity?.priceAdult ?? "")}
+                  </MyTypography>
+                </div>
+
+                {activity?.isChildrenAllowed && (
+                  <div className="flex justify-between items-center mt-4">
+                    <MyTypography
+                      variant="subtitle3"
+                      weight="bold"
+                      className="text-md md:text-lg"
+                    >
+                      Valor por criança:
+                    </MyTypography>
+                    <MyTypography
+                      variant="heading2"
+                      weight="extrabold"
+                      className="text-primary-600 text-lg md:text-2xl"
+                    >
+                      {formatPrice(activity?.priceChildren ?? "")}
+                    </MyTypography>
+                  </div>
                 )}
               </div>
             </div>
