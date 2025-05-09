@@ -62,7 +62,13 @@ export default function Favoritos() {
               withoutText
             />
 
-            <div className={cn('md:grid md:grid-cols-4 md:gap-6')}>
+            <div
+              className={cn(
+                selected === ''
+                  ? 'md:grid md:grid-cols-4 md:gap-6'
+                  : 'md:flex md:w-full'
+              )}
+            >
               {selected === ''
                 ? favorites.map((favorite, i) => (
                     <>

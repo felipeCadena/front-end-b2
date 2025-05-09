@@ -14,6 +14,7 @@ import { getData, handleNameActivity } from '@/utils/formatters';
 import PATHS from '@/utils/paths';
 import downloadImagesAsZip from '@/utils/zipPhotos';
 import { useQuery } from '@tanstack/react-query';
+import axios from 'axios';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import React from 'react';
@@ -46,8 +47,8 @@ export default function GaleriaDeFotos() {
   console.log(activityPhotos);
 
   const handleDownloadImage = async (imageURL: string, fileTitle: string) => {
-    const response = await fetch(imageURL);
-    console.log('res', response);
+    const response = await axios.get(imageURL);
+    console.log(response);
   };
   const handleFetchPhotos = (id: string, downloadAll?: boolean) => {
     setOpen(!open);
@@ -190,18 +191,16 @@ export default function GaleriaDeFotos() {
                           className="h-[168px] w-[168px] rounded-lg object-cover"
                         />
 
-                        <a href={photo.url} download={photo.title}>
-                          <MyIcon
-                            name="download-green"
-                            className="absolute top-2 right-2 bg-white p-2 rounded-lg  group-hover:opacity-100 transition-opacity duration-300 cursor-pointer"
-                            // onClick={() =>
-                            //   handleDownloadImage(
-                            //     photo.url,
-                            //     photo.title as string
-                            //   )
-                            // }
-                          />
-                        </a>
+                        <MyIcon
+                          name="download-green"
+                          className="absolute top-2 right-2 bg-white p-2 rounded-lg  group-hover:opacity-100 transition-opacity duration-300 cursor-pointer"
+                          onClick={() =>
+                            handleDownloadImage(
+                              photo.url,
+                              photo.title as string
+                            )
+                          }
+                        />
                       </div>
                     ))}
                   </div>
