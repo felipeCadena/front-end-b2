@@ -1,4 +1,5 @@
 import { api } from '@/libs/api';
+import { Schedules } from './adventures';
 
 export type Media = {
   id: string;
@@ -34,7 +35,7 @@ export const schedules = {
     }
   },
 
-  getScheduleById: async (id: string) => {
+  getScheduleById: async (id: string): Promise<Schedules> => {
     try {
       const response = await api.get(`/schedules/${id}`);
       return response.data;
