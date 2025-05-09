@@ -22,12 +22,12 @@ export default function Galeria() {
     queryFn: () => schedules.getScheduleById(id as string),
   });
 
-  console.log('AQUI', activity);
-
   const { data: activityPhotos = [], isLoading: isLoadingPhotos } = useQuery({
     queryKey: ['activity_photos'],
     queryFn: async () => await schedules.getScheduleMedias(id as string),
   });
+
+  console.log(activity);
 
   return isLoading ? (
     <div>
@@ -57,13 +57,13 @@ export default function Galeria() {
         <div className="flex gap-2 items-center">
           <Image
             alt="foto parceiro"
-            src={activity?.adventure.partner.fantasyName ?? ''}
+            src={activity?.adventure?.partner?.logo.url ?? ''}
             width={40}
             height={40}
             className="rounded-full"
           />
           <MyTypography variant="body" weight="medium" className="">
-            {activity?.adventure.partner.fantasyName}
+            {activity?.adventure?.partner?.fantasyName}
           </MyTypography>
         </div>
       </div>

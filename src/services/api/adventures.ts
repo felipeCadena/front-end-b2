@@ -79,6 +79,9 @@ export interface Schedules {
     partner: {
       id: number;
       fantasyName: string;
+      logo: {
+        url: string;
+      };
     };
   };
   datetime: string; // ou Date se você estiver convertendo com `parseISO`

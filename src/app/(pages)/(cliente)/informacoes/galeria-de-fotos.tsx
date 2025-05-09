@@ -43,22 +43,12 @@ export default function GaleriaDeFotos() {
     },
   });
 
-  function downloadImage(imageURL: string, filename: string) {
-    fetch(imageURL)
-      .then((response) => response.blob())
-      .then((blob) => {
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.setAttribute('download', filename);
-        a.style.display = 'none';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-      })
-      .catch((error) => console.error('Error downloading image:', error));
-  }
+  console.log(activityPhotos);
+
+  const handleDownloadImage = async (imageURL: string, fileTitle: string) => {
+    const response = await fetch(imageURL);
+    console.log('res', response);
+  };
   const handleFetchPhotos = (id: string, downloadAll?: boolean) => {
     setOpen(!open);
     setSelected(id);
@@ -200,13 +190,18 @@ export default function GaleriaDeFotos() {
                           className="h-[168px] w-[168px] rounded-lg object-cover"
                         />
 
-                        <MyIcon
-                          name="download-green"
-                          className="absolute top-2 right-2 bg-white p-2 rounded-lg  group-hover:opacity-100 transition-opacity duration-300 cursor-pointer"
-                          onClick={() =>
-                            downloadImage(photo.url, photo.title as string)
-                          }
-                        />
+                        <a href={photo.url} download={photo.title}>
+                          <MyIcon
+                            name="download-green"
+                            className="absolute top-2 right-2 bg-white p-2 rounded-lg  group-hover:opacity-100 transition-opacity duration-300 cursor-pointer"
+                            // onClick={() =>
+                            //   handleDownloadImage(
+                            //     photo.url,
+                            //     photo.title as string
+                            //   )
+                            // }
+                          />
+                        </a>
                       </div>
                     ))}
                   </div>
