@@ -1,15 +1,15 @@
-"use client";
+'use client';
 
-import MyIcon from "@/components/atoms/my-icon";
-import MyTypography from "@/components/atoms/my-typography";
-import ModalAlert from "@/components/molecules/modal-alert";
-import SendImages from "@/components/organisms/send-images";
-import { schedules } from "@/services/api/schedules";
-import { getData } from "@/utils/formatters";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useParams, useRouter } from "next/navigation";
-import React from "react";
-import { toast } from "react-toastify";
+import MyIcon from '@/components/atoms/my-icon';
+import MyTypography from '@/components/atoms/my-typography';
+import ModalAlert from '@/components/molecules/modal-alert';
+import SendImages from '@/components/organisms/send-images';
+import { schedules } from '@/services/api/schedules';
+import { getData } from '@/utils/formatters';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useParams, useRouter } from 'next/navigation';
+import React from 'react';
+import { toast } from 'react-toastify';
 
 export default function EnviarFotos() {
   const router = useRouter();
@@ -27,29 +27,29 @@ export default function EnviarFotos() {
         files.map((file, index) => ({
           filename: file.name,
           mimetype: file.type,
-          title: "", // Você pode preencher se quiser
-          description: "", // Você pode preencher se quiser
+          title: '', // Você pode preencher se quiser
+          description: '', // Você pode preencher se quiser
           isDefault: index === 0, // primeiro arquivo é default
           file: file, // aqui mandamos o File direto, que é um Blob
         }))
       );
 
       setSendImages(true);
-      queryClient.invalidateQueries({ queryKey: ["schedulesMedia"] });
+      queryClient.invalidateQueries({ queryKey: ['schedulesMedia'] });
     } catch (error) {
-      console.error("Erro ao enviar imagens:", error);
+      console.error('Erro ao enviar imagens:', error);
     } finally {
       setIsLoading(false);
     }
   };
 
   const { data: schedulesMedia } = useQuery({
-    queryKey: ["schedulesMedia"],
+    queryKey: ['schedulesMedia'],
     queryFn: () => schedules.listScheduleMedias(id as string),
   });
 
   const { data: schedule } = useQuery({
-    queryKey: ["schedule"],
+    queryKey: ['schedule'],
     queryFn: () => schedules.getScheduleById(id as string),
   });
 
@@ -59,11 +59,11 @@ export default function EnviarFotos() {
       await schedules.deleteScheduleMedia(id as string, mediaId);
 
       // Invalida a query para recarregar as imagens
-      queryClient.invalidateQueries({ queryKey: ["schedulesMedia"] });
-      toast.success("Imagem excluída com sucesso");
+      queryClient.invalidateQueries({ queryKey: ['schedulesMedia'] });
+      toast.success('Imagem excluída com sucesso');
     } catch (error) {
-      console.error("Erro ao excluir imagem:", error);
-      toast.error("Erro ao excluir imagem");
+      console.error('Erro ao excluir imagem:', error);
+      toast.error('Erro ao excluir imagem');
     } finally {
       setIsLoading(false);
     }
@@ -99,11 +99,11 @@ export default function EnviarFotos() {
           Enviar fotos da atividade
         </MyTypography>
         <MyTypography variant="label" lightness={500} className="">
-          Enviar as fotos da atividade{" "}
+          Enviar as fotos da atividade{' '}
           <span className="font-bold">
             {limitDateForMedias
               ? `até ${getData(limitDateForMedias)}`
-              : "em até 7 dias após a realização da atividade"}
+              : 'em até 7 dias após a realização da atividade'}
           </span>
         </MyTypography>
       </div>

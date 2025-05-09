@@ -22,6 +22,8 @@ export default function Galeria() {
     queryFn: () => schedules.getScheduleById(id as string),
   });
 
+  console.log('AQUI', activity);
+
   const { data: activityPhotos = [], isLoading: isLoadingPhotos } = useQuery({
     queryKey: ['activity_photos'],
     queryFn: async () => await schedules.getScheduleMedias(id as string),

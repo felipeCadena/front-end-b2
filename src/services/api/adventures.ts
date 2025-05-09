@@ -77,6 +77,7 @@ export interface Schedules {
   adventure: {
     id: number;
     partner: {
+      id: number;
       fantasyName: string;
     };
   };
@@ -86,10 +87,33 @@ export interface Schedules {
   qntLimitPersons: number;
   qntConfirmedPersons: number;
   isCanceled: boolean;
+  limitDateForMedias: string;
   justificationCancel: string | null;
   dateMediasPosted: string | null; // ou Date | null
   createdAt: string; // ou Date
   updatedAt: string; // ou Date
+  ordersScheduleAdventure: [
+    {
+      orderAdventure: {
+        id: number;
+        orderId: string;
+        customer: {
+          name: string;
+          email: string;
+        };
+      };
+      qntAdults: number;
+      qntChildren: number;
+      adventure: {
+        id: number;
+        title: string;
+        partner: {
+          id: number;
+          fantasyName: string;
+        };
+      };
+    },
+  ];
 }
 
 export interface AddToCartAdventure {

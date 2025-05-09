@@ -43,24 +43,22 @@ export default function GaleriaDeFotos() {
     },
   });
 
-  const handleDownload = async (url: string, filename: string) => {
-    try {
-      const response = await fetch(url);
-      const blob = await response.blob();
-      const blobUrl = URL.createObjectURL(blob);
-
-      const a = document.createElement('a');
-      a.href = blobUrl;
-      a.download = filename;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      URL.revokeObjectURL(blobUrl);
-    } catch (error) {
-      console.error('Failed to fetch image', error);
-    }
-  };
-
+  function downloadImage(imageURL: string, filename: string) {
+    fetch(imageURL)
+      .then((response) => response.blob())
+      .then((blob) => {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.setAttribute('download', filename);
+        a.style.display = 'none';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      })
+      .catch((error) => console.error('Error downloading image:', error));
+  }
   const handleFetchPhotos = (id: string, downloadAll?: boolean) => {
     setOpen(!open);
     setSelected(id);
@@ -206,7 +204,7 @@ export default function GaleriaDeFotos() {
                           name="download-green"
                           className="absolute top-2 right-2 bg-white p-2 rounded-lg  group-hover:opacity-100 transition-opacity duration-300 cursor-pointer"
                           onClick={() =>
-                            handleDownload(photo.url, photo.title as string)
+                            downloadImage(photo.url, photo.title as string)
                           }
                         />
                       </div>
