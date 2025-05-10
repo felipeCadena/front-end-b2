@@ -17,6 +17,14 @@ export default function Footer() {
     return pathname == PATHS.initial || pathname == PATHS.atividades;
   };
 
+  const scrollToTop = () => {
+    try {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } catch {
+      window.scrollTo(0, 0); // fallback sem animação
+    }
+  };
+
   return (
     <footer
       className={cn(
@@ -39,7 +47,7 @@ export default function Footer() {
           weight="regular"
           className="mt-4 mb-6 md:mt-8 md:w-2/3 md:mx-auto"
         >
-          Entre em contato com nosso atendimento por emal e confira nossas
+          Entre em contato com nosso atendimento por e-mail e confira as
           novidades em nossas redes sociais:
         </MyTypography>
 
@@ -68,7 +76,7 @@ export default function Footer() {
             name="scroll-mouse"
             title="Voltar ao topo"
             className="max-sm:hidden absolute -top-16 -right-4 cursor-pointer"
-            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            onClick={scrollToTop}
           />
         </div>
 

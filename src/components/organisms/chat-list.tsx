@@ -10,7 +10,32 @@ import { useQueries, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useDebounce } from "@/hooks/useDebounce";
 import { chatService } from "@/services/api/chats";
 import { cn } from "@/utils/cn";
+import { formatSmartDateTime, getData } from "@/utils/formatters";
+import { useSession } from "next-auth/react";
+import MyButton from "../atoms/my-button";
+import useChat from "@/store/useChat";
 
+interface ChatMessage {
+  datetime: string;
+  chatId: string;
+  text: string;
+  mediaId: string | null;
+  sendedFromUserId: string;
+  toUserId: string;
+  isRead: boolean;
+}
+
+interface OrderScheduleAdventure {
+  id: string;
+  adventure: {
+    id: string;
+    title: string;
+  };
+  schedule: {
+    id: string;
+    datetime: string;
+  };
+}
 interface ChatType {
   id: string;
   openIn: string | null;
@@ -21,6 +46,9 @@ interface ChatType {
   userToName: string;
   userToPhoto: string;
   session_token: string;
+  lastMessage?: ChatMessage | null;
+  userToLastOnline?: string;
+  orderScheduleAdventure: OrderScheduleAdventure | null; // substitua "any" pela tipagem correta se souber
 }
 
 interface ChatListProps {
@@ -30,17 +58,28 @@ interface ChatListProps {
 
 export default function ChatList({ chats, setUser }: ChatListProps) {
   const router = useRouter();
-  const { set } = useSearchQueryService();
   const [localSearch, setLocalSearch] = React.useState<string>("");
   const [selectedChatId, setSelectedChatId] = React.useState<string | null>(
     null
   );
+  const [mobile, setMobile] = React.useState<boolean>(false);
+  const { setChat } = useChat();
 
   const debounce = useDebounce(localSearch, 500);
 
   const handleChatClick = (chat: ChatType) => {
-    set({ user: `${chat?.userToName}` });
+    setChat({
+      userToName: chat?.userToName,
+      id: chat?.id,
+      session_token: chat?.session_token,
+      userToPhoto: chat?.userToPhoto,
+      userToId: chat?.userToId,
+    });
     setSelectedChatId(chat?.id);
+
+    if (mobile) {
+      router.push(`chat/${chat?.id}`);
+    }
   };
 
   useEffect(() => {
@@ -51,18 +90,12 @@ export default function ChatList({ chats, setUser }: ChatListProps) {
     }
   }, [debounce]);
 
-  //   const lastMessagesResults = useQueries({
-  //     queries: chats.map((chat) => ({
-  //       queryKey: ["lastMessages", chat.id],
-  //       queryFn: () => chatService.listMessages(chat.id, chat.session_token),
-  //       enabled: !!chat.id && !!chat.session_token,
-  //     })),
-  //   });
-
-  //   const lastMessage = (chatId: string) => {
-  //     const chat = lastMessagesResults.find((result) => console.log(result.data));
-  //     return chat.;
-  //   };
+  useEffect(() => {
+    if (window) {
+      const isMobile = window.innerWidth < 768;
+      setMobile(isMobile);
+    }
+  }, []);
 
   return (
     <div className="h-full flex flex-col">
@@ -79,41 +112,77 @@ export default function ChatList({ chats, setUser }: ChatListProps) {
         />
       </div>
 
-      <div className="flex-1 overflow-y-auto">
-        {chats &&
-          chats.map((chat) => (
-            <div
-              key={chat?.id}
-              className={cn(
-                "flex items-center p-4 hover:bg-gray-50 cursor-pointer rounded-lg",
-                selectedChatId === chat?.id && "bg-[#72c6eb]"
-              )}
-              onClick={() => handleChatClick(chat)}
-            >
-              <div className="relative">
-                <Image
-                  src={chat?.userToPhoto ?? "/user.png"}
-                  alt={chat?.userToName ?? "User avatar"}
-                  width={48}
-                  height={48}
-                  className="rounded-full"
-                />
-                {/* {chat.online && (
-                <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white" />
-              )} */}
-              </div>
+      {chats?.length === 0 && (
+        <div className="md:hidden flex flex-col items-center justify-center gap-4 mt-12">
+          <p className="text-center font-bold">
+            Você ainda não tem chats ativos
+          </p>
+          <MyButton
+            variant="default"
+            borderRadius="squared"
+            className=""
+            onClick={() => router.back()}
+          >
+            Voltar
+          </MyButton>
+        </div>
+      )}
 
-              <div className="ml-3 flex-1">
-                <div className="flex justify-between">
-                  <span className="font-medium">{chat?.userToName}</span>
-                  {/* <span className="text-sm text-gray-500">{chat.timestamp}</span> */}
+      <div className="flex-1 overflow-y-auto scrollbar-thin">
+        {chats &&
+          chats
+            .sort(
+              (a, b) => (b.session_token ? 1 : 0) - (a.session_token ? 1 : 0)
+            )
+            .map((chat) => (
+              <div
+                key={chat?.id}
+                className={cn(
+                  "flex items-center p-4 hover:bg-gray-50 cursor-pointer rounded-lg mr-1",
+                  selectedChatId === chat?.id && "bg-[#2DADE4]/20"
+                )}
+                onClick={() => handleChatClick(chat)}
+              >
+                <div className="relative">
+                  <Image
+                    src={chat?.userToPhoto ?? "/user.png"}
+                    alt={chat?.userToName ?? "User avatar"}
+                    width={48}
+                    height={48}
+                    className="rounded-full"
+                  />
                 </div>
-                {/* <p className="text-sm">
-                  {lastMessage(chat?.id) ?? "Nenhuma mensagem"}
-                </p> */}
+
+                <div className="ml-3 flex-1 space-y-1">
+                  <div className="flex justify-between gap-4">
+                    <span className="font-medium">{chat?.userToName}</span>
+                    {chat?.orderScheduleAdventure && (
+                      <p className="text-gray-400 text-xs">
+                        {chat?.orderScheduleAdventure.adventure.title}
+                      </p>
+                    )}
+                  </div>
+
+                  {chat?.lastMessage && chat?.session_token ? (
+                    <p className="text-sm font-bold">
+                      {chat?.lastMessage?.text.slice(0, 40).concat("...")}
+                    </p>
+                  ) : (
+                    <p className="text-gray-400 text-xs">Chat encerrado</p>
+                  )}
+
+                  {chat?.userToLastOnline && (
+                    <p className="text-xs opacity-70">
+                      Visto por último{" "}
+                      {formatSmartDateTime(chat?.userToLastOnline)}
+                    </p>
+                  )}
+                </div>
+                {chat?.lastMessage && !chat?.lastMessage?.isRead && (
+                  <div className="w-3 h-3 bg-[#2DADE4] rounded-full" />
+                )}
               </div>
-            </div>
-          ))}
+            ))}
       </div>
     </div>
   );

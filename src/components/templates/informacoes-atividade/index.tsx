@@ -86,6 +86,9 @@ export default function InformacoesAtividade({
 
   const [isLoading, setIsLoading] = React.useState(false);
 
+  const [selectedGroup, setSelectedGroup] = React.useState("");
+  const [selectedChildren, setSelectedChildren] = React.useState("");
+
   const b2Tax = process.env.NEXT_PUBLIC_PERCENTAGE_TAX_B2;
   const tax = process.env.NEXT_PUBLIC_PERCENTAGE_TAX;
 
@@ -449,14 +452,18 @@ export default function InformacoesAtividade({
             size="sm"
             className={cn(
               "flex justify-center gap-2 rounded-md py-6 border border-black text-nowrap",
-              item.title === (isInGroup ? "Em grupo" : "Individual") &&
+              item.title ===
+                (selectedGroup == "Em grupo"
+                  ? "Em grupo"
+                  : !isInGroup && "Individual") &&
                 "border border-black bg-[#E5E4E9] opacity-100"
             )}
-            onClick={() =>
+            onClick={() => {
+              setSelectedGroup(item.title);
               setAdventureData({
                 isInGroup: item.title == "Em grupo" ? true : false,
-              })
-            }
+              });
+            }}
           >
             <MyIcon name={item.icon as IconsMapTypes} className="" />
             <span className="">{item.title}</span>
@@ -470,14 +477,17 @@ export default function InformacoesAtividade({
             className={cn(
               "flex justify-center gap-2 rounded-md py-6 border border-black text-nowrap",
               item.title ===
-                (isChildrenAllowed ? "Com crianças" : "Sem crianças") &&
+                (selectedChildren == "Com crianças"
+                  ? "Com crianças"
+                  : isChildrenAllowed && "Sem crianças") &&
                 "border border-black bg-[#E5E4E9] opacity-100"
             )}
-            onClick={() =>
+            onClick={() => {
+              setSelectedChildren(item.title);
               setAdventureData({
                 isChildrenAllowed: item.title == "Com crianças" ? true : false,
-              })
-            }
+              });
+            }}
           >
             <MyIcon name={item.icon as IconsMapTypes} className="" />
             <span className="">{item.title}</span>
@@ -553,10 +563,10 @@ export default function InformacoesAtividade({
         )} */}
 
         <div className="flex justify-between mt-4">
-          <MyTypography variant="label" weight="regular" className="mb-1">
+          <MyTypography variant="subtitle3" weight="bold" className="mb-1">
             Valor do Parceiro
           </MyTypography>
-          <MyTypography variant="label" weight="bold" className="mb-1">
+          <MyTypography variant="subtitle3" weight="bold" className="mb-1">
             R$ {priceAdult ?? "0,00"}
           </MyTypography>
         </div>
@@ -565,7 +575,7 @@ export default function InformacoesAtividade({
           <MyTypography variant="label" weight="regular" className="mb-1">
             Tarifa B2
           </MyTypography>
-          <MyTypography variant="label" weight="bold" className="mb-1">
+          <MyTypography variant="label" weight="regular" className="mb-1">
             R$ {handleTaxDetails().b2Fee ?? "0,00"}
           </MyTypography>
         </div>
@@ -574,21 +584,21 @@ export default function InformacoesAtividade({
           <MyTypography variant="label" weight="regular" className="mb-1">
             Imposto
           </MyTypography>
-          <MyTypography variant="label" weight="bold" className="mb-1">
+          <MyTypography variant="label" weight="regular" className="mb-1">
             R$ {handleTaxDetails().tax ?? "0,00"}
           </MyTypography>
         </div>
 
         <div className="flex justify-between mt-1">
           <MyTypography
-            variant="label"
-            weight="regular"
+            variant="subtitle3"
+            weight="bold"
             className="text-primary-600"
           >
             Valor total da Atividade
           </MyTypography>
           <MyTypography
-            variant="label"
+            variant="subtitle3"
             weight="bold"
             className="text-primary-600"
           >

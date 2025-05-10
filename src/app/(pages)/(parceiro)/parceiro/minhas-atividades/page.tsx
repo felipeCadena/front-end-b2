@@ -53,7 +53,7 @@ export default function SuasAtividades() {
         onAction={handleClose}
         iconName="success"
         title="Atividade cadastrada"
-        descrition="Parabéns! Sua nova atividade já foi cadastrada e já pode ser visualizada pelos nossos clientes."
+        descrition="Parabéns! Sua atividade foi cadastrada com sucesso e já pode ser visualizada pelos nossos clientes!"
         button="Voltar ao início"
       />
       <section className="px-4">

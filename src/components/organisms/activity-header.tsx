@@ -1,11 +1,11 @@
-import { handleNameActivity } from '@/utils/formatters';
-import React from 'react';
-import MyBadge from '../atoms/my-badge';
-import User from '../atoms/my-icon/elements/user';
-import MyTypography from '../atoms/my-typography';
-import StarRating from '../molecules/my-stars';
-import { Adventure } from '@/services/api/adventures';
-import Image from 'next/image';
+import { handleNameActivity } from "@/utils/formatters";
+import React from "react";
+import MyBadge from "../atoms/my-badge";
+import User from "../atoms/my-icon/elements/user";
+import MyTypography from "../atoms/my-typography";
+import StarRating from "../molecules/my-stars";
+import { Adventure } from "@/services/api/adventures";
+import Image from "next/image";
 
 type ActivityHeaderProps = {
   activity: Adventure | undefined;
@@ -17,7 +17,10 @@ const ActivityHeader = ({ activity }: ActivityHeaderProps) => {
       <div className="flex items-start gap-8">
         <div>
           <MyTypography variant="heading2" weight="bold" className="">
-            {activity?.title}
+            {activity?.title
+              ? activity.title.charAt(0).toUpperCase() +
+                activity.title.slice(1).toLowerCase()
+              : ""}
           </MyTypography>
           <MyBadge variant="outline" className="p-1">
             {handleNameActivity(activity?.typeAdventure as string)}
@@ -32,7 +35,7 @@ const ActivityHeader = ({ activity }: ActivityHeaderProps) => {
         {activity?.partner?.logo ? (
           <Image
             alt="avatar"
-            src={activity?.partner.logo.url ?? '/user.png'}
+            src={activity?.partner.logo.url ?? "/user.png"}
             width={40}
             height={40}
             className="w-[40px] h-[40px] rounded-full object-cover border-2"
@@ -57,7 +60,11 @@ const ActivityHeader = ({ activity }: ActivityHeaderProps) => {
         <MyTypography variant="subtitle3" weight="bold" className="">
           Descrição da atividade:
         </MyTypography>
-        <MyTypography variant="body-big" weight="regular" className="mt-1">
+        <MyTypography
+          variant="body-big"
+          weight="regular"
+          className="mt-1 whitespace-pre-wrap"
+        >
           {activity?.description}
         </MyTypography>
       </div>

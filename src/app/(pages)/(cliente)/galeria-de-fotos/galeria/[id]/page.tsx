@@ -1,10 +1,14 @@
 "use client";
 
-import { activities, album } from "@/common/constants/mock";
+import Loading from "@/app/loading";
+import { album } from "@/common/constants/mock";
 import MyButton from "@/components/atoms/my-button";
 import MyIcon from "@/components/atoms/my-icon";
 import MyTypography from "@/components/atoms/my-typography";
+import { schedules } from "@/services/api/schedules";
 import { getData } from "@/utils/formatters";
+import downloadImagesAsZip from "@/utils/zipPhotos";
+import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 import React from "react";
@@ -12,10 +16,57 @@ import React from "react";
 export default function Galeria() {
   const { id } = useParams();
   const router = useRouter();
+  const [loading, setLoading] = React.useState(false);
 
-  const activity = activities.find((activity: any) => activity.id === id);
+  const { data: activity, isLoading } = useQuery({
+    queryKey: ["activity_schedule"],
+    queryFn: () => schedules.getScheduleById(id as string),
+  });
 
-  return (
+  const { data: activityPhotos = [], isLoading: isLoadingPhotos } = useQuery({
+    queryKey: ["activity_photos"],
+    queryFn: async () => await schedules.getScheduleMedias(id as string),
+  });
+
+  const handleDownloadImage = async (imageURL: string, fileTitle: string) => {
+    try {
+      const response = await fetch(`${imageURL}?download=1`);
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = fileTitle;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error("Erro ao baixar imagem", err);
+    }
+  };
+
+  const handleFetchPhotos = async (id: string, downloadAll?: boolean) => {
+    if (downloadAll && id !== "") {
+      if (activityPhotos.length === 0) {
+        return;
+      }
+      try {
+        setLoading(true);
+        await downloadImagesAsZip(activityPhotos);
+      } catch (error) {
+        console.error("Erro ao baixar imagens", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
+
+  return isLoading ? (
+    <div>
+      <Loading />
+    </div>
+  ) : (
     <section className="m-6">
       <div className="relative flex gap-4 items-center">
         <MyIcon
@@ -33,47 +84,59 @@ export default function Galeria() {
           {activity?.title}
         </MyTypography>
         <MyTypography variant="body-big" weight="bold">
-          Data: {getData(activity?.reserva.timestamp ?? "", true)}
+          Data: {getData(activity?.datetime ?? "", true)}
         </MyTypography>
 
         <div className="flex gap-2 items-center">
           <Image
             alt="foto parceiro"
-            src={activity?.parceiro.avatar ?? ""}
+            src={activity?.adventure?.partner?.logo.url ?? ""}
             width={40}
             height={40}
             className="rounded-full"
           />
           <MyTypography variant="body" weight="medium" className="">
-            {activity?.parceiro.nome}
+            {activity?.adventure?.partner?.fantasyName}
           </MyTypography>
         </div>
       </div>
 
-
       <div className="grid grid-cols-2 gap-2 mt-4">
-      <MyButton
-        variant="default"
-        borderRadius="squared"
-        size="md"
-        className="col-span-2 my-4"
-        rightIcon={<MyIcon name="download" className="" />}
-      >
-        Baixar todas as imagens
-      </MyButton>
-        {album.map((foto: any, index: number) => (
-          <div key={index} className="flex justify-center relative">
-            <Image
-              src={foto}
-              alt="foto"
-              width={150}
-              height={150}
-              className="rounded-lg object-cover"
-            />
-            <MyIcon name="download-green" className="absolute top-2 right-3 bg-white p-2 rounded-lg cursor-pointer" />
-            
+        <MyButton
+          variant="default"
+          borderRadius="squared"
+          size="md"
+          className="col-span-2 my-4"
+          rightIcon={<MyIcon name="download" className="" />}
+          isLoading={loading}
+          onClick={() => handleFetchPhotos(activity?.id ?? "", true)}
+        >
+          Baixar todas as imagens
+        </MyButton>
+        {isLoadingPhotos ? (
+          <div className="w-full h-[30vh] flex justify-center items-center">
+            <Loading />
           </div>
-        ))}
+        ) : (
+          activityPhotos.map((media, index) => (
+            <div key={index} className="flex justify-center relative">
+              <Image
+                src={media.url}
+                alt={media.title ?? "foto"}
+                width={150}
+                height={150}
+                className="w-40 h-40 rounded-lg object-cover"
+              />
+              <MyIcon
+                name="download-green"
+                className="absolute top-2 right-2 bg-white p-2 rounded-lg group-hover:opacity-100 transition-opacity duration-300 cursor-pointer"
+                onClick={() =>
+                  handleDownloadImage(media.url, media?.title ?? "")
+                }
+              />
+            </div>
+          ))
+        )}
       </div>
     </section>
   );

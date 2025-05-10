@@ -20,8 +20,10 @@ export default function FirstSection() {
   ];
 
   return (
-    <section className="mt-10 md:relative max-sm:px-4">
-      <CarouselImages rounded images={images} />
+    <section className="mt-10 md:relative ">
+      <div className="max-sm:px-4">
+        <CarouselImages rounded images={images} />
+      </div>
       <div className="mt-4 px-4">
         <MyTypography
           variant="heading2"

@@ -2,7 +2,6 @@
 
 import React from "react";
 import FirstSection from "../components/templates/first-section";
-import SearchActivity from "@/components/organisms/search-activity";
 import SecondSection from "../components/templates/second-section";
 import ThirdSection from "@/components/templates/third-section";
 import FourthSection from "@/components/templates/fourth-section";

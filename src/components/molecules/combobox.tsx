@@ -40,7 +40,6 @@ export default function MultiSelect({
 
   function parseDuration(duration?: string): number {
     if (!duration) return 0;
-    console.log(parseFloat(duration.split(":")[0]));
     return parseFloat(duration.split(":")[0]);
   }
 
@@ -57,8 +56,6 @@ export default function MultiSelect({
     }
 
     setSelected(updated);
-
-    console.log(updated);
 
     // === Aqui começa o cálculo das horas a desabilitar ===
     const dur = parseDuration(duration); // ex: "2h" → 2

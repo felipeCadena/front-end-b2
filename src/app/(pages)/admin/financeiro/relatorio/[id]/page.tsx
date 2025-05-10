@@ -15,9 +15,10 @@ export default function RelatorioAtividade() {
   );
 
   const [filters, setFilters] = React.useState({
-    report: "pago",
+    report: "",
     year: "2025",
-    month: "04",
+    month: currentMonthKey,
+    typeDate: "",
   });
   const { data: partnerOrders } = useQuery({
     queryKey: ["partnerOrders"],

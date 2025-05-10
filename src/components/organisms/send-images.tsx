@@ -7,6 +7,7 @@ import MyTypography from "../atoms/my-typography";
 import Image from "next/image";
 import MyButton from "../atoms/my-button";
 import ModalAlert from "../molecules/modal-alert";
+import MySpinner from "../atoms/my-spinner";
 
 export default function SendImages({
   open,
@@ -52,36 +53,46 @@ export default function SendImages({
         open={open}
         onClose={handleClose}
         onAction={handleClose}
-        iconName="warning"
+        iconName="success"
         title="Fotos enviadas"
         descrition="As fotos dessa atividade foram envidas para os seus clientes que participaram neste dia com sucesso."
         button="Voltar ao início"
       />
 
+      {isLoading && (
+        <div className="flex items-center justify-center w-full h-20">
+          <MySpinner className="h-10 w-10" />
+        </div>
+      )}
+
       <div className="grid grid-cols-3 md:flex md:flex-wrap gap-4 items-center">
         {schedulesMedia &&
-          schedulesMedia?.map((media: any, index: number) => (
-            <div key={media.id} className="relative w-[100px] mt-4">
-              <Image
-                width={100}
-                height={100}
-                src={media.url}
-                alt={media.name}
-                className="w-[100px] h-[100px] rounded-md object-cover"
-              />
-              <MyTypography
-                weight="bold"
-                className="absolute top-1 left-1 bg-white w-6 h-6 rounded-full flex items-center justify-center text-xs text-primary-600"
-              >
-                {index + 1}
-              </MyTypography>
-              <MyIcon
-                name="x"
-                className="absolute flex items-center justify-center w-6 h-6 top-1 right-1 cursor-pointer bg-white rounded-full"
-                onClick={() => handleDeleteMedia(media.id)}
-              />
-            </div>
-          ))}
+          !isLoading &&
+          schedulesMedia
+            ?.filter((video: any) => video?.mimetype?.includes("image"))
+            ?.map((media: any, index: number) => (
+              <div key={media.id} className="relative w-[100px] mt-4">
+                <Image
+                  width={100}
+                  height={100}
+                  quality={40}
+                  src={media.url}
+                  alt={media.name}
+                  className="w-[100px] h-[100px] rounded-md object-cover"
+                />
+                <MyTypography
+                  weight="bold"
+                  className="absolute top-1 left-1 bg-white w-6 h-6 rounded-full flex items-center justify-center text-xs text-primary-600"
+                >
+                  {index + 1}
+                </MyTypography>
+                <MyIcon
+                  name="x"
+                  className="absolute flex items-center justify-center w-6 h-6 top-1 right-1 cursor-pointer bg-white rounded-full"
+                  onClick={() => handleDeleteMedia(media.id)}
+                />
+              </div>
+            ))}
 
         {files &&
           files?.map((file, index) => (
@@ -91,6 +102,7 @@ export default function SendImages({
                 height={100}
                 src={URL.createObjectURL(file)}
                 alt={file.name}
+                quality={40}
                 className="w-[100px] h-[100px] rounded-md object-cover"
               />
               <MyTypography

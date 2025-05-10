@@ -6,7 +6,7 @@ import MyLogo from "@/components/atoms/my-logo";
 import MyTextInput from "@/components/atoms/my-text-input";
 import MyTypography from "@/components/atoms/my-typography";
 import { useStepperStore } from "@/store/useStepperStore";
-import { formatPhoneNumber } from "@/utils/formatters";
+import { formatPhoneNumber, formatPhoneNumberDDI } from "@/utils/formatters";
 import PATHS from "@/utils/paths";
 import { useRouter } from "next/navigation";
 import React from "react";
@@ -85,11 +85,11 @@ export default function CadastroParceiro() {
           />
           <MyTextInput
             onChange={(e) =>
-              setStepData(2, { phone: formatPhoneNumber(e.target.value) })
+              setStepData(2, { phone: formatPhoneNumberDDI(e.target.value) })
             }
             value={phone}
             label="Celular"
-            placeholder="+XX (XX) XXXXX-XXXX"
+            placeholder="+00 (00) 00000-0000"
             className="mt-2"
           />
           <MyTextInput

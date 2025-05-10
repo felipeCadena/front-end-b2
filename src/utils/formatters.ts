@@ -7,13 +7,36 @@ import {
   AdventureSchedule,
   Schedules,
 } from "@/services/api/adventures";
-import { format, parseISO } from "date-fns";
+import {
+  format,
+  isToday,
+  isYesterday,
+  differenceInHours,
+  parseISO,
+} from "date-fns";
+import { ptBR } from "date-fns/locale";
 
-export function capitalizeFirstLetter(str: string): string {
-  const lower = str.toLowerCase();
-  return lower.charAt(0).toUpperCase() + lower.slice(1);
+export function formatSmartDateTime(datetime: string | Date): string {
+  const date = typeof datetime === "string" ? parseISO(datetime) : datetime;
+  const now = new Date();
+
+  const diffHours = differenceInHours(now, date);
+
+  if (isToday(date)) {
+    if (diffHours < 4) {
+      if (diffHours < 1) return "1 hora atrás";
+      return `${diffHours} ${diffHours <= 1 ? "hora" : "horas"} atrás`;
+    } else {
+      return `hoje às ${format(date, "HH:mm")}`;
+    }
+  }
+
+  if (isYesterday(date)) {
+    return "ontem";
+  }
+
+  return format(date, "dd/MM/yyyy", { locale: ptBR });
 }
-
 export const getYearsArray = (): string[] => {
   const currentYear = new Date().getFullYear();
   const years = [];
@@ -128,6 +151,21 @@ export const formatPhoneNumber = (phoneNumberString?: string) => {
     .replace(/(-\d{4})\d+?$/, "$1");
 };
 
+export const formatPhoneNumberDDI = (phoneNumberString?: string) => {
+  if (!phoneNumberString) return "";
+
+  const cleaned = phoneNumberString.replace(/\D/g, "").slice(0, 13); // só números, até 13 dígitos
+
+  if (cleaned.length === 0) return "";
+
+  if (cleaned.length <= 2) return `+${cleaned}`;
+  if (cleaned.length <= 4)
+    return `+${cleaned.slice(0, 2)} (${cleaned.slice(2)}`;
+  if (cleaned.length <= 9)
+    return `+${cleaned.slice(0, 2)} (${cleaned.slice(2, 4)}) ${cleaned.slice(4)}`;
+  return `+${cleaned.slice(0, 2)} (${cleaned.slice(2, 4)}) ${cleaned.slice(4, 9)}-${cleaned.slice(9)}`;
+};
+
 export const formatCEP = (value: string) => {
   return value
     .replace(/\D/g, "")
@@ -236,9 +274,44 @@ export const handleNameActivity = (name: string) => {
     case "mar":
       return "Atividades Aquáticas";
     default:
-      return "";
+      return name;
   }
 };
+
+export function formatStateName(uf: string): string {
+  if (!uf) return "";
+  const states: Record<string, string> = {
+    AC: "Acre",
+    AL: "Alagoas",
+    AP: "Amapá",
+    AM: "Amazonas",
+    BA: "Bahia",
+    CE: "Ceará",
+    DF: "Distrito Federal",
+    ES: "Espírito Santo",
+    GO: "Goiás",
+    MA: "Maranhão",
+    MT: "Mato Grosso",
+    MS: "Mato Grosso do Sul",
+    MG: "Minas Gerais",
+    PA: "Pará",
+    PB: "Paraíba",
+    PR: "Paraná",
+    PE: "Pernambuco",
+    PI: "Piauí",
+    RJ: "Rio de Janeiro",
+    RN: "Rio Grande do Norte",
+    RS: "Rio Grande do Sul",
+    RO: "Rondônia",
+    RR: "Roraima",
+    SC: "Santa Catarina",
+    SP: "São Paulo",
+    SE: "Sergipe",
+    TO: "Tocantins",
+  };
+
+  return states[uf.toUpperCase()] || uf;
+}
 
 export function formatAddress(address: {
   addressStreet: string;
@@ -813,7 +886,7 @@ export const findAvailableVacancies = (
 
     if (selectedDate) {
       const time = selectedTime.split(":");
-      const hour = Number(time[0]);
+      const hour = time[0];
       const minutes = time[1];
       const justDate = selectedDate.toISOString().slice(0, 10);
       const updatedSelectedDate = justDate + "T" + hour + ":" + minutes;
@@ -821,8 +894,6 @@ export const findAvailableVacancies = (
       const selectedDateSchedule = formattedSchedulesToUTC3?.filter(
         (sch) => sch.datetime === updatedSelectedDate
       )[0];
-
-      console.log("SELECTED", selectedDateSchedule);
 
       if (selectedDateSchedule) {
         return (

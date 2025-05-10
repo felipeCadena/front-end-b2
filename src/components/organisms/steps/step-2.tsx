@@ -36,8 +36,6 @@ export default function Step2() {
     duration,
   } = useAdventureStore();
 
-  console.log(hoursBeforeCancellation, hoursBeforeSchedule);
-
   // Atualiza as datas para um bloco específico
   const handleDateChange = (blockId: number, dates: Date[]) => {
     updateSelectionBlock(blockId, "dates", dates);
@@ -130,6 +128,12 @@ export default function Step2() {
       });
     }
   }, [selectionBlocks, isRepeatable]);
+
+  React.useEffect(() => {
+    if (window) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }, []);
 
   return (
     <section className="w-full space-y-6">

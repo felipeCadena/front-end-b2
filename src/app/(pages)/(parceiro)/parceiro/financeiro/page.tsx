@@ -13,7 +13,7 @@ import {
 import MyTypography from "@/components/atoms/my-typography";
 import { CardContent, MyCard } from "@/components/molecules/my-card";
 import Lancamentos from "@/components/templates/lancamentos";
-import { IncomeType, partnerService } from "@/services/api/partner";
+import { partnerService } from "@/services/api/partner";
 import { cn } from "@/utils/cn";
 import PATHS from "@/utils/paths";
 import { useQuery } from "@tanstack/react-query";
@@ -31,7 +31,94 @@ import {
   ReferenceLine,
   CartesianGrid,
 } from "recharts";
-import { startOfMonth, endOfMonth, format } from "date-fns";
+import {
+  startOfMonth,
+  endOfMonth,
+  format,
+  startOfYear,
+  endOfYear,
+  parse,
+} from "date-fns";
+
+const monthLabels = [
+  "Jan",
+  "Fev",
+  "Mar",
+  "Abr",
+  "Mai",
+  "Jun",
+  "Jul",
+  "Ago",
+  "Set",
+  "Out",
+  "Nov",
+  "Dez",
+];
+
+// Mapeamento de meses abreviados para completos
+const monthFullNames: Record<string, string> = {
+  Jan: "Janeiro",
+  Fev: "Fevereiro",
+  Mar: "Março",
+  Abr: "Abril",
+  Mai: "Maio",
+  Jun: "Junho",
+  Jul: "Julho",
+  Ago: "Agosto",
+  Set: "Setembro",
+  Out: "Outubro",
+  Nov: "Novembro",
+  Dez: "Dezembro",
+};
+
+// Tipando a função getFullMonthName
+function getFullMonthName(monthAbbreviation: string): string {
+  return monthFullNames[monthAbbreviation] || monthAbbreviation;
+}
+
+const renderTooltip = (props: any) => {
+  const { active, payload, label } = props;
+
+  if (active && payload && payload.length) {
+    // Pega os dados de cada item
+    const data = payload[0].payload;
+    return (
+      <div className="custom-tooltip text-center p-2 bg-white border border-gray-300 rounded">
+        <p>
+          <strong>{getFullMonthName(label)}</strong>
+        </p>
+        <div className="text-left">
+          {data.Total > 0 && (
+            <p>
+              <strong>Total: </strong>
+              R$ {data.Total ?? 0}
+            </p>
+          )}
+          {data.arTotal > 0 && (
+            <p>
+              <strong>Ar: </strong>
+              R$ {data.arTotal ?? 0}
+            </p>
+          )}
+          {data.terraTotal > 0 && (
+            <p>
+              <strong>Terra: </strong>
+              R$ {data.terraTotal ?? 0}
+            </p>
+          )}
+          {data.marTotal > 0 && (
+            <p>
+              <strong>Mar: </strong>
+              R$ {data.marTotal}
+            </p>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  return null;
+};
 
 const RADIAN = Math.PI / 180;
 const renderCustomizedLabel = ({
@@ -42,7 +129,7 @@ const renderCustomizedLabel = ({
   outerRadius,
   percent,
 }: any) => {
-  const radius = innerRadius + (outerRadius - innerRadius) * 0.4; // Ajuste fino da posição
+  const radius = (innerRadius + outerRadius) / 2; // Ajuste fino da posição
   const x = cx + radius * Math.cos(-midAngle * RADIAN);
   const y = cy + (radius + 3) * Math.sin(-midAngle * RADIAN);
 
@@ -61,64 +148,95 @@ const renderCustomizedLabel = ({
   );
 };
 
+interface IncomeItem {
+  countTotal: number;
+  sumTotal: number;
+  marTotal: number;
+  marPercent: number;
+  arTotal: number;
+  arPercent: number;
+  terraTotal: number;
+  terraPercent: number;
+}
+
+type IncomeTypeYear = {
+  [key: string]: IncomeItem;
+};
+
 export default function Dashboard() {
   const router = useRouter();
-  const [filters, setFilters] = React.useState({
-    report: "pago",
-    year: "2025",
-    month: "05",
-  });
-  const [typeGroup, setTypeGroup] = React.useState("month");
-  const [income, setIncome] = React.useState<IncomeType | null>();
-
   const now = new Date();
-  const currentMonthKey = format(new Date(), "yyyy-MM");
-  const startOfCurrentMonth = format(
-    startOfMonth(now),
-    "yyyy-MM-dd'T'00:00:00"
-  );
-  const endOfCurrentMonth = format(endOfMonth(now), "yyyy-MM-dd'T'23:59:59");
+  const currentMonthKey = format(new Date(), "MM");
+  const [filters, setFilters] = React.useState({
+    report: "",
+    year: "2025",
+    month: currentMonthKey,
+    typeDate: "", // month or year
+  });
 
+  const selectedMonthDate = React.useMemo(() => {
+    return parse(
+      `${filters.year}-${filters.month}-01`,
+      "yyyy-MM-dd",
+      new Date()
+    );
+  }, [filters?.year, filters?.month]);
+
+  const selectedYearDate = React.useMemo(() => {
+    return parse(`${filters.year}-01-01`, "yyyy-MM-dd", new Date());
+  }, [filters.year]);
+
+  const startDate = React.useMemo(() => {
+    return format(startOfMonth(selectedMonthDate), "yyyy-MM-dd'T'00:00:00");
+  }, [filters.typeDate, selectedMonthDate]);
+
+  const endDate = React.useMemo(() => {
+    return format(endOfMonth(selectedMonthDate), "yyyy-MM-dd'T'23:59:59");
+  }, [filters.typeDate, selectedMonthDate]);
+
+  const startOfCurrentYear = format(startOfYear(now), "yyyy-MM-dd'T'00:00:00");
+
+  const endOfCurrentYear = format(endOfYear(now), "yyyy-MM-dd'T'23:59:59");
+
+  const [typeGroup, setTypeGroup] = React.useState("month");
+
+  const [typeGroupYear, setTypeGroupYear] = React.useState("month");
+  // 'recebido' | 'a_receber' | 'cancelado'
   const { data: partnerOrders } = useQuery({
-    queryKey: ["partnerOrders"],
+    queryKey: ["partnerOrders", filters],
     queryFn: () =>
       partnerService.getOrders({
-        startsAt: "2025-05-01T00:00:00",
-        endsAt: "2025-05-30T23:59:59",
+        startsAt: startDate,
+        endsAt: endDate,
+        orderStatus: filters.report,
       }),
   });
 
   const { data: partnerIncome } = useQuery({
     queryKey: ["partnerIncome", typeGroup],
-    queryFn: async () => {
-      const income = await partnerService.getIncome({
-        startsAt: "2025-05-01T00:00:00",
-        endsAt: "2025-05-30T23:59:59",
+    queryFn: () =>
+      partnerService.getIncome({
+        startsAt: startDate,
+        endsAt: endDate,
         typeGroup,
-      });
-      setIncome(income);
-      return income;
-    },
+      }),
   });
 
   const { data: partnerIncomeYear } = useQuery({
-    queryKey: ["partnerIncomeYear", typeGroup],
-    queryFn: async () => {
-      const income = await partnerService.getIncome({
-        startsAt: "2025-01-01T00:00:00",
-        endsAt: "2025-12-31T23:59:59",
-        typeGroup,
-      });
-      setIncome(income);
-      return income;
-    },
+    queryKey: ["partnerIncomeYear", typeGroupYear],
+    queryFn: () =>
+      partnerService.getIncome({
+        startsAt: startOfCurrentYear,
+        endsAt: endOfCurrentYear,
+        typeGroup: typeGroupYear,
+      }),
   });
 
   const type = typeGroup === "month" ? "2025-05" : "week-1-2025-05";
 
   const incomeData = partnerIncome?.[type];
 
-  const incomeYearData = partnerIncomeYear?.[type];
+  // const incomeYearData = partnerIncomeYear?.[type];
 
   const activities = [
     {
@@ -170,26 +288,79 @@ export default function Dashboard() {
     setTypeGroup(value);
   };
 
-  const lineData = [
-    { name: "Jan", value: 80 },
-    { name: "Fev", value: 100 },
-    { name: "Mar", value: 150 },
-    { name: "Abr", value: 300 },
-    { name: "Mai", value: 600 },
-    { name: "Jun", value: 400 },
-    { name: "Jul", value: 500 },
-  ];
+  const handleFilterYear = (value: string) => {
+    setTypeGroupYear(value);
+  };
+
+  function formatChartData(data: IncomeTypeYear | undefined, type: string) {
+    if (!data) return [];
+
+    if (type === "week") {
+      const weekEntries = Object.entries(data)
+        .filter(([key]) => key.startsWith("week-"))
+        .sort(([a], [b]) => a.localeCompare(b)); // ordena pela chave (semana)
+
+      const chartData = weekEntries.map(([key, value], index) => ({
+        name: `Semana ${index + 1}`, // Use o weekLabels ou um fallback
+        Total: value?.sumTotal ?? 0, // Valor total da semana
+        arTotal: value?.arTotal ?? 0, // Valor AR
+        terraTotal: value?.terraTotal ?? 0, // Valor Terra
+        marTotal: value?.marTotal ?? 0, // Valor Mar
+        countTotal: value?.countTotal ?? 0, // Contagem total
+      }));
+
+      return [{ name: "", Total: 0 }, ...chartData];
+    }
+
+    // Padrão: mensal
+    return Array.from({ length: 6 }, (_, index) => {
+      const month = String(index + 1).padStart(2, "0");
+      const key = `2025-${month}`;
+      const value = data[key];
+
+      return {
+        name: monthLabels[index],
+        Total: value?.sumTotal ?? 0,
+        arTotal: value?.arTotal ?? 0,
+        terraTotal: value?.terraTotal ?? 0,
+        marTotal: value?.marTotal ?? 0,
+        countTotal: value?.countTotal ?? 0,
+      };
+    });
+  }
+
+  const getMiddleMonthLabel = (data: { name: string; Total: number }[]) => {
+    const monthsWithValue = data.filter((d) => d.Total > 0);
+    if (!monthsWithValue.length) return null;
+
+    const middleIndex = Math.floor(monthsWithValue.length / 2);
+    return monthsWithValue[middleIndex]?.name ?? null;
+  };
+
+  const getMiddleLabel = (data: { name: string; Total: number }[]) => {
+    const withValue = data.filter((d) => d.Total > 0);
+    if (!withValue.length) return null;
+
+    const middleIndex = Math.floor(withValue.length / 2);
+    return withValue[middleIndex]?.name ?? null;
+  };
 
   return (
     <main className="max-sm:mx-4 my-6">
       <div className="max-sm:space-y-6 md:grid md:grid-cols-3 md:gap-6 md:items-center md:my-12">
         <MyCard className="md:h-full">
           <CardContent className="space-y-4">
-            <h2 className="text-lg font-semibold">Atividades</h2>
+            <div>
+              <h2 className="text-lg font-semibold">Atividades</h2>
+              <p className="text-sm text-gray-400 mt-2">
+                Clique em um dos cards abaixo para ver relatórios de cada tipo
+                de atividade
+              </p>
+            </div>
             {activities.map((activity, index) => (
               <div
                 key={index}
-                className="flex flex-col gap-4 md:cursor-pointer"
+                className="flex flex-col gap-4 md:cursor-pointer pt-1"
                 onClick={() =>
                   router.push(PATHS.relatorioAtividade(activity?.icon))
                 }
@@ -197,9 +368,9 @@ export default function Dashboard() {
                 <div className="flex items-center gap-4 relative">
                   <MyTypography
                     variant="caption"
-                    className="text-sm font-semibold absolute top-[39%] left-[7%]"
+                    className="text-sm font-semibold absolute top-[39%] left-[8%]"
                   >
-                    {activity.progress}%
+                    {Math.round(activity.progress)}%
                   </MyTypography>
                   <ResponsiveContainer width={70} height={70}>
                     <PieChart>
@@ -293,7 +464,7 @@ export default function Dashboard() {
                       cx="50%"
                       cy="50%"
                       outerRadius={110} // Aumentando o tamanho do gráfico
-                      innerRadius={80} // Deixando mais fino
+                      innerRadius={75} // Deixando mais fino
                       minAngle={20} // Define o ângulo mínimo para exibição
                       startAngle={-45} // Define que o maior segmento começa de cima
                       endAngle={320} // Garante a distribuição no sentido anti-horário
@@ -371,58 +542,86 @@ export default function Dashboard() {
 
               <div className="ml-auto">
                 <MySelect
-                //   value={}
-                //   onValueChange={}
+                  value={typeGroupYear}
+                  onValueChange={(value) => handleFilterYear(value)}
                 >
                   <SelectTrigger className="rounded-2xl text-[#848A9C] text-xs">
                     <SelectValue placeholder="Mensal" />
                   </SelectTrigger>
                   <SelectContent className="rounded-lg">
-                    <SelectItem value="Mensal">Mensal</SelectItem>
-                    <SelectItem value="Semanal">Semanal</SelectItem>
+                    <SelectItem value="month">Mensal</SelectItem>
+                    <SelectItem value="week">Semanal</SelectItem>
                   </SelectContent>
                 </MySelect>
               </div>
             </div>
 
             <div className="h-[250px] w-full mt-4">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart
-                  data={lineData}
-                  margin={{
-                    top: 10,
-                    right: 10,
-                    left: -20,
-                    bottom: 5,
-                  }}
-                >
-                  <XAxis
-                    fontSize={12}
-                    axisLine={false}
-                    dataKey="name"
-                    interval="preserveStartEnd"
-                    padding={{ left: 10, right: 10 }}
-                  />
-                  <YAxis fontSize={12} axisLine={false} />
-                  <Tooltip />
-                  <ReferenceLine x="Mai" stroke="orange" strokeWidth={2} />
-                  <Line
-                    type="monotone"
-                    dataKey="value"
-                    stroke="#00C6FB"
-                    strokeWidth={2}
-                    dot={{ r: 0 }}
-                  />
-                  <Line
-                    type="monotone"
-                    dataKey="before"
-                    strokeWidth={2}
-                    stroke="rgb(201, 201, 201)"
-                    dot={{ r: 0 }}
-                  />
-                  <CartesianGrid strokeDasharray="2" vertical={false} />
-                </LineChart>
-              </ResponsiveContainer>
+              {partnerIncomeYear &&
+              Object.keys(partnerIncomeYear).length > 0 ? (
+                (() => {
+                  const chartData = formatChartData(
+                    partnerIncomeYear,
+                    typeGroupYear
+                  );
+                  const reference =
+                    typeGroupYear == "month"
+                      ? getMiddleMonthLabel(chartData)
+                      : getMiddleLabel(chartData);
+
+                  return (
+                    <ResponsiveContainer width="100%" height="100%">
+                      <LineChart
+                        data={chartData}
+                        margin={{
+                          top: 10,
+                          right: 10,
+                          left: -20,
+                          bottom: 5,
+                        }}
+                      >
+                        <XAxis
+                          fontSize={12}
+                          axisLine={false}
+                          dataKey="name"
+                          interval="preserveStartEnd"
+                          padding={{ left: 10, right: 10 }}
+                        />
+                        <YAxis fontSize={12} axisLine={false} />
+                        <Tooltip content={renderTooltip} />
+                        {reference && (
+                          <ReferenceLine
+                            x={reference}
+                            stroke="orange"
+                            strokeWidth={2}
+                          />
+                        )}
+                        <Line
+                          type="monotone"
+                          dataKey="Total"
+                          stroke="#00C6FB"
+                          strokeWidth={2}
+                          dot={{ r: 0 }}
+                        />
+                        <Line
+                          type="monotone"
+                          dataKey="before"
+                          strokeWidth={2}
+                          stroke="rgb(201, 201, 201)"
+                          dot={{ r: 0 }}
+                        />
+                        <CartesianGrid strokeDasharray="2" vertical={false} />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  );
+                })()
+              ) : (
+                <div className="flex items-center justify-center mt-6">
+                  <MyTypography variant="body-big" weight="bold">
+                    Você ainda não possui passeios realizados
+                  </MyTypography>
+                </div>
+              )}
             </div>
           </CardContent>
         </MyCard>
@@ -430,7 +629,7 @@ export default function Dashboard() {
 
       <div className="max-sm:hidden">
         <Lancamentos
-          data={partnerOrders?.ordersSchedules}
+          data={partnerOrders}
           filters={filters}
           setFilters={setFilters}
         />

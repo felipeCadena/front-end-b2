@@ -1,25 +1,25 @@
-'use client';
+"use client";
 
-import Image from 'next/image';
-import React, { useState } from 'react';
-import MyBadge from '../atoms/my-badge';
-import StarRating from '../molecules/my-stars';
-import MyTypography from '../atoms/my-typography';
-import MyIcon from '../atoms/my-icon';
-import { getData, handleNameActivity } from '@/utils/formatters';
-import MyButton from '../atoms/my-button';
-import { useRouter } from 'next/navigation';
-import PATHS from '@/utils/paths';
+import Image from "next/image";
+import React, { useState } from "react";
+import MyBadge from "../atoms/my-badge";
+import StarRating from "../molecules/my-stars";
+import MyTypography from "../atoms/my-typography";
+import MyIcon from "../atoms/my-icon";
+import { getData, handleNameActivity } from "@/utils/formatters";
+import MyButton from "../atoms/my-button";
+import { useRouter } from "next/navigation";
+import PATHS from "@/utils/paths";
 import {
   CustomerSchedule,
   ordersAdventuresService,
-} from '@/services/api/orders';
-import PopupCancelActivity from './popup-cancel-activity';
-import MyCancelScheduleModal from '../molecules/my-cancel-schedule-modal';
-import { cn } from '@/utils/cn';
-import { useQueryClient } from '@tanstack/react-query';
-import { AxiosError } from 'axios';
-import { toast } from 'react-toastify';
+} from "@/services/api/orders";
+import PopupCancelActivity from "./popup-cancel-activity";
+import MyCancelScheduleModal from "../molecules/my-cancel-schedule-modal";
+import { cn } from "@/utils/cn";
+import { useQueryClient } from "@tanstack/react-query";
+import { AxiosError } from "axios";
+import { toast } from "react-toastify";
 
 type FullActivitiesHistoricProps = {
   activities: CustomerSchedule[] | undefined;
@@ -67,7 +67,7 @@ export default function ScheduledActivitiesMobile({
           orderScheduleAdventureId
         );
         queryClient.invalidateQueries({
-          queryKey: ['schedules'],
+          queryKey: ["schedules"],
         });
       } catch (error) {
         if (error instanceof AxiosError) {
@@ -92,9 +92,9 @@ export default function ScheduledActivitiesMobile({
         activities.map((activity, index: number) => (
           <div
             className={cn(
-              'flex flex-col gap-4 px-2 my-8',
-              activity?.adventureStatus == 'cancelado_pelo_cliente' &&
-                'opacity-60 pointer-events-none'
+              "flex flex-col gap-4 px-2 my-8",
+              activity?.adventureStatus.includes("cancelado") &&
+                "opacity-60 pointer-events-none"
             )}
             key={index}
           >
@@ -107,17 +107,21 @@ export default function ScheduledActivitiesMobile({
               </div>
               <div className="flex justify-center gap-2">
                 <div
-                  className="relative z-10 overflow-hidden min-w-[100px] min-h-[7rem] hover:cursor-pointer rounded-md"
+                  className="relative z-10 overflow-hidden min-w-[110px] min-h-[6rem] hover:cursor-pointer rounded-md"
                   onClick={() =>
                     router.push(PATHS.atividadeRealizada(activity.id))
                   }
                 >
                   <Image
-                    alt="sample_file"
-                    src={'/images/atividades/paraquedas.webp'}
+                    alt="Imagem aventura"
+                    src={
+                      activity?.adventure?.images
+                        ? activity?.adventure?.images[0].url
+                        : "/images/atividades/paraquedas.webp"
+                    }
                     width={250}
                     height={300}
-                    className="w-[100px] h-full object-cover"
+                    className="w-[110px] h-full object-cover"
                   />
                 </div>
                 <div className="flex flex-col justify-start">
@@ -130,7 +134,7 @@ export default function ScheduledActivitiesMobile({
                         {handleNameActivity(activity?.adventure?.typeAdventure)}
                       </MyBadge>
                       {activity?.adventureStatus ===
-                        'cancelado_pelo_cliente' && (
+                        "cancelado_pelo_cliente" && (
                         <MyBadge
                           className="font-medium text-nowrap p-1 rounded-lg"
                           variant="error"
@@ -155,11 +159,11 @@ export default function ScheduledActivitiesMobile({
 
                   <MyTypography variant="subtitle3" weight="bold" className="">
                     {activity?.adventure?.title.length > 20
-                      ? activity?.adventure?.title.slice(0, 20).trim() + '...'
+                      ? activity?.adventure?.title.slice(0, 20).trim() + "..."
                       : activity?.adventure?.title}
                   </MyTypography>
                   <MyTypography variant="label" className="pr-2">
-                    {activity.adventure.description.slice(0, 60).concat('...')}
+                    {activity.adventure.description.slice(0, 60).concat("...")}
                   </MyTypography>
                 </div>
               </div>

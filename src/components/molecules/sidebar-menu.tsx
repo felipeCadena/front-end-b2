@@ -53,11 +53,11 @@ export default function SidebarMenu({
 
   const handleLogout = async () => {
     try {
-      await authService.logout(session?.user.refreshToken ?? "");
       signOut({
         callbackUrl: "/",
         redirect: true,
       });
+      await authService.logout(session?.user.refreshToken ?? "");
       clearUser();
     } catch (error) {
       console.error("Error during logout:", error);

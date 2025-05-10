@@ -1,26 +1,27 @@
-import Eye from './my-icon/elements/eye';
-import Hide from './my-icon/elements/hide';
-import { HTMLInputTypeAttribute, useState } from 'react';
-import { FieldValues, Path, UseFormReturn } from 'react-hook-form';
-import { NumericFormat, PatternFormat } from 'react-number-format';
+import Eye from "./my-icon/elements/eye";
+import Hide from "./my-icon/elements/hide";
+import { HTMLInputTypeAttribute, useState } from "react";
+import { FieldValues, Path, UseFormReturn } from "react-hook-form";
+import { NumericFormat, PatternFormat } from "react-number-format";
 
-import MyButton from './my-button';
+import MyButton from "./my-button";
 import {
   FormControl,
   FormField,
   FormItem,
   FormMessage,
-} from '../atoms/my-form';
-import MyTextInput from './my-text-input';
+} from "../atoms/my-form";
+import MyTextInput from "./my-text-input";
 
-import { Skeleton } from './my-skeleton';
-import { cn } from '@/utils/cn';
+import { Skeleton } from "./my-skeleton";
+import { cn } from "@/utils/cn";
 import {
   formatCardNumber,
   formatCEP,
   formatCpfCnpj,
   formatPhoneNumber,
-} from '@/utils/formatters';
+  formatPhoneNumberDDI,
+} from "@/utils/formatters";
 
 type Props<T extends FieldValues> = {
   readonly form: UseFormReturn<T>;
@@ -60,12 +61,12 @@ export default function MyFormInput<T extends FieldValues>({
   prefix,
   decimalScale = 2,
   className,
-  type = 'text',
-  label = '',
-  placeholder = label ?? '',
+  type = "text",
+  label = "",
+  placeholder = label ?? "",
   isLoading = false,
   disabled = false,
-  inputPadding = 'pl-4',
+  inputPadding = "pl-4",
 }: Props<T>) {
   const [showPassword, setShowPassword] = useState(false);
 
@@ -76,7 +77,7 @@ export default function MyFormInput<T extends FieldValues>({
       control={form.control}
       name={name}
       render={({ field }) => (
-        <FormItem className={cn('w-full', className)}>
+        <FormItem className={cn("w-full", className)}>
           <FormControl>
             {withMask ? (
               !numeric ? (
@@ -85,7 +86,7 @@ export default function MyFormInput<T extends FieldValues>({
                   placeholder={placeholder}
                   value={field.value}
                   customInput={MyTextInput}
-                  format={maskFormat || ''}
+                  format={maskFormat || ""}
                   onValueChange={(values) => {
                     field.onChange({
                       target: {
@@ -100,7 +101,7 @@ export default function MyFormInput<T extends FieldValues>({
                   customInput={MyTextInput}
                   value={field.value}
                   decimalSeparator=","
-                  allowedDecimalSeparators={[',', '.']}
+                  allowedDecimalSeparators={[",", "."]}
                   decimalScale={decimalScale}
                   suffix={suffix}
                   prefix={prefix}
@@ -128,7 +129,7 @@ export default function MyFormInput<T extends FieldValues>({
                     if (isCpfCnpj) {
                       formattedValue = formatCpfCnpj(rawValue);
                     } else if (isPhoneNumber) {
-                      formattedValue = formatPhoneNumber(rawValue);
+                      formattedValue = formatPhoneNumberDDI(rawValue);
                     } else if (isCEP) {
                       formattedValue = formatCEP(rawValue);
                     } else if (isCardNumber) {
@@ -142,14 +143,14 @@ export default function MyFormInput<T extends FieldValues>({
                       },
                     });
                   }}
-                  type={showPassword ? 'text' : type}
+                  type={showPassword ? "text" : type}
                   placeholder={placeholder}
                   disabled={disabled}
                   inputPadding={inputPadding}
                   label={label}
                   className="mt-2"
                 />
-                {type === 'password' && (
+                {type === "password" && (
                   <MyButton
                     type="button"
                     variant="ghost"
@@ -175,7 +176,7 @@ export default function MyFormInput<T extends FieldValues>({
 
 function LoadingState({ className }: { className?: string; label?: string }) {
   return (
-    <FormItem className={cn('w-full', className)}>
+    <FormItem className={cn("w-full", className)}>
       <Skeleton className="h-10 w-full bg-neutral-200" />
     </FormItem>
   );

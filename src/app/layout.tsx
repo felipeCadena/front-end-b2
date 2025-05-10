@@ -57,6 +57,7 @@ export default function RootLayout({
               pauseOnFocusLoss
               draggable
               pauseOnHover
+              style={{ zIndex: 9999 }}
             />
           </Provider>
         </AuthProvider>

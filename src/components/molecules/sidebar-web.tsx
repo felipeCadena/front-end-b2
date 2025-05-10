@@ -71,11 +71,11 @@ export default function SidebarMenuWeb({}) {
 
   const handleLogout = async () => {
     try {
-      await authService.logout(session?.user.refreshToken ?? "");
       signOut({
         callbackUrl: "/",
         redirect: true,
       });
+      await authService.logout(session?.user.refreshToken ?? "");
       clearUser();
     } catch (error) {
       console.error("Error during logout:", error);
@@ -141,11 +141,12 @@ export default function SidebarMenuWeb({}) {
                 )}
 
                 {item.label == "Chat" && (
-                  <div className="relative bg-secondary-200 h-[2rem] w-[2rem] rounded-full">
-                    <div className="absolute bg-red-400 h-[0.625rem] w-[0.625rem] rounded-full" />
+                  <div className="h-[2rem] w-[2rem] rounded-full">
+                    {/* relative bg-secondary-200 */}
+                    {/* <div className="absolute bg-red-400 h-[0.625rem] w-[0.625rem] rounded-full" /> */}
                     <MyIcon
                       name="chat-web"
-                      className="absolute top-1.5 left-[0.30rem]"
+                      // className="absolute top-1.5 left-[0.30rem]"
                     />
                   </div>
                 )}

@@ -112,7 +112,6 @@ export default function AutocompleteCombobox({
         onPlacesChanged={() => {
           if (searchBoxRef) {
             const places = searchBoxRef.getPlaces();
-            console.log("Places:", places);
             if (places && places.length > 0) {
               handlePlaceSelect(places[0]);
             }
@@ -123,7 +122,8 @@ export default function AutocompleteCombobox({
           type="text"
           placeholder="Digite um endereço"
           noHintText
-          leftIcon={<MyIcon name="localizacao" />}
+          className="placeholder:text-black"
+          leftIcon={<MyIcon name="localizacao" className="ml-3" />}
           value={formData?.address}
           onChange={(e) =>
             setFormData({ ...formData, address: e.target.value })

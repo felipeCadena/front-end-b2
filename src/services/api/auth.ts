@@ -64,19 +64,20 @@ export const authService = {
   // Refresh do token
   refreshToken: async (token: string): Promise<TokenResponse> => {
     try {
-      const response = await axios.post<TokenResponse>(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/refresh`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      api.defaults.headers.common.Authorization = `Bearer ${token}`;
+      const response = await api.post("/auth/refresh");
+      // const response = await axios.post<TokenResponse>(
+      //   `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/refresh`,
+      //   {},
+      //   {
+      //     headers: {
+      //       Authorization: `Bearer ${token}`,
+      //     },
+      //   }
+      // );
 
       return response.data;
     } catch (error) {
-      toast.error("É necessário logar novamente!");
       throw error;
     }
   },
@@ -84,15 +85,17 @@ export const authService = {
   // Logout
   logout: async (token: string) => {
     try {
-      await axios.post(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/logout`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      api.defaults.headers.common.Authorization = `Bearer ${token}`;
+      await api.post("/auth/logout");
+      // await axios.post(
+      //   `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/logout`,
+      //   {},
+      //   {
+      //     headers: {
+      //       Authorization: `Bearer ${token}`,
+      //     },
+      //   }
+      // );
     } catch (error) {
       console.error("Erro no logout:", error);
     }

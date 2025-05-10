@@ -1,19 +1,19 @@
-'use client';
+"use client";
 
-import Loading from '@/app/loading';
-import MyTypography from '@/components/atoms/my-typography';
-import ActivitiesFilter from '@/components/organisms/activities-filter';
-import FavoriteActivityMobile from '@/components/organisms/favorite-acitvity-mobile';
-import FavoriteActivity from '@/components/organisms/favorite-activity';
-import { adventures } from '@/services/api/adventures';
-import { cn } from '@/utils/cn';
-import { useQuery } from '@tanstack/react-query';
-import React, { useState } from 'react';
+import Loading from "@/app/loading";
+import MyTypography from "@/components/atoms/my-typography";
+import ActivitiesFilter from "@/components/organisms/activities-filter";
+import FavoriteActivityMobile from "@/components/organisms/favorite-acitvity-mobile";
+import FavoriteActivity from "@/components/organisms/favorite-activity";
+import { adventures } from "@/services/api/adventures";
+import { cn } from "@/utils/cn";
+import { useQuery } from "@tanstack/react-query";
+import React, { useState } from "react";
 
 export default function Favoritos() {
-  const [selected, setSelected] = useState<'ar' | 'terra' | 'mar' | ''>('');
+  const [selected, setSelected] = useState<"ar" | "terra" | "mar" | "">("");
   const { data: favorites = [], isLoading } = useQuery({
-    queryKey: ['favorites'],
+    queryKey: ["favorites"],
     queryFn: () => adventures.listFavorites(),
   });
 
@@ -62,8 +62,14 @@ export default function Favoritos() {
               withoutText
             />
 
-            <div className={cn('md:grid md:grid-cols-4 md:gap-6')}>
-              {selected === ''
+            <div
+              className={cn(
+                selected === ""
+                  ? "md:grid md:grid-cols-4 md:gap-6"
+                  : "md:flex md:w-full"
+              )}
+            >
+              {selected === ""
                 ? favorites.map((favorite, i) => (
                     <>
                       <FavoriteActivity

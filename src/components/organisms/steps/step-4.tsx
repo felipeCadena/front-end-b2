@@ -56,6 +56,12 @@ export default function Step4() {
     }
   };
 
+  React.useEffect(() => {
+    if (window) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }, []);
+
   return (
     <section className="space-y-4">
       <div className="">

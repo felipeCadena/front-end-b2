@@ -7,33 +7,31 @@ import ChatMessages from "@/components/organisms/chat-messages";
 import { chatService } from "@/services/api/chats";
 import useSearchQueryService from "@/services/use-search-query-service";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import Image from "next/image";
-import { use, useEffect } from "react";
-import { useDebounce } from "@/hooks/useDebounce";
+import { useEffect } from "react";
+import MyButton from "@/components/atoms/my-button";
+import { useRouter } from "next/navigation";
+import useChat from "@/store/useChat";
 
 export default function Chat() {
   const { params } = useSearchQueryService();
   const queryClient = useQueryClient();
   const [user, setUser] = React.useState<string>("");
+  const router = useRouter();
+  const { chat, setChat } = useChat();
 
   const { data: chats } = useQuery({
     queryKey: ["chats", user],
-    queryFn: () => chatService.getMyChats({ name: user }),
+    queryFn: () => chatService.getMyChats({ name: user, limit: 50 }),
+    refetchInterval: 5000,
   });
 
-  const { data: chat } = useQuery({
-    queryKey: ["chat"],
-    queryFn: () => chatService.getMyChats({ name: params?.user }),
-    enabled: !!params?.user,
-  });
-
-  useEffect(() => {
-    queryClient.invalidateQueries({ queryKey: ["chat"] });
-    queryClient.invalidateQueries({ queryKey: ["messages"] });
-  }, [params?.user]);
+  // useEffect(() => {
+  //   queryClient.invalidateQueries({ queryKey: ["chat"] });
+  //   queryClient.invalidateQueries({ queryKey: ["messages"] });
+  // }, [params?.user]);
 
   return (
-    <div className="min-h-[75vh] max-h-screen overflow-auto bg-white">
+    <div className="min-h-[75vh] max-h-screen overflow-y-hidden bg-white border rounded-2xl shadow-md px-4 my-6">
       <div className="md:hidden">
         <ChatList chats={chats} setUser={setUser} />
       </div>
@@ -44,12 +42,28 @@ export default function Chat() {
         </div>
         <div className="w-[2rem] bg-gray-500 mx-4 rounded" />
         <div className="w-2/3">
-          {chat ? (
-            <ChatMessages chat={chat[0]} user={chat[0]?.userToId} />
+          {chat.id ? (
+            <ChatMessages chat={chat} />
           ) : (
             <div className="flex flex-col items-center justify-center gap-4 mt-12">
               <MyLogo variant="web" />
-              <p className="">Selecione um chat para começar</p>
+              {chats && chats?.length > 0 ? (
+                <p className="font-bold">Selecione um chat para começar</p>
+              ) : (
+                <div className="flex flex-col items-center justify-center gap-4 mt-2">
+                  <p className="text-center font-bold">
+                    Você ainda não tem chats ativos
+                  </p>
+                  <MyButton
+                    variant="default"
+                    borderRadius="squared"
+                    className=""
+                    onClick={() => router.back()}
+                  >
+                    Voltar
+                  </MyButton>
+                </div>
+              )}
             </div>
           )}
         </div>

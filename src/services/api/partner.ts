@@ -76,6 +76,7 @@ export interface Partner {
     url?: string;
     mimetype?: string;
   };
+  _count?: { adventures: number };
 }
 
 export interface UploadImage {
@@ -370,6 +371,7 @@ export const partnerService = {
     startsAt?: string;
     endsAt?: string;
     typeAdventure?: string;
+    orderStatus?: string;
   }): Promise<PartnerIncome | null> => {
     try {
       const response = await api.get<PartnerIncome>(`/admin/partner/orders`, {

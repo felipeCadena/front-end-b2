@@ -9,34 +9,43 @@ import useSearchQueryService from "@/services/use-search-query-service";
 import { useParams } from "next/navigation";
 
 export default function RelatorioAtividade() {
-  const now = new Date();
+  const [selectedDate, setSelectedDate] = React.useState<Date>(new Date());
   const { id: typeAdventure } = useParams();
 
-  const currentMonthKey = format(new Date(), "yyyy-MM");
-  const startOfCurrentMonth = format(
-    startOfMonth(now),
+  const startOfSelectedMonth = format(
+    startOfMonth(selectedDate),
     "yyyy-MM-dd'T'00:00:00"
   );
 
+  const endOfSelectedMonth = format(
+    endOfMonth(selectedDate),
+    "yyyy-MM-dd'T'23:59:59"
+  );
+
+  const currentMonthKey = format(new Date(), "MM");
+
   const [filters, setFilters] = React.useState({
-    report: "pago",
+    report: "",
     year: "2025",
-    month: "04",
+    month: currentMonthKey,
+    typeDate: "",
   });
   const { data: partnerOrders } = useQuery({
-    queryKey: ["partnerOrders", typeAdventure],
+    queryKey: ["partnerOrders", typeAdventure, filters],
     queryFn: () =>
       partnerService.getOrders({
-        startsAt: "2025-04-01T00:00:00",
-        endsAt: "2025-04-30T23:59:59",
+        startsAt: startOfSelectedMonth,
+        endsAt: endOfSelectedMonth,
         typeAdventure: typeAdventure as string,
+        orderStatus: filters.report,
       }),
   });
 
   return (
     <Lancamentos
+      setSelectedDate={setSelectedDate}
       backButton
-      data={partnerOrders?.ordersSchedules}
+      data={partnerOrders}
       title="Relatório da atividade"
       filters={filters}
       setFilters={setFilters}

@@ -176,7 +176,6 @@ export const authOptions: NextAuthOptions = {
 
       if (now > token.expiresAt) {
         try {
-          console.log("refreshToken " + token?.refreshToken);
           const dataAuth = await authService.refreshToken(token?.refreshToken);
 
           if (dataAuth?.access_token) {
@@ -222,8 +221,8 @@ export const authOptions: NextAuthOptions = {
   pages: {
     signIn: "/login",
     error: "/login",
-    signOut: "/",
-    verifyRequest: "/",
+    signOut: "/login",
+    // verifyRequest: "/",
   },
   session: {
     strategy: "jwt",

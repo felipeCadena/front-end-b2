@@ -8,12 +8,14 @@ import { Popover, PopoverContent, PopoverTrigger } from "../atoms/my-popover";
 import { ClientSchedule } from "@/services/api/adventures";
 import { useQuery } from "@tanstack/react-query";
 import { formatPrice } from "@/utils/formatters";
+import { cn } from "@/utils/cn";
 
 type PeopleSelectorProps = {
   adults: number;
   children: number;
   setAdults: React.Dispatch<React.SetStateAction<number>>;
   setChildren: React.Dispatch<React.SetStateAction<number>>;
+  className?: string;
 };
 
 export default function PublicPeopleSelector({
@@ -21,6 +23,7 @@ export default function PublicPeopleSelector({
   children,
   setAdults,
   setChildren,
+  className,
 }: PeopleSelectorProps) {
   const [open, setOpen] = useState(false);
 
@@ -55,16 +58,27 @@ export default function PublicPeopleSelector({
         <MyButton
           variant="date"
           borderRadius="squared"
-          className="w-full justify-start text-sm items-center gap-2 py-6 border-gray-300 md:bg-white"
+          className={cn(
+            "w-full justify-start text-sm items-center gap-2 py-6 border-gray-300 md:bg-white",
+            className
+          )}
         >
           <MyIcon name="pessoas" />
           {adults || children ? (
-            <MyTypography variant="label" weight="medium">
+            <MyTypography
+              variant="label"
+              weight="medium"
+              className={cn(className)}
+            >
               {" "}
               Adultos: {adults} {children != 0 && `+ Crianças: ${children}`}{" "}
             </MyTypography>
           ) : (
-            <MyTypography variant="body" weight="regular" className="text-sm">
+            <MyTypography
+              variant="body"
+              weight="regular"
+              className={cn("text-sm", className)}
+            >
               Número de pessoas
             </MyTypography>
           )}

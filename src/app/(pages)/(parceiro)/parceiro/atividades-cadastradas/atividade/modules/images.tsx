@@ -91,7 +91,6 @@ export default function UpdateImages({ formData, onClose }: UpdateImagesProps) {
                   small
                   className="cursor-pointer"
                   onChange={(fileList) => {
-                    console.log(image);
                     if (fileList) {
                       uploadImage(fileList[0], image?.id ?? "");
                     }

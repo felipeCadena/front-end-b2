@@ -1,17 +1,17 @@
-'use client';
+"use client";
 
-import * as React from 'react';
-import { format, parseISO } from 'date-fns';
-import { Popover, PopoverContent, PopoverTrigger } from '../atoms/my-popover';
-import MyButton from '../atoms/my-button';
-import { cn } from '@/utils/cn';
-import MyIcon from '../atoms/my-icon';
-import { ptBR } from 'date-fns/locale/pt-BR';
-import MyTypography from '../atoms/my-typography';
-import { MyActivityCalendar } from './my-activity-calendar';
-import { Dispatch, SetStateAction, useState } from 'react';
-import { Recurrence } from '../organisms/activity-date-picker';
-import { formatRecurrencesToDates } from '@/utils/formatters';
+import * as React from "react";
+import { format, parseISO } from "date-fns";
+import { Popover, PopoverContent, PopoverTrigger } from "../atoms/my-popover";
+import MyButton from "../atoms/my-button";
+import { cn } from "@/utils/cn";
+import MyIcon from "../atoms/my-icon";
+import { ptBR } from "date-fns/locale/pt-BR";
+import MyTypography from "../atoms/my-typography";
+import { MyActivityCalendar } from "./my-activity-calendar";
+import { Dispatch, SetStateAction, useState } from "react";
+import { Recurrence } from "../organisms/activity-date-picker";
+import { formatRecurrencesToDates } from "@/utils/formatters";
 
 type MyActivityDatePickerProps = {
   withlabel?: string;
@@ -49,12 +49,12 @@ export function MyActivityDatePicker({
 
   const monthlyRecurrences = formatRecurrencesToDates(
     activityRecurrences,
-    'monthly'
+    "monthly"
   );
 
   const weeklyRecurrences = formatRecurrencesToDates(
     activityRecurrences,
-    'weekly'
+    "weekly"
   );
 
   return (
@@ -64,14 +64,14 @@ export function MyActivityDatePicker({
           variant="date"
           borderRadius="squared"
           className={cn(
-            'w-full justify-start text-sm items-center gap-2 py-6 border-gray-300 md:bg-white'
+            "w-full justify-start text-sm items-center gap-2 py-6 border-gray-300 md:bg-white"
           )}
         >
           {!withlabel && <MyIcon name="date" />}
           {withlabel ? (
             selectedDate ? (
               <span className="text-black">
-                {format(selectedDate, 'dd', { locale: ptBR })}
+                {format(selectedDate, "dd", { locale: ptBR })}
               </span>
             ) : (
               <MyTypography
@@ -85,7 +85,7 @@ export function MyActivityDatePicker({
             )
           ) : selectedDate ? (
             <span className="text-black">
-              {format(selectedDate, 'dd/MM', { locale: ptBR })}
+              {format(selectedDate, "dd/MM", { locale: ptBR })}
             </span>
           ) : (
             <MyTypography variant="body" weight="regular" className="text-sm">
