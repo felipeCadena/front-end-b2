@@ -44,12 +44,21 @@ export default function GaleriaDeFotos() {
     },
   });
 
-  console.log(activityPhotos);
-
   const handleDownloadImage = async (imageURL: string, fileTitle: string) => {
-    const response = await axios.get(imageURL);
-    console.log(response);
+    const response = await fetch(imageURL);
+    const blob = await response.blob();
+    const blobURL = URL.createObjectURL(blob);
+
+    const link = document.createElement('a');
+    link.setAttribute('download', fileTitle);
+    link.href = blobURL;
+    link.setAttribute('target', '_blank');
+
+    setTimeout(() => {
+      URL.revokeObjectURL(blobURL);
+    }, 0);
   };
+
   const handleFetchPhotos = (id: string, downloadAll?: boolean) => {
     setOpen(!open);
     setSelected(id);

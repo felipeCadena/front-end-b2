@@ -27,8 +27,6 @@ export default function Galeria() {
     queryFn: async () => await schedules.getScheduleMedias(id as string),
   });
 
-  console.log(activity);
-
   return isLoading ? (
     <div>
       <Loading />
