@@ -21,7 +21,7 @@ export default function SearchInfoActivity() {
   const [hour, setHour] = React.useState("");
   const [date, setDate] = React.useState<Date>();
 
-  const [adults, setAdults] = React.useState(1);
+  const [adults, setAdults] = React.useState(0);
   const [children, setChildren] = React.useState(0);
 
   const handleLocationSelected = (location: any) => {
@@ -80,7 +80,7 @@ export default function SearchInfoActivity() {
           setAdults={setAdults}
           children={children}
           setChildren={setChildren}
-          className="text-base"
+          className="text-gray-400"
         />
       </div>
 

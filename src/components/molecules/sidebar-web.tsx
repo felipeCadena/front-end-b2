@@ -71,7 +71,7 @@ export default function SidebarMenuWeb({}) {
 
   const handleLogout = async () => {
     try {
-      signOut({
+      await signOut({
         callbackUrl: "/",
         redirect: true,
       });

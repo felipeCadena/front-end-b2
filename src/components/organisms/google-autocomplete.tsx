@@ -122,7 +122,7 @@ export default function AutocompleteCombobox({
           type="text"
           placeholder="Digite um endereço"
           noHintText
-          className="placeholder:text-black"
+          className="placeholder:text-gray-400"
           leftIcon={<MyIcon name="localizacao" className="ml-3" />}
           value={formData?.address}
           onChange={(e) =>

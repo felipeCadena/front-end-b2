@@ -59,6 +59,8 @@ export default function TimePickerModal({
     }
   }, [availableActivityTimes, selectedTime]);
 
+  console.log(initialTime);
+
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
@@ -70,8 +72,16 @@ export default function TimePickerModal({
         >
           <Time fill={iconColor ?? "#8DC63F"} />
           {availableActivityTimes.length !== 0 ? (
-            <span className={cn("text-black", className)}>
-              {selectedTime !== initialTime ? selectedTime : initialTime}
+            <span
+              className={cn(
+                "text-gray-400",
+                selectedTime !== initialTime && "text-black",
+                className
+              )}
+            >
+              {selectedTime !== initialTime
+                ? selectedTime
+                : "Horário da Atividade"}
             </span>
           ) : (
             <MyTypography
@@ -83,7 +93,7 @@ export default function TimePickerModal({
                 iconColor ? `text-neutral-400` : "text-black"
               )}
             >
-              Escolha o dia da atividade
+              Horário da Atividade
             </MyTypography>
           )}
         </MyButton>

@@ -53,7 +53,7 @@ export function OneDay({ withlabel, date, setDate }: OneDayProps) {
             <MyTypography
               variant="body-big"
               weight="regular"
-              className="text-base"
+              className="text-base text-gray-400"
             >
               Data da Atividade
             </MyTypography>
