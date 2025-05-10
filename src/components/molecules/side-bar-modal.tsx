@@ -25,7 +25,7 @@ export default function SideBarModal({
   const handleExit = async (item: any) => {
     if (item === "Sair") {
       try {
-        signOut({
+        await signOut({
           callbackUrl: "/",
           redirect: true,
         });

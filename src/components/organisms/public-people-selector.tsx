@@ -59,7 +59,7 @@ export default function PublicPeopleSelector({
           variant="date"
           borderRadius="squared"
           className={cn(
-            "w-full justify-start text-sm items-center gap-2 py-6 border-gray-300 md:bg-white",
+            "w-full justify-start text-base items-center gap-2 py-6 border-gray-300 md:bg-white",
             className
           )}
         >
@@ -77,9 +77,9 @@ export default function PublicPeopleSelector({
             <MyTypography
               variant="body"
               weight="regular"
-              className={cn("text-sm", className)}
+              className={cn("text-sm ", className)}
             >
-              Número de pessoas
+              <span className="text-base">Número de pessoas</span>
             </MyTypography>
           )}
         </MyButton>

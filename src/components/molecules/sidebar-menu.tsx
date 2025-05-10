@@ -53,7 +53,7 @@ export default function SidebarMenu({
 
   const handleLogout = async () => {
     try {
-      signOut({
+      await signOut({
         callbackUrl: "/",
         redirect: true,
       });
