@@ -886,7 +886,7 @@ export const findAvailableVacancies = (
 
     if (selectedDate) {
       const time = selectedTime.split(":");
-      const hour = Number(time[0]);
+      const hour = time[0];
       const minutes = time[1];
       const justDate = selectedDate.toISOString().slice(0, 10);
       const updatedSelectedDate = justDate + "T" + hour + ":" + minutes;
@@ -894,8 +894,6 @@ export const findAvailableVacancies = (
       const selectedDateSchedule = formattedSchedulesToUTC3?.filter(
         (sch) => sch.datetime === updatedSelectedDate
       )[0];
-
-      console.log("SELECTED", selectedDateSchedule);
 
       if (selectedDateSchedule) {
         return (

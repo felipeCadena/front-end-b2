@@ -143,7 +143,7 @@ export default function FullActivitiesHistoric({
               className={`relative z-10 flex-shrink-0 overflow-hidden w-[265px] ${isActivityDone ? "h-[265px]" : "h-[161px]"} hover:cursor-pointer rounded-md`}
             >
               <Image
-                alt="sample_file"
+                alt={`Imagem da atividade ${activity?.adventure?.title}`}
                 src={
                   activity.adventure.images[0]?.url.length > 0
                     ? activity.adventure.images[0]?.url
@@ -161,7 +161,7 @@ export default function FullActivitiesHistoric({
             <div className="w-full space-y-2 max-h-[265px]">
               <div className="w-full flex justify-between mb-4 relative">
                 <div className="flex flex-col gap-2 cursor-pointer">
-                  <div className="flex items-center gap-2">
+                  <div className="flex justify-between min-w-[391px] items-center gap-2">
                     <MyBadge className="font-medium p-1" variant="outline">
                       {handleNameActivity(activity?.adventure?.typeAdventure)}
                     </MyBadge>

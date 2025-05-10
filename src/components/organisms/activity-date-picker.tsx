@@ -79,8 +79,6 @@ const ActivityDatePicker = ({
     selectedTime
   );
 
-  console.log('ava', availableVacancies);
-
   useQuery({
     queryKey: ['schedule', selectedDate, selectedTime],
     queryFn: () => {
@@ -94,6 +92,8 @@ const ActivityDatePicker = ({
     },
     enabled: !!selectedDate && !!selectedTime,
   });
+
+  console.log('ava', availableVacancies);
 
   return (
     <div className="md:w-3/4 mt-8 md:mt-0">

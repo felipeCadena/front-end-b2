@@ -75,8 +75,6 @@ export const schedules = {
         }
       );
 
-      console.log(data);
-
       await Promise.all(
         data.map(async (uploadData, index) => {
           const file = files[index];

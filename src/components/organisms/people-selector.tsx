@@ -8,6 +8,8 @@ import { Popover, PopoverContent, PopoverTrigger } from '../atoms/my-popover';
 import { ClientSchedule } from '@/services/api/adventures';
 import { useQuery } from '@tanstack/react-query';
 import { formatPrice } from '@/utils/formatters';
+import { MyAlert } from '../atoms/my-alert';
+import ModalAlert from '../molecules/modal-alert';
 
 type PeopleSelectorProps = {
   schedule: ClientSchedule;
@@ -84,6 +86,12 @@ export default function PeopleSelector({
         align="center"
       >
         <div className="w-full space-y-8 p-2">
+          <div className="w-full flex justify-center items-center">
+            <MyTypography
+              variant="label"
+              weight="bold"
+            >{`Vagas disponíveis: ${personsLimit}`}</MyTypography>
+          </div>
           {/* Adultos */}
           <div className="w-full flex justify-between gap-12 items-center">
             <div>
