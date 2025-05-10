@@ -77,78 +77,43 @@ export default function AudioMessage({
   };
 
   return (
-    <div className={`flex w-full ${isOwn ? "justify-end" : "justify-start"}`}>
-      <div
-        className={`rounded-lg p-3 w-full ${
-          isOwn ? "bg-[#2DADE4] text-white" : "bg-gray-400"
-        }`}
-      >
-        <div className="flex items-center gap-1">
-          {isLoading ? (
-            <div className="w-8 h-8 flex items-center justify-center">
-              <MySpinner />
-            </div>
-          ) : (
-            <button
-              onClick={togglePlay}
-              className="w-8 h-8 flex items-center justify-center rounded-full"
-            >
-              <MyIcon
-                name={isPlaying ? "pause" : "play"}
-                className={isOwn ? "bg-[#2DADE4] text-white" : "bg-gray-400"}
-              />
-            </button>
-          )}
+    <div
+      className={`flex items-center gap-4 rounded-lg p-3 min-w-20 max-h-10 ${
+        isOwn ? "bg-[#2DADE4] text-white" : "bg-[#238CB9]"
+      }`}
+    >
+      <div className="flex items-center gap-1 w-full">
+        {isLoading ? (
+          <div className="w-8 h-8 flex items-center justify-center">
+            <MySpinner />
+          </div>
+        ) : (
+          <button onClick={togglePlay} className="w-8 h-8 rounded-full">
+            <MyIcon
+              name={isPlaying ? "pause" : "play"}
+              className={isOwn ? "bg-[#2DADE4] text-white" : "bg-[#238CB9]"}
+            />
+          </button>
+        )}
 
-          {/* <div className="flex-1">
-            <div
-              className={`h-1 ${
-                isOwn ? "bg-[#2DADE4] text-white" : "bg-gray-400"
-              } rounded`}
-            >
-              <div
-                className={`h-full ${
-                  isOwn ? "bg-[#2DADE4] text-white" : "bg-gray-400"
-                } rounded transition-all duration-300`}
-                style={{
-                  width: `${(currentTime / duration) * 100}%`,
-                }}
-              />
-            </div>
-          </div> */}
-
-          <span className="text-xs text-white  text-right">
-            {formatTime(isPlaying ? currentTime : duration)}
-          </span>
-        </div>
-
-        <div className="flex-1">
-          <AudioWaveform
-            duration={Math.round(duration)}
-            currentTime={currentTime}
-            isPlaying={isPlaying}
-          />
-        </div>
-
-        <audio
-          ref={audioRef}
-          src={url}
-          onTimeUpdate={handleTimeUpdate}
-          onLoadedMetadata={handleLoadedMetadata}
-          onError={handleError}
-          onEnded={() => setIsPlaying(false)}
-        />
-
-        {/* <div className="flex justify-end mt-1">
-          <span
-            className={`text-xs ${
-              isOwn ? "bg-[#2DADE4] text-white" : "bg-gray-100"
-            }`}
-          >
-            {timestamp}
-          </span>
-        </div> */}
+        <span className="text-xs  text-white  text-right">
+          {formatTime(isPlaying ? currentTime : duration)}
+        </span>
       </div>
+
+      <AudioWaveform
+        duration={Math.round(duration)}
+        currentTime={currentTime}
+        isPlaying={isPlaying}
+      />
+      <audio
+        ref={audioRef}
+        src={url}
+        onTimeUpdate={handleTimeUpdate}
+        onLoadedMetadata={handleLoadedMetadata}
+        onError={handleError}
+        onEnded={() => setIsPlaying(false)}
+      />
     </div>
   );
 }

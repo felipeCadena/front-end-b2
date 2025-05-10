@@ -45,25 +45,25 @@ const FourthSection = () => {
           Sugestões de atividades perto de você!
         </MyTypography>
         <MyTypography variant="label" weight="regular" lightness={400}>
-          Procure por passeios que fiquem onde você está
+          Procure pelos passeios mais próximos a você
         </MyTypography>
       </div>
       <div className="flex flex-col max-sm:space-y-4 md:flex-row md:gap-4 md:justify-between items-stretch">
-        <div className="max-sm:hidden w-1/3 md:min-h-full md:bg-gray-500 border border-primary-900 rounded-lg">
+        <div className="max-sm:hidden w-1/3 md:max-h-[30rem] md:bg-gray-500 border border-primary-900 rounded-lg">
           <SearchInfoActivity />
         </div>
 
         {/* List of Locations */}
-        <div className="w-full max-sm:max-w-md space-y-3 md:bg-gray-500 md:flex md:p-6 md:w-2/3 md:items-stretch md:rounded-lg md:h-full md:border md:border-primary-900">
+        <div className="w-full max-sm:max-w-md md:max-h-[30rem]  space-y-3 md:bg-gray-500 md:flex md:p-6 md:w-2/3 md:items-center md:gap-4 md:rounded-lg md:h-full md:border md:border-primary-900">
           {/* Header */}
-          <div className="max-sm:space-y-4 md:w-1/2 md:flex md:flex-col md:p-4 md:justify-evenly md:space-y-6">
+          <div className="max-sm:space-y-4 md:w-1/2 md:flex md:flex-col md:p-4 md:justify-evenly space-y-4">
             <div className="max-sm:bg-primary-900 max-sm:px-8 max-sm:py-2 max-sm:rounded-full max-sm:mt-6 max-sm:mb-2">
               <MyTypography
-                variant="subtitle3"
+                variant="subtitle4"
                 weight="bold"
                 className="text-center"
               >
-                Temos atividades perto de você!
+                Atividades mais próximas de você
               </MyTypography>
             </div>
             {adventuresState &&
@@ -89,7 +89,12 @@ const FourthSection = () => {
                       weight="regular"
                       className="md:font-semibold text-wrap capitalize"
                     >
-                      {location?.title.toLowerCase()}{" "}
+                      {location?.title?.length > 40
+                        ? location?.title
+                            .toLowerCase()
+                            .slice(0, 40)
+                            .concat("...")
+                        : location?.title.toLowerCase()}
                       <span className="md:hidden">
                         - {location?.addressState}
                       </span>
@@ -116,7 +121,7 @@ const FourthSection = () => {
             </MyButton>
           </div>
 
-          <div className="max-sm:hidden w-full h-full md:min-h-[410px]">
+          <div className="max-sm:hidden w-full md:h-full md:flex-1">
             <GoogleMapsMultiple locations={transformedCoordinates} />
           </div>
         </div>

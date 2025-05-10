@@ -11,7 +11,7 @@ export default function GoogleMapsMultiple({
 }) {
   const mapContainerStyle = {
     width: "100%",
-    height: "380px",
+    height: "22rem",
   };
 
   // Centraliza no primeiro item do array (caso exista)

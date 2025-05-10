@@ -151,6 +151,21 @@ export const formatPhoneNumber = (phoneNumberString?: string) => {
     .replace(/(-\d{4})\d+?$/, "$1");
 };
 
+export const formatPhoneNumberDDI = (phoneNumberString?: string) => {
+  if (!phoneNumberString) return "";
+
+  const cleaned = phoneNumberString.replace(/\D/g, "").slice(0, 13); // só números, até 13 dígitos
+
+  if (cleaned.length === 0) return "";
+
+  if (cleaned.length <= 2) return `+${cleaned}`;
+  if (cleaned.length <= 4)
+    return `+${cleaned.slice(0, 2)} (${cleaned.slice(2)}`;
+  if (cleaned.length <= 9)
+    return `+${cleaned.slice(0, 2)} (${cleaned.slice(2, 4)}) ${cleaned.slice(4)}`;
+  return `+${cleaned.slice(0, 2)} (${cleaned.slice(2, 4)}) ${cleaned.slice(4, 9)}-${cleaned.slice(9)}`;
+};
+
 export const formatCEP = (value: string) => {
   return value
     .replace(/\D/g, "")
@@ -259,9 +274,44 @@ export const handleNameActivity = (name: string) => {
     case "mar":
       return "Atividades Aquáticas";
     default:
-      return "";
+      return name;
   }
 };
+
+export function formatStateName(uf: string): string {
+  if (!uf) return "";
+  const states: Record<string, string> = {
+    AC: "Acre",
+    AL: "Alagoas",
+    AP: "Amapá",
+    AM: "Amazonas",
+    BA: "Bahia",
+    CE: "Ceará",
+    DF: "Distrito Federal",
+    ES: "Espírito Santo",
+    GO: "Goiás",
+    MA: "Maranhão",
+    MT: "Mato Grosso",
+    MS: "Mato Grosso do Sul",
+    MG: "Minas Gerais",
+    PA: "Pará",
+    PB: "Paraíba",
+    PR: "Paraná",
+    PE: "Pernambuco",
+    PI: "Piauí",
+    RJ: "Rio de Janeiro",
+    RN: "Rio Grande do Norte",
+    RS: "Rio Grande do Sul",
+    RO: "Rondônia",
+    RR: "Roraima",
+    SC: "Santa Catarina",
+    SP: "São Paulo",
+    SE: "Sergipe",
+    TO: "Tocantins",
+  };
+
+  return states[uf.toUpperCase()] || uf;
+}
 
 export function formatAddress(address: {
   addressStreet: string;

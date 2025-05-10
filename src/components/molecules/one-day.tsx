@@ -50,7 +50,11 @@ export function OneDay({ withlabel, date, setDate }: OneDayProps) {
               {date && format(date, "dd/MM", { locale: ptBR })}
             </span>
           ) : (
-            <MyTypography variant="body" weight="regular" className="text-sm">
+            <MyTypography
+              variant="body-big"
+              weight="regular"
+              className="text-base"
+            >
               Data da Atividade
             </MyTypography>
           )}

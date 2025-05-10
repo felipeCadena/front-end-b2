@@ -308,7 +308,7 @@ export default function Atividade() {
         onAction={handleClose}
         iconName="success"
         title="Atividade cadastrada"
-        descrition="Parabéns! Sua nova atividade já foi cadastrada. Você pode editá-la a qualquer momento."
+        descrition="Parabéns! Sua atividade foi cadastrada com sucesso e já pode ser visualizada pelos nossos clientes!"
         button="Voltar ao início"
       />
 
@@ -387,7 +387,10 @@ export default function Atividade() {
               />
               <div>
                 <MyTypography variant="heading2" weight="bold" className="">
-                  {activity?.title}
+                  {activity?.title
+                    ? activity.title.charAt(0).toUpperCase() +
+                      activity.title.slice(1).toLowerCase()
+                    : ""}
                 </MyTypography>
                 <MyBadge variant="outline" className="p-1 mt-2">
                   {handleNameActivity(activity?.typeAdventure ?? "")}
@@ -441,7 +444,7 @@ export default function Atividade() {
               <MyTypography
                 variant="body-big"
                 weight="regular"
-                className="mt-1"
+                className="mt-1 whitespace-pre-wrap"
               >
                 {activity?.description}
               </MyTypography>
@@ -457,7 +460,7 @@ export default function Atividade() {
                 alt="fotos da atividade"
                 width={300}
                 height={300}
-                className={`h-full w-full rounded-lg object-cover ${index === 0 ? "col-span-2 row-span-2 h-full" : ""}`}
+                className={`h-full w-full max-h-[25rem] rounded-lg object-cover ${index === 0 ? "col-span-2 row-span-2 h-full" : "max-h-[12rem]"}`}
               />
             ))}
         </div>
@@ -487,7 +490,11 @@ export default function Atividade() {
           <MyTypography variant="subtitle3" weight="bold" className="">
             Descrição da atividade:
           </MyTypography>
-          <MyTypography variant="body-big" weight="regular" className="mt-1">
+          <MyTypography
+            variant="body-big"
+            weight="regular"
+            className="mt-1 whitespace-pre-wrap"
+          >
             {activity?.description}
           </MyTypography>
         </div>

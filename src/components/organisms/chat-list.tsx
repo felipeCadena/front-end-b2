@@ -25,6 +25,17 @@ interface ChatMessage {
   isRead: boolean;
 }
 
+interface OrderScheduleAdventure {
+  id: string;
+  adventure: {
+    id: string;
+    title: string;
+  };
+  schedule: {
+    id: string;
+    datetime: string;
+  };
+}
 interface ChatType {
   id: string;
   openIn: string | null;
@@ -37,6 +48,7 @@ interface ChatType {
   session_token: string;
   lastMessage?: ChatMessage | null;
   userToLastOnline?: string;
+  orderScheduleAdventure: OrderScheduleAdventure | null; // substitua "any" pela tipagem correta se souber
 }
 
 interface ChatListProps {
@@ -142,9 +154,15 @@ export default function ChatList({ chats, setUser }: ChatListProps) {
                 </div>
 
                 <div className="ml-3 flex-1 space-y-1">
-                  <div className="flex justify-between">
+                  <div className="flex justify-between gap-4">
                     <span className="font-medium">{chat?.userToName}</span>
+                    {chat?.orderScheduleAdventure && (
+                      <p className="text-gray-400 text-xs">
+                        {chat?.orderScheduleAdventure.adventure.title}
+                      </p>
+                    )}
                   </div>
+
                   {chat?.lastMessage && chat?.session_token ? (
                     <p className="text-sm font-bold">
                       {chat?.lastMessage?.text.slice(0, 40).concat("...")}

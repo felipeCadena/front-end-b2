@@ -1,52 +1,49 @@
-'use client';
+"use client";
 
-import MyTypography from '@/components/atoms/my-typography';
-import ShoppingCard from '@/components/molecules/shopping-card';
-import ActivitiesFilter from '@/components/organisms/activities-filter';
-import CarouselCustom from '@/components/templates/second-section/carousel-custom';
-import React, { useRef } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { adventures } from '@/services/api/adventures';
-import { useCart } from '@/store/useCart';
-import { useSession } from 'next-auth/react';
-import useSearchQueryService from '@/services/use-search-query-service';
-import Loading from '@/app/loading';
+import MyTypography from "@/components/atoms/my-typography";
+import ShoppingCard from "@/components/molecules/shopping-card";
+import ActivitiesFilter from "@/components/organisms/activities-filter";
+import CarouselCustom from "@/components/templates/second-section/carousel-custom";
+import React, { useRef } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { adventures } from "@/services/api/adventures";
+import { useCart } from "@/store/useCart";
+import { useSession } from "next-auth/react";
+import useSearchQueryService from "@/services/use-search-query-service";
+import Loading from "@/app/loading";
 
 export default function AtividadesTemplate() {
   const { params } = useSearchQueryService();
-  const [selected, setSelected] = React.useState<'ar' | 'terra' | 'mar' | ''>(
-    ''
+  const [selected, setSelected] = React.useState<"ar" | "terra" | "mar" | "">(
+    ""
   );
 
   const { data: activities = [], isLoading } = useQuery({
-    queryKey: ['activities', params],
-    queryFn: () => {
-      // Verifica se `params` está vazio (sem filtros) ou não
-      const hasFilters = params && Object.keys(params).length > 0;
-
-      return adventures.filterAdventures({
+    queryKey: ["activities", params],
+    enabled: !!params,
+    queryFn: () =>
+      adventures.filterAdventures({
         limit: 30,
         skip: 0,
-        ...params, // Só passa se houver filtros
-      });
-    },
+        ...params,
+      }),
   });
 
   const arRef = useRef<HTMLDivElement>(null);
   const terraRef = useRef<HTMLDivElement>(null);
   const marRef = useRef<HTMLDivElement>(null);
 
-  const scrollToSection = (type: 'ar' | 'terra' | 'mar') => {
+  const scrollToSection = (type: "ar" | "terra" | "mar") => {
     const refs = {
       ar: arRef,
       terra: terraRef,
       mar: marRef,
     };
 
-    refs[type]?.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    refs[type]?.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
-  const handleSelect = (value: 'ar' | 'terra' | 'mar' | '') => {
+  const handleSelect = (value: "ar" | "terra" | "mar" | "") => {
     setSelected(value);
     if (value) scrollToSection(value);
   };
@@ -56,7 +53,7 @@ export default function AtividadesTemplate() {
 
   const { getCartSize } = useCart();
 
-  const cartSize = getCartSize(userId ?? '');
+  const cartSize = getCartSize(userId ?? "");
 
   const filterActivity = (typeAdventure: string) => {
     return (
@@ -91,12 +88,7 @@ export default function AtividadesTemplate() {
           >
             Atividades Aéreas
           </MyTypography>
-          <CarouselCustom
-            activities={filterActivity('ar').map((activity) => ({
-              ...activity,
-              addressComplement: activity.addressComplement || '',
-            }))}
-          />
+          <CarouselCustom activities={filterActivity("ar")} />
         </div>
 
         <div className="border-2 border-gray-200 w-1/2 mx-auto rounded-md mb-6 md:hidden" />
@@ -109,12 +101,7 @@ export default function AtividadesTemplate() {
           >
             Atividades Terrestres
           </MyTypography>
-          <CarouselCustom
-            activities={filterActivity('terra').map((activity) => ({
-              ...activity,
-              addressComplement: activity.addressComplement || '',
-            }))}
-          />
+          <CarouselCustom activities={filterActivity("terra")} />
         </div>
 
         <div className="border-2 border-gray-200 w-1/2 mx-auto rounded-md mb-6 md:hidden" />
@@ -127,12 +114,7 @@ export default function AtividadesTemplate() {
           >
             Atividades Aquática
           </MyTypography>
-          <CarouselCustom
-            activities={filterActivity('mar').map((activity) => ({
-              ...activity,
-              addressComplement: activity.addressComplement || '',
-            }))}
-          />
+          <CarouselCustom activities={filterActivity("mar")} />
         </div>
       </div>
       <ShoppingCard isMobile={false} items={cartSize} />

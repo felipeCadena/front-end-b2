@@ -720,6 +720,10 @@ export default function WebForm({
             <MyTypography variant="subtitle3" weight="bold" className="mb-1">
               Imagens da Atividade
             </MyTypography>
+            <MyTypography variant="body" weight="medium" className="mb-1">
+              <span className="text-red-500">Atenção:</span> Dê preferência para
+              fotos na horizontal
+            </MyTypography>
             <MyTypography
               variant="body"
               weight="medium"

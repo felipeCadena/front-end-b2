@@ -1,5 +1,30 @@
 import { api } from "@/libs/api";
 
+interface ChatMessage {
+  datetime: string;
+  chatId: string;
+  text: string;
+  mediaId: string | null;
+  sendedFromUserId: string;
+  toUserId: string;
+  isRead: boolean;
+}
+
+interface ChatType {
+  id: string;
+  openIn: string | null;
+  closeIn: string | null;
+  type: "admin" | string; // substitua por outros tipos possíveis se houver
+  orderAdventureId: string | null;
+  userToId: string;
+  userToName: string;
+  userToPhoto: string;
+  session_token: string;
+  lastMessage?: ChatMessage | null;
+  userToLastOnline?: string;
+  orderScheduleAdventure?: any | null; // substitua "any" pela tipagem correta se souber
+}
+
 export const chatService = {
   getMyChats: async (params?: Record<string, any>) => {
     try {

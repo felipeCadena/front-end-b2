@@ -116,9 +116,9 @@ export default function ActivitiesFilter({
             variant="outline-muted"
             size="md"
             className={cn(
-              "flex max-sm:flex-col gap-1 items-center rounded-md max-sm:w-[6.5rem] max-sm:h-[6.5rem] md:py-8 md:w-1/2 md:border-2 md:border-black md:text-nowrap",
+              "flex max-sm:flex-col gap-1 items-center rounded-md max-sm:w-[6.8rem] max-sm:h-[6.5rem] md:py-8 md:w-1/2 md:border-2 md:border-black md:text-nowrap",
               item.name === selected &&
-                "border border-black bg-[#E5E4E9] opacity-100",
+                "border border-black bg-primary-600 opacity-80",
               small && "md:flex-col md:w-[10rem] md:h-[5rem]"
             )}
             onClick={(e) => handleFilterClick(e, item.name)}

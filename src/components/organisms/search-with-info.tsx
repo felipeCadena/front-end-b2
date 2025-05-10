@@ -10,10 +10,11 @@ import { hours } from "@/common/constants/constants";
 import { useRouter } from "next/navigation";
 import PATHS from "@/utils/paths";
 import { toast } from "react-toastify";
-import { format } from "date-fns";
+import useSearchQueryService from "@/services/use-search-query-service";
 
 export default function SearchInfoActivity() {
   const router = useRouter();
+  const { set } = useSearchQueryService();
 
   const [selectedLocation, setSelectedLocation] =
     React.useState<LocationData | null>(null);
@@ -30,29 +31,19 @@ export default function SearchInfoActivity() {
 
   const handleSearch = () => {
     console.log("Localização:", selectedLocation);
-    console.log("Data:", format(date ?? "", "yyyy-MM-dd"));
-    console.log("Duração:", hour);
-    console.log("Adultos:", adults);
-    console.log("Crianças:", children);
 
-    if (!selectedLocation || !date || !hour || !adults) {
+    if (!selectedLocation) {
       toast.error("Por favor, preencha os campos obrigatórios.");
       return;
     }
 
-    const state = selectedLocation.completeAddress.addressState;
-    const formattedDate = format(date, "yyyy-MM-dd");
+    const state = selectedLocation?.completeAddress.addressState;
 
-    const total = adults + (children ?? 0);
-
-    router.push(
-      PATHS.atividades +
-        `?state=${state}&date=${formattedDate}&hour=${hour}&limitPersons=${String(total)}`
-    );
+    set({ state });
   };
 
   return (
-    <section className="space-y-4 max-sm:mt-4 md:space-y-6 md:bg-gray-500 md:p-10 md:rounded-lg">
+    <section className="space-y-4 max-sm:mt-4 md:space-y-6 md:bg-gray-500 md:p-4 md:rounded-lg">
       <div className="md:hidden">
         <MyTypography variant="heading3" weight="semibold">
           Sugestões de atividades perto de você!
@@ -78,6 +69,7 @@ export default function SearchInfoActivity() {
         <OneDay date={date} setDate={setDate} />
 
         <TimePickerModal
+          className="text-base"
           selectedTime={hour}
           setSelectedTime={setHour}
           availableActivityTimes={hours.map((hour) => hour.value)}
@@ -88,6 +80,7 @@ export default function SearchInfoActivity() {
           setAdults={setAdults}
           children={children}
           setChildren={setChildren}
+          className="text-base"
         />
       </div>
 

@@ -22,6 +22,12 @@ export default function Step6() {
     }
   };
 
+  React.useEffect(() => {
+    if (window) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }, []);
+
   return (
     <section>
       <MyTypography variant="subtitle3" weight="bold" className="mb-1">

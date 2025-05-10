@@ -1,7 +1,7 @@
-import { formatIconName } from '@/utils/formatters';
-import React from 'react';
-import MyIcon from '../atoms/my-icon';
-import MyTypography from '../atoms/my-typography';
+import { formatIconName } from "@/utils/formatters";
+import React from "react";
+import MyIcon from "../atoms/my-icon";
+import MyTypography from "../atoms/my-typography";
 
 type ActivityIncludedItemsProps = {
   transportIncluded: boolean;
@@ -26,7 +26,7 @@ const ActivityIncludedItems = ({
       {itemsIncluded.map(
         (item) =>
           item &&
-          item !== 'Transporte' && (
+          item !== "Transporte" && (
             <div key={item} className="flex items-center gap-2">
               <MyIcon
                 name={formatIconName(item) as any}

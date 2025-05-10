@@ -74,6 +74,10 @@ export default function PartnerActivitiesHistoric({
     );
   };
 
+  const handleChat = (name: string) => {
+    router.push(`/chat?${name}`);
+  };
+
   return (
     <section className="md:max-w-screen-custom">
       <ModalClient
@@ -196,7 +200,7 @@ export default function PartnerActivitiesHistoric({
                       variant="outline-neutral"
                       borderRadius="squared"
                       size="sm"
-                      className="mx-12"
+                      className="md:w-1/2 mx-12"
                       onClick={() => {
                         handleConfirm(activity?.id);
                       }}
@@ -222,6 +226,12 @@ export default function PartnerActivitiesHistoric({
                     <PopupActivity
                       reservation
                       onDuplicar={() => console.log("Duplicar")}
+                      onChat={() =>
+                        handleChat(
+                          activity?.ordersScheduleAdventure[index]
+                            ?.orderAdventure?.customer?.name
+                        )
+                      }
                       onCancelar={() => handleCancel(activity?.id)}
                       onEditar={() => handleEdit(activity.id)}
                       onOcultar={() => console.log("Ocultar")}

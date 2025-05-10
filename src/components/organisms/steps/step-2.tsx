@@ -129,6 +129,12 @@ export default function Step2() {
     }
   }, [selectionBlocks, isRepeatable]);
 
+  React.useEffect(() => {
+    if (window) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }, []);
+
   return (
     <section className="w-full space-y-6">
       <MySelect

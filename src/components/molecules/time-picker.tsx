@@ -13,6 +13,7 @@ interface TimePickerModalProps {
   selectedTime: string;
   setSelectedTime: (time: string) => void;
   availableActivityTimes?: string[];
+  className?: string;
 }
 
 export default function TimePickerModal({
@@ -20,6 +21,7 @@ export default function TimePickerModal({
   selectedTime,
   setSelectedTime,
   availableActivityTimes = [],
+  className,
 }: TimePickerModalProps) {
   const [open, setOpen] = useState(false);
   const [initialTime, setInitialTime] = useState("");
@@ -68,7 +70,7 @@ export default function TimePickerModal({
         >
           <Time fill={iconColor ?? "#8DC63F"} />
           {availableActivityTimes.length !== 0 ? (
-            <span className="text-black">
+            <span className={cn("text-black", className)}>
               {selectedTime !== initialTime ? selectedTime : initialTime}
             </span>
           ) : (

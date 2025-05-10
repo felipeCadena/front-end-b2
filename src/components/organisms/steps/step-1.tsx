@@ -22,6 +22,13 @@ export default function Step1({
       typeAdventure: value,
     });
   };
+
+  React.useEffect(() => {
+    if (window) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }, []);
+
   return (
     <section className="">
       <MyTypography variant="heading2" weight="bold">
@@ -51,11 +58,12 @@ export default function Step1({
 
         <MyTextarea
           value={description}
-          onChange={(e) =>
+          onChange={(e) => {
+            console.log(JSON.stringify(e.target.value));
             setAdventureData({
               description: e.target.value,
-            })
-          }
+            });
+          }}
           label="Descrição da atividade"
           placeholder="Lorem ipsum dolor sit amet, consectetur di..."
           classNameLabel="text-black text-base font-bold"

@@ -20,6 +20,12 @@ export default function Step5() {
     fuelIncluded,
   } = useAdventureStore();
 
+  React.useEffect(() => {
+    if (window) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }, []);
+
   return (
     <section className="space-y-6">
       <MySelect
