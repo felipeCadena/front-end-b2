@@ -14,6 +14,8 @@ import { toast } from "react-toastify";
 
 export default function CadastroParceiro() {
   const [visibility, setVisibility] = React.useState(false);
+  const [visibilityConfirm, setVisibilityConfirm] = React.useState(false);
+
   const router = useRouter();
 
   const { setStepData, name, email, phone, password, confirmPassword } =
@@ -54,7 +56,7 @@ export default function CadastroParceiro() {
           <MyIcon
             name="voltar"
             className="absolute top-1/3 left-0 md:hidden"
-            onClick={() => router.push(PATHS.initial)}
+            onClick={() => router.back()}
           />
         </div>
         <div className="space-y-2">
@@ -115,12 +117,12 @@ export default function CadastroParceiro() {
             value={confirmPassword}
             label="Confirmar Senha"
             placeholder="******"
-            type={visibility ? "text" : "password"}
+            type={visibilityConfirm ? "text" : "password"}
             rightIcon={
               <MyIcon
-                name={visibility ? "hide" : "eye"}
+                name={visibilityConfirm ? "hide" : "eye"}
                 className="mr-4 mt-7 cursor-pointer"
-                onClick={() => setVisibility((prev) => !prev)}
+                onClick={() => setVisibilityConfirm((prev) => !prev)}
               />
             }
             className="mt-2"

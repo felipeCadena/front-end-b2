@@ -18,7 +18,12 @@ export default function Sobre({
 }) {
   const { setStepData, fantasyName, cnpj } = useStepperStore();
 
-  const handleNextStep = () => {
+  const handleNextStep = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    e.preventDefault();
+    e.stopPropagation();
+
     if (!fantasyName || !cnpj) {
       toast.error("Todos os campos são obrigatórios!");
       return;
@@ -43,7 +48,7 @@ export default function Sobre({
       <section className="md:border-2 md:border-gray-200 md:rounded-xl md:p-12 md:my-4">
         <div className="space-y-2">
           <MyTypography variant="heading2" weight="bold">
-            Agora nos conte um pouco sobre a sua empresa!
+            Agora nos conte um pouco sobre a sua empresas!
           </MyTypography>
           <MyTypography variant="subtitle3" weight="regular" lightness={400}>
             Só precisa preencher alguns dados antes.
@@ -80,7 +85,7 @@ export default function Sobre({
         <MyButton
           variant="default"
           borderRadius="squared"
-          onClick={handleNextStep}
+          onClick={(e) => handleNextStep(e)}
           rightIcon={<MyIcon name="seta-direita" />}
         >
           Próximo

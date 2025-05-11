@@ -44,6 +44,8 @@ export default function GaleriaDeFotos() {
     },
   });
 
+  console.log(open);
+
   const handleDownloadImage = async (imageURL: string, fileTitle: string) => {
     try {
       const response = await fetch(`${imageURL}?download=1`);
@@ -63,7 +65,7 @@ export default function GaleriaDeFotos() {
   };
 
   const handleFetchPhotos = async (id: string, downloadAll?: boolean) => {
-    setOpen(!open);
+    setOpen(false);
     setSelected(id);
     if (downloadAll && id !== "") {
       if (activityPhotos.length === 0) {
@@ -79,6 +81,11 @@ export default function GaleriaDeFotos() {
         setLoading(false);
       }
     }
+  };
+
+  const openPhotos = (id: string) => {
+    setOpen((prev) => !prev);
+    setSelected(id);
   };
 
   return isLoading ? (
@@ -167,7 +174,7 @@ export default function GaleriaDeFotos() {
                     className="px-[4rem]"
                     size="lg"
                     rightIcon={<MyIcon name="white-eye" className="" />}
-                    onClick={() => handleFetchPhotos(activity.scheduleId)}
+                    onClick={() => openPhotos(activity.scheduleId)}
                   >
                     Ver fotos
                   </MyButton>
@@ -177,7 +184,7 @@ export default function GaleriaDeFotos() {
                     className="px-8"
                     size="lg"
                     rightIcon={<MyIcon name="download-green" className="" />}
-                    isLoading={loading}
+                    isLoading={activity.scheduleId == selected && loading}
                     onClick={() => handleFetchPhotos(activity.scheduleId, true)}
                   >
                     Baixar Imagens

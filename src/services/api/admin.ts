@@ -295,4 +295,15 @@ export const adminService = {
       throw error;
     }
   },
+
+  async payPartner(token: string) {
+    try {
+      api.defaults.headers.common["x-token-pay-partner"] = token;
+      const response = await api.post("/admin/pay-partner");
+      return response.data;
+    } catch (error) {
+      console.error("Error paid partner: ", error);
+      throw error;
+    }
+  },
 };
