@@ -5,13 +5,9 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import MyIcon from "../atoms/my-icon";
 import MyTextInput from "../atoms/my-text-input";
-import useSearchQueryService from "@/services/use-search-query-service";
-import { useQueries, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useDebounce } from "@/hooks/useDebounce";
-import { chatService } from "@/services/api/chats";
 import { cn } from "@/utils/cn";
-import { formatSmartDateTime, getData } from "@/utils/formatters";
-import { useSession } from "next-auth/react";
+import { formatSmartDateTime } from "@/utils/formatters";
 import MyButton from "../atoms/my-button";
 import useChat from "@/store/useChat";
 

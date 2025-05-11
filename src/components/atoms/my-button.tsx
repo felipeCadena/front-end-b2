@@ -67,6 +67,7 @@ export interface ButtonProps
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
   isLoading?: boolean;
+  loadingText?: string;
 }
 
 const MyButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
@@ -82,6 +83,7 @@ const MyButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
       asChild,
       isLoading,
       disabled,
+      loadingText = "Aguarde...",
       ...props
     },
     ref
@@ -93,7 +95,7 @@ const MyButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
         className={cn(
           leftIcon && "flex gap-2",
           rightIcon && "flex gap-2",
-          isLoading && "flex-center w-full",
+          isLoading && "flex items-center justify-center gap-2",
           buttonVariants({ variant, size, borderRadius }),
           className
         )}
@@ -104,7 +106,7 @@ const MyButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
         {isLoading ? (
           <>
             <MySpinner />
-            <p>Aguarde...</p>
+            <p>{loadingText}</p>
           </>
         ) : (
           <>

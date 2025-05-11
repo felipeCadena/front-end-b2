@@ -1,16 +1,16 @@
-'use client';
+"use client";
 
-import { album } from '@/common/constants/mock';
-import { cn } from '@/utils/cn';
-import { getData } from '@/utils/formatters';
-import PATHS from '@/utils/paths';
-import { useRouter } from 'next/navigation';
-import React from 'react';
-import MyButton from '../atoms/my-button';
-import MyIcon from '../atoms/my-icon';
-import MyTypography from '../atoms/my-typography';
-import { CustomerSchedule } from '@/services/api/orders';
-import Image from 'next/image';
+import { album } from "@/common/constants/mock";
+import { cn } from "@/utils/cn";
+import { getData } from "@/utils/formatters";
+import PATHS from "@/utils/paths";
+import { useRouter } from "next/navigation";
+import React from "react";
+import MyButton from "../atoms/my-button";
+import MyIcon from "../atoms/my-icon";
+import MyTypography from "../atoms/my-typography";
+import { CustomerSchedule } from "@/services/api/orders";
+import Image from "next/image";
 
 type MobileActivityPhotosCardType = {
   activity: CustomerSchedule;
@@ -21,8 +21,8 @@ const MobileActivityPhotosCard = ({
 }: MobileActivityPhotosCardType) => {
   const router = useRouter();
   return (
-    <div className={cn('flex justify-between')}>
-      <div className={cn('flex flex-col items-center justify-center')}>
+    <div className={cn("flex justify-between")}>
+      <div className={cn("flex flex-col items-center justify-center")}>
         <MyIcon name="calendar" />
         <MyTypography
           variant="body"
@@ -33,10 +33,10 @@ const MobileActivityPhotosCard = ({
         </MyTypography>
       </div>
 
-      <div className="flex flex-col justify-around gap-2 cursor-pointer px-4">
+      <div className="flex flex-col justify-around gap-2 cursor-pointer px-4 w-[60%]">
         <MyTypography variant="subtitle3" weight="bold">
           {activity.adventure.title.length > 20
-            ? activity.adventure.title.slice(0, 20) + '...'
+            ? activity.adventure.title.slice(0, 20) + "..."
             : activity.adventure.title}
         </MyTypography>
 
@@ -57,7 +57,8 @@ const MobileActivityPhotosCard = ({
           weight="bold"
           className="flex gap-2 items-center"
         >
-          <MyIcon name="download-green" className="" /> {album.length} fotos
+          <MyIcon name="download-green" className="" />{" "}
+          {activity?.schedule?._count?.medias} fotos
         </MyTypography>
       </div>
 
@@ -74,24 +75,24 @@ const MobileActivityPhotosCard = ({
         </MyButton>
         {/* Imagens */}
         <div className="flex gap-2 mt-6">
-          {album.slice(0, 4).map((image, index) => (
+          {activity?.schedule?.medias.map((image, index) => (
             <div
               key={index}
               className="relative transition-all duration-300"
               style={{
-                marginLeft: index === 0 ? 0 : '-50px',
+                marginLeft: index === 0 ? 0 : "-50px",
                 zIndex: album.length - index,
               }}
             >
               <div className="relative transition-all duration-300">
                 <Image
-                  src={image}
+                  src={image?.url}
                   alt={activity.adventure.title}
                   width={300}
                   height={300}
                   className="h-[90px] w-[90px] rounded-lg object-cover transition-all duration-300"
                 />
-                <p className="bg-white flex items-center justify-center h-5 w-5 rounded-full text-xs text-primary-600 font-bold absolute top-2 right-2 z-20">
+                <p className="bg-white flex items-center justify-center h-5 w-5 rounded-full text-xs text-primary-600 font-bold absolute top-2 right-1 z-20">
                   {index + 1}
                 </p>
               </div>

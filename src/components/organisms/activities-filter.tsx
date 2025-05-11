@@ -9,6 +9,9 @@ import { useDebounce } from "@/hooks/useDebounce";
 import { useQuery } from "@tanstack/react-query";
 import { adventures } from "@/services/api/adventures";
 import { TypeAdventure } from "@/store/useAdventureStore";
+import Mar from "../atoms/my-icon/elements/mar";
+import Ar from "../atoms/my-icon/elements/ar";
+import Terra from "../atoms/my-icon/elements/terra";
 
 type ActivitiesFilterProps = {
   withText?: boolean;
@@ -116,14 +119,21 @@ export default function ActivitiesFilter({
             variant="outline-muted"
             size="md"
             className={cn(
-              "flex max-sm:flex-col gap-1 items-center rounded-md max-sm:w-[6.8rem] max-sm:h-[6.5rem] md:py-8 md:w-1/2 md:border-2 md:border-black md:text-nowrap",
+              "flex max-sm:flex-col gap-1 items-center rounded-md max-sm:w-[6.8rem] max-sm:h-[6.5rem] md:py-8 md:w-1/2 border-2 border-black md:text-nowrap",
               item.name === selected &&
-                "border border-black bg-primary-600 opacity-80",
+                "text-white border-2 border-gray-300 bg-primary-600 opacity-80",
               small && "md:flex-col md:w-[10rem] md:h-[5rem]"
             )}
             onClick={(e) => handleFilterClick(e, item.name)}
           >
-            <MyIcon name={item.icon as IconsMapTypes} />
+            {/* <MyIcon name={item.icon as IconsMapTypes} /> */}
+            {item.icon === "mar" ? (
+              <Mar fill={item.name === selected ? "#fff" : "#1E1E1E"} />
+            ) : item.icon === "ar" ? (
+              <Ar fill={item.name === selected ? "#fff" : "#1E1E1E"} />
+            ) : (
+              <Terra fill={item.name === selected ? "#fff" : "#1E1E1E"} />
+            )}
             <span className="px-4">{item.title}</span>
           </MyButton>
         ))}

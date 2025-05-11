@@ -20,7 +20,8 @@ export default function PartnerTerms() {
       <ul className="list-disc list-inside mb-4">
         <li>
           <strong>B2 Adventure Sports Ltda:</strong> empresa responsável pela
-          intermediação de atividades de aventura entre Parceiros e Clientes.
+          intermediação de atividades de aventura entre Parceiros e Clientes,
+          por meio da plataforma B2 Adventure.
         </li>
         <li>
           <strong>Parceiro:</strong> pessoa física ou jurídica que oferta
@@ -37,21 +38,32 @@ export default function PartnerTerms() {
       </h2>
       <ul className="list-disc list-inside mb-4">
         <li>
-          O Parceiro deverá fornecer informações corretas e mantê-las
+          O Parceiro deverá fornecer informações pessoais, comerciais, bancárias
+          e operacionais corretas no momento do cadastro e mantê-las
           atualizadas.
         </li>
         <li>
-          É responsável pela execução das atividades ofertadas, incluindo
-          qualidade, segurança e conformidade.
+          O Parceiro é exclusivamente responsável pela execução das atividades
+          ofertadas, incluindo sua qualidade, segurança e conformidade com leis
+          e normas aplicáveis.
         </li>
         <li>
-          O valor final visível na plataforma não pode ter discrepância superior
-          a 10% do preço ofertado fora dela.
+          O Parceiro poderá definir livremente o valor do seu serviço, mas o
+          valor final visível na plataforma, acrescido de impostos e taxas, não
+          poderá ter discrepância superior a 10% em relação ao preço ofertado
+          fora da plataforma.
         </li>
-        <li>Reincidência poderá resultar em descadastramento.</li>
         <li>
-          Há áreas específicas na plataforma para gestão de atividades, imagens,
-          agenda e cancelamentos.
+          A constatação de discrepâncias superiores a 10% poderá resultar no
+          descadastramento temporário ou definitivo em caso de reincidência do
+          Parceiro.
+        </li>
+        <li>
+          Dentro do ambiente do parceiro na plataforma, há áreas específicas
+          para acesso ao histórico de atividades realizadas, atividades
+          cadastradas, agenda com as atividades confirmadas, envio de imagens
+          (fotos e vídeos) quando incluídas na experiência, e justificativas de
+          cancelamento com mensagens pré-definidas.
         </li>
       </ul>
 
@@ -60,16 +72,22 @@ export default function PartnerTerms() {
       </h2>
       <ul className="list-disc list-inside mb-4">
         <li>
-          O Parceiro será notificado por e-mail e WhatsApp sobre novas
-          atividades.
+          Sempre que uma atividade for adquirida por um Cliente, o Parceiro será
+          automaticamente notificado por e-mail e WhatsApp. A partir dessa
+          notificação, o Parceiro deve confirmar que está ciente do agendamento
+          o quanto antes.
         </li>
         <li>
-          A confirmação deve ocorrer até 12 horas antes do prazo mínimo de
-          cancelamento com reembolso.
+          Essa confirmação precisa ser feita até, no máximo, 12 (doze) horas
+          antes do prazo mínimo de cancelamento com reembolso — prazo esse
+          definido pelo próprio Parceiro no momento do cadastro da atividade.
         </li>
         <li>
-          Falta de confirmação resultará em cancelamento automático e reembolso
-          integral ao Cliente.
+          Se essa confirmação não for registrada dentro do tempo exigido, a
+          plataforma entenderá que o Parceiro não visualizou o agendamento. Para
+          evitar qualquer transtorno ao Cliente, como deslocamento desnecessário
+          ou falta de atendimento, a atividade será automaticamente cancelada e
+          o valor pago será integralmente reembolsado.
         </li>
       </ul>
 
@@ -78,31 +96,46 @@ export default function PartnerTerms() {
       </h2>
       <ul className="list-disc list-inside mb-4">
         <li>
-          O chat é liberado 3 horas antes da atividade e encerrado 3 horas após
-          seu fim.
+          O contato direto entre Cliente e Parceiro ocorre exclusivamente pelo
+          chat interno da plataforma, disponível 3 (três) horas antes da
+          atividade e encerrado 3 (três) horas após seu término.
         </li>
         <li>
-          Todo contato entre Cliente e Parceiro deve ocorrer exclusivamente pela
-          plataforma.
+          Toda a conversa entre Parceiro e Cliente acontece dentro da
+          plataforma, por um chat que abre 3 horas antes da atividade e se
+          encerra 3 horas depois. Essa é uma forma de garantir privacidade,
+          evitar abordagens fora de hora e manter tudo bem organizado para os
+          dois lados.
         </li>
       </ul>
 
       <h2 className="text-xl font-semibold mt-6 mb-2">5. Entrega de Imagens</h2>
       <ul className="list-disc list-inside mb-4">
         <li>
-          Responsabilidade total do Parceiro quando a atividade incluir imagens.
-        </li>
-        <li>Envio deve ocorrer em até 7 dias úteis pela própria plataforma.</li>
-        <li>
-          Falta de envio pode acarretar reembolso ao Cliente e não pagamento ao
-          Parceiro.
+          O Parceiro que oferecer atividades que incluam a captação de imagens
+          (fotografias e/ou vídeos) será inteiramente responsável pela produção
+          e disponibilização desse material ao Cliente.
         </li>
         <li>
-          É proibido enviar imagens por meios externos ou cobrar por fora.
+          As imagens deverão ser enviadas exclusivamente através da plataforma
+          B2 Adventure, no prazo máximo de 7 (sete) dias úteis após a realização
+          da atividade.
         </li>
         <li>
-          As imagens podem ser usadas pela B2 Adventure para divulgação, sem
-          ônus ao Parceiro.
+          Caso o Parceiro não disponibilize as imagens dentro do prazo
+          estipulado e o Cliente formalize uma reclamação, o Cliente poderá
+          solicitar o reembolso integral da atividade, e o Parceiro não receberá
+          o valor correspondente ao serviço prestado.
+        </li>
+        <li>
+          É expressamente proibido o envio de imagens ao Cliente por meios
+          externos à plataforma, bem como a cobrança de qualquer valor adicional
+          por este material fora do ambiente da B2 Adventure.
+        </li>
+        <li>
+          Todas as imagens disponibilizadas na plataforma poderão ser utilizadas
+          pela B2 Adventure para fins de divulgação, publicidade e promoção da
+          marca, sem qualquer ônus adicional ao Parceiro
         </li>
       </ul>
 
@@ -111,48 +144,91 @@ export default function PartnerTerms() {
       </h2>
       <ul className="list-disc list-inside mb-4">
         <li>
-          O Parceiro define sua política de cancelamento no cadastro da
-          atividade.
+          O Parceiro definirá no momento do cadastro da atividade a sua política
+          de cancelamento e reembolso, respeitando os prazos estabelecidos na
+          plataforma.
         </li>
         <li>
-          Reembolsos seguem essa política e pagamentos ocorrem apenas após
-          execução da atividade.
+          Em caso de cancelamento por parte do Cliente, o reembolso ou não será
+          determinado conforme a política escolhida pelo Parceiro no momento do
+          cadastro
         </li>
-        <li>O Parceiro pode cancelar, mas não receberá pelo serviço.</li>
-        <li>Cancelamentos devem ter justificativa via sistema.</li>
         <li>
-          A área financeira detalha valores a receber, por tipo de atividade.
+          Como o pagamento ao Parceiro ocorre apenas após a execução da
+          atividade, valores referentes a cancelamentos por parte do Cliente
+          respeitarão as regras pré-estabelecidas, e não serão repassados em
+          caso de reembolso total.
+        </li>
+        <li>
+          A seção financeira permite análise detalhada de todos os passeios
+          realizados, valores a receber no mês e parciais por categoria de
+          atividade (terrestre, aquática e aérea).
+        </li>
+        <li>
+          O Parceiro poderá cancelar a atividade, mas não receberá qualquer
+          valor referente à atividade cancelada.
+        </li>
+        <li>
+          Justificativas para cancelamento devem ser registradas diretamente
+          pela plataforma, utilizando as opções pré-definidas no sistema.
         </li>
       </ul>
 
       <h2 className="text-xl font-semibold mt-6 mb-2">7. Avaliações</h2>
       <p className="mb-4">
-        Atividades com avaliação inferior a 3,0 poderão ser suspensas. Caso não
-        haja melhoria, o Parceiro pode ser descadastrado.
+        Atividades com avaliação média inferior a 3,0 (em uma escala de 1 a 5)
+        poderão ser suspensas temporariamente. Caso não haja melhora na
+        avaliação, o Parceiro poderá ser descadastrado definitivamente da
+        plataforma.
       </p>
 
       <h2 className="text-xl font-semibold mt-6 mb-2">
         8. Recebimentos e Financeiro
       </h2>
       <ul className="list-disc list-inside mb-4">
-        <li>Pagamentos ocorrem no mês seguinte à execução da atividade.</li>
         <li>
-          Datas disponíveis: dia 05, 10 ou 15. Pode ser alterada pelo Parceiro.
+          O pagamento das atividades realizadas será efetuado pela B2 Adventure
+          ao Parceiro no mês seguinte à execução dos serviços.
         </li>
         <li>
-          Pagamento por transferência bancária, com taxa de 30% retida pela
-          plataforma.
+          O Parceiro escolherá no momento do cadastro uma data de recebimento:
+          dia 05, 10 ou 15 de cada mês, podendo alterá-la posteriormente.
         </li>
         <li>
-          Benefícios para quem se cadastrar até 01/06/2025:
+          O pagamento será realizado via transferência bancária para a conta
+          informada no cadastro.
+        </li>
+        <li>
+          A B2 Adventure reterá uma taxa de 30% sobre o valor do serviço
+          ofertado pelo Parceiro.
+        </li>
+        <li>
+          Parceiros cadastrados na plataforma até 01 de junho de 2025 terão
+          direito aos seguintes benefícios:
           <ul className="list-disc list-inside ml-5">
-            <li>Dois meses de isenção da taxa de intermediação;</li>
-            <li>Prioridade nas buscas da plataforma.</li>
+            <li>
+              Dois meses de isenção da taxa de intermediação da B2 Adventure, a
+              partir do lançamento oficial da plataforma 01 de junho de 2025;
+            </li>
+            <li>
+              Prioridade na ordenação das buscas dentro da plataforma B2
+              Adventure.
+            </li>
+            <li>
+              Impostos aplicáveis à operação serão adicionados sobre o valor da
+              atividade.
+            </li>
+            <li>
+              Todas as transações e repasses de valores ocorrerão em moeda
+              corrente nacional, Real (BRL).
+            </li>
+            <li>
+              Caso o Cliente efetue o pagamento em moeda estrangeira, a
+              conversão para Real será realizada pela plataforma, e o valor
+              final recebido pelo Parceiro considerará a taxa de câmbio
+              praticada pela B2 Adventure no momento da transação.
+            </li>
           </ul>
-        </li>
-        <li>
-          Transações em BRL. Pagamentos em moeda estrangeira serão convertidos
-          com a taxa da plataforma.
         </li>
       </ul>
 
@@ -161,12 +237,20 @@ export default function PartnerTerms() {
       </h2>
       <ul className="list-disc list-inside mb-4">
         <li>
-          É proibida a divulgação de links ou contatos externos em qualquer área
-          da plataforma.
+          Em nenhuma hipótese é permitida a divulgação de links, endereços de
+          sites, perfis em redes sociais ou qualquer outro canal externo
+          relacionado à atividade ofertada na plataforma.
         </li>
         <li>
-          Todo atendimento e negociação devem ocorrer exclusivamente dentro da
-          B2 Adventure.
+          Essa regra se aplica a todos os espaços de comunicação, como a
+          descrição das atividades, chat com o Cliente e qualquer outra área de
+          contato dentro da B2 Adventure.
+        </li>
+        <li>
+          O objetivo é garantir que toda a negociação, atendimento e
+          relacionamento com o Cliente aconteça exclusivamente dentro da
+          plataforma, preservando a segurança e integridade da experiência para
+          ambas as partes.
         </li>
       </ul>
 
@@ -174,39 +258,57 @@ export default function PartnerTerms() {
         10. Seguro e Responsabilidades
       </h2>
       <ul className="list-disc list-inside mb-4">
-        <li>Contratação de seguro é opcional.</li>
         <li>
-          A B2 Adventure não se responsabiliza por acidentes ou danos nas
-          atividades.
+          A contratação de seguros para as atividades é opcional e fica a
+          critério do Parceiro.
         </li>
         <li>
-          O Parceiro é o único responsável pela segurança e legalidade das
-          atividades.
+          A B2 Adventure não se responsabiliza por acidentes, danos ou qualquer
+          ocorrência durante a execução da atividade
+        </li>
+        <li>
+          O Parceiro reconhece que é exclusivamente responsável pela segurança
+          dos participantes e pela conformidade da atividade com as leis e
+          normas aplicáveis.
         </li>
       </ul>
 
       <h2 className="text-xl font-semibold mt-6 mb-2">
         11. Suporte e Comunicação com a B2 Adventure
       </h2>
-      <p className="mb-4">
-        O Parceiro pode usar a área “Fale Conosco” na plataforma para sugestões
-        ou suporte. Valorizamos o feedback para melhorar continuamente.
-      </p>
+      <ul className="list-disc list-inside mb-4">
+        <li>
+          O Parceiro poderá entrar em contato com a equipe da B2 Adventure por
+          meio da área “Fale Conosco” disponível na plataforma.
+        </li>
+        <li>
+          A gente leva em conta cada sugestão e segue melhorando a plataforma
+          para deixar tudo mais simples, funcional e com a cara de quem tá nela
+          todos os dias.
+        </li>
+      </ul>
 
       <h2 className="text-xl font-semibold mt-6 mb-2">
         12. Atualizações do Termo
       </h2>
-      <p className="mb-4">
-        A B2 Adventure pode atualizar este Termo de Serviço a qualquer momento.
-        O uso contínuo da plataforma após alterações implica na aceitação dos
-        novos termos.
-      </p>
+      <ul className="list-disc list-inside mb-4">
+        <li>
+          A B2 Adventure poderá atualizar este Termo de Serviço a qualquer
+          tempo.
+        </li>
+        <li>
+          Alterações serão comunicadas por meio da plataforma, e o uso
+          continuado dos serviços após as modificações implicará aceitação dos
+          novos termos.
+        </li>
+      </ul>
 
       <h2 className="text-xl font-semibold mt-6 mb-2">13. Foro</h2>
-      <p className="mb-4">
-        Fica eleito o foro da comarca do Rio de Janeiro/RJ para resolver
-        quaisquer controvérsias relativas a este Termo.
-      </p>
+      <ul className="list-disc list-inside mb-4">
+        Fica eleito o foro da comarca do Rio de Janeiro/RJ para dirimir
+        quaisquer controvérsias relativas ao presente Termo, com exclusão de
+        qualquer outro, por mais privilegiado que seja.
+      </ul>
     </div>
   );
 }

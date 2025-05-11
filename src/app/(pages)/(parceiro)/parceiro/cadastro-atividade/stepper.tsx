@@ -190,7 +190,7 @@ export default function StepperComponent() {
       {currentStep === 4 && <Step5 />}
       {currentStep === 5 && <Step6 />}
       {currentStep === 6 && (
-        <InformacoesAtividade onBack={handleBackToInitial} step create />
+        <InformacoesAtividade onBack={handleBackToInitial} step />
       )}
 
       {currentStep != 6 && (
