@@ -13,6 +13,14 @@ interface Schedule {
   qntConfirmedPersons: number;
   qntLimitPersons: number;
   updatedAt: string;
+  medias: [
+    {
+      url: string;
+    },
+  ];
+  _count: {
+    medias: number;
+  };
 }
 
 interface AdventureOrderSummary {

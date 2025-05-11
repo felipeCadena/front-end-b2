@@ -33,7 +33,12 @@ export default function SobreAEmpresa() {
 
   const router = useRouter();
 
-  const handleNextStep = () => {
+  const handleNextStep = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    e.preventDefault();
+    e.stopPropagation();
+
     if (
       !fantasyName ||
       !cnpj ||
@@ -46,14 +51,14 @@ export default function SobreAEmpresa() {
       return;
     }
 
-    setStepData(3, {
-      fantasyName,
-      cnpj,
-      bankAccount,
-      bankAgency,
-      bankName,
-      payday,
-    });
+    // setStepData(3, {
+    //   fantasyName,
+    //   cnpj,
+    //   bankAccount,
+    //   bankAgency,
+    //   bankName,
+    //   payday,
+    // });
 
     router.push(PATHS["cadastro-atividade"]);
   };
@@ -65,7 +70,7 @@ export default function SobreAEmpresa() {
         <MyIcon
           name="voltar"
           className="absolute top-1/3 left-0 md:hidden"
-          // onClick={() => router.push(PATHS.initial)}
+          onClick={() => router.back()}
         />
       </div>
 
@@ -159,7 +164,7 @@ export default function SobreAEmpresa() {
           variant="default"
           borderRadius="squared"
           size="lg"
-          onClick={handleNextStep}
+          onClick={(e) => handleNextStep(e)}
         >
           Cadastrar Atividades
         </MyButton>

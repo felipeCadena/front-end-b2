@@ -9,10 +9,20 @@ import PartnerApprovalCard from "@/components/molecules/partner-approval";
 import { useRouter } from "next/navigation";
 import ActivityStatusCard from "@/components/molecules/activity-status";
 import { adminService } from "@/services/api/admin";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { endOfMonth, format, startOfMonth } from "date-fns";
+import { toast } from "react-toastify";
+import { AxiosError } from "axios";
+
+type CustomError = {
+  error: boolean;
+  message: string;
+};
 
 export default function AdminWeb() {
   const router = useRouter();
+  const queryClient = useQueryClient();
+  const [loading, setLoading] = React.useState(false);
 
   const payments = [
     {
@@ -44,18 +54,57 @@ export default function AdminWeb() {
       status: "pending",
     },
   ];
+  const now = new Date();
+  const currentMonthKey = format(new Date(), "MM");
+
+  const startsAt = format(startOfMonth(now), "yyyy-MM-dd'T'00:00:00");
+  const endsAt = format(endOfMonth(now), "yyyy-MM-dd'T'00:00:00");
 
   const { data: pendingPayments, isLoading } = useQuery({
     queryKey: ["pendingPayments"],
     queryFn: () =>
       adminService.listPendingPaidPartners({
-        startsAt: "2025-05-01T00:00:00",
-        endsAt: "2025-05-30T23:59:59",
+        startsAt,
+        endsAt,
       }),
   });
 
   function hasTotalValuePaid(partner: Record<string, any>): boolean {
     return "total_value_paid" in partner;
+  }
+
+  function isCustomError(err: unknown): err is CustomError {
+    return (
+      typeof err === "object" &&
+      err !== null &&
+      "error" in err &&
+      "message" in err &&
+      typeof (err as any).message === "string"
+    );
+  }
+
+  async function payPartner(token: string) {
+    if (!token) {
+      toast.error("Token inválido ou inexistente.");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      await adminService.payPartner(token);
+      queryClient.invalidateQueries({ queryKey: ["pendingPayments"] });
+      toast.success("Pagamento realizado com sucesso!");
+    } catch (err: unknown) {
+      if (err instanceof AxiosError) {
+        const message =
+          err.response?.data?.message || "Erro ao realizar pagamento.";
+        toast.error(`Erro: ${message}`);
+      } else {
+        toast.error("Erro desconhecido ao realizar pagamento.");
+      }
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -96,7 +145,8 @@ export default function AdminWeb() {
                       amount={payment?.total_value_pending}
                       avatar={payment?.partnerLogo}
                       status={hasTotalValuePaid(payment) ? "paid" : "pending"}
-                      onPay={() => console.log(`Pagar ${payment.name}`)}
+                      loading={loading}
+                      onPay={() => payPartner(payment?.token_for_pay)}
                     />
                   )
                 )

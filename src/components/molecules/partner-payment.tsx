@@ -2,6 +2,7 @@ import React from "react";
 import Image from "next/image";
 import MyTypography from "@/components/atoms/my-typography";
 import MyButton from "@/components/atoms/my-button";
+import MySpinner from "../atoms/my-spinner";
 
 interface PartnerPaymentCardProps {
   name: string;
@@ -9,6 +10,7 @@ interface PartnerPaymentCardProps {
   avatar: string;
   onPay: () => void;
   status?: string;
+  loading?: boolean;
 }
 
 export default function PartnerPaymentCard({
@@ -17,6 +19,7 @@ export default function PartnerPaymentCard({
   avatar,
   onPay,
   status,
+  loading,
 }: PartnerPaymentCardProps) {
   return (
     <div className="flex items-center justify-between bg-[#F1F0F5] py-3 px-4 rounded-lg relative">
@@ -47,6 +50,7 @@ export default function PartnerPaymentCard({
         <MyButton
           variant="secondary-muted"
           size="sm"
+          borderRadius="squared"
           className="text-sm px-6 py-1 font-normal"
         >
           Pago
@@ -55,10 +59,12 @@ export default function PartnerPaymentCard({
         <MyButton
           variant="red"
           size="sm"
-          className="text-sm px-6 py-1"
+          borderRadius="squared"
+          className="text-sm px-6 py-1 w-20"
+          disabled={loading}
           onClick={onPay}
         >
-          Pagar
+          {loading ? <MySpinner /> : "Pagar"}
         </MyButton>
       )}
     </div>

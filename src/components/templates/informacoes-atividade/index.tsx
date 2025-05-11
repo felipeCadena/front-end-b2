@@ -91,6 +91,7 @@ export default function InformacoesAtividade({
 
   const b2Tax = process.env.NEXT_PUBLIC_PERCENTAGE_TAX_B2;
   const tax = process.env.NEXT_PUBLIC_PERCENTAGE_TAX;
+  const freeTax = process.env.NEXT_PUBLIC_FREE_TAX;
 
   const handleTaxDetails = () => {
     const taxB2Percentage = Number(b2Tax) || 0;
@@ -100,10 +101,19 @@ export default function InformacoesAtividade({
     const taxTotal = (Number(b2Fee) * taxPercentage) / 100;
 
     const realTax = (taxTotal * taxPercentage) / 100;
+    const allTax = taxTotal + realTax;
+
+    if (Boolean(freeTax)) {
+      return {
+        valorParceiro: priceAdult,
+        b2Fee,
+        tax: Math.round(allTax),
+        totalCliente: priceAdult,
+      };
+    }
 
     const totalCliente = Number(priceAdult) + b2Fee + taxTotal + realTax;
 
-    const allTax = taxTotal + realTax;
     return {
       valorParceiro: priceAdult,
       b2Fee,
@@ -173,6 +183,8 @@ export default function InformacoesAtividade({
       // 2. Faz login para obter o access_token
       const userData = await authService.login(credentials);
       const { access_token } = userData;
+
+      console.log("Acesso:", userData);
 
       // 3. Cria a aventura
 
@@ -282,6 +294,9 @@ export default function InformacoesAtividade({
 
       console.log("Aventura criada e imagens enviadas com sucesso!");
     } catch (error) {
+      toast.error(
+        "Erro ao criar parceiro ou aventura. Verifique os dados e tente novamente."
+      );
       console.error("Erro ao criar aventura ou enviar imagens:", error);
     } finally {
       setIsLoading(false);
@@ -479,7 +494,9 @@ export default function InformacoesAtividade({
               item.title ===
                 (selectedChildren == "Com crianças"
                   ? "Com crianças"
-                  : isChildrenAllowed && "Sem crianças") &&
+                  : !isChildrenAllowed &&
+                    selectedChildren == "Sem crianças" &&
+                    "Sem crianças") &&
                 "border border-black bg-[#E5E4E9] opacity-100"
             )}
             onClick={() => {
@@ -572,19 +589,35 @@ export default function InformacoesAtividade({
         </div>
 
         <div className="flex justify-between">
-          <MyTypography variant="label" weight="regular" className="mb-1">
+          <MyTypography
+            variant="label"
+            weight="regular"
+            className={cn("mb-1", Boolean(freeTax) && "line-through")}
+          >
             Tarifa B2
           </MyTypography>
-          <MyTypography variant="label" weight="regular" className="mb-1">
+          <MyTypography
+            variant="label"
+            weight="regular"
+            className={cn("mb-1", Boolean(freeTax) && "line-through")}
+          >
             R$ {handleTaxDetails().b2Fee ?? "0,00"}
           </MyTypography>
         </div>
 
         <div className="flex justify-between">
-          <MyTypography variant="label" weight="regular" className="mb-1">
+          <MyTypography
+            variant="label"
+            weight="regular"
+            className={cn("mb-1", Boolean(freeTax) && "line-through")}
+          >
             Imposto
           </MyTypography>
-          <MyTypography variant="label" weight="regular" className="mb-1">
+          <MyTypography
+            variant="label"
+            weight="regular"
+            className={cn("mb-1", Boolean(freeTax) && "line-through")}
+          >
             R$ {handleTaxDetails().tax ?? "0,00"}
           </MyTypography>
         </div>

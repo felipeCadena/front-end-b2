@@ -76,6 +76,8 @@ type FormData = z.infer<typeof formSchema>;
 export default function Cadastro() {
   const router = useRouter();
   const [visibility, setVisibility] = useState(false);
+  const [visibilityConfirm, setVisibilityConfirm] = React.useState(false);
+
   const [isTermChecked, setIsTermChecked] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { data: session, status } = useSession();
@@ -246,7 +248,7 @@ export default function Cadastro() {
             name="confirmPassword"
             label="Confirmar Senha:"
             placeholder="******"
-            type={visibility ? "text" : "password"}
+            type={visibilityConfirm ? "text" : "password"}
             className="mb-4"
           />
 

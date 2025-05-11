@@ -59,8 +59,6 @@ export default function TimePickerModal({
     }
   }, [availableActivityTimes, selectedTime]);
 
-  console.log(initialTime);
-
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
@@ -88,10 +86,10 @@ export default function TimePickerModal({
               variant="body"
               weight="regular"
               lightness={500}
-              className={cn(
-                "text-sm",
-                iconColor ? `text-neutral-400` : "text-black"
-              )}
+              // className={cn(
+              //   "text-sm",
+              //   iconColor ? `text-neutral-400` : "text-black"
+              // )}
             >
               Horário da Atividade
             </MyTypography>
