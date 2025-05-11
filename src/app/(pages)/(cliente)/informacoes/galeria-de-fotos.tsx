@@ -18,14 +18,18 @@ export default function GaleriaDeFotos() {
       }),
   });
 
+  const onlyActivitiesWithMedia = activities?.filter(
+    (act) => act.schedule.dateMediasPosted
+  );
+
   return isLoading ? (
     <div className="w-full h-[30vh] flex justify-center items-center mb-16">
       <Loading />
     </div>
   ) : (
     <section className="space-y-12 mb-10">
-      {activities && activities.length > 0 ? (
-        activities.map((activity) => (
+      {onlyActivitiesWithMedia && onlyActivitiesWithMedia.length > 0 ? (
+        onlyActivitiesWithMedia.map((activity) => (
           <ActivityPhotoGalleryCard
             activity={activity}
             selected={selected}

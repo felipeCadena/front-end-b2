@@ -196,9 +196,7 @@ const ActivityPhotoGalleryCard = ({
             </div>
           ) : (
             <div className="w-full flex justify-center items-center h-[10vh]">
-              <MyTypography variant="subtitle3" weight="bold">
-                As fotos da atividade ainda não estão disponíveis.
-              </MyTypography>
+              <Loading />
             </div>
           )}
         </div>
