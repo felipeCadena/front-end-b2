@@ -10,9 +10,10 @@ import useAdventures from "@/store/useAdventure";
 import { formatStateName, handleNameActivity } from "@/utils/formatters";
 import Loading from "@/app/loading";
 import useSearchQueryService from "@/services/use-search-query-service";
+import { ActivityCardSkeleton } from "@/components/organisms/activities-skeleton";
 
 export default function SecondSection() {
-  const { params } = useSearchQueryService();
+  const { params, clear } = useSearchQueryService();
   const scrollRef = React.useRef<HTMLDivElement>(null);
 
   const [selected, setSelected] = React.useState<"ar" | "terra" | "mar" | "">(
@@ -42,15 +43,19 @@ export default function SecondSection() {
   });
 
   // adventures
-  const { data: popularAdventures = [] } = useQuery({
-    queryKey: ["popularAdventures"],
-    queryFn: async () =>
-      await adventuresService.getAdventures({ orderBy: "qntTotalSales desc" }),
-  });
+  const { data: popularAdventures = [], isLoading: popularIsLoading } =
+    useQuery({
+      queryKey: ["popularAdventures"],
+      queryFn: async () =>
+        await adventuresService.getAdventures({
+          orderBy: "qntTotalSales desc",
+        }),
+    });
 
   useEffect(() => {
     const hasFilters = params && Object.keys(params).length > 0;
     if (hasFilters) {
+      setSelected("");
       // Scroll só depois de tudo carregado
       window.scrollTo({
         top: 400,
@@ -59,23 +64,42 @@ export default function SecondSection() {
     }
   }, [params]);
 
-  return isLoading ? (
-    <Loading />
-  ) : (
+  const handleSelect = (value: "ar" | "terra" | "mar" | "") => {
+    setSelected(value);
+    clear();
+  };
+
+  return (
     <section className="">
-      <ActivitiesFilter selected={selected} setSelected={setSelected} />
+      <ActivitiesFilter selected={selected} setSelected={handleSelect} />
 
       <div className="max-sm:pl-4">
         <MyTypography variant="heading2" weight="semibold" className="mt-8">
           Conheça nossas atividades
         </MyTypography>
         <MyTypography variant="subtitle3" weight="regular" className="mt-1">
-          {params
+          {params && params?.state
             ? `Atividades mais próximas do estado de ${formatStateName(params?.state)}`
             : handleNameActivity(searchedAdventures)}
         </MyTypography>
 
-        <CarouselCustom activities={adventures} />
+        {!isLoading ? (
+          adventures && adventures?.length > 0 ? (
+            <CarouselCustom home activities={adventures} />
+          ) : (
+            <div className="w-full h-[225px] flex flex-col justify-center items-center">
+              <MyTypography variant="heading3">
+                Nenhuma atividade encontrada. Faça uma nova busca!
+              </MyTypography>
+            </div>
+          )
+        ) : (
+          <div className="grid md:grid-cols-4 gap-4 max-sm:hidden">
+            {Array.from({ length: 4 }).map((_, index) => (
+              <ActivityCardSkeleton key={index} />
+            ))}
+          </div>
+        )}
 
         <div
           className="border-2 border-gray-200 w-1/2 mx-auto rounded-md md:hidden"
@@ -90,7 +114,15 @@ export default function SecondSection() {
           Atividades mais buscadas
         </MyTypography>
 
-        <CarouselCustom activities={popularAdventures} />
+        {!popularIsLoading ? (
+          <CarouselCustom home activities={popularAdventures} />
+        ) : (
+          <div className="grid md:grid-cols-4 gap-4 max-sm:hidden">
+            {Array.from({ length: 4 }).map((_, index) => (
+              <ActivityCardSkeleton key={index} />
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );

@@ -17,6 +17,7 @@ type ActivityCancelationPolicyProps = {
   address: any;
   duration: string | undefined;
   isChildrenAllowed: boolean;
+  transportAddress?: string;
 };
 
 const ActivityCancelationPolicy = ({
@@ -25,6 +26,7 @@ const ActivityCancelationPolicy = ({
   address,
   duration,
   isChildrenAllowed,
+  transportAddress,
 }: ActivityCancelationPolicyProps) => {
   const { id } = useParams();
   const hoursToDays = hoursBeforeCancelation ? hoursBeforeCancelation / 24 : 3;
@@ -56,7 +58,35 @@ const ActivityCancelationPolicy = ({
     <div className="flex flex-col justify-between">
       <div className="">
         <div>
-          <div className="flex justify-start items-center mt-4 bg-slate-100 border-[1px] border-primary-900 rounded-lg  w-fit py-2 px-6">
+          {transportAddress && transportAddress?.length > 0 && (
+            <>
+              <MyTypography
+                variant="body-big"
+                weight="semibold"
+                className="mt-4"
+              >
+                Local de saida e retorno do transporte incluído:
+              </MyTypography>
+              <div className="flex justify-start items-center mt-2 bg-slate-100 border-[1px] border-primary-900 rounded-lg w-full py-2 px-6">
+                <MyIcon name="localizacaoRedonda" className="" />
+                <MyTypography className="ml-2">
+                  <Link
+                    href={getAddress(transportAddress)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {transportAddress}
+                  </Link>
+                </MyTypography>
+              </div>
+            </>
+          )}
+
+          <MyTypography variant="body-big" weight="semibold" className="mt-6">
+            Ponto de encontro da atividade:
+          </MyTypography>
+
+          <div className="flex justify-start items-center mt-2 bg-slate-100 border-[1px] border-primary-900 rounded-lg w-full py-2 px-6">
             <MyIcon name="localizacaoRedonda" />
             <MyTypography className="ml-2">
               <Link

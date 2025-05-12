@@ -61,6 +61,8 @@ export interface AdventureState {
   isChildrenAllowed: boolean;
   difficult: number;
 
+  transportAddress?: string;
+
   hoursBeforeSchedule: number;
   hoursBeforeCancellation: number;
   isRepeatable: boolean;
@@ -121,6 +123,7 @@ const initialState = {
   availableDates: [],
   tempImages: [],
   address: "",
+  transportAddress: "",
 
   selectionBlocks: [
     {

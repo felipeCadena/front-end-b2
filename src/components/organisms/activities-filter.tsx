@@ -62,14 +62,13 @@ export default function ActivitiesFilter({
     e.stopPropagation(); // Impede a propagação do evento
 
     setSelected(filter);
-    // Sua lógica de filtro aqui
   };
 
   return (
     <section
       className={cn(
         "flex flex-col justify-around gap-2 mx-auto",
-        withText ? "mt-12 md:my-12" : "my-6"
+        withText ? "mt-6 md:my-12" : "my-6"
       )}
     >
       {withText && pathname == "/" ? (
@@ -93,7 +92,7 @@ export default function ActivitiesFilter({
       )}
 
       {admin && (
-        <MyTypography variant="subtitle2" weight="bold">
+        <MyTypography variant="subtitle2" weight="bold" className="mx-6">
           Qual tipo de parceria quer ver?
         </MyTypography>
       )}

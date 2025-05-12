@@ -118,7 +118,7 @@ export default function BasicInfo({
       <div className="grid grid-cols-1 md:grid-cols-3 items-center gap-4 space-y-6">
         <MySelect
           label="Grau de Dificuldade"
-          className="text-base text-black"
+          className="text-base text-black mt-6"
           value={getDifficultyDescription(formData.difficult) ?? "Selecione"}
           onValueChange={(value) =>
             setFormData({
@@ -158,6 +158,19 @@ export default function BasicInfo({
             <SelectItem value="false">Não Oferecemos</SelectItem>
           </SelectContent>
         </MySelect>
+
+        {formData?.transportIncluded && (
+          <MyTextInput
+            value={formData.transportAddress}
+            onChange={(value) =>
+              setFormData({ ...formData, transportAddress: value.target.value })
+            }
+            placeholder="Local de saída e retorno"
+            label="Local de saída e retorno"
+            className="mt-1"
+            classNameLabel="text-base text-black"
+          />
+        )}
 
         <MySelect
           label="Fotos da atividade inclusa"

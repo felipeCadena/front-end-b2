@@ -5,6 +5,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/atoms/my-select";
+import MyTextInput from "@/components/atoms/my-text-input";
 import MyTypography from "@/components/atoms/my-typography";
 import { MyDatePicker } from "@/components/molecules/my-date-picker";
 import { useAdventureStore } from "@/store/useAdventureStore";
@@ -18,6 +19,7 @@ export default function Step5() {
     waterIncluded,
     foodIncluded,
     fuelIncluded,
+    transportAddress,
   } = useAdventureStore();
 
   React.useEffect(() => {
@@ -46,6 +48,19 @@ export default function Step5() {
           <SelectItem value="false">Não Oferecemos</SelectItem>
         </SelectContent>
       </MySelect>
+
+      {transportIncluded && (
+        <MyTextInput
+          value={transportAddress}
+          onChange={(e) =>
+            setAdventureData({ transportAddress: e.target.value })
+          }
+          placeholder="Local de saída e retorno"
+          label="Local de saída e retorno"
+          className="mt-1"
+          classNameLabel="text-base text-black"
+        />
+      )}
 
       <MySelect
         label="Água inclusa"

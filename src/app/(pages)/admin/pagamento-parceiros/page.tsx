@@ -12,56 +12,94 @@ import {
   SelectValue,
 } from "@/components/atoms/my-select";
 import PartnerPaymentCard from "@/components/molecules/partner-payment";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { endOfMonth, format, startOfMonth } from "date-fns";
+import { adminService } from "@/services/api/admin";
+import { toast } from "react-toastify";
+import { AxiosError } from "axios";
+
+type PartnerPayment = {
+  partnerFantasyName: string;
+  partnerLogo: string;
+  total_value_pending: number;
+  token_for_pay: string;
+  total_value_paid?: number;
+  ordersSchedules?: string;
+};
 
 export default function PagamentosParceiros() {
   const router = useRouter();
+  const queryClient = useQueryClient();
+  const [loading, setLoading] = React.useState(false);
 
-  // Mock data - substituir por dados reais
-  const paid = [
-    {
-      id: 1,
-      name: "Luciana Bianco",
-      amount: 1200,
-      avatar: "/images/avatar1.png",
-      status: "paid",
-    },
-    {
-      id: 2,
-      name: "Patricia Nogue",
-      amount: 1200,
-      avatar: "/images/avatar2.png",
-      status: "paid",
-    },
-    {
-      id: 3,
-      name: "Rogerio Alves",
-      amount: 1200,
-      avatar: "/images/avatar3.png",
-      status: "paid",
-    },
-  ];
+  const now = new Date();
+  const currentMonthKey = format(new Date(), "MM");
 
-  const pending = [
-    {
-      id: 1,
-      name: "Luciana Bianco",
-      amount: 1200,
-      avatar: "/images/avatar1.png",
-      status: "pending",
-    },
-    {
-      id: 2,
-      name: "Patricia Nogue",
-      amount: 1200,
-      avatar: "/images/avatar2.png",
-      status: "pending",
-    },
-  ];
+  const startsAt = format(startOfMonth(now), "yyyy-MM-dd'T'00:00:00");
+  const endsAt = format(endOfMonth(now), "yyyy-MM-dd'T'00:00:00");
 
-  const totalPagamentos = paid.length + pending.length;
+  const { data: pending, isLoading } = useQuery({
+    queryKey: ["pendingPayments"],
+    queryFn: () =>
+      adminService.listPendingPaidPartners({
+        startsAt,
+        endsAt,
+      }),
+  });
+
+  const { data: paid, isLoading: isLoadingPaid } = useQuery({
+    queryKey: ["paidPayments"],
+    queryFn: () =>
+      adminService.listPendingPaidPartners({
+        startsAt,
+        endsAt,
+        partnerIsPaid: true,
+      }),
+  });
+
+  async function payPartner(token: string) {
+    if (!token) {
+      toast.error("Token inválido ou inexistente.");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      await adminService.payPartner(token);
+      queryClient.invalidateQueries({ queryKey: ["pendingPayments"] });
+      toast.success("Pagamento realizado com sucesso!");
+    } catch (err: unknown) {
+      if (err instanceof AxiosError) {
+        const message =
+          err.response?.data?.message || "Erro ao realizar pagamento.";
+        toast.error(
+          `${typeof message === "string" && message !== null ? `Erro: ${message}` : "Erro desconhecido ao realizar pagamento."}`
+        );
+      } else {
+        toast.error("Erro desconhecido ao realizar pagamento.");
+      }
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function hasTotalValuePaid(partner: Record<string, any>): boolean {
+    return "total_value_paid" in partner;
+  }
+
+  const paidPartners: PartnerPayment[] = paid?.partners
+    ? Object.values(paid.partners)
+    : [];
+
+  const pendingPartners: PartnerPayment[] = pending?.partners
+    ? Object.values(pending.partners)
+    : [];
+
   const valorTotal =
-    paid.reduce((acc, curr) => acc + curr.amount, 0) +
-    pending.reduce((acc, curr) => acc + curr.amount, 0);
+    paidPartners.reduce((acc, p) => acc + p.total_value_pending, 0) +
+    pendingPartners.reduce((acc, p) => acc + p.total_value_pending, 0);
+
+  const totalPagamentos = paidPartners.length + pendingPartners.length;
 
   return (
     <div className="min-h-screen">
@@ -106,16 +144,25 @@ export default function PagamentosParceiros() {
           </div>
 
           <div className="space-y-3">
-            {paid.map((payment) => (
-              <PartnerPaymentCard
-                key={payment.id}
-                name={payment.name}
-                amount={payment.amount}
-                avatar={payment.avatar}
-                onPay={() => console.log(`Pagar ${payment.name}`)}
-                status={payment.status}
-              />
-            ))}
+            {paid?.total_orders == 0 && !isLoadingPaid ? (
+              <div className="flex items-center justify-center h-[100px]">
+                <MyTypography variant="subtitle4" weight="bold">
+                  Não há pagamentos realizados.
+                </MyTypography>
+              </div>
+            ) : (
+              paidPartners.map((payment: any) => (
+                <PartnerPaymentCard
+                  key={payment?.ordersSchedules}
+                  name={payment?.partnerFantasyName}
+                  amount={payment?.total_value_pending}
+                  avatar={payment?.partnerLogo}
+                  status={hasTotalValuePaid(payment) ? "paid" : "pending"}
+                  loading={loading}
+                  onPay={() => payPartner(payment?.token_for_pay)}
+                />
+              ))
+            )}
           </div>
         </div>
 
@@ -143,16 +190,25 @@ export default function PagamentosParceiros() {
           </div>
 
           <div className="space-y-3">
-            {pending.map((parceiro) => (
-              <PartnerPaymentCard
-                key={parceiro.id}
-                name={parceiro.name}
-                amount={parceiro.amount}
-                avatar={parceiro.avatar}
-                onPay={() => console.log(`Pagar ${parceiro.name}`)}
-                status={parceiro.status}
-              />
-            ))}
+            {pending?.total_orders == 0 && !isLoading ? (
+              <div className="flex items-center justify-center h-[250px]">
+                <MyTypography variant="subtitle4" weight="bold">
+                  Não há pagamentos pendentes.
+                </MyTypography>
+              </div>
+            ) : (
+              pendingPartners.map((payment: any) => (
+                <PartnerPaymentCard
+                  key={payment?.ordersSchedules}
+                  name={payment?.partnerFantasyName}
+                  amount={payment?.total_value_pending}
+                  avatar={payment?.partnerLogo}
+                  status={hasTotalValuePaid(payment) ? "paid" : "pending"}
+                  loading={loading}
+                  onPay={() => payPartner(payment?.token_for_pay)}
+                />
+              ))
+            )}
           </div>
         </div>
 
@@ -179,7 +235,10 @@ export default function PagamentosParceiros() {
               weight="bold"
               className="text-primary-600"
             >
-              R$ {valorTotal.toFixed(2)}
+              {valorTotal.toLocaleString("pt-BR", {
+                style: "currency",
+                currency: "BRL",
+              })}
             </MyTypography>
           </div>
         </div>

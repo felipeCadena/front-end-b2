@@ -187,18 +187,13 @@ export const authOptions: NextAuthOptions = {
           }
         } catch (err) {
           console.error("Erro ao renovar token:", (err as any)?.response?.data);
-          // signIn("credentials", {
-          //   email: token.email,
-          //   password: token.password,
-          //   redirect: false,
-          // });
+          return null;
         }
       }
 
       return token;
     },
     async session({ session, token }) {
-      // Passa os dados do token para a sessão
       return {
         ...session,
         user: {

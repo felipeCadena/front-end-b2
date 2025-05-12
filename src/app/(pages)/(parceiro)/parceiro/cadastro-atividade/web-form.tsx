@@ -98,6 +98,7 @@ export default function WebForm({
     coordinates,
     address,
     isRepeatable,
+    transportAddress,
     recurrences,
     availableDates,
     addTempImage,
@@ -299,6 +300,8 @@ export default function WebForm({
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
   }, []);
+
+  console.log(transportAddress);
 
   return (
     <main className="space-y-10 my-6">
@@ -637,6 +640,19 @@ export default function WebForm({
                 <SelectItem value="false">Não Oferecemos</SelectItem>
               </SelectContent>
             </MySelect>
+
+            {transportIncluded && (
+              <MyTextInput
+                value={transportAddress}
+                onChange={(e) =>
+                  setAdventureData({ transportAddress: e.target.value })
+                }
+                placeholder="Local de saída e retorno"
+                label="Local de saída e retorno"
+                className="mt-1"
+                classNameLabel="text-base text-black"
+              />
+            )}
 
             <MySelect
               label="Água inclusa"

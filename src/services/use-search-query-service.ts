@@ -33,7 +33,7 @@ export default function useSearchQueryService() {
   };
 
   const clear = () => {
-    router.push(path);
+    router.push(path, { scroll: false });
   };
 
   return {

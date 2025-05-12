@@ -127,6 +127,12 @@ export default function FullActivitiesHistoric({
     }
   };
 
+  const handlePhotos = async (activity: any) => {
+    if (activity?.schedule.dateMediasPosted) {
+      router.push(PATHS.visualizarFotos(activity?.scheduleId));
+    }
+  };
+
   return (
     <section className="md:max-w-screen-custom">
       {activities && activities.length > 0 ? (
@@ -140,7 +146,7 @@ export default function FullActivitiesHistoric({
             key={index}
           >
             <div
-              className={`relative z-10 flex-shrink-0 overflow-hidden w-[265px] ${isActivityDone ? "h-[265px]" : "h-[161px]"} hover:cursor-pointer rounded-md`}
+              className={`relative z-10 flex-shrink-0 overflow-hidden w-[265px] ${isActivityDone ? "h-[265px]" : "h-[200px]"} hover:cursor-pointer rounded-md`}
             >
               <Image
                 alt={`Imagem da atividade ${activity?.adventure?.title}`}
@@ -151,7 +157,7 @@ export default function FullActivitiesHistoric({
                 }
                 width={250}
                 height={300}
-                className={`object-cover w-[265px] ${isActivityDone ? "h-[265px]" : "h-[161px]"}`}
+                className={`object-cover w-[265px] ${isActivityDone ? "h-[265px]" : "h-[200px]"}`}
                 onClick={() =>
                   router.push(PATHS.visualizarAtividade(activity.adventure.id))
                 }
@@ -161,7 +167,7 @@ export default function FullActivitiesHistoric({
             <div className="w-full space-y-2 max-h-[265px]">
               <div className="w-full flex justify-between mb-4 relative">
                 <div className="flex flex-col gap-2 cursor-pointer">
-                  <div className="flex justify-between min-w-[391px] items-center gap-2">
+                  <div className="flex min-w-[391px] items-center gap-4">
                     <MyBadge className="font-medium p-1" variant="outline">
                       {handleNameActivity(activity?.adventure?.typeAdventure)}
                     </MyBadge>
@@ -189,12 +195,21 @@ export default function FullActivitiesHistoric({
                   <MyTypography variant="subtitle3" weight="bold" className="">
                     {activity?.adventure?.title}
                   </MyTypography>
+                  <MyTypography
+                    variant="subtitle4"
+                    weight="regular"
+                    className=""
+                  >
+                    {activity?.adventure?.description
+                      .slice(0, 50)
+                      .concat("...")}
+                  </MyTypography>
                 </div>
 
                 {isActivityDone && (
                   <>
                     <MyButton
-                      variant="outline-muted"
+                      variant="outline-neutral"
                       size="md"
                       borderRadius="squared"
                       className="text-base p-2 ml-auto"
@@ -353,17 +368,18 @@ export default function FullActivitiesHistoric({
               </div>
 
               {isActivityDone && (
-                <div className="cursor-pointer flex justify-between items-center p-4 bg-[#F1F0F587] border border-primary-600/30 md:bg-primary-900 border-opacity-80 rounded-lg shadow-sm relative">
+                <div
+                  onClick={() => handlePhotos(activity)}
+                  className="cursor-pointer flex justify-between items-center p-4 bg-[#F1F0F587] border border-primary-600/30 md:bg-primary-900 border-opacity-80 rounded-lg shadow-sm relative"
+                >
                   <div className="absolute inset-y-0 left-0 w-3 bg-primary-900 rounded-l-lg"></div>
 
                   <div className="flex items-center gap-1 ml-4">
                     <MyIcon name="camera" />
-                    <MyTypography
-                      variant="subtitle3"
-                      weight="bold"
-                      className=""
-                    >
-                      Fotos dessa Atividade
+                    <MyTypography variant="subtitle3" weight="bold">
+                      {activity?.schedule?.dateMediasPosted
+                        ? "Fotos dessa atividade"
+                        : "Fotos ainda não disponíveis"}
                     </MyTypography>
                   </div>
                   <MyIcon name="seta" />

@@ -13,11 +13,54 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { endOfMonth, format, startOfMonth } from "date-fns";
 import { toast } from "react-toastify";
 import { AxiosError } from "axios";
+import {
+  MySelect,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/atoms/my-select";
 
 type CustomError = {
   error: boolean;
   message: string;
 };
+
+const monthLabels = [
+  "Jan",
+  "Fev",
+  "Mar",
+  "Abr",
+  "Mai",
+  "Jun",
+  "Jul",
+  "Ago",
+  "Set",
+  "Out",
+  "Nov",
+  "Dez",
+];
+
+// Mapeamento de meses abreviados para completos
+const monthFullNames: Record<string, string> = {
+  Jan: "Janeiro",
+  Fev: "Fevereiro",
+  Mar: "Março",
+  Abr: "Abril",
+  Mai: "Maio",
+  Jun: "Junho",
+  Jul: "Julho",
+  Ago: "Agosto",
+  Set: "Setembro",
+  Out: "Outubro",
+  Nov: "Novembro",
+  Dez: "Dezembro",
+};
+
+// Tipando a função getFullMonthName
+function getFullMonthName(monthAbbreviation: string): string {
+  return monthFullNames[monthAbbreviation] || monthAbbreviation;
+}
 
 export default function AdminWeb() {
   const router = useRouter();
@@ -137,19 +180,45 @@ export default function AdminWeb() {
                   </MyTypography>
                 </div>
               ) : (
-                Object.values(pendingPayments?.partners ?? {}).map(
-                  (payment: any) => (
-                    <PartnerPaymentCard
-                      key={payment?.ordersSchedules}
-                      name={payment?.partnerFantasyName}
-                      amount={payment?.total_value_pending}
-                      avatar={payment?.partnerLogo}
-                      status={hasTotalValuePaid(payment) ? "paid" : "pending"}
-                      loading={loading}
-                      onPay={() => payPartner(payment?.token_for_pay)}
-                    />
-                  )
-                )
+                <>
+                  {/* <div className="ml-auto">
+                                <MySelect
+              value={filters?.month}
+              onValueChange={(value) => handleMonthChange(value)}
+            >
+              <SelectTrigger className="rounded-2xl w-[150px] text-[#848A9C] text-xs">
+                <SelectValue placeholder="Mês" />
+              </SelectTrigger>
+              <SelectContent className="rounded-lg">
+                <SelectItem value="01">Janeiro</SelectItem>
+                <SelectItem value="02">Fevereiro</SelectItem>
+                <SelectItem value="03">Março</SelectItem>
+                <SelectItem value="04">Abril</SelectItem>
+                <SelectItem value="05">Maio</SelectItem>
+                <SelectItem value="06">Junho</SelectItem>
+                <SelectItem value="07">Julho</SelectItem>
+                <SelectItem value="08">Agosto</SelectItem>
+                <SelectItem value="09">Setembro</SelectItem>
+                <SelectItem value="10">Outubro</SelectItem>
+                <SelectItem value="11">Novembro</SelectItem>
+                <SelectItem value="12">Dezembro</SelectItem>
+              </SelectContent>
+            </MySelect>
+                              </div> */}
+                  {Object.values(pendingPayments?.partners ?? {}).map(
+                    (payment: any) => (
+                      <PartnerPaymentCard
+                        key={payment?.ordersSchedules}
+                        name={payment?.partnerFantasyName}
+                        amount={payment?.total_value_pending}
+                        avatar={payment?.partnerLogo}
+                        status={hasTotalValuePaid(payment) ? "paid" : "pending"}
+                        loading={loading}
+                        onPay={() => payPartner(payment?.token_for_pay)}
+                      />
+                    )
+                  )}
+                </>
               )}
             </div>
           </TabsContent>

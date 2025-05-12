@@ -379,20 +379,22 @@ export default function Atividade() {
         </div>
         <div className="flex flex-col my-4">
           <div className="flex max-sm:flex-col items-start justify-between gap-8 max-sm:px-4">
-            <div className="flex gap-4">
-              <MyIcon
-                name="voltar-black"
-                className="hover:cursor-pointer max-sm:hidden"
-                onClick={() => router.push(PATHS["atividades-cadastradas"])}
-              />
-              <div>
+            <div className="flex flex-col gap-2">
+              <div className="flex items-center gap-1">
+                <MyIcon
+                  name="voltar-black"
+                  className="cursor-pointer max-sm:hidden"
+                  onClick={() => router.push(PATHS["atividades-cadastradas"])}
+                />
                 <MyTypography variant="heading2" weight="bold" className="">
                   {activity?.title
                     ? activity.title.charAt(0).toUpperCase() +
                       activity.title.slice(1).toLowerCase()
                     : ""}
                 </MyTypography>
-                <MyBadge variant="outline" className="p-1 mt-2">
+              </div>
+              <div>
+                <MyBadge variant="outline" className="p-1 ">
                   {handleNameActivity(activity?.typeAdventure ?? "")}
                 </MyBadge>
                 {!activity.onSite && activity.adminApproved && (
@@ -556,7 +558,37 @@ export default function Atividade() {
 
         <div className="md:grid md:grid-cols-2 gap-8">
           <div className="md:w-full">
-            <div className="max-sm:my-6 flex items-center p-3 bg-[#F1F0F587] border border-primary-600/30 border-opacity-80 rounded-lg shadow-sm hover:bg-gray-100 relative">
+            {activity?.transportAddress &&
+              activity?.transportAddress?.length > 0 && (
+                <div className="mb-6">
+                  <MyTypography
+                    variant="body-big"
+                    weight="semibold"
+                    className="mt-4"
+                  >
+                    Local de saida e retorno do transporte incluído:
+                  </MyTypography>
+                  <div className="max-sm:my-6 flex items-center mt-2 p-3 bg-[#F1F0F587] border border-primary-600/30 border-opacity-80 rounded-lg shadow-sm hover:bg-gray-100 relative">
+                    <div className="absolute inset-y-0 left-0 w-3 bg-primary-900 rounded-l-lg"></div>
+
+                    <MyIcon name="localizacaoRedonda" className="" />
+                    <MyTypography className="ml-2">
+                      <Link
+                        href={getAddress(activity?.transportAddress)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {"cristo redentor"}
+                      </Link>
+                    </MyTypography>
+                  </div>
+                </div>
+              )}
+
+            <MyTypography variant="body-big" weight="semibold">
+              Ponto de encontro da atividade:
+            </MyTypography>
+            <div className="max-sm:my-6 flex items-center mt-2 p-3 bg-[#F1F0F587] border border-primary-600/30 border-opacity-80 rounded-lg shadow-sm hover:bg-gray-100 relative">
               <div className="absolute inset-y-0 left-0 w-3 bg-primary-900 rounded-l-lg"></div>
               <MyIcon
                 name="localizacaoRedonda"
@@ -564,8 +596,6 @@ export default function Atividade() {
               />
               <div className="ml-3">
                 <MyTypography variant="body-big" weight="regular">
-                  {/* {formatAddress(address)} */}
-
                   <Link
                     href={getAddress(formatAddress(address))}
                     target="_blank"

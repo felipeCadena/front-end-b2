@@ -71,7 +71,7 @@ const CarouselActivity = ({
   return (
     <div
       key={activity.id}
-      className="min-w-[70%] w-[25%] md:min-w-[25%] flex flex-col gap-1 items-start md:mb-8"
+      className="min-w-[70%] md:w-[25%] md:min-w-[25%] flex flex-col gap-1 items-start md:mb-8 "
     >
       <div className="relative z-10 overflow-hidden h-[225px] w-full md:w-[250px] hover:cursor-pointer rounded-md">
         <Image

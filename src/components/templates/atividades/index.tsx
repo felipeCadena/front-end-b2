@@ -6,14 +6,17 @@ import ActivitiesFilter from "@/components/organisms/activities-filter";
 import CarouselCustom from "@/components/templates/second-section/carousel-custom";
 import React, { useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { adventures } from "@/services/api/adventures";
+import { Adventure, adventures } from "@/services/api/adventures";
 import { useCart } from "@/store/useCart";
 import { useSession } from "next-auth/react";
 import useSearchQueryService from "@/services/use-search-query-service";
 import Loading from "@/app/loading";
+import SearchActivity from "@/components/organisms/search-activity";
+import { cn } from "@/utils/cn";
 
 export default function AtividadesTemplate() {
   const { params } = useSearchQueryService();
+  const [adventuresSearch, setAdventuresSearch] = React.useState<Adventure[]>();
   const [selected, setSelected] = React.useState<"ar" | "terra" | "mar" | "">(
     ""
   );
@@ -23,7 +26,7 @@ export default function AtividadesTemplate() {
     enabled: !!params,
     queryFn: () =>
       adventures.filterAdventures({
-        limit: 30,
+        limit: 50,
         skip: 0,
         ...params,
       }),
@@ -44,6 +47,7 @@ export default function AtividadesTemplate() {
   };
 
   const handleSelect = (value: "ar" | "terra" | "mar" | "") => {
+    setAdventuresSearch(undefined);
     setSelected(value);
     if (value) scrollToSection(value);
   };
@@ -55,68 +59,98 @@ export default function AtividadesTemplate() {
 
   const cartSize = getCartSize(userId ?? "");
 
-  const filterActivity = (typeAdventure: string) => {
+  const filterActivity = (activities: any, typeAdventure: string) => {
     return (
-      activities.filter(
-        (activity) => activity.typeAdventure === typeAdventure
+      activities?.filter(
+        (activity: any) => activity.typeAdventure === typeAdventure
       ) ?? []
     );
+  };
+
+  const handleSearch = (adventures: any) => {
+    setAdventuresSearch(adventures);
+    setSelected("");
   };
 
   return isLoading ? (
     <Loading />
   ) : (
     <section className="">
-      {/* <SearchActivity /> */}
+      <div className="mt-8">
+        <SearchActivity setFormData={handleSearch} />
+      </div>
 
       <ActivitiesFilter selected={selected} setSelected={handleSelect} />
 
-      <div className="ml-5 my-8 md:my-16">
-        <MyTypography
-          variant="heading2"
-          weight="semibold"
-          className="mb-4 md:text-lg"
-        >
-          Sugestões para você!
-        </MyTypography>
-
-        <div ref={arRef}>
+      {adventuresSearch && (
+        <div className={cn("max-sm:ml-5 my-8")}>
           <MyTypography
-            variant="subtitle3"
-            weight="regular"
-            className="md:opacity-50"
+            variant="heading2"
+            weight="semibold"
+            className="md:text-lg"
           >
-            Atividades Aéreas
+            Atividades mais próximas da sua busca
           </MyTypography>
-          <CarouselCustom activities={filterActivity("ar")} />
+          {adventuresSearch?.length == 0 ? (
+            <div className="w-full h-[225px] flex flex-col justify-center items-center">
+              <MyTypography variant="heading3">
+                Nenhuma atividade encontrada. Faça uma nova busca!
+              </MyTypography>
+            </div>
+          ) : (
+            <CarouselCustom activities={adventuresSearch} />
+          )}
         </div>
+      )}
 
-        <div className="border-2 border-gray-200 w-1/2 mx-auto rounded-md mb-6 md:hidden" />
-
-        <div ref={terraRef}>
+      {!adventuresSearch && (
+        <div className={cn("max-sm:ml-5 my-8")}>
           <MyTypography
-            variant="subtitle3"
-            weight="regular"
-            className="md:opacity-50 md:mt-8"
+            variant="heading2"
+            weight="semibold"
+            className="mb-4 md:text-lg"
           >
-            Atividades Terrestres
+            Sugestões para você!
           </MyTypography>
-          <CarouselCustom activities={filterActivity("terra")} />
-        </div>
 
-        <div className="border-2 border-gray-200 w-1/2 mx-auto rounded-md mb-6 md:hidden" />
+          <div ref={arRef}>
+            <MyTypography
+              variant="subtitle3"
+              weight="regular"
+              className="md:opacity-50"
+            >
+              Atividades Aéreas
+            </MyTypography>
+            <CarouselCustom activities={filterActivity(activities, "ar")} />
+          </div>
 
-        <div ref={marRef}>
-          <MyTypography
-            variant="subtitle3"
-            weight="regular"
-            className="md:opacity-50 md:mt-8"
-          >
-            Atividades Aquática
-          </MyTypography>
-          <CarouselCustom activities={filterActivity("mar")} />
+          <div className="border-2 border-gray-200 w-1/2 mx-auto rounded-md mb-6 md:hidden" />
+
+          <div ref={terraRef}>
+            <MyTypography
+              variant="subtitle3"
+              weight="regular"
+              className="md:opacity-50 md:mt-8"
+            >
+              Atividades Terrestres
+            </MyTypography>
+            <CarouselCustom activities={filterActivity(activities, "terra")} />
+          </div>
+
+          <div className="border-2 border-gray-200 w-1/2 mx-auto rounded-md mb-6 md:hidden" />
+
+          <div ref={marRef}>
+            <MyTypography
+              variant="subtitle3"
+              weight="regular"
+              className="md:opacity-50 md:mt-8"
+            >
+              Atividades Aquática
+            </MyTypography>
+            <CarouselCustom activities={filterActivity(activities, "mar")} />
+          </div>
         </div>
-      </div>
+      )}
       <ShoppingCard isMobile={false} items={cartSize} />
       <ShoppingCard isMobile items={cartSize} />
     </section>

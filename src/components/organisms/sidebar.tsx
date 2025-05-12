@@ -27,19 +27,17 @@ export default function Sidebar({ logout }: { logout?: () => void }) {
         }`}
       >
         <nav className="relative h-full flex flex-col justify-start">
-            {/* Botão de Fechar */}
-            <button
-              onClick={closeSidebar}
-              className="absolute top-8 right-4 z-50 p-2 rounded-md md:hidden"
-              >
-              <MyIcon name="close" />
-            </button>
+          {/* Botão de Fechar */}
+          <button
+            onClick={closeSidebar}
+            className="absolute top-8 right-4 z-50 p-2 rounded-md md:hidden"
+          >
+            <MyIcon name="close" />
+          </button>
 
-        <div className="px-4 py-8">
-            {/* Dropdown de Idiomas */}
+          <div className="px-4 py-8">
             <LanguageDropdown />
-        </div>
-          
+          </div>
 
           <div className="-ml-4 md:hidden">
             <SidebarMenu closeSidebar={closeSidebar} />

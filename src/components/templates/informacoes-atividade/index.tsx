@@ -65,6 +65,7 @@ export default function InformacoesAtividade({
     typeAdventure,
     coordinates,
     availableDates,
+    transportAddress,
     setAdventureData,
     clearAdventure,
   } = useAdventureStore();
@@ -201,6 +202,7 @@ export default function InformacoesAtividade({
         addressCity,
         addressNeighborhood,
         addressState,
+        transportAddress,
         addressStreet,
         addressPostalCode,
         addressNumber,
@@ -353,6 +355,7 @@ export default function InformacoesAtividade({
         hoursBeforeCancellation,
         isRepeatable,
         recurrences,
+        transportAddress,
       };
 
       // 2. Cria a aventura com o access_token
