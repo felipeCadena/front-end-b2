@@ -289,7 +289,7 @@ export default function InformacoesAtividade({
       // 9. Faz o login no NextAuth + set Session + Redirect
       await signIn("credentials", {
         ...credentials,
-        callbackUrl: `${PATHS.visualizarAtividadeParceiro(adventureId)}?openModal=true`,
+        callbackUrl: `${PATHS.visualizarAtividadeParceiro(adventureId)}?openModal=true&create=true`,
       });
 
       console.log("Aventura criada e imagens enviadas com sucesso!");
@@ -424,7 +424,7 @@ export default function InformacoesAtividade({
 
       // 7. Redireciona para a página de visualização da atividade
       router.push(
-        `${PATHS.visualizarAtividadeParceiro(adventureId)}?openModal=true`
+        `${PATHS.visualizarAtividadeParceiro(adventureId)}?openModal=true&create=true`
       );
 
       console.log("Aventura criada e imagens enviadas com sucesso!");

@@ -152,14 +152,11 @@ export default function ChatList({ chats, setUser }: ChatListProps) {
                 <div className="ml-3 flex-1 space-y-1">
                   <div className="flex justify-between gap-4">
                     <span className="font-medium">{chat?.userToName}</span>
-                    {chat?.orderScheduleAdventure && (
-                      <p className="text-gray-400 text-xs">
-                        {chat?.orderScheduleAdventure.adventure.title}
-                      </p>
-                    )}
                   </div>
 
-                  {chat?.lastMessage && chat?.session_token ? (
+                  {chat?.lastMessage &&
+                  chat?.session_token &&
+                  chat?.lastMessage?.text ? (
                     <p className="text-sm font-bold">
                       {chat?.lastMessage?.text.slice(0, 40).concat("...")}
                     </p>
@@ -171,6 +168,12 @@ export default function ChatList({ chats, setUser }: ChatListProps) {
                     <p className="text-xs opacity-70">
                       Visto por último{" "}
                       {formatSmartDateTime(chat?.userToLastOnline)}
+                    </p>
+                  )}
+                  {chat?.orderScheduleAdventure && (
+                    <p className="text-gray-600 text-xs">
+                      <span className="font-bold">Atividade:</span>{" "}
+                      {chat?.orderScheduleAdventure?.adventure?.title}
                     </p>
                   )}
                 </div>

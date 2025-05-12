@@ -192,7 +192,7 @@ export default function Atividade() {
                 alt="album"
                 width={300}
                 height={300}
-                className={`h-full w-full max-h-[25rem] rounded-lg object-cover ${index === 0 ? "col-span-2 row-span-2 h-full" : "max-h-[12rem]"}`}
+                className={`h-full w-full max-h-[25rem] rounded-lg object-cover ${index === 0 ? "col-span-2 row-span-2 h-[25rem]" : "h-[12rem] max-h-[12rem]"}`}
               />
             ))}
         </div>

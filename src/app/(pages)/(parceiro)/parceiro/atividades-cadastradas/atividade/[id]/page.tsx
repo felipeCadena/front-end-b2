@@ -371,7 +371,7 @@ export default function Atividade() {
         <MyIcon
           name="voltar-black"
           className="absolute z-20 top-8 left-8 md:hidden"
-          onClick={() => router.back()}
+          onClick={() => router.push(PATHS["atividades-cadastradas"])}
         />
 
         <div className="md:hidden">
@@ -383,7 +383,7 @@ export default function Atividade() {
               <MyIcon
                 name="voltar-black"
                 className="hover:cursor-pointer max-sm:hidden"
-                onClick={() => router.back()}
+                onClick={() => router.push(PATHS["atividades-cadastradas"])}
               />
               <div>
                 <MyTypography variant="heading2" weight="bold" className="">
@@ -411,6 +411,7 @@ export default function Atividade() {
               <ActivityEditMenu
                 onEdit={handleEdit}
                 isOcult={!activity.onSite}
+                adminAprroved={activity?.adminApproved}
               />
             </div>
           </div>
@@ -460,7 +461,7 @@ export default function Atividade() {
                 alt="fotos da atividade"
                 width={300}
                 height={300}
-                className={`h-full w-full max-h-[25rem] rounded-lg object-cover ${index === 0 ? "col-span-2 row-span-2 h-full" : "max-h-[12rem]"}`}
+                className={`h-full w-full max-h-[25rem] rounded-lg object-cover ${index === 0 ? "col-span-2 row-span-2 h-[25rem]" : "h-[12rem] max-h-[12rem]"}`}
               />
             ))}
         </div>
@@ -684,7 +685,7 @@ export default function Atividade() {
         <div className="md:hidden mt-6">
           <ActivityEditMenu
             onEdit={handleEdit}
-            // hasClient={hasClient}
+            adminAprroved={activity?.adminApproved}
             isOcult={!activity.onSite}
           />
         </div>
