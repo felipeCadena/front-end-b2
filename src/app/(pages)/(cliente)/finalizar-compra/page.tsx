@@ -328,7 +328,7 @@ export default function FinalizarCompra() {
     queryKey: ["budget", orderBudget],
     queryFn: () =>
       ordersAdventuresService.createBudget({ adventures: orderBudget }, userIP),
-    enabled: Boolean(userIP) && Boolean(orderBudget),
+    enabled: Boolean(userIP) && Boolean(orderBudget?.length),
   });
 
   const activityPrice =

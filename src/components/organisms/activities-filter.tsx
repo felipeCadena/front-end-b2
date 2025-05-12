@@ -92,7 +92,7 @@ export default function ActivitiesFilter({
       )}
 
       {admin && (
-        <MyTypography variant="subtitle2" weight="bold">
+        <MyTypography variant="subtitle2" weight="bold" className="mx-6">
           Qual tipo de parceria quer ver?
         </MyTypography>
       )}

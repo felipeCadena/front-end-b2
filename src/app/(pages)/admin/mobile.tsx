@@ -10,9 +10,45 @@ import PartnerApprovalCard from "@/components/molecules/partner-approval";
 import ActivityStatusCard from "@/components/molecules/activity-status";
 import PATHS from "@/utils/paths";
 import SearchActivity from "@/components/organisms/search-activity";
+import { endOfMonth, format, startOfMonth } from "date-fns";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { adminService } from "@/services/api/admin";
+import { toast } from "react-toastify";
+import { AxiosError } from "axios";
+
+type PartnerPayment = {
+  ordersSchedules: string;
+  partnerFantasyName: string;
+  total_value_pending: number;
+  partnerLogo: string;
+  token_for_pay: string;
+  // outros campos...
+};
+
+type PendingPayments = {
+  total_orders: number;
+  partners: Record<string, PartnerPayment>;
+};
 
 export default function AdminMobile() {
   const router = useRouter();
+  const queryClient = useQueryClient();
+  const [loading, setLoading] = React.useState(false);
+
+  const now = new Date();
+  const currentMonthKey = format(new Date(), "MM");
+
+  const startsAt = format(startOfMonth(now), "yyyy-MM-dd'T'00:00:00");
+  const endsAt = format(endOfMonth(now), "yyyy-MM-dd'T'00:00:00");
+
+  const { data: pendingPayments, isLoading } = useQuery({
+    queryKey: ["pendingPayments"],
+    queryFn: () =>
+      adminService.listPendingPaidPartners({
+        startsAt,
+        endsAt,
+      }),
+  });
 
   // Mock data - substituir por dados reais
   const payments = [
@@ -47,6 +83,34 @@ export default function AdminMobile() {
     },
   ];
 
+  async function payPartner(token: string) {
+    if (!token) {
+      toast.error("Token inválido ou inexistente.");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      await adminService.payPartner(token);
+      queryClient.invalidateQueries({ queryKey: ["pendingPayments"] });
+      toast.success("Pagamento realizado com sucesso!");
+    } catch (err: unknown) {
+      if (err instanceof AxiosError) {
+        const message =
+          err.response?.data?.message || "Erro ao realizar pagamento.";
+        toast.error(`Erro: ${message}`);
+      } else {
+        toast.error("Erro desconhecido ao realizar pagamento.");
+      }
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function hasTotalValuePaid(partner: Record<string, any>): boolean {
+    return "total_value_paid" in partner;
+  }
+
   return (
     <main className=" space-y-8">
       {/* Busca */}
@@ -61,15 +125,27 @@ export default function AdminMobile() {
           Pagamentos de Parceiros
         </MyTypography>
         <div className="space-y-3">
-          {payments.map((payment) => (
-            <PartnerPaymentCard
-              key={payment.id}
-              name={payment.name}
-              amount={payment.amount}
-              avatar={payment.avatar}
-              onPay={() => console.log(`Pagar ${payment.name}`)}
-            />
-          ))}
+          {pendingPayments?.total_orders == 0 && !isLoading ? (
+            <div className="flex items-center justify-center h-[250px]">
+              <MyTypography variant="subtitle4" weight="bold">
+                Você ainda não possui pagamentos.
+              </MyTypography>
+            </div>
+          ) : (
+            Object.values(pendingPayments?.partners ?? {}).map(
+              (payment: any) => (
+                <PartnerPaymentCard
+                  key={payment?.ordersSchedules}
+                  name={payment?.partnerFantasyName}
+                  amount={payment?.total_value_pending}
+                  avatar={payment?.partnerLogo}
+                  status={hasTotalValuePaid(payment) ? "paid" : "pending"}
+                  loading={loading}
+                  onPay={() => payPartner(payment?.token_for_pay)}
+                />
+              )
+            )
+          )}
         </div>
         <MyButton
           variant="default"
@@ -83,7 +159,7 @@ export default function AdminMobile() {
       </div>
 
       {/* Aprovações */}
-      <div className="space-y-6 px-4">
+      {/* <div className="space-y-6 px-4">
         <div>
           <MyTypography variant="subtitle2" weight="bold" className="mb-4">
             Aprovar novos parceiros
@@ -127,7 +203,7 @@ export default function AdminMobile() {
         >
           Aprovar agora
         </MyButton>
-      </div>
+      </div> */}
 
       {/* Atividades Pendentes */}
       <div className="px-4">

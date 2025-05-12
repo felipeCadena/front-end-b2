@@ -22,8 +22,6 @@ import { lancamentos } from "@/common/constants/mock";
 import { getData, getHora, getYearsArray } from "@/utils/formatters";
 import MyIcon from "@/components/atoms/my-icon";
 import { useRouter } from "next/navigation";
-import { useQuery } from "@tanstack/react-query";
-import { partnerService } from "@/services/api/partner";
 import React from "react";
 
 export default function Lancamentos({
