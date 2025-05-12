@@ -28,7 +28,7 @@ export default function Footer() {
   return (
     <footer
       className={cn(
-        "bg-[#F1F0F5] text-center px-4 pb-8",
+        "bg-[#F1F0F5] text-center px-4 pb-8 md:pb-4",
         !withFooter() && "max-sm:hidden"
       )}
     >
@@ -131,6 +131,27 @@ export default function Footer() {
             >
               Politica de Privacidade
             </MyTypography>
+          </Link>
+        </div>
+
+        <div className="mt-6 text-sm text-neutral-500">
+          <span>Desenvolvido por: </span>
+          <Link
+            href="https://www.tmlcodes.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline"
+          >
+            TML Codes
+          </Link>{" "}
+          <span>&</span>{" "}
+          <Link
+            href="https://www.cadenacode.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline"
+          >
+            Cadena Code
           </Link>
         </div>
       </div>

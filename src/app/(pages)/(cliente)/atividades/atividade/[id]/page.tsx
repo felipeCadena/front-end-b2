@@ -192,7 +192,7 @@ export default function Atividade() {
                 alt="album"
                 width={300}
                 height={300}
-                className={`h-full w-full max-h-[25rem] rounded-lg object-cover ${index === 0 ? "col-span-2 row-span-2 h-[25rem]" : "h-[12rem] max-h-[12rem]"}`}
+                className={`w-full max-h-[25rem] rounded-lg object-cover ${index === 0 ? "col-span-2 row-span-2 h-[25rem]" : "h-[12rem] max-h-[12rem]"}`}
               />
             ))}
         </div>
@@ -285,6 +285,7 @@ export default function Atividade() {
         <div className="md:grid md:grid-cols-2 gap-8">
           <ActivityCancelationPolicy
             address={formatAddress(address)}
+            transportAddress={fetchedActivity?.transportAddress ?? ""}
             duration={fetchedActivity?.duration}
             hoursBeforeCancelation={fetchedActivity?.hoursBeforeCancellation}
             price={price}

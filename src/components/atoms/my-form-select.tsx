@@ -1,18 +1,18 @@
-import React from 'react';
+import React from "react";
 import {
   FormField,
   FormItem,
   FormLabel,
   FormControl,
   FormMessage,
-} from './my-form';
-import { FieldValues, Path, UseFormReturn } from 'react-hook-form';
+} from "./my-form";
+import { FieldValues, Path, UseFormReturn } from "react-hook-form";
 import {
   MySelect,
   SelectContent,
   SelectItem,
   SelectTrigger,
-} from './my-select';
+} from "./my-select";
 
 type Props<T extends FieldValues> = {
   readonly form: UseFormReturn<T>;
@@ -32,7 +32,7 @@ const MyFormSelect = <T extends FieldValues>({
   form,
   name,
   disabled = false,
-  label = '',
+  label = "",
   options,
 }: Props<T>) => {
   return (
@@ -47,7 +47,7 @@ const MyFormSelect = <T extends FieldValues>({
             defaultValue={field.value.toString()}
           >
             <FormControl>
-              <SelectTrigger disabled={disabled} className="w-[350px]">
+              <SelectTrigger disabled={disabled} className="md:w-[350px] py-6">
                 <div className="flex justify-between w-full ">
                   {(() => {
                     const selected = options.find(
@@ -75,7 +75,7 @@ const MyFormSelect = <T extends FieldValues>({
                   value={option.installment}
                   className="border-t-[1px] flex justify-start w-full"
                 >
-                  <div className="flex justify-between w-[350px] px-3">
+                  <div className="flex justify-between w-[320px] md:w-[350px] px-3">
                     <div className="flex justify-start w-[80%] items-start">
                       <span className="text-black font-semibold">
                         {option.reais}

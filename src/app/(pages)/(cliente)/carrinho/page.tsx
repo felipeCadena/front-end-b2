@@ -1,14 +1,14 @@
-'use client';
+"use client";
 
-import MyButton from '@/components/atoms/my-button';
-import MyIcon from '@/components/atoms/my-icon';
-import MyTypography from '@/components/atoms/my-typography';
-import MobileActivitiesOrderSummary from '@/components/organisms/mobile-activity-order-summary';
-import { useCart } from '@/store/useCart';
-import PATHS from '@/utils/paths';
-import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
-import React from 'react';
+import MyButton from "@/components/atoms/my-button";
+import MyIcon from "@/components/atoms/my-icon";
+import MyTypography from "@/components/atoms/my-typography";
+import MobileActivitiesOrderSummary from "@/components/organisms/mobile-activity-order-summary";
+import { useCart } from "@/store/useCart";
+import PATHS from "@/utils/paths";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import React from "react";
 
 export default function Carrinho() {
   const router = useRouter();
@@ -20,7 +20,7 @@ export default function Carrinho() {
   const userCart = carts.find((cart) => cart.userId === userId);
 
   return (
-    <section className="mx-4 my-4 -z-10 md:hidden">
+    <section className="m-4 -z-10 md:hidden">
       <div className="flex gap-4 items-center">
         <MyIcon
           name="voltar-black"
@@ -49,8 +49,8 @@ export default function Carrinho() {
         onClick={() => router.push(PATHS.atividades)}
       >
         {userCart?.cart && userCart?.cart.length > 0
-          ? 'Adicionar mais atividades'
-          : 'Adicionar atividades'}
+          ? "Adicionar mais atividades"
+          : "Adicionar atividades"}
       </MyButton>
 
       {userCart?.cart && userCart?.cart.length !== 0 && (
@@ -59,7 +59,7 @@ export default function Carrinho() {
           borderRadius="squared"
           size="lg"
           className="w-full mt-6"
-          onClick={() => router.push(PATHS['carrinho-pagamento'])}
+          onClick={() => router.push(PATHS["carrinho-pagamento"])}
         >
           Finalizar Pedido
         </MyButton>

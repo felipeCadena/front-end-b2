@@ -1,3 +1,5 @@
+"use client";
+
 import { handleNameActivity } from "@/utils/formatters";
 import React from "react";
 import MyBadge from "../atoms/my-badge";
@@ -6,29 +8,39 @@ import MyTypography from "../atoms/my-typography";
 import StarRating from "../molecules/my-stars";
 import { Adventure } from "@/services/api/adventures";
 import Image from "next/image";
+import MyIcon from "../atoms/my-icon";
+import { useRouter } from "next/navigation";
 
 type ActivityHeaderProps = {
   activity: Adventure | undefined;
 };
 
 const ActivityHeader = ({ activity }: ActivityHeaderProps) => {
+  const router = useRouter();
   return (
     <div className="max-sm:hidden flex flex-col my-8">
-      <div className="flex items-start gap-8">
-        <div>
-          <MyTypography variant="heading2" weight="bold" className="">
-            {activity?.title
-              ? activity.title.charAt(0).toUpperCase() +
-                activity.title.slice(1).toLowerCase()
-              : ""}
-          </MyTypography>
+      <div className="flex flex-col gap-2">
+        <div className="flex items-center gap-8">
+          <div className="flex items-center gap-1">
+            <MyIcon
+              name="voltar-black"
+              className="max-sm:hidden hover:cursor-pointer"
+              onClick={() => router.back()}
+            />
+            <MyTypography variant="heading2" weight="bold" className="">
+              {activity?.title
+                ? activity.title.charAt(0).toUpperCase() +
+                  activity.title.slice(1).toLowerCase()
+                : ""}
+            </MyTypography>
+          </div>
+          <StarRating rating={activity?.averageRating ?? 0} />
+        </div>
+
+        <div className="flex gap-4 items-center">
           <MyBadge variant="outline" className="p-1">
             {handleNameActivity(activity?.typeAdventure as string)}
           </MyBadge>
-        </div>
-
-        <div className="space-y-4">
-          <StarRating rating={activity?.averageRating ?? 0} />
         </div>
       </div>
       <div className="flex gap-4 mt-4 max-sm:hidden">

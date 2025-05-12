@@ -18,6 +18,7 @@ import { cn } from "@/utils/cn";
 import {
   formatCardNumber,
   formatCEP,
+  formatCPF,
   formatCpfCnpj,
   formatPhoneNumber,
   formatPhoneNumberDDI,
@@ -127,7 +128,7 @@ export default function MyFormInput<T extends FieldValues>({
                     let formattedValue = rawValue;
 
                     if (isCpfCnpj) {
-                      formattedValue = formatCpfCnpj(rawValue);
+                      formattedValue = formatCPF(rawValue);
                     } else if (isPhoneNumber) {
                       formattedValue = formatPhoneNumberDDI(rawValue);
                     } else if (isCEP) {

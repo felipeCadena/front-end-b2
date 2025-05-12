@@ -8,7 +8,6 @@ import { cn } from "@/utils/cn";
 import { useQuery } from "@tanstack/react-query";
 import { adventures } from "@/services/api/adventures";
 import { useDebounce } from "@/hooks/useDebounce";
-import useAdventures from "@/store/useAdventure";
 
 export default function SearchActivity({
   className,
@@ -24,7 +23,17 @@ export default function SearchActivity({
 
   const { data: filterAdventure } = useQuery({
     queryKey: ["filterAdventure", debouncedValue],
-    queryFn: () => adventures.filterAdventures({ q: debouncedValue }),
+    queryFn: async () => {
+      const search = await adventures.filterAdventures({ q: debouncedValue });
+
+      if (search?.length === 0) {
+        const city = await adventures.filterAdventures({
+          city: debouncedValue,
+        });
+        return city;
+      }
+      return search;
+    },
     enabled: Boolean(debouncedValue),
   });
 
@@ -45,7 +54,11 @@ export default function SearchActivity({
         onChange={(e) => setSearch(e.target.value)}
         rightIcon={
           <>
-            <MyIcon name="search" className="mr-4 md:hidden" />
+            <MyIcon
+              name="search"
+              className="mr-4 md:hidden"
+              onClick={handleSearch}
+            />
             <MyButton
               variant="default"
               size="md"

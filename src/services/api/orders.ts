@@ -118,6 +118,17 @@ export const ordersAdventuresService = {
     }
   },
 
+  createBudget: async (data: any, userIP: string) => {
+    try {
+      api.defaults.headers.common["x-user-ip"] = userIP;
+      const response = await api.post("/ordersAdventures/budget", data);
+      return response.data;
+    } catch (error) {
+      console.error("Error get budget:", error);
+      throw error;
+    }
+  },
+
   getById: async (id: string) => {
     try {
       const response = await api.get(`/ordersAdventures/${id}`);

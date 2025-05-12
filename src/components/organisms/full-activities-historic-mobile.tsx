@@ -1,21 +1,20 @@
-'use client';
+"use client";
 
-import Image from 'next/image';
-import React from 'react';
-import MyBadge from '../atoms/my-badge';
-import StarRating from '../molecules/my-stars';
-import MyTypography from '../atoms/my-typography';
-import MyIcon from '../atoms/my-icon';
-import { getData, getHora, handleNameActivity } from '@/utils/formatters';
-import MyButton from '../atoms/my-button';
-import { useRouter } from 'next/navigation';
-import PATHS from '@/utils/paths';
-import { CustomerSchedule } from '@/services/api/orders';
+import Image from "next/image";
+import React from "react";
+import MyBadge from "../atoms/my-badge";
+import StarRating from "../molecules/my-stars";
+import MyTypography from "../atoms/my-typography";
+import MyIcon from "../atoms/my-icon";
+import { getData, getHora, handleNameActivity } from "@/utils/formatters";
+import MyButton from "../atoms/my-button";
+import { useRouter } from "next/navigation";
+import PATHS from "@/utils/paths";
+import { CustomerSchedule } from "@/services/api/orders";
 
 type FullActivitiesHistoricProps = {
   withDate?: boolean;
   withOptions?: boolean;
-  isActivityDone?: boolean;
   activities: CustomerSchedule[] | undefined;
 };
 
@@ -29,6 +28,12 @@ export default function FullActivitiesHistoricMobile({
 }: FullActivitiesHistoricProps) {
   const router = useRouter();
 
+  const handlePhotos = async (activity: any) => {
+    if (activity?.schedule.dateMediasPosted) {
+      router.push(PATHS.visualizarFotos(activity?.scheduleId));
+    }
+  };
+
   return (
     <section className="">
       {activities &&
@@ -40,8 +45,13 @@ export default function FullActivitiesHistoricMobile({
             >
               <div className="relative z-10 overflow-hidden min-w-[100px] min-h-[7rem] hover:cursor-pointer rounded-md">
                 <Image
-                  alt="sample_file"
-                  src={'/images/atividades/paraquedas.webp'}
+                  alt="Imagens de atividades"
+                  src={
+                    activity.adventure.images[0] &&
+                    activity.adventure.images[0]?.url.length > 0
+                      ? activity.adventure.images[0]?.url
+                      : "/images/atividades/paraquedas.webp"
+                  }
                   width={250}
                   height={300}
                   className="w-[100px] h-full object-cover"
@@ -81,11 +91,11 @@ export default function FullActivitiesHistoricMobile({
 
                 <MyTypography variant="subtitle3" weight="bold" className="">
                   {activity?.adventure?.title.length > 26
-                    ? activity?.adventure?.title.slice(0, 26) + '...'
+                    ? activity?.adventure?.title.slice(0, 26) + "..."
                     : activity?.adventure?.title}
                 </MyTypography>
                 <MyTypography variant="label" className="">
-                  {activity.adventure.description.slice(0, 50).concat('...')}
+                  {activity.adventure.description.slice(0, 50).concat("...")}
                 </MyTypography>
               </div>
             </div>
@@ -102,11 +112,11 @@ export default function FullActivitiesHistoricMobile({
                     weight="regular"
                     className="ml-3"
                   >
-                    {getData(activity?.schedule?.datetime)} -{' '}
-                    {getHora(activity?.schedule?.datetime)}{' '}
-                    {+getHora(activity?.schedule?.datetime).split(':')[0] > 12
-                      ? 'tarde'
-                      : 'manhã'}
+                    {getData(activity?.schedule?.datetime)} -{" "}
+                    {getHora(activity?.schedule?.datetime)}{" "}
+                    {+getHora(activity?.schedule?.datetime).split(":")[0] > 12
+                      ? "tarde"
+                      : "manhã"}
                   </MyTypography>
                 </div>
 
@@ -118,7 +128,7 @@ export default function FullActivitiesHistoricMobile({
                     <MyIcon name="mobileDuracao" />
 
                     <MyTypography variant="body" weight="regular" className="">
-                      {activity?.adventure?.duration?.slice(0, 1) ?? '3'} horas
+                      {activity?.adventure?.duration ?? "3"} horas
                     </MyTypography>
                   </div>
                 </div>
@@ -152,10 +162,10 @@ export default function FullActivitiesHistoricMobile({
                   </MyTypography>
                   <MyTypography variant="body" weight="bold" className="">
                     {Number(activity.orderAdventure.totalCost).toLocaleString(
-                      'pt-BR',
+                      "pt-BR",
                       {
-                        style: 'currency',
-                        currency: 'BRL',
+                        style: "currency",
+                        currency: "BRL",
                       }
                     )}
                   </MyTypography>
@@ -163,13 +173,18 @@ export default function FullActivitiesHistoricMobile({
               </div>
             </div>
 
-            <div className="p-3 mt-2 bg-[#F1F0F587] border border-primary-600/30 border-opacity-80 rounded-lg shadow-sm hover:bg-gray-100 relative">
+            <div
+              className="p-3 mt-2 bg-[#F1F0F587] border border-primary-600/30 border-opacity-80 rounded-lg shadow-sm hover:bg-gray-100 relative"
+              onClick={() => handlePhotos(activity)}
+            >
               <div className="absolute inset-y-0 left-0 w-3 bg-primary-900 rounded-l-lg"></div>
 
               <div className="flex items-center gap-2 ml-4">
                 <MyIcon name="camera" />
-                <MyTypography variant="subtitle3" weight="bold" className="">
-                  Fotos dessa Atividade
+                <MyTypography variant="subtitle3" weight="bold">
+                  {activity?.schedule?.dateMediasPosted
+                    ? "Fotos dessa atividade"
+                    : "Fotos ainda não disponíveis"}
                 </MyTypography>
               </div>
             </div>

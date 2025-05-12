@@ -15,9 +15,11 @@ import { motion, useMotionValue, animate } from "framer-motion";
 export default function CarouselCustom({
   activities,
   type,
+  home = false,
 }: {
   activities: Adventure[] | null | undefined;
   type?: string;
+  home?: boolean;
 }) {
   const ref =
     useRef<HTMLDivElement>() as React.MutableRefObject<HTMLInputElement>;
@@ -68,7 +70,7 @@ export default function CarouselCustom({
     <section className="relative">
       <MyIcon
         name="chevron-down-green"
-        className="absolute -left-6 md:left-0 top-[22%] rotate-90 z-20 hover:cursor-pointer h-5 w-5"
+        className="absolute -left-6 md:-left-2 top-[22%] rotate-90 z-20 hover:cursor-pointer h-5 w-5"
         onClick={(e) => {
           e.stopPropagation();
           handleScroll("left");
@@ -77,7 +79,7 @@ export default function CarouselCustom({
 
       <MyIcon
         name="chevron-down-green"
-        className="absolute -right-2 top-[22%] -rotate-90 z-20 hover:cursor-pointer h-5 w-5"
+        className="absolute -right-2 md:-right-2 top-[22%] -rotate-90 z-20 hover:cursor-pointer h-5 w-5"
         onClick={(e) => {
           e.stopPropagation();
           handleScroll("right");
@@ -87,7 +89,8 @@ export default function CarouselCustom({
       <div
         ref={ref}
         className={cn(
-          "overflow-x-scroll flex gap-4 max-sm:no-scrollbar my-8 md:my-4 md:last:mb-16 md:scrollbar-thin snap-x snap-mandatory md:px-8"
+          "overflow-x-scroll flex gap-4 max-sm:no-scrollbar my-8 md:my-4 md:last:mb-16 md:scrollbar-thin snap-x snap-mandatory md:px-8",
+          !home && "gap-4 md:gap-0"
         )}
         {...events}
       >

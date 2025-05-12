@@ -682,81 +682,33 @@ export const encontrarValorBrutoIdeal = (
 
 export const formatInstallmentOptions = (
   installmentNumber: number,
-  totalPrice: number
+  totalPrice: number,
+  ASAAS_TAXES: Record<
+    string,
+    { orderFinalPrice: number; totalGatewayFee: number }
+  >
 ) => {
-  const ASAAS_TAXES = {
-    credito_1x: {
-      value: 0.49,
-      percent: 0.0199,
-    },
-    credito_2x6: {
-      // 2x até 6x
-      value: 0.49,
-      percent: 0.0249,
-    },
-    credito_7x12: {
-      // 7x até 12x
-      value: 0.49,
-      percent: 0.0299,
-    },
-    pix_boleto: {
-      value: 0.99,
-      percent: 0,
-    },
-    antecipacao: {
-      value: 0,
-      percent: 0.017,
-    },
-  };
-  const installmentArr: string | any[] = [];
-  let initialInstallmentCount = 1;
+  const installmentArr: any[] = [];
 
-  while (initialInstallmentCount <= installmentNumber) {
-    if (initialInstallmentCount > 1) {
-      const taxPercentage =
-        initialInstallmentCount >= 2 && initialInstallmentCount <= 6
-          ? ASAAS_TAXES["credito_2x6"].percent
-          : ASAAS_TAXES["credito_7x12"].percent;
-      const taxFixedValue =
-        initialInstallmentCount >= 2 && initialInstallmentCount <= 6
-          ? ASAAS_TAXES["credito_2x6"].value
-          : ASAAS_TAXES["credito_7x12"].value;
+  for (let i = 1; i <= installmentNumber; i++) {
+    const key = `CREDIT_CARD_${i}x` as keyof typeof ASAAS_TAXES;
 
-      const value = encontrarValorBrutoIdeal(
-        totalPrice,
-        initialInstallmentCount,
-        ASAAS_TAXES["antecipacao"].percent,
-        taxFixedValue,
-        taxPercentage
-      );
-      const installmentNumberString = initialInstallmentCount.toString();
-      const total = formatPrice(value);
-      const price = formatPrice(value / initialInstallmentCount);
-      const splitPrice = separateDecimals(price);
-      const splitTotalPrice = separateDecimals(total);
-      installmentArr.push({
-        installment: installmentNumberString,
-        reais: `${installmentNumberString}x ${splitPrice.reais}`,
-        centavos: splitPrice.centavos,
-        totalReais: splitTotalPrice.reais,
-        totalCentavos: splitTotalPrice.centavos,
-      });
-      initialInstallmentCount += 1;
-    } else {
-      const installmentNumberString = initialInstallmentCount.toString();
-      const total = formatPrice(totalPrice);
-      const price = formatPrice(totalPrice / initialInstallmentCount);
-      const splitPrice = separateDecimals(price);
-      const splitTotalPrice = separateDecimals(total);
-      installmentArr.push({
-        installment: installmentNumberString,
-        reais: `${installmentNumberString}x ${splitPrice.reais}`,
-        centavos: splitPrice.centavos,
-        totalReais: splitTotalPrice.reais,
-        totalCentavos: splitTotalPrice.centavos,
-      });
-      initialInstallmentCount += 1;
-    }
+    // Se não existir configuração para esse número de parcelas, pula
+    if (!key && !ASAAS_TAXES[key]) continue;
+
+    const { orderFinalPrice } = ASAAS_TAXES[key];
+    const total = formatPrice(orderFinalPrice);
+    const price = formatPrice(orderFinalPrice / i);
+    const splitPrice = separateDecimals(price);
+    const splitTotalPrice = separateDecimals(total);
+
+    installmentArr.push({
+      installment: i.toString(),
+      reais: `${i}x ${splitPrice.reais}`,
+      centavos: splitPrice.centavos,
+      totalReais: splitTotalPrice.reais,
+      totalCentavos: splitTotalPrice.centavos,
+    });
   }
 
   return installmentArr;

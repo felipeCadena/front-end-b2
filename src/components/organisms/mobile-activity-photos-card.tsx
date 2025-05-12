@@ -29,27 +29,27 @@ const MobileActivityPhotosCard = ({
           weight="semibold"
           className="text-primary-600"
         >
-          {getData(activity.schedule.datetime)}
+          {getData(activity?.schedule.datetime)}
         </MyTypography>
       </div>
 
       <div className="flex flex-col justify-around gap-2 cursor-pointer px-4 w-[60%]">
         <MyTypography variant="subtitle3" weight="bold">
-          {activity.adventure.title.length > 20
-            ? activity.adventure.title.slice(0, 20) + "..."
-            : activity.adventure.title}
+          {activity?.adventure?.title.length > 20
+            ? activity?.adventure.title.slice(0, 20) + "..."
+            : activity?.adventure.title}
         </MyTypography>
 
         <div className="flex gap-2 items-center">
           <Image
             alt="foto parceiro"
-            src={activity.adventure.partner.logo.url}
+            src={activity?.adventure?.partner?.logo?.url}
             width={40}
             height={40}
             className="rounded-full"
           />
           <MyTypography variant="body" weight="medium" className="">
-            {activity.adventure.partner.fantasyName}
+            {activity?.adventure?.partner?.fantasyName}
           </MyTypography>
         </div>
         <MyTypography

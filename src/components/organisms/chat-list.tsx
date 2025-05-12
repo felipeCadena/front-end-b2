@@ -164,7 +164,7 @@ export default function ChatList({ chats, setUser }: ChatListProps) {
                     <p className="text-gray-400 text-xs">Chat encerrado</p>
                   )}
 
-                  {chat?.userToLastOnline && (
+                  {chat?.userToLastOnline && chat?.session_token && (
                     <p className="text-xs opacity-70">
                       Visto por último{" "}
                       {formatSmartDateTime(chat?.userToLastOnline)}

@@ -42,6 +42,8 @@ export default function StepperComponent() {
     address,
     pointRefAddress,
     tempImages,
+    transportAddress,
+    transportIncluded,
   } = useAdventureStore();
 
   const stepsPerPage = 3;
@@ -94,6 +96,11 @@ export default function StepperComponent() {
 
     if (tempImages.length < 5 && currentStep == 5) {
       toast.error("São necessárias 5 imagens.");
+      return;
+    }
+
+    if (transportIncluded && !transportAddress && currentStep == 4) {
+      toast.error("Preencha o local de saída e retorno.");
       return;
     }
 
