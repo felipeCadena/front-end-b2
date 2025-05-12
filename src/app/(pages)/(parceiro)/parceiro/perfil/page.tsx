@@ -245,7 +245,7 @@ export default function PerfiParceiro() {
         <MyTextInput
           type="email"
           label="E-mail"
-          placeholder="b2adventure@gmail.com"
+          placeholder="Digite seu e-mail"
           className="mt-2 disabled:cursor-default"
           value={fetchPartner?.businessEmail}
           disabled

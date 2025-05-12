@@ -93,7 +93,7 @@ export default function CadastroParceiro({
             value={email}
             type="email"
             label="E-mail"
-            placeholder="b2adventure@gmail.com"
+            placeholder="Digite seu e-mail"
             className="mt-2"
           />
           <MyTextInput
@@ -114,7 +114,7 @@ export default function CadastroParceiro({
             type={visibility ? "text" : "password"}
             rightIcon={
               <MyIcon
-                name={visibility ? "hide" : "eye"}
+                name={visibility ? "eye" : "hide"}
                 className="mr-4 mt-7 cursor-pointer"
                 onClick={() => setVisibility((prev) => !prev)}
               />

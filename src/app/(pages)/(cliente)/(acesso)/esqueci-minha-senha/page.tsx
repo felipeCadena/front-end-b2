@@ -1,29 +1,29 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import MyButton from '@/components/atoms/my-button';
-import MyIcon from '@/components/atoms/my-icon';
-import MyLogo from '@/components/atoms/my-logo';
+import React, { useState } from "react";
+import MyButton from "@/components/atoms/my-button";
+import MyIcon from "@/components/atoms/my-icon";
+import MyLogo from "@/components/atoms/my-logo";
 
-import MyTypography from '@/components/atoms/my-typography';
-import PATHS from '@/utils/paths';
-import { useRouter } from 'next/navigation';
-import { authService } from '@/services/api/auth';
-import { MyForm } from '@/components/atoms/my-form';
-import MyFormInput from '@/components/atoms/my-form-input';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { toast } from 'react-toastify';
-import MySpinner from '@/components/atoms/my-spinner';
-import { AxiosError } from 'axios';
+import MyTypography from "@/components/atoms/my-typography";
+import PATHS from "@/utils/paths";
+import { useRouter } from "next/navigation";
+import { authService } from "@/services/api/auth";
+import { MyForm } from "@/components/atoms/my-form";
+import MyFormInput from "@/components/atoms/my-form-input";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "react-toastify";
+import MySpinner from "@/components/atoms/my-spinner";
+import { AxiosError } from "axios";
 
 const formSchema = z.object({
   email: z
     .string()
     .trim()
-    .min(1, { message: 'Por favor, insira o e-mail.' })
-    .email({ message: 'Por favor, insira um e-mail válido' }),
+    .min(1, { message: "Por favor, insira o e-mail." })
+    .email({ message: "Por favor, insira um e-mail válido" }),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -34,10 +34,10 @@ export default function EsqueciMinhaSenha() {
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
-    mode: 'onChange',
-    criteriaMode: 'all',
+    mode: "onChange",
+    criteriaMode: "all",
     defaultValues: {
-      email: '',
+      email: "",
     },
   });
 
@@ -46,7 +46,7 @@ export default function EsqueciMinhaSenha() {
     setIsLoading(true);
     try {
       await authService.forgotPassword(email);
-      toast.success('Solicitação enviada por e-mail.');
+      toast.success("Solicitação enviada por e-mail.");
       form.reset();
       router.push(PATHS.login);
     } catch (error) {
@@ -87,7 +87,7 @@ export default function EsqueciMinhaSenha() {
             name="email"
             type="email"
             form={form}
-            placeholder="b2adventure@gmail.com"
+            placeholder="Digite seu e-mail"
             className="mt-2"
           />
         </div>
@@ -98,7 +98,7 @@ export default function EsqueciMinhaSenha() {
             borderRadius="squared"
             size="md"
           >
-            {isLoading ? <MySpinner /> : 'Solicitar nova senha'}
+            {isLoading ? <MySpinner /> : "Solicitar nova senha"}
           </MyButton>
 
           <div className=" flex justify-center items-center text-center mt-12">

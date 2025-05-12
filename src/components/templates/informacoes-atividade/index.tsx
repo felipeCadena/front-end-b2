@@ -560,25 +560,6 @@ export default function InformacoesAtividade({
       </div>
 
       <div className="flex flex-col my-8">
-        {/* <div className="flex justify-between">
-          <MyTypography variant="label" weight="regular" className="mb-1">
-            Custo Adultos
-          </MyTypography>
-          <MyTypography variant="label" weight="bold" className="mb-1">
-            {priceAdult?.length > 0 ? priceAdult : "R$ 0,00"}
-          </MyTypography>
-        </div>
-        {isChildrenAllowed && (
-          <div className="flex justify-between">
-            <MyTypography variant="label" weight="regular" className="mb-1">
-              Custo Crianças
-            </MyTypography>
-            <MyTypography variant="label" weight="bold" className="mb-1">
-              {priceChildren?.length > 0 ? priceChildren : "R$ 0,00"}
-            </MyTypography>
-          </div>
-        )} */}
-
         <div className="flex justify-between mt-4">
           <MyTypography variant="subtitle3" weight="bold" className="mb-1">
             Valor do Parceiro

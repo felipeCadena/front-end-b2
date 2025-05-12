@@ -1,7 +1,7 @@
-import React from 'react';
-import MyFormInput from '../atoms/my-form-input';
-import { UseFormReturn } from 'react-hook-form';
-import { PurchaseOrderFormData } from '@/app/(pages)/(cliente)/finalizar-compra/page';
+import React from "react";
+import MyFormInput from "../atoms/my-form-input";
+import { UseFormReturn } from "react-hook-form";
+import { PurchaseOrderFormData } from "@/app/(pages)/(cliente)/finalizar-compra/page";
 
 type PreOrderFormProps = {
   form: UseFormReturn<PurchaseOrderFormData>;
@@ -21,7 +21,7 @@ const PreOrderForm = ({ form }: PreOrderFormProps) => {
 
         <MyFormInput
           label="E-mail"
-          placeholder="b2adventure@gmail.com"
+          placeholder="Digite seu e-mail"
           className="mt-2"
           name="creditCardHolderInfo.email"
           form={form}

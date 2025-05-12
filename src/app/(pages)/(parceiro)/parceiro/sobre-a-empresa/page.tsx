@@ -120,7 +120,7 @@ export default function SobreAEmpresa() {
           </MyTypography>
           <MyTextInput
             label="Número da conta"
-            placeholder="0987 2348 2348 1243"
+            placeholder="0987-6"
             className="mt-2"
             value={bankAccount}
             onChange={(e) => setStepData(4, { bankAccount: e.target.value })}

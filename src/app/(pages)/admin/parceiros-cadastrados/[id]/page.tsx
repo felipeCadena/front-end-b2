@@ -215,7 +215,7 @@ export default function Parceiro() {
                 <MyTextInput
                   type="email"
                   label="E-mail"
-                  placeholder="b2adventure@gmail.com"
+                  placeholder="Digite seu e-mail"
                   className="mt-2"
                   value={fetchPartner?.user?.email ?? ""}
                   disabled

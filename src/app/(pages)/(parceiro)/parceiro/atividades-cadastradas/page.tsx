@@ -39,8 +39,8 @@ export default function AtividadesCadastradas() {
 
       if (activities) {
         setPartnerAdventures(activities);
-        setLoading(false);
       }
+      setLoading(false);
       return activities;
     },
   });
@@ -80,7 +80,7 @@ export default function AtividadesCadastradas() {
 
       <div className="md:hidden mb-16">
         {partnerAdventures?.length == 0 && !loading ? (
-          <div className="w-full h-[225px] flex flex-col justify-center items-center">
+          <div className="w-full h-[200px] flex flex-col justify-center items-center text-center text-[1.1rem] md:text-[1.3rem]">
             <MyTypography variant="heading3">
               Nenhuma atividade encontrada. Faça uma nova busca!
             </MyTypography>
@@ -96,8 +96,8 @@ export default function AtividadesCadastradas() {
       </div>
 
       {loading && (
-        <div className="grid md:grid-cols-4 gap-4">
-          {activities.map((_, index) => (
+        <div className="grid md:grid-cols-4 gap-4 max-sm:hidden">
+          {Array.from({ length: 4 }).map((_, index) => (
             <ActivityCardSkeleton key={index} />
           ))}
         </div>
@@ -113,7 +113,7 @@ export default function AtividadesCadastradas() {
           />
         ) : (
           !loading && (
-            <div className="w-full h-[225px] flex flex-col justify-center items-center">
+            <div className="w-full h-[200px] flex flex-col justify-center items-center text-center text-[1.1rem] md:text-[1.3rem]">
               <MyTypography variant="heading3">
                 Nenhuma atividade encontrada. Faça uma nova busca!
               </MyTypography>
