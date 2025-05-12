@@ -21,13 +21,15 @@ export default function AtividadesCadastradas() {
   const [selected, setSelected] = React.useState<"ar" | "terra" | "mar" | "">(
     ""
   );
+  const [loading, setLoading] = React.useState(false);
 
   const [partnerAdventures, setPartnerAdventures] =
     React.useState<Adventure[]>();
 
-  useQuery({
+  const { isLoading } = useQuery({
     queryKey: ["myAdventures", selected],
     queryFn: async () => {
+      setLoading(true);
       const activities = await partnerService.getMyAdventures({
         typeAdventure: selected ? selected : undefined,
         orderBy: "createdAt desc",
@@ -38,6 +40,7 @@ export default function AtividadesCadastradas() {
       if (activities) {
         setPartnerAdventures(activities);
       }
+      setLoading(false);
       return activities;
     },
   });
@@ -76,22 +79,32 @@ export default function AtividadesCadastradas() {
       </div>
 
       <div className="md:hidden mb-16">
-        {partnerAdventures?.length == 0 ? (
-          <div className="w-full h-[225px] flex flex-col justify-center items-center">
+        {partnerAdventures?.length == 0 && !loading ? (
+          <div className="w-full h-[200px] flex flex-col justify-center items-center text-center text-[1.1rem] md:text-[1.3rem]">
             <MyTypography variant="heading3">
               Nenhuma atividade encontrada. Faça uma nova busca!
             </MyTypography>
           </div>
         ) : (
-          <ActivitiesDetails
-            activities={partnerAdventures ? partnerAdventures : []}
-            type="parceiro"
-          />
+          !loading && (
+            <ActivitiesDetails
+              activities={partnerAdventures ? partnerAdventures : []}
+              type="parceiro"
+            />
+          )
         )}
       </div>
 
+      {loading && (
+        <div className="grid md:grid-cols-4 gap-4 max-sm:hidden">
+          {Array.from({ length: 4 }).map((_, index) => (
+            <ActivityCardSkeleton key={index} />
+          ))}
+        </div>
+      )}
+
       <div className="max-sm:hidden mt-12">
-        {partnerAdventures?.length ? (
+        {partnerAdventures?.length && !loading ? (
           <Activities
             activities={partnerAdventures ? partnerAdventures : []}
             type="parceiro"
@@ -99,11 +112,13 @@ export default function AtividadesCadastradas() {
             withoutShared
           />
         ) : (
-          <div className="w-full h-[225px] flex flex-col justify-center items-center">
-            <MyTypography variant="heading3">
-              Nenhuma atividade encontrada. Faça uma nova busca!
-            </MyTypography>
-          </div>
+          !loading && (
+            <div className="w-full h-[200px] flex flex-col justify-center items-center text-center text-[1.1rem] md:text-[1.3rem]">
+              <MyTypography variant="heading3">
+                Nenhuma atividade encontrada. Faça uma nova busca!
+              </MyTypography>
+            </div>
+          )
         )}
       </div>
 

@@ -207,7 +207,7 @@ export default function Cadastro() {
             form={form}
             name="name"
             label="Nome completo:"
-            placeholder="Nome Completo"
+            placeholder="Digite seu nome completo"
             className="mt-2 mb-4"
           />
           <MyFormInput
@@ -215,7 +215,7 @@ export default function Cadastro() {
             name="email"
             type="email"
             label="E-mail:"
-            placeholder="b2adventure@gmail.com"
+            placeholder="Digite seu e-mail"
             className="mb-4"
           />
           <MyFormInput

@@ -100,7 +100,7 @@ export default function StepperComponent() {
     if (currentStep < steps.length - 1) {
       setCurrentStep((prev) => prev + 1);
     } else {
-      router.push(`${PATHS["minhas-atividades"]}?openModal=true`);
+      router.push(`${PATHS["minhas-atividades"]}?openModal=true&create=true`);
     }
   };
 

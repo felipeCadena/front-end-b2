@@ -1,29 +1,29 @@
-'use client';
+"use client";
 
-import MyButton from '@/components/atoms/my-button';
-import MyIcon from '@/components/atoms/my-icon';
-import MyTypography from '@/components/atoms/my-typography';
-import { useRouter } from 'next/navigation';
-import { useForm } from 'react-hook-form';
-import MyFormInput from '@/components/atoms/my-form-input';
-import { MyForm } from '@/components/atoms/my-form';
-import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
-import React, { useState } from 'react';
-import MyFormRadio from '@/components/atoms/my-form-radio';
-import MyFormTextarea from '@/components/atoms/my-form-textarea';
-import { sendMessage } from '@/services/api/sendMessage';
-import { toast } from 'react-toastify';
-import MySpinner from '@/components/atoms/my-spinner';
+import MyButton from "@/components/atoms/my-button";
+import MyIcon from "@/components/atoms/my-icon";
+import MyTypography from "@/components/atoms/my-typography";
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import MyFormInput from "@/components/atoms/my-form-input";
+import { MyForm } from "@/components/atoms/my-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import React, { useState } from "react";
+import MyFormRadio from "@/components/atoms/my-form-radio";
+import MyFormTextarea from "@/components/atoms/my-form-textarea";
+import { sendMessage } from "@/services/api/sendMessage";
+import { toast } from "react-toastify";
+import MySpinner from "@/components/atoms/my-spinner";
 
 const formschema = z.object({
-  name: z.string().min(3, { message: 'Por favor, informe seu nome.' }),
-  phone: z.string().min(9, { message: 'Informe o telefone para contato.' }),
-  email: z.string().email({ message: 'Informe seu e-mail.' }),
-  topic: z.enum(['Elogio', 'Sugestão', 'Reclamação']),
+  name: z.string().min(3, { message: "Por favor, informe seu nome." }),
+  phone: z.string().min(9, { message: "Informe o telefone para contato." }),
+  email: z.string().email({ message: "Informe seu e-mail." }),
+  topic: z.enum(["Elogio", "Sugestão", "Reclamação"]),
   message: z
     .string()
-    .min(2, { message: 'Mensagem deve ter no mínimo 6 caracteres' }),
+    .min(2, { message: "Mensagem deve ter no mínimo 6 caracteres" }),
 });
 
 type FormData = z.infer<typeof formschema>;
@@ -32,16 +32,16 @@ export default function FaleConosco() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
 
-  const options = ['Elogio', 'Sugestão', 'Reclamação'];
+  const options = ["Elogio", "Sugestão", "Reclamação"];
 
   const form = useForm<FormData>({
     resolver: zodResolver(formschema),
     defaultValues: {
-      name: '',
-      phone: '',
-      email: '',
-      topic: 'Elogio',
-      message: '',
+      name: "",
+      phone: "",
+      email: "",
+      topic: "Elogio",
+      message: "",
     },
   });
 
@@ -53,7 +53,7 @@ export default function FaleConosco() {
 
       toast.success(response.message);
     } catch (error) {
-      toast.error('Um erro inesperado ocorreu. Tente novamente.');
+      toast.error("Um erro inesperado ocorreu. Tente novamente.");
       console.error(error);
     } finally {
       setIsLoading(false);
@@ -98,14 +98,14 @@ export default function FaleConosco() {
             label="Telefone"
             name="phone"
             form={form}
-            placeholder="Telefone"
+            placeholder="Digite seu telefone"
             className="mt-2"
           />
           <MyFormInput
             label="E-mail"
             name="email"
             form={form}
-            placeholder="b2adventure@gmail.com"
+            placeholder="Digite seu e-mail"
             className="mt-2"
           />
 
@@ -127,7 +127,7 @@ export default function FaleConosco() {
             {isLoading ? (
               <MySpinner className="w-full flex justify-center items-center" />
             ) : (
-              'Enviar'
+              "Enviar"
             )}
           </MyButton>
         </form>

@@ -65,7 +65,7 @@ export default function Step1({
             });
           }}
           label="Descrição da atividade"
-          placeholder="Lorem ipsum dolor sit amet, consectetur di..."
+          placeholder="Fale sobre a atividade e destaque o que só você oferece para torná-la incrível."
           classNameLabel="text-black text-base font-bold"
           rows={5}
           maxLength={2000}

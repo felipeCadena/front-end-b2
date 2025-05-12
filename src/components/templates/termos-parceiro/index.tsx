@@ -214,21 +214,21 @@ export default function PartnerTerms() {
               Prioridade na ordenação das buscas dentro da plataforma B2
               Adventure.
             </li>
-            <li>
-              Impostos aplicáveis à operação serão adicionados sobre o valor da
-              atividade.
-            </li>
-            <li>
-              Todas as transações e repasses de valores ocorrerão em moeda
-              corrente nacional, Real (BRL).
-            </li>
-            <li>
-              Caso o Cliente efetue o pagamento em moeda estrangeira, a
-              conversão para Real será realizada pela plataforma, e o valor
-              final recebido pelo Parceiro considerará a taxa de câmbio
-              praticada pela B2 Adventure no momento da transação.
-            </li>
           </ul>
+          <li>
+            Impostos aplicáveis à operação serão adicionados sobre o valor da
+            atividade.
+          </li>
+          <li>
+            Todas as transações e repasses de valores ocorrerão em moeda
+            corrente nacional, Real (BRL).
+          </li>
+          <li>
+            Caso o Cliente efetue o pagamento em moeda estrangeira, a conversão
+            para Real será realizada pela plataforma, e o valor final recebido
+            pelo Parceiro considerará a taxa de câmbio praticada pela B2
+            Adventure no momento da transação.
+          </li>
         </li>
       </ul>
 

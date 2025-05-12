@@ -119,7 +119,7 @@ export default function Login() {
           <MyTextInput
             label="E-mail"
             noHintText
-            placeholder="b2adventure@gmail.com"
+            placeholder="Digite seu e-mail"
             value={email}
             onChange={(e) => {
               clearError();
@@ -136,7 +136,7 @@ export default function Login() {
             type={visibility ? "text" : "password"}
             rightIcon={
               <MyIcon
-                name={visibility ? "hide" : "eye"}
+                name={visibility ? "eye" : "hide"}
                 className="mr-4 mt-6 cursor-pointer"
                 onClick={() => setVisibility((prev) => !prev)}
               />

@@ -22,6 +22,7 @@ import { partnerService } from "@/services/api/partner";
 import { useParams } from "next/navigation";
 import Cancel from "../atoms/my-icon/elements/cancel";
 import Warning from "../atoms/my-icon/elements/warning";
+import { cn } from "@/utils/cn";
 
 export type EditSection =
   | "basic" // título, descrição, tipo
@@ -35,7 +36,7 @@ export type EditSection =
 
 interface ActivityEditMenuProps {
   onEdit: (section: EditSection) => void;
-  hasClient?: boolean;
+  adminAprroved?: boolean;
   isOcult?: boolean;
 }
 
@@ -80,7 +81,7 @@ const menuItems = [
     label: "Desativar atividade",
     icon: <Eye />,
     section: "hide" as EditSection,
-    description: "Desativar atividade",
+    description: "Desativar/Ativar atividade",
   },
   {
     label: "Excluir atividade",
@@ -90,7 +91,11 @@ const menuItems = [
   },
 ];
 
-export function ActivityEditMenu({ onEdit, isOcult }: ActivityEditMenuProps) {
+export function ActivityEditMenu({
+  onEdit,
+  isOcult,
+  adminAprroved,
+}: ActivityEditMenuProps) {
   return (
     <MyDropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -114,7 +119,12 @@ export function ActivityEditMenu({ onEdit, isOcult }: ActivityEditMenuProps) {
           {menuItems.map((item) => (
             <DropdownMenuItem
               key={item.section}
-              className="flex items-center gap-2 px-2 py-4 cursor-pointer hover:bg-gray-200"
+              className={cn(
+                "flex items-center gap-2 px-2 py-4 cursor-pointer hover:bg-gray-200",
+                !adminAprroved &&
+                  (item.section == "hide" || item.section == "cancel") &&
+                  "hidden"
+              )}
               onSelect={() => onEdit(item.section)}
             >
               {item.icon}

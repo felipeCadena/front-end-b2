@@ -44,6 +44,8 @@ export default function ActivitiesDetails({
     }
   };
 
+  console.log(activities);
+
   return (
     <section className={cn(withDate && "mx-4")}>
       {activities

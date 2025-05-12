@@ -35,7 +35,7 @@ export default function Activities({
   };
 
   return (
-    <section className={cn("grid grid-cols-4 gap-6")}>
+    <section className={cn("grid grid-cols-4 gap-6 ")}>
       {activities &&
         activities.map((activity: any, index: number) => (
           <div
@@ -80,10 +80,12 @@ export default function Activities({
               )}
             </div>
             <MyTypography variant="subtitle1" weight="bold" className="">
-              {activity.title}
+              {activity.title.length > 25
+                ? activity.title.slice(0, 20).concat("...")
+                : activity.title}
             </MyTypography>
             <MyTypography variant="body-big" className="">
-              {activity.description.slice(0, 25).concat("...")}
+              {activity.description.slice(0, 30).concat("...")}
             </MyTypography>
           </div>
         ))}
