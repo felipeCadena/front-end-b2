@@ -199,34 +199,6 @@ export default function WebForm({
 
   const handleNextStep = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    // e.stopPropagation();
-
-    // if (
-    //   !typeAdventure ||
-    //   !title ||
-    //   !description ||
-    //   !hoursBeforeCancellation ||
-    //   !hoursBeforeSchedule ||
-    //   // !selectionBlocks.length ||
-    //   duration === "" ||
-    //   tempImages.length == 0 ||
-    //   !address
-    // ) {
-    //   toast.error("Preencha todos os campos.");
-    //   return;
-    // }
-
-    // if (tempImages.length < 5) {
-    //   toast.error("São necessárias 5 imagens.");
-    //   return;
-    // }
-
-    // if (tempImages.length > 5) {
-    //   toast.error(
-    //     "São permitidas no máximo 5 imagens. Exclua até ter 5 imagens."
-    //   );
-    //   return;
-    // }
 
     handleNext && handleNext();
   };
@@ -313,6 +285,11 @@ export default function WebForm({
       !address
     ) {
       toast.error("Preencha todos os campos.");
+      return;
+    }
+
+    if (duration === "00:00") {
+      toast.error("A duração não pode ser 0.");
       return;
     }
 

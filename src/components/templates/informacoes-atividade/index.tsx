@@ -85,6 +85,12 @@ export default function InformacoesAtividade({
     pixKey,
     clearForm,
     cpf,
+    bankAccountDigit,
+    bankAccountType,
+    bankCode,
+    pixAddressKeyType,
+    bankOwnerName,
+    bankOwnerDocument,
   } = useStepperStore();
 
   const [isLoading, setIsLoading] = React.useState(false);
@@ -94,7 +100,11 @@ export default function InformacoesAtividade({
 
   const b2Tax = process.env.NEXT_PUBLIC_PERCENTAGE_TAX_B2;
   const tax = process.env.NEXT_PUBLIC_PERCENTAGE_TAX;
-  const freeTax = process.env.NEXT_PUBLIC_FREE_TAX;
+
+  // Aplicar desconto pra quem criar atividade até 01/06/2025
+  const today = new Date();
+  const cutoffDate = new Date("2025-06-01");
+  const isFreeTaxPeriod = today <= cutoffDate;
 
   const handleTaxDetails = () => {
     const taxB2Percentage = Number(b2Tax) || 0;
@@ -106,7 +116,7 @@ export default function InformacoesAtividade({
     const realTax = (taxTotal * taxPercentage) / 100;
     const allTax = taxTotal + realTax;
 
-    if (Boolean(freeTax)) {
+    if (isFreeTaxPeriod) {
       return {
         valorParceiro: priceAdult,
         b2Fee,
@@ -152,30 +162,37 @@ export default function InformacoesAtividade({
       return;
     }
 
+    const partner = {
+      fantasyName,
+      businessEmail: email,
+      businessPhone: phone,
+      cnpj,
+      bankAccount,
+      bankAgency,
+      bankName,
+      pixKey,
+      payday,
+      companyName: fantasyName,
+      bankAccountDigit,
+      bankAccountType:
+        bankAccountType?.length == 0 ? undefined : bankAccountType,
+      bankCode,
+      pixAddressKeyType:
+        pixAddressKeyType?.length == 0 ? undefined : pixAddressKeyType,
+      bankOwnerName,
+      bankOwnerDocument,
+      about: "",
+      address: "",
+      user: {
+        name,
+        email,
+        password,
+        cpf,
+        phone,
+      },
+    };
     try {
       // 1. Cria partner
-
-      const partner = {
-        fantasyName,
-        businessEmail: email,
-        businessPhone: phone,
-        cnpj,
-        bankAccount,
-        bankAgency,
-        bankName,
-        pixKey,
-        payday,
-        companyName: fantasyName,
-        about: "",
-        address: "",
-        user: {
-          name,
-          email,
-          password,
-          cpf,
-          phone,
-        },
-      };
 
       try {
         await partnerService.createPartner(partner);
@@ -341,8 +358,6 @@ export default function InformacoesAtividade({
       toast.error("Preencha o valor por criança.");
       return;
     }
-
-    // console.log(availableDates);
 
     try {
       // 1. Cria a aventura
@@ -596,14 +611,14 @@ export default function InformacoesAtividade({
           <MyTypography
             variant="label"
             weight="regular"
-            className={cn("mb-1", Boolean(freeTax) && "line-through")}
+            className={cn("mb-1", isFreeTaxPeriod && "line-through")}
           >
             Tarifa B2
           </MyTypography>
           <MyTypography
             variant="label"
             weight="regular"
-            className={cn("mb-1", Boolean(freeTax) && "line-through")}
+            className={cn("mb-1", isFreeTaxPeriod && "line-through")}
           >
             R$ {handleTaxDetails().b2Fee ?? "0,00"}
           </MyTypography>
@@ -613,14 +628,14 @@ export default function InformacoesAtividade({
           <MyTypography
             variant="label"
             weight="regular"
-            className={cn("mb-1", Boolean(freeTax) && "line-through")}
+            className={cn("mb-1", isFreeTaxPeriod && "line-through")}
           >
             Imposto
           </MyTypography>
           <MyTypography
             variant="label"
             weight="regular"
-            className={cn("mb-1", Boolean(freeTax) && "line-through")}
+            className={cn("mb-1", isFreeTaxPeriod && "line-through")}
           >
             R$ {handleTaxDetails().tax ?? "0,00"}
           </MyTypography>

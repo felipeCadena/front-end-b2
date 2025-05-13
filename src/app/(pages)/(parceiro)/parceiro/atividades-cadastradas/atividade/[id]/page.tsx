@@ -25,6 +25,7 @@ import PATHS from "@/utils/paths";
 import { toast } from "react-toastify";
 import MyButton from "@/components/atoms/my-button";
 import Link from "next/link";
+import { cn } from "@/utils/cn";
 
 export default function Atividade() {
   const router = useRouter();
@@ -507,21 +508,32 @@ export default function Atividade() {
 
       <div className="mx-6">
         <div className="md:grid md:grid-cols-2 md:gap-8">
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-x-8 gap-y-4 my-10">
-            {formattedItemsIncluded().map((item) => (
-              <div key={item.label} className="flex items-center gap-2">
-                <MyIcon
-                  name={item.icon as IconsMapTypes}
-                  className="p-2 bg-primary-900 rounded-md text-white"
-                />
-                <MyTypography variant="body" weight="bold">
-                  {item.label}
-                </MyTypography>
-              </div>
-            ))}
-          </div>
+          {formattedItemsIncluded().length > 0 && (
+            <div
+              className={cn(
+                "grid grid-cols-2 md:grid-cols-3 gap-x-8 gap-y-4 my-10"
+              )}
+            >
+              {formattedItemsIncluded().map((item) => (
+                <div key={item.label} className="flex items-center gap-2">
+                  <MyIcon
+                    name={item.icon as IconsMapTypes}
+                    className="p-2 bg-primary-900 rounded-md text-white"
+                  />
+                  <MyTypography variant="body" weight="bold">
+                    {item.label}
+                  </MyTypography>
+                </div>
+              ))}
+            </div>
+          )}
 
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:my-auto">
+          <div
+            className={cn(
+              "grid grid-cols-2 md:grid-cols-3 gap-4 md:my-auto",
+              formattedItemsIncluded().length == 0 && "my-4 md:my-4"
+            )}
+          >
             <div className="bg-primary-900 py-2 rounded-md mb-2 md:h-fit">
               <MyTypography
                 variant="body"

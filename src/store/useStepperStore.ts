@@ -21,9 +21,18 @@ interface StepperState {
   // Step 4 - Informações
   bankAccount: string;
   bankAgency: string;
+  bankCode?: string;
   bankName: string;
   pixKey: string;
   payday: number;
+  pixAddressKeyType?: string;
+  bankAccountDigit?: string;
+  bankAccountType?: string;
+
+  bankOwnerName?: string;
+  bankOwnerDocument?: string;
+
+  typePayment?: string;
 
   // Métodos
   setTerms: (terms: boolean) => void;
@@ -47,9 +56,16 @@ const initialState = {
 
   bankAccount: "",
   bankAgency: "",
+  bankCode: "",
   bankName: "",
   pixKey: "",
+  pixAddressKeyType: "",
+  bankAccountDigit: "",
+  bankAccountType: "",
+  bankOwnerName: "",
+  bankOwnerDocument: "",
   payday: 0,
+  typePayment: "pix",
 
   address: {
     street: "",

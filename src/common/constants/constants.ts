@@ -1,3 +1,15 @@
+export const bankList = [
+  { name: "Banco do Brasil", code: "001" },
+  { name: "Bradesco", code: "237" },
+  { name: "Caixa Econômica Federal", code: "104" },
+  { name: "Itaú", code: "341" },
+  { name: "Santander", code: "033" },
+  { name: "Nubank", code: "260" },
+  { name: "Banco Inter", code: "077" },
+  { name: "Banco Original", code: "212" },
+  { name: "C6 Bank", code: "336" },
+];
+
 export const daysOfWeek = [
   { label: "1", value: "1" },
   { label: "2", value: "2" },
