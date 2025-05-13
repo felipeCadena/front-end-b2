@@ -16,6 +16,7 @@ import { useAdventureStore } from "@/store/useAdventureStore";
 import { useStepperStore } from "@/store/useStepperStore";
 import { cn } from "@/utils/cn";
 import PATHS from "@/utils/paths";
+import { AxiosError } from "axios";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
@@ -83,6 +84,7 @@ export default function InformacoesAtividade({
     phone,
     pixKey,
     clearForm,
+    cpf,
   } = useStepperStore();
 
   const [isLoading, setIsLoading] = React.useState(false);
@@ -170,11 +172,26 @@ export default function InformacoesAtividade({
           name,
           email,
           password,
-          cpf: "",
+          cpf,
           phone,
         },
       };
-      await partnerService.createPartner(partner);
+
+      try {
+        await partnerService.createPartner(partner);
+      } catch (err) {
+        console.log(err);
+        if (err instanceof AxiosError) {
+          const message =
+            err.response?.data?.message || "Erro ao criar parceiro.";
+          toast.error(
+            `${typeof message === "string" && message !== null ? `Erro: ${message}` : "Erro ao criar parceiro."}`
+          );
+        } else {
+          toast.error("Erro ao criar parceiro.");
+        }
+        return;
+      }
 
       const credentials = {
         email,
@@ -184,8 +201,6 @@ export default function InformacoesAtividade({
       // 2. Faz login para obter o access_token
       const userData = await authService.login(credentials);
       const { access_token } = userData;
-
-      console.log("Acesso:", userData);
 
       // 3. Cria a aventura
 
@@ -295,11 +310,16 @@ export default function InformacoesAtividade({
       });
 
       console.log("Aventura criada e imagens enviadas com sucesso!");
-    } catch (error) {
-      toast.error(
-        "Erro ao criar parceiro ou aventura. Verifique os dados e tente novamente."
-      );
-      console.error("Erro ao criar aventura ou enviar imagens:", error);
+    } catch (err) {
+      if (err instanceof AxiosError) {
+        const message =
+          err.response?.data?.message || "Erro ao realizar pagamento.";
+        toast.error(
+          `${typeof message === "string" && message !== null ? `Erro: ${message}` : "Erro desconhecido ao realizar pagamento."}`
+        );
+      } else {
+        toast.error("Erro desconhecido ao realizar pagamento.");
+      }
     } finally {
       setIsLoading(false);
     }

@@ -375,7 +375,7 @@ export default function Atividade() {
         />
 
         <div className="md:hidden">
-          <CarouselImages images={activity?.images} />
+          <CarouselImages images={activity?.images.slice(0, 5)} />
         </div>
         <div className="flex flex-col my-4">
           <div className="flex max-sm:flex-col items-start justify-between gap-8 max-sm:px-4">
@@ -393,17 +393,17 @@ export default function Atividade() {
                     : ""}
                 </MyTypography>
               </div>
-              <div>
+              <div className="flex gap-2 items-center">
                 <MyBadge variant="outline" className="p-1 ">
                   {handleNameActivity(activity?.typeAdventure ?? "")}
                 </MyBadge>
                 {!activity.onSite && activity.adminApproved && (
-                  <MyBadge variant="error" className="mx-4 p-1 mt-2 ">
+                  <MyBadge variant="error" className="md:mx-4 p-1">
                     Atividade Desativada
                   </MyBadge>
                 )}
                 {!activity.adminApproved && (
-                  <MyBadge variant="error" className="mx-4 p-1 mt-2 ">
+                  <MyBadge variant="error" className="md:mx-4 p-1">
                     Pendente de aprovação pela B2
                   </MyBadge>
                 )}
@@ -456,16 +456,18 @@ export default function Atividade() {
         </div>
         <div className="max-sm:hidden grid grid-cols-4 grid-rows-2 gap-4">
           {activity?.images?.length &&
-            activity.images.map((image, index) => (
-              <Image
-                key={index}
-                src={`${image.url ?? "/images/atividades/ar/ar-1.jpeg"}?v=${image.updatedAt ?? image.id}`}
-                alt="fotos da atividade"
-                width={300}
-                height={300}
-                className={`h-full w-full max-h-[25rem] rounded-lg object-cover ${index === 0 ? "col-span-2 row-span-2 h-[25rem]" : "h-[12rem] max-h-[12rem]"}`}
-              />
-            ))}
+            activity.images
+              .slice(0, 5)
+              .map((image, index) => (
+                <Image
+                  key={index}
+                  src={`${image.url ?? "/images/atividades/ar/ar-1.jpeg"}?v=${image.updatedAt ?? image.id}`}
+                  alt="fotos da atividade"
+                  width={300}
+                  height={300}
+                  className={`h-full w-ful max-h-[27rem] rounded-lg object-cover ${index === 0 ? "col-span-2 row-span-2 w-full h-[27rem]" : "h-[12rem] max-h-[12rem]"}`}
+                />
+              ))}
         </div>
 
         <div className="mx-4 md:hidden">
@@ -568,7 +570,7 @@ export default function Atividade() {
                   >
                     Local de saida e retorno do transporte incluído:
                   </MyTypography>
-                  <div className="max-sm:my-6 flex items-center mt-2 p-3 bg-[#F1F0F587] border border-primary-600/30 border-opacity-80 rounded-lg shadow-sm hover:bg-gray-100 relative">
+                  <div className="max-sm:my-2 flex items-center mt-2 p-3 bg-[#F1F0F587] border border-primary-600/30 border-opacity-80 rounded-lg shadow-sm hover:bg-gray-100 relative">
                     <div className="absolute inset-y-0 left-0 w-3 bg-primary-900 rounded-l-lg"></div>
 
                     <MyIcon name="localizacaoRedonda" className="" />
@@ -578,7 +580,7 @@ export default function Atividade() {
                         target="_blank"
                         rel="noopener noreferrer"
                       >
-                        {"cristo redentor"}
+                        {activity?.transportAddress}
                       </Link>
                     </MyTypography>
                   </div>
@@ -588,7 +590,7 @@ export default function Atividade() {
             <MyTypography variant="body-big" weight="semibold">
               Ponto de encontro da atividade:
             </MyTypography>
-            <div className="max-sm:my-6 flex items-center mt-2 p-3 bg-[#F1F0F587] border border-primary-600/30 border-opacity-80 rounded-lg shadow-sm hover:bg-gray-100 relative">
+            <div className="max-sm:my-2 flex items-center mt-2 p-3 bg-[#F1F0F587] border border-primary-600/30 border-opacity-80 rounded-lg shadow-sm hover:bg-gray-100 relative">
               <div className="absolute inset-y-0 left-0 w-3 bg-primary-900 rounded-l-lg"></div>
               <MyIcon
                 name="localizacaoRedonda"

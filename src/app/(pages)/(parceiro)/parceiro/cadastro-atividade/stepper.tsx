@@ -99,6 +99,13 @@ export default function StepperComponent() {
       return;
     }
 
+    if (tempImages.length > 5 && currentStep == 5) {
+      toast.error(
+        "São permitidas no máximo 5 imagens. Exclua até ter 5 imagens."
+      );
+      return;
+    }
+
     if (transportIncluded && !transportAddress && currentStep == 4) {
       toast.error("Preencha o local de saída e retorno.");
       return;

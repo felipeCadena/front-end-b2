@@ -15,8 +15,6 @@ import GoogleLoginButton from "@/components/molecules/google-login-button";
 import { signIn, useSession } from "next-auth/react";
 import FacebookLoginButton from "@/components/molecules/facebook-login-button";
 import useLogin from "@/store/useLogin";
-import { users } from "@/services/api/users";
-import { useQuery } from "@tanstack/react-query";
 
 export default function Login() {
   const router = useRouter();

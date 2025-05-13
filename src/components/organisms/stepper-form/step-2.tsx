@@ -6,7 +6,11 @@ import MyLogo from "@/components/atoms/my-logo";
 import MyTextInput from "@/components/atoms/my-text-input";
 import MyTypography from "@/components/atoms/my-typography";
 import { useStepperStore } from "@/store/useStepperStore";
-import { formatPhoneNumber, formatPhoneNumberDDI } from "@/utils/formatters";
+import {
+  formatCPF,
+  formatPhoneNumber,
+  formatPhoneNumberDDI,
+} from "@/utils/formatters";
 import PATHS from "@/utils/paths";
 import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
@@ -20,14 +24,14 @@ export default function CadastroParceiro({
   handleBack: () => void;
 }) {
   const router = useRouter();
-  const { setStepData, name, email, phone, password, confirmPassword } =
+  const { setStepData, name, email, phone, password, confirmPassword, cpf } =
     useStepperStore();
 
   const [visibility, setVisibility] = React.useState(false);
   const [visibilityConfirm, setVisibilityConfirm] = React.useState(false);
 
   const handleNextStep = () => {
-    if (!name || !email || !phone || !password || !confirmPassword) {
+    if (!name || !email || !phone || !password || !confirmPassword || !cpf) {
       toast.error("Todos os campos são obrigatórios!");
       return;
     }
@@ -37,7 +41,24 @@ export default function CadastroParceiro({
       return;
     }
 
+    if (password.length < 8) {
+      toast.error("A senha deve ter no mínimo 8 caracteres.");
+      return;
+    }
+
+    if (!/[A-Z]/.test(password)) {
+      toast.error("A senha deve conter pelo menos uma letra maiúscula.");
+      return;
+    }
+    if (!/[\W_]/.test(password)) {
+      toast.error(
+        "A senha deve conter pelo menos um caractere especial e um número."
+      );
+      return;
+    }
+
     setStepData(2, {
+      cpf,
       name,
       email,
       phone,
@@ -97,6 +118,14 @@ export default function CadastroParceiro({
             className="mt-2"
           />
           <MyTextInput
+            onChange={(e) => setStepData(2, { cpf: formatCPF(e.target.value) })}
+            value={cpf}
+            type="cpf"
+            label="CPF"
+            placeholder="Digite seu CPF"
+            className="mt-2"
+          />
+          <MyTextInput
             onChange={(e) =>
               setStepData(2, { phone: formatPhoneNumberDDI(e.target.value) })
             }
@@ -132,7 +161,7 @@ export default function CadastroParceiro({
             type={visibilityConfirm ? "text" : "password"}
             rightIcon={
               <MyIcon
-                name={visibilityConfirm ? "hide" : "eye"}
+                name={visibilityConfirm ? "eye" : "hide"}
                 className="mr-4 mt-7 cursor-pointer"
                 onClick={() => setVisibilityConfirm((prev) => !prev)}
               />

@@ -179,6 +179,7 @@ export const PATHS_CONFIG: PathsConfig = {
     ROOTS_PERFIL,
     ROOTS_TERMOS,
     ROOTS_CADASTRO_ATIVIDADE,
+    ROOTS_INFORMACOES_ATIVIDADES,
     "/atividades/atividade/*",
   ],
   private: {
