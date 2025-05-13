@@ -16,8 +16,9 @@ import { useAdventureStore } from "@/store/useAdventureStore";
 import { useStepperStore } from "@/store/useStepperStore";
 import { cn } from "@/utils/cn";
 import PATHS from "@/utils/paths";
+import { useQuery } from "@tanstack/react-query";
 import { AxiosError } from "axios";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 import { toast } from "react-toastify";
@@ -93,6 +94,8 @@ export default function InformacoesAtividade({
     bankOwnerDocument,
   } = useStepperStore();
 
+  const { data: session } = useSession();
+
   const [isLoading, setIsLoading] = React.useState(false);
 
   const [selectedGroup, setSelectedGroup] = React.useState("");
@@ -101,9 +104,15 @@ export default function InformacoesAtividade({
   const b2Tax = process.env.NEXT_PUBLIC_PERCENTAGE_TAX_B2;
   const tax = process.env.NEXT_PUBLIC_PERCENTAGE_TAX;
 
+  const { data: partner } = useQuery({
+    queryKey: ["partner-tag"],
+    queryFn: () => partnerService.getPartnerLogged(),
+    enabled: !!session?.user,
+  });
+
   // Aplicar desconto pra quem criar atividade até 01/06/2025
   const today = new Date();
-  const cutoffDate = new Date("2025-06-01");
+  const cutoffDate = new Date("2025-05-31");
   const isFreeTaxPeriod = today <= cutoffDate;
 
   const handleTaxDetails = () => {
@@ -116,7 +125,7 @@ export default function InformacoesAtividade({
     const realTax = (taxTotal * taxPercentage) / 100;
     const allTax = taxTotal + realTax;
 
-    if (isFreeTaxPeriod) {
+    if (isFreeTaxPeriod || partner?.tag == "LAUNCH") {
       return {
         valorParceiro: priceAdult,
         b2Fee,
@@ -289,32 +298,46 @@ export default function InformacoesAtividade({
       );
 
       // 6. Chama addMedia para obter os uploadUrls
-      const uploadMedias = await adventures.addMediaWithToken(
-        String(adventureId),
-        files.map(({ filename, mimetype, isDefault }) => ({
-          filename,
-          mimetype,
-          isDefault,
-        })),
-        access_token
-      );
+      try {
+        const uploadMedias = await adventures.addMediaWithToken(
+          String(adventureId),
+          files.map(({ filename, mimetype, isDefault }) => ({
+            filename,
+            mimetype,
+            isDefault,
+          })),
+          access_token
+        );
+        await Promise.all(
+          uploadMedias.map((media, index) =>
+            fetch(media.uploadUrl, {
+              method: "PUT",
+              body: files[index].file,
+              headers: {
+                "Content-Type": files[index].mimetype,
+              },
+            }).then((res) => {
+              if (!res.ok) {
+                console.error(`Falha ao enviar imagem ${index}`, res);
+              }
+            })
+          )
+        );
+      } catch (err) {
+        console.log(err);
+        if (err instanceof AxiosError) {
+          const message =
+            err.response?.data?.message || "Erro ao adicionar imagens.";
+          toast.error(
+            `${typeof message === "string" && message !== null ? `Erro: ${message}` : "Erro ao adicionar imagens."}`
+          );
+        } else {
+          toast.error("Erro ao adicionar imagens.");
+        }
+        return;
+      }
 
       // 7. Envia os blobs para os uploadUrls
-      await Promise.all(
-        uploadMedias.map((media, index) =>
-          fetch(media.uploadUrl, {
-            method: "PUT",
-            body: files[index].file,
-            headers: {
-              "Content-Type": files[index].mimetype,
-            },
-          }).then((res) => {
-            if (!res.ok) {
-              console.error(`Falha ao enviar imagem ${index}`, res);
-            }
-          })
-        )
-      );
 
       // 8. Limpa o estado global
       clearForm();
@@ -323,7 +346,7 @@ export default function InformacoesAtividade({
       // 9. Faz o login no NextAuth + set Session + Redirect
       await signIn("credentials", {
         ...credentials,
-        callbackUrl: `${PATHS.visualizarAtividadeParceiro(adventureId)}?openModal=true&create=true`,
+        callbackUrl: `${PATHS.visualizarAtividadeParceiro(adventureId)}?openModal=true`,
       });
 
       console.log("Aventura criada e imagens enviadas com sucesso!");
@@ -400,7 +423,21 @@ export default function InformacoesAtividade({
 
       // Se a atividade não for repetida, cria os horários
       if (!isRepeatable && availableDates) {
-        await partnerService.createMoreSchedule(adventureId, availableDates);
+        try {
+          await partnerService.createMoreSchedule(adventureId, availableDates);
+        } catch (err) {
+          console.log(err);
+          if (err instanceof AxiosError) {
+            const message =
+              err.response?.data?.message || "Erro ao criar horários.";
+            toast.error(
+              `${typeof message === "string" && message !== null ? `Erro: ${message}` : "Erro ao criar horários."}`
+            );
+          } else {
+            toast.error("Erro ao criar horários.");
+          }
+          return;
+        }
       }
       // 3. Converte base64 para Blob e cria estrutura dos arquivos
       const files = await Promise.all(
@@ -429,32 +466,46 @@ export default function InformacoesAtividade({
         })
       );
 
-      // 4. Chama addMedia para obter os uploadUrls
-      const uploadMedias = await adventures.addMedia(
-        String(adventureId),
-        files.map(({ filename, mimetype, isDefault }) => ({
-          filename,
-          mimetype,
-          isDefault,
-        }))
-      );
+      try {
+        // 4. Chama addMedia para obter os uploadUrls
+        const uploadMedias = await adventures.addMedia(
+          String(adventureId),
+          files.map(({ filename, mimetype, isDefault }) => ({
+            filename,
+            mimetype,
+            isDefault,
+          }))
+        );
 
-      // 5. Envia os blobs para os uploadUrls
-      await Promise.all(
-        uploadMedias.map((media, index) =>
-          fetch(media.uploadUrl, {
-            method: "PUT",
-            body: files[index].file,
-            headers: {
-              "Content-Type": files[index].mimetype,
-            },
-          }).then((res) => {
-            if (!res.ok) {
-              console.error(`Falha ao enviar imagem ${index}`, res);
-            }
-          })
-        )
-      );
+        // 5. Envia os blobs para os uploadUrls
+        await Promise.all(
+          uploadMedias.map((media, index) =>
+            fetch(media.uploadUrl, {
+              method: "PUT",
+              body: files[index].file,
+              headers: {
+                "Content-Type": files[index].mimetype,
+              },
+            }).then((res) => {
+              if (!res.ok) {
+                console.error(`Falha ao enviar imagem ${index}`, res);
+              }
+            })
+          )
+        );
+      } catch (err) {
+        console.log(err);
+        if (err instanceof AxiosError) {
+          const message =
+            err.response?.data?.message || "Erro ao adicionar imagens.";
+          toast.error(
+            `${typeof message === "string" && message !== null ? `Erro: ${message}` : "Erro ao adicionar imagens."}`
+          );
+        } else {
+          toast.error("Erro ao adicionar imagens.");
+        }
+        return;
+      }
 
       // 6. Limpa o estado global
       clearForm();
@@ -462,7 +513,7 @@ export default function InformacoesAtividade({
 
       // 7. Redireciona para a página de visualização da atividade
       router.push(
-        `${PATHS.visualizarAtividadeParceiro(adventureId)}?openModal=true&create=true`
+        `${PATHS.visualizarAtividadeParceiro(adventureId)}?openModal=true`
       );
 
       console.log("Aventura criada e imagens enviadas com sucesso!");
@@ -611,14 +662,20 @@ export default function InformacoesAtividade({
           <MyTypography
             variant="label"
             weight="regular"
-            className={cn("mb-1", isFreeTaxPeriod && "line-through")}
+            className={cn(
+              "mb-1",
+              (isFreeTaxPeriod || partner?.tag == "LAUNCH") && "line-through"
+            )}
           >
             Tarifa B2
           </MyTypography>
           <MyTypography
             variant="label"
             weight="regular"
-            className={cn("mb-1", isFreeTaxPeriod && "line-through")}
+            className={cn(
+              "mb-1",
+              (isFreeTaxPeriod || partner?.tag == "LAUNCH") && "line-through"
+            )}
           >
             R$ {handleTaxDetails().b2Fee ?? "0,00"}
           </MyTypography>
@@ -628,14 +685,20 @@ export default function InformacoesAtividade({
           <MyTypography
             variant="label"
             weight="regular"
-            className={cn("mb-1", isFreeTaxPeriod && "line-through")}
+            className={cn(
+              "mb-1",
+              (isFreeTaxPeriod || partner?.tag == "LAUNCH") && "line-through"
+            )}
           >
             Imposto
           </MyTypography>
           <MyTypography
             variant="label"
             weight="regular"
-            className={cn("mb-1", isFreeTaxPeriod && "line-through")}
+            className={cn(
+              "mb-1",
+              (isFreeTaxPeriod || partner?.tag == "LAUNCH") && "line-through"
+            )}
           >
             R$ {handleTaxDetails().tax ?? "0,00"}
           </MyTypography>

@@ -16,6 +16,7 @@ import Step6 from "@/components/organisms/steps/step-6";
 import InformacoesAtividade from "@/components/templates/informacoes-atividade";
 import { useAdventureStore } from "@/store/useAdventureStore";
 import { toast } from "react-toastify";
+import { useSession } from "next-auth/react";
 
 const steps = [
   { label: "1" },
@@ -29,6 +30,8 @@ const steps = [
 
 export default function StepperComponent() {
   const [currentStep, setCurrentStep] = useState(0);
+  const { data: session } = useSession();
+
   const router = useRouter();
   const {
     typeAdventure,
@@ -119,7 +122,7 @@ export default function StepperComponent() {
     if (currentStep < steps.length - 1) {
       setCurrentStep((prev) => prev + 1);
     } else {
-      router.push(`${PATHS["minhas-atividades"]}?openModal=true&create=true`);
+      router.push(`${PATHS["minhas-atividades"]}?openModal=true`);
     }
   };
 
@@ -148,6 +151,8 @@ export default function StepperComponent() {
         break;
     }
   };
+
+  console.log(session?.user?.accessToken);
 
   return (
     <main className="w-full max-w-md mx-auto p-4 flex flex-col gap-4 md:gap-8">
@@ -209,7 +214,11 @@ export default function StepperComponent() {
       {currentStep === 4 && <Step5 />}
       {currentStep === 5 && <Step6 />}
       {currentStep === 6 && (
-        <InformacoesAtividade onBack={handleBackToInitial} step />
+        <InformacoesAtividade
+          onBack={handleBackToInitial}
+          step
+          create={Boolean(session?.user?.accessToken)}
+        />
       )}
 
       {currentStep != 6 && (

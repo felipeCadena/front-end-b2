@@ -58,6 +58,7 @@ export interface Partner {
   sumTotalRatings: number;
   createdAt: string;
   updatedAt: string;
+  tag?: string;
   logo?: {
     id: string;
     url: string;
