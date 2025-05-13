@@ -199,7 +199,7 @@ export default function WebForm({
 
   const handleNextStep = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    e.stopPropagation();
+
     handleNext && handleNext();
   };
 
@@ -288,10 +288,23 @@ export default function WebForm({
       return;
     }
 
+    if (duration === "00:00") {
+      toast.error("A duração não pode ser 0.");
+      return;
+    }
+
     if (tempImages.length < 5) {
       toast.error("São necessárias 5 imagens.");
       return;
     }
+
+    if (tempImages.length > 5) {
+      toast.error(
+        "São permitidas no máximo 5 imagens. Exclua até ter 5 imagens."
+      );
+      return;
+    }
+
     router.push(PATHS["informacoes-atividades"]);
   };
 
@@ -300,8 +313,6 @@ export default function WebForm({
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
   }, []);
-
-  console.log(transportAddress);
 
   return (
     <main className="space-y-10 my-6">
@@ -812,24 +823,40 @@ export default function WebForm({
             </div>
           </div>
 
-          <div
-            className={cn(
-              "flex justify-center mt-12",
-              type === "cadastro" && "hidden"
-            )}
-          >
-            <MyButton
-              size="lg"
-              borderRadius="squared"
-              className="w-1/2"
-              rightIcon={<MyIcon name="seta-direita" />}
-              onClick={handleNextStepRegister}
-            >
-              Próximo Passo
-            </MyButton>
-          </div>
+          {type !== "cadastro" && (
+            <div className={cn("flex justify-center mt-12")}>
+              <MyButton
+                size="lg"
+                borderRadius="squared"
+                className="w-1/2"
+                rightIcon={<MyIcon name="seta-direita" />}
+                onClick={(e) => handleNextStepRegister(e)}
+              >
+                Próximo Passo
+              </MyButton>
+            </div>
+          )}
 
-          {type == "cadastro" && (
+          {/* <div className="flex justify-between items-center w-full max-w-3xl mx-auto p-4">
+              <MyButton
+                variant="default"
+                borderRadius="squared"
+                onClick={(e) => handleBackStep(e)}
+                leftIcon={<MyIcon name="seta-direita" className="rotate-180" />}
+              >
+                Voltar
+              </MyButton>
+              <MyButton
+                variant="default"
+                borderRadius="squared"
+                onClick={(e) => handleNextStep(e)}
+                rightIcon={<MyIcon name="seta-direita" />}
+              >
+                Próximo
+              </MyButton>
+            </div> */}
+
+          {type === "cadastro" && (
             <div className="flex justify-between items-center w-full max-w-3xl mx-auto p-4">
               <MyButton
                 variant="default"

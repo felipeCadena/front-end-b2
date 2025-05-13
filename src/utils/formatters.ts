@@ -176,26 +176,26 @@ export const formatCEP = (value: string) => {
 export const formatCPF = (value: string | null) => {
   if (!value) return "";
 
-  const newValue = value
-    .replace(/\D/g, "")
+  const numeric = value.replace(/\D/g, "").slice(0, 11); // Garante no máximo 11 dígitos
+  const formatted = numeric
     .replace(/(\d{3})(\d)/, "$1.$2")
     .replace(/(\d{3})(\d)/, "$1.$2")
     .replace(/(\d{3})(\d{1,2})$/, "$1-$2");
 
-  return newValue;
+  return formatted;
 };
 
 export const formatCNPJ = (value?: string | null) => {
   if (!value) return "";
 
-  const newValue = value
-    .replace(/\D/g, "")
+  const numeric = value.replace(/\D/g, "").slice(0, 14); // Limita a 14 dígitos
+  const formatted = numeric
     .replace(/(\d{2})(\d)/, "$1.$2")
     .replace(/(\d{3})(\d)/, "$1.$2")
     .replace(/(\d{3})(\d)/, "$1/$2")
     .replace(/(\d{4})(\d{1,2})$/, "$1-$2");
 
-  return newValue;
+  return formatted;
 };
 
 export const formatCpfCnpj = (value: string) => {

@@ -68,7 +68,7 @@ export default function Sobre({
             }
             value={cnpj}
             label="CNPJ"
-            placeholder="XX.XXX.XXX/XXXX-XX"
+            placeholder="xx.xxx.xxx/xxxx-xx"
             className="mt-2"
           />
         </div>

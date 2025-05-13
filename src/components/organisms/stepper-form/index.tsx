@@ -13,52 +13,57 @@ import WebForm from "@/app/(pages)/(parceiro)/parceiro/cadastro-atividade/web-fo
 import InformacoesAtividade from "@/components/templates/informacoes-atividade";
 import { partnerService } from "@/services/api/partner";
 import { useStepperStore } from "@/store/useStepperStore";
+import { toast } from "react-toastify";
 
 export default function StepperForm() {
   const [currentStep, setCurrentStep] = useState(0);
   const {
-    bankAccount,
-    bankAgency,
-    bankName,
     cnpj,
     email,
     fantasyName,
     name,
     password,
-    payday,
     phone,
+    bankAccount,
+    bankAgency,
+    bankName,
+    bankAccountDigit,
+    bankAccountType,
+    payday,
+    bankCode,
+    pixAddressKeyType,
     pixKey,
+    bankOwnerName,
+    bankOwnerDocument,
+    typePayment,
   } = useStepperStore();
 
   const totalSteps = 6;
 
-  // const handleRegisterUser = async () => {
-  //   const response = await
-  // }
-
-  const handleRegisterPartner = async () => {
-    const response = await partnerService.createPartner({
-      fantasyName,
-      businessEmail: email,
-      businessPhone: phone,
-      cnpj,
-      userId: "",
-      bankAccount,
-      bankAgency,
-      bankName,
-      pixKey,
-      payday,
-      companyName: "",
-      about: "",
-      address: "",
-    });
-  };
+  console.log(currentStep);
 
   const handleNext = () => {
-    if (currentStep == 1) {
-    }
-
-    if (currentStep == 3) {
+    if (currentStep === 3 && typePayment == "bank") {
+      if (
+        !bankAccount ||
+        !bankAgency ||
+        !bankName ||
+        !payday ||
+        !bankAccountDigit ||
+        !bankAccountType ||
+        !bankOwnerName ||
+        !bankOwnerDocument ||
+        !bankCode ||
+        !pixAddressKeyType
+      ) {
+        toast.error("Todos os campos são obrigatórios!");
+        return;
+      }
+    } else if (currentStep === 3 && typePayment == "pix") {
+      if (!pixKey || !pixAddressKeyType || !payday) {
+        toast.error("Todos os campos são obrigatórios!");
+        return;
+      }
     }
 
     if (currentStep < totalSteps - 1) {
@@ -83,12 +88,6 @@ export default function StepperForm() {
     <Informacoes handleBack={handleBack} handleNext={handleNext} />,
     <WebForm type="cadastro" handleBack={handleBack} handleNext={handleNext} />,
     <InformacoesAtividade step onBack={handleBack} />,
-    // <Step5 />,
-    // <Step6 />,
-    // <Step7 />,
-    // <Step8 />,
-    // <Step9 />,
-    // <Step10 />,
   ];
 
   return (

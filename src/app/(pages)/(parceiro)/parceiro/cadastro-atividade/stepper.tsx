@@ -84,8 +84,13 @@ export default function StepperComponent() {
       return;
     }
 
-    if ((!difficult || !duration) && currentStep == 1) {
+    if (!difficult && currentStep == 1) {
       toast.error("Preencha todos os campos.");
+      return;
+    }
+
+    if (duration == "00:00" && currentStep == 1) {
+      toast.error("A duração não pode ser 0.");
       return;
     }
 
@@ -96,6 +101,13 @@ export default function StepperComponent() {
 
     if (tempImages.length < 5 && currentStep == 5) {
       toast.error("São necessárias 5 imagens.");
+      return;
+    }
+
+    if (tempImages.length > 5 && currentStep == 5) {
+      toast.error(
+        "São permitidas no máximo 5 imagens. Exclua até ter 5 imagens."
+      );
       return;
     }
 

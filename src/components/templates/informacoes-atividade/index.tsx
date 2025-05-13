@@ -16,6 +16,7 @@ import { useAdventureStore } from "@/store/useAdventureStore";
 import { useStepperStore } from "@/store/useStepperStore";
 import { cn } from "@/utils/cn";
 import PATHS from "@/utils/paths";
+import { AxiosError } from "axios";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
@@ -83,6 +84,13 @@ export default function InformacoesAtividade({
     phone,
     pixKey,
     clearForm,
+    cpf,
+    bankAccountDigit,
+    bankAccountType,
+    bankCode,
+    pixAddressKeyType,
+    bankOwnerName,
+    bankOwnerDocument,
   } = useStepperStore();
 
   const [isLoading, setIsLoading] = React.useState(false);
@@ -92,7 +100,11 @@ export default function InformacoesAtividade({
 
   const b2Tax = process.env.NEXT_PUBLIC_PERCENTAGE_TAX_B2;
   const tax = process.env.NEXT_PUBLIC_PERCENTAGE_TAX;
-  const freeTax = process.env.NEXT_PUBLIC_FREE_TAX;
+
+  // Aplicar desconto pra quem criar atividade até 01/06/2025
+  const today = new Date();
+  const cutoffDate = new Date("2025-06-01");
+  const isFreeTaxPeriod = today <= cutoffDate;
 
   const handleTaxDetails = () => {
     const taxB2Percentage = Number(b2Tax) || 0;
@@ -104,7 +116,7 @@ export default function InformacoesAtividade({
     const realTax = (taxTotal * taxPercentage) / 100;
     const allTax = taxTotal + realTax;
 
-    if (Boolean(freeTax)) {
+    if (isFreeTaxPeriod) {
       return {
         valorParceiro: priceAdult,
         b2Fee,
@@ -150,31 +162,53 @@ export default function InformacoesAtividade({
       return;
     }
 
+    const partner = {
+      fantasyName,
+      businessEmail: email,
+      businessPhone: phone,
+      cnpj,
+      bankAccount,
+      bankAgency,
+      bankName,
+      pixKey,
+      payday,
+      companyName: fantasyName,
+      bankAccountDigit,
+      bankAccountType:
+        bankAccountType?.length == 0 ? undefined : bankAccountType,
+      bankCode,
+      pixAddressKeyType:
+        pixAddressKeyType?.length == 0 ? undefined : pixAddressKeyType,
+      bankOwnerName,
+      bankOwnerDocument,
+      about: "",
+      address: "",
+      user: {
+        name,
+        email,
+        password,
+        cpf,
+        phone,
+      },
+    };
     try {
       // 1. Cria partner
 
-      const partner = {
-        fantasyName,
-        businessEmail: email,
-        businessPhone: phone,
-        cnpj,
-        bankAccount,
-        bankAgency,
-        bankName,
-        pixKey,
-        payday,
-        companyName: fantasyName,
-        about: "",
-        address: "",
-        user: {
-          name,
-          email,
-          password,
-          cpf: "",
-          phone,
-        },
-      };
-      await partnerService.createPartner(partner);
+      try {
+        await partnerService.createPartner(partner);
+      } catch (err) {
+        console.log(err);
+        if (err instanceof AxiosError) {
+          const message =
+            err.response?.data?.message || "Erro ao criar parceiro.";
+          toast.error(
+            `${typeof message === "string" && message !== null ? `Erro: ${message}` : "Erro ao criar parceiro."}`
+          );
+        } else {
+          toast.error("Erro ao criar parceiro.");
+        }
+        return;
+      }
 
       const credentials = {
         email,
@@ -184,8 +218,6 @@ export default function InformacoesAtividade({
       // 2. Faz login para obter o access_token
       const userData = await authService.login(credentials);
       const { access_token } = userData;
-
-      console.log("Acesso:", userData);
 
       // 3. Cria a aventura
 
@@ -295,11 +327,16 @@ export default function InformacoesAtividade({
       });
 
       console.log("Aventura criada e imagens enviadas com sucesso!");
-    } catch (error) {
-      toast.error(
-        "Erro ao criar parceiro ou aventura. Verifique os dados e tente novamente."
-      );
-      console.error("Erro ao criar aventura ou enviar imagens:", error);
+    } catch (err) {
+      if (err instanceof AxiosError) {
+        const message =
+          err.response?.data?.message || "Erro ao realizar pagamento.";
+        toast.error(
+          `${typeof message === "string" && message !== null ? `Erro: ${message}` : "Erro desconhecido ao realizar pagamento."}`
+        );
+      } else {
+        toast.error("Erro desconhecido ao realizar pagamento.");
+      }
     } finally {
       setIsLoading(false);
     }
@@ -321,8 +358,6 @@ export default function InformacoesAtividade({
       toast.error("Preencha o valor por criança.");
       return;
     }
-
-    // console.log(availableDates);
 
     try {
       // 1. Cria a aventura
@@ -576,14 +611,14 @@ export default function InformacoesAtividade({
           <MyTypography
             variant="label"
             weight="regular"
-            className={cn("mb-1", Boolean(freeTax) && "line-through")}
+            className={cn("mb-1", isFreeTaxPeriod && "line-through")}
           >
             Tarifa B2
           </MyTypography>
           <MyTypography
             variant="label"
             weight="regular"
-            className={cn("mb-1", Boolean(freeTax) && "line-through")}
+            className={cn("mb-1", isFreeTaxPeriod && "line-through")}
           >
             R$ {handleTaxDetails().b2Fee ?? "0,00"}
           </MyTypography>
@@ -593,14 +628,14 @@ export default function InformacoesAtividade({
           <MyTypography
             variant="label"
             weight="regular"
-            className={cn("mb-1", Boolean(freeTax) && "line-through")}
+            className={cn("mb-1", isFreeTaxPeriod && "line-through")}
           >
             Imposto
           </MyTypography>
           <MyTypography
             variant="label"
             weight="regular"
-            className={cn("mb-1", Boolean(freeTax) && "line-through")}
+            className={cn("mb-1", isFreeTaxPeriod && "line-through")}
           >
             R$ {handleTaxDetails().tax ?? "0,00"}
           </MyTypography>

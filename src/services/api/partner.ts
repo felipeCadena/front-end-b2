@@ -171,7 +171,7 @@ export const partnerService = {
       return response.data;
     } catch (error) {
       console.error("Error fetching partner:", error);
-      return null;
+      throw error;
     }
   },
 
@@ -181,7 +181,7 @@ export const partnerService = {
       return response.data;
     } catch (error) {
       console.error("Error creating partner:", error);
-      return null;
+      throw error;
     }
   },
 
@@ -194,7 +194,7 @@ export const partnerService = {
       return response.data;
     } catch (error) {
       console.error("Error updating partner:", error);
-      return null;
+      throw error;
     }
   },
   addPartnerLogo: async (body: {
