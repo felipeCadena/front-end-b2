@@ -4,6 +4,7 @@ import { activities } from "@/common/constants/mock";
 import MyButton from "@/components/atoms/my-button";
 import MyIcon from "@/components/atoms/my-icon";
 import MyTypography from "@/components/atoms/my-typography";
+import { Pagination } from "@/components/molecules/pagination";
 import Activities from "@/components/organisms/activities";
 import ActivitiesDetails from "@/components/organisms/activities-details";
 import ActivitiesFilter from "@/components/organisms/activities-filter";
@@ -14,7 +15,7 @@ import { partnerService } from "@/services/api/partner";
 import PATHS from "@/utils/paths";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useEffect } from "react";
 
 export default function AtividadesCadastradas() {
   const router = useRouter();
@@ -22,19 +23,20 @@ export default function AtividadesCadastradas() {
     ""
   );
   const [loading, setLoading] = React.useState(false);
+  const [page, setPage] = React.useState(1);
 
   const [partnerAdventures, setPartnerAdventures] =
     React.useState<Adventure[]>();
 
   const { isLoading } = useQuery({
-    queryKey: ["myAdventures", selected],
+    queryKey: ["myAdventures", selected, page],
     queryFn: async () => {
       setLoading(true);
       const activities = await partnerService.getMyAdventures({
         typeAdventure: selected ? selected : undefined,
         orderBy: "createdAt desc",
-        limit: 30,
-        skip: 0,
+        limit: 6,
+        skip: page * 6 - 6,
       });
 
       if (activities) {
@@ -120,6 +122,15 @@ export default function AtividadesCadastradas() {
             </div>
           )
         )}
+      </div>
+
+      <div className="flex w-full justify-center items-center my-16">
+        <Pagination
+          setPage={setPage}
+          page={page}
+          limit={6}
+          data={partnerAdventures ?? []}
+        />
       </div>
 
       {/* Mobile fixed button */}

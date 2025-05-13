@@ -20,6 +20,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/atoms/my-select";
+import Loading from "@/components/molecules/loading";
+import Image from "next/image";
+import { Pagination } from "@/components/molecules/pagination";
 
 type CustomError = {
   error: boolean;
@@ -66,6 +69,7 @@ export default function AdminWeb() {
   const router = useRouter();
   const queryClient = useQueryClient();
   const [loading, setLoading] = React.useState(false);
+  const [page, setPage] = React.useState(1);
 
   const payments = [
     {
@@ -104,26 +108,18 @@ export default function AdminWeb() {
   const endsAt = format(endOfMonth(now), "yyyy-MM-dd'T'00:00:00");
 
   const { data: pendingPayments, isLoading } = useQuery({
-    queryKey: ["pendingPayments"],
+    queryKey: ["pendingPayments", page],
     queryFn: () =>
       adminService.listPendingPaidPartners({
         startsAt,
         endsAt,
+        limit: 12,
+        skip: page * 12 - 12,
       }),
   });
 
   function hasTotalValuePaid(partner: Record<string, any>): boolean {
     return "total_value_paid" in partner;
-  }
-
-  function isCustomError(err: unknown): err is CustomError {
-    return (
-      typeof err === "object" &&
-      err !== null &&
-      "error" in err &&
-      "message" in err &&
-      typeof (err as any).message === "string"
-    );
   }
 
   async function payPartner(token: string) {
@@ -173,6 +169,18 @@ export default function AdminWeb() {
                 Pagamentos de Parceiros
               </MyTypography> */}
 
+              {isLoading && (
+                <div className="flex items-center justify-center h-[250px]">
+                  <Image
+                    src="/logo.png"
+                    alt="B2 Adventure Logo"
+                    width={250}
+                    height={250}
+                    className="object-contain animate-pulse"
+                  />
+                </div>
+              )}
+
               {pendingPayments?.total_orders == 0 && !isLoading ? (
                 <div className="flex items-center justify-center h-[250px]">
                   <MyTypography variant="subtitle4" weight="bold">
@@ -221,6 +229,16 @@ export default function AdminWeb() {
                 </>
               )}
             </div>
+            {Object.values(pendingPayments?.partners ?? {}).length > 1 && (
+              <div className="flex w-full justify-center items-center my-16">
+                <Pagination
+                  page={page}
+                  setPage={setPage}
+                  limit={12}
+                  data={Object.values(pendingPayments?.partners ?? {})}
+                />
+              </div>
+            )}
           </TabsContent>
           {/* <TabsContent value="parceiros">
             <div className="space-y-10 max-w-4xl mx-auto">

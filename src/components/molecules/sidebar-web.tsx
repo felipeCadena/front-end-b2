@@ -47,27 +47,11 @@ export default function SidebarMenuWeb({}) {
     }
   }, [user, session]);
 
-  const customerOrPartner =
-    session?.user.role === "partner" || session?.user.role === "customer";
-
-  const adminOrSuperAdmin =
-    session?.user.role === "admin" || session?.user.role === "superadmin";
-
   const { data: notifications = { messagesUnred: 0 } } = useQuery({
     queryKey: ["unread_notifications"],
     queryFn: () => notificationsService.countUnreadNotifications(),
-    enabled: customerOrPartner,
+    enabled: Boolean(userId),
   });
-
-  const { data: adminNotifications = { messagesUnred: 0 } } = useQuery({
-    queryKey: ["unread_admin_notifications"],
-    queryFn: () => adminService.countUnreadNotificationsAdmin(),
-    enabled: adminOrSuperAdmin,
-  });
-
-  const notificationsCount = customerOrPartner
-    ? notifications.messagesUnred
-    : adminNotifications.messagesUnred;
 
   const handleLogout = async () => {
     try {
@@ -124,13 +108,14 @@ export default function SidebarMenuWeb({}) {
                   <div
                     className={cn(
                       `absolute flex justify-center items-center bottom-4 left-3 w-[1.125rem] rounded-full text-white text-xs font-bold`,
-                      notificationsCount > 0
+                      notifications?.messagesUnred > 0
                         ? "bg-red-400 h-[1.125rem]"
                         : "bg-slate-300 h-[1.125rem]",
-                      notificationsCount > 10 && "h-[1.3rem] w-[1.6rem]"
+                      notifications?.messagesUnred > 10 &&
+                        "h-[1.3rem] w-[1.6rem]"
                     )}
                   >
-                    {notificationsCount}
+                    {notifications?.messagesUnred}
                   </div>
                 )}
 

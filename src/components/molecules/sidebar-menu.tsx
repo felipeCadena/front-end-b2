@@ -76,27 +76,11 @@ export default function SidebarMenu({
 
   const cartSize = getCartSize(userId ?? "");
 
-  const customerOrPartner =
-    session?.user.role === "partner" || session?.user.role === "customer";
-
-  const adminOrSuperAdmin =
-    session?.user.role === "admin" || session?.user.role === "superadmin";
-
   const { data: notifications = { messagesUnred: 0 } } = useQuery({
     queryKey: ["unread_notifications"],
     queryFn: () => notificationsService.countUnreadNotifications(),
-    enabled: customerOrPartner,
+    enabled: Boolean(userId),
   });
-
-  const { data: adminNotifications = { messagesUnred: 0 } } = useQuery({
-    queryKey: ["unread_admin_notifications"],
-    queryFn: () => adminService.countUnreadNotificationsAdmin(),
-    enabled: adminOrSuperAdmin,
-  });
-
-  const notificationsCount = customerOrPartner
-    ? notifications.messagesUnred
-    : adminNotifications.messagesUnred;
 
   return (
     <div className="relative">
@@ -128,11 +112,13 @@ export default function SidebarMenu({
                 <span
                   className={cn(
                     `flex items-center justify-center h-[1.1rem] w-[1.1rem] rounded-full text-white text-xs font-bold`,
-                    notificationsCount > 0 ? "bg-red-400" : "bg-slate-300",
-                    notificationsCount > 10 && "h-[1.2rem] w-[1.3rem]"
+                    notifications?.messagesUnred > 0
+                      ? "bg-red-400"
+                      : "bg-slate-300",
+                    notifications?.messagesUnred > 10 && "h-[1.2rem] w-[1.3rem]"
                   )}
                 >
-                  {notificationsCount}
+                  {notifications?.messagesUnred}
                 </span>
               )}
 
