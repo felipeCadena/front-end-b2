@@ -1,6 +1,6 @@
-import React from "react";
-import MyButton from "../atoms/my-button";
-import MyIcon from "../atoms/my-icon";
+import React from 'react';
+import MyButton from '../atoms/my-button';
+import MyIcon from '../atoms/my-icon';
 
 interface PaginationProps {
   data: any[];
@@ -16,7 +16,7 @@ export function Pagination({ limit, page, setPage, data }: PaginationProps) {
 
   React.useEffect(() => {
     if (window) {
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   }, [page]);
 
@@ -27,13 +27,12 @@ export function Pagination({ limit, page, setPage, data }: PaginationProps) {
         variant="ghost"
         disabled={page === 1}
       >
-        <MyIcon name="left" className={`${page === 1 ? "hidden" : ""}`} />
+        <MyIcon name="left" className={`${page === 1 ? 'hidden' : ''}`} />
       </MyButton>
 
       <MyButton
         variant="ghost"
-        className={`cursor-default text-primary-600 text-lg ${page === 1 ? "ml-6" : ""}`}
-        // onClick={() => handlePage(pages)}
+        className={`cursor-default text-primary-600 text-lg ${page === 1 ? 'ml-6' : ''}`}
         key={page}
       >
         {page}
@@ -45,7 +44,7 @@ export function Pagination({ limit, page, setPage, data }: PaginationProps) {
         variant="ghost"
       >
         <MyIcon
-          className={`${data.length !== limit ? "hidden" : ""}`}
+          className={`${data.length !== limit ? 'hidden' : ''}`}
           name="right"
         />
       </MyButton>
