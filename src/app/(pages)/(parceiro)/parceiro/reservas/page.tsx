@@ -16,20 +16,22 @@ import { parseISO } from "date-fns";
 import { partnerService } from "@/services/api/partner";
 import PartnerHistoricMobile from "@/components/organisms/partner-historic-mobile";
 import Image from "next/image";
+import { Pagination } from "@/components/molecules/pagination";
 
 export default function Reservas() {
   const router = useRouter();
   const [date, setDate] = React.useState<Date>(new Date());
   const [dates, setDates] = React.useState<Date[]>([]);
+  const [page, setPage] = React.useState(1);
 
   const { handleClose, isModalOpen } = useAlert();
 
   const { data: parterSchedules, isLoading } = useQuery({
-    queryKey: ["parterSchedules", date],
+    queryKey: ["parterSchedules", date, page],
     queryFn: () =>
       partnerService.getMySchedules({
         limit: 50,
-        // isCanceled: false,
+        skip: page * 50 - 50,
         qntConfirmedPersons: "> 0",
       }),
   });
@@ -171,6 +173,14 @@ export default function Reservas() {
           activities={renderActivities}
           withDate
           withOptions
+        />
+      </div>
+      <div className="flex w-full justify-center items-center my-16">
+        <Pagination
+          setPage={setPage}
+          page={page}
+          limit={50}
+          data={renderActivities ?? []}
         />
       </div>
     </main>

@@ -14,6 +14,7 @@ import Edit from "@/components/atoms/my-icon/elements/edit";
 import ModalAlert from "@/components/molecules/modal-alert";
 import { useAlert } from "@/hooks/useAlert";
 import StarRating from "@/components/molecules/my-stars";
+import { AdventureImage } from "@/services/api/adventures";
 
 export default function AtividadeAdmin() {
   const router = useRouter();
@@ -91,7 +92,7 @@ export default function AtividadeAdmin() {
         </div>
 
         <div className="md:hidden">
-          <CarouselImages images={images} />
+          <CarouselImages images={images as AdventureImage[]} />
         </div>
         <div className="flex flex-col max-sm:items-center my-8">
           <div className="flex max-sm:flex-col items-start justify-between gap-8">

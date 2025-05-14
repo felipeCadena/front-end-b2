@@ -42,7 +42,7 @@ export interface GetAdventuresParams {
 export interface AdventureImage {
   updatedAt: string;
   id: string;
-  adventureId: number;
+  adventureId?: number;
   name: string;
   mimetype: string;
   title: string;

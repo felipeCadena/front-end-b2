@@ -45,7 +45,7 @@ const CarouselActivity = ({
 
   const handleFavorite = async (id: number) => {
     if (!session?.user) {
-      toast.error("Você precisa estar logado para favoritar uma atividade");
+      toast.error("Você precisa ter uma conta para favoritar uma atividade");
       router.push(PATHS.login);
       return;
     }
@@ -76,7 +76,10 @@ const CarouselActivity = ({
       <div className="relative z-10 overflow-hidden h-[225px] w-full md:w-[250px] hover:cursor-pointer rounded-md">
         <Image
           alt="Fotos da atividade"
-          src={selectActivityImage(activity)}
+          src={
+            selectActivityImage(activity) ??
+            "/images/atividades/paraquedas.webp"
+          }
           fill
           className="object-cover cursor-pointer"
           onClick={() => handleActivity((activity?.id).toString())}

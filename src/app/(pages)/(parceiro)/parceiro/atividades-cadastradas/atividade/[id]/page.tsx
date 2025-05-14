@@ -459,6 +459,7 @@ export default function Atividade() {
           {activity?.images?.length &&
             activity.images
               .slice(0, 5)
+              .sort((a, b) => (b.isDefault ? 1 : 0) - (a.isDefault ? 1 : 0))
               .map((image, index) => (
                 <Image
                   key={index}

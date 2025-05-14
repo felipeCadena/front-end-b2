@@ -44,8 +44,6 @@ export default function ActivitiesDetails({
     }
   };
 
-  console.log(activities);
-
   return (
     <section className={cn(withDate && "mx-4")}>
       {activities
@@ -99,7 +97,10 @@ export default function ActivitiesDetails({
                 >
                   <Image
                     alt="imagem atividade"
-                    src={selectActivityImage(adventure)}
+                    src={
+                      selectActivityImage(adventure) ??
+                      "/images/atividades/paraquedas.webp"
+                    }
                     width={250}
                     height={300}
                     className="object-cover w-full h-full"

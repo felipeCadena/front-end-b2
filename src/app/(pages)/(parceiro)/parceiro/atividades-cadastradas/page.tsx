@@ -9,6 +9,7 @@ import Activities from "@/components/organisms/activities";
 import ActivitiesDetails from "@/components/organisms/activities-details";
 import ActivitiesFilter from "@/components/organisms/activities-filter";
 import { ActivityCardSkeleton } from "@/components/organisms/activities-skeleton";
+import { ActivityCardSkeletonMobile } from "@/components/organisms/activity-skeleton-mobile";
 import SearchActivity from "@/components/organisms/search-activity";
 import { AddToCartAdventure, Adventure } from "@/services/api/adventures";
 import { partnerService } from "@/services/api/partner";
@@ -31,7 +32,6 @@ export default function AtividadesCadastradas() {
   const { isLoading } = useQuery({
     queryKey: ["myAdventures", selected, page],
     queryFn: async () => {
-      setLoading(true);
       const activities = await partnerService.getMyAdventures({
         typeAdventure: selected ? selected : undefined,
         orderBy: "createdAt desc",
@@ -42,7 +42,6 @@ export default function AtividadesCadastradas() {
       if (activities) {
         setPartnerAdventures(activities);
       }
-      setLoading(false);
       return activities;
     },
   });
@@ -80,6 +79,14 @@ export default function AtividadesCadastradas() {
         />
       </div>
 
+      {isLoading && (
+        <div className="grid md:grid-cols-4 gap-4 md:hidden">
+          {Array.from({ length: 4 }).map((_, index) => (
+            <ActivityCardSkeletonMobile key={index} />
+          ))}
+        </div>
+      )}
+
       <div className="md:hidden mb-16">
         {partnerAdventures?.length == 0 && !loading ? (
           <div className="w-full h-[200px] flex flex-col justify-center items-center text-center text-[1.1rem] md:text-[1.3rem]">
@@ -88,7 +95,7 @@ export default function AtividadesCadastradas() {
             </MyTypography>
           </div>
         ) : (
-          !loading && (
+          !isLoading && (
             <ActivitiesDetails
               activities={partnerAdventures ? partnerAdventures : []}
               type="parceiro"
@@ -97,7 +104,7 @@ export default function AtividadesCadastradas() {
         )}
       </div>
 
-      {loading && (
+      {isLoading && (
         <div className="grid md:grid-cols-4 gap-4 max-sm:hidden">
           {Array.from({ length: 4 }).map((_, index) => (
             <ActivityCardSkeleton key={index} />
@@ -106,7 +113,7 @@ export default function AtividadesCadastradas() {
       )}
 
       <div className="max-sm:hidden mt-12">
-        {partnerAdventures?.length && !loading ? (
+        {partnerAdventures?.length && !isLoading ? (
           <Activities
             activities={partnerAdventures ? partnerAdventures : []}
             type="parceiro"
@@ -114,7 +121,7 @@ export default function AtividadesCadastradas() {
             withoutShared
           />
         ) : (
-          !loading && (
+          !isLoading && (
             <div className="w-full h-[200px] flex flex-col justify-center items-center text-center text-[1.1rem] md:text-[1.3rem]">
               <MyTypography variant="heading3">
                 Nenhuma atividade encontrada. Faça uma nova busca!

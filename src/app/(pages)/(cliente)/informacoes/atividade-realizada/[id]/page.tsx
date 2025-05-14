@@ -80,7 +80,7 @@ export default function AtividadeRealizada() {
       </div>
       <div className="md:flex md:gap-4">
         <div
-          className="bg-[#F7F7F9] w-full md:w-2/5 h-[440px] rounded-lg mt-4 cursor-pointer"
+          className="bg-[#F7F7F9] w-full md:w-2/5 h-[24rem] rounded-lg mt-4 cursor-pointer"
           onClick={() =>
             router.push(
               PATHS.visualizarAtividade(activity?.adventure?.id as number)
@@ -150,27 +150,36 @@ export default function AtividadeRealizada() {
       </div>
 
       <div className="md:w-[354px]">
-        <MyTypography variant="heading2" weight="bold" className="mt-8">
-          Suas fotos da atividade
-        </MyTypography>
-        <MyTypography variant="subtitle3" weight="regular" lightness={400}>
-          Acesse aqui suas fotos dessa atividade
-        </MyTypography>
-        <div className="p-3 mt-6 bg-[#F1F0F587] border border-primary-600/30 border-opacity-80 rounded-lg shadow-sm hover:bg-gray-100 relative">
-          <div className="absolute inset-y-0 left-0 w-3 bg-primary-900 rounded-l-lg"></div>
-
-          <div className="flex items-center gap-1 ml-4" onClick={() => {}}>
-            <Image
-              alt="sample_file"
-              src="/icons/drive.png"
-              width={30}
-              height={30}
-            />
-            <MyTypography variant="subtitle3" weight="bold" className="ml-3">
-              Fotos dessa Atividade
+        {activity?.schedule?.dateMediasPosted && (
+          <div>
+            <MyTypography variant="heading3" weight="bold" className="mt-8">
+              Suas fotos da atividade
             </MyTypography>
+            <MyTypography variant="subtitle4" weight="regular" lightness={400}>
+              Acesse aqui suas fotos dessa atividade
+            </MyTypography>
+            <div className="p-3 mt-6 bg-[#F1F0F587] border border-primary-600/30 border-opacity-80 rounded-lg shadow-sm hover:bg-gray-100 relative">
+              <div className="absolute inset-y-0 left-0 w-3 bg-primary-900 rounded-l-lg"></div>
+
+              <div
+                className="flex items-center gap-1 ml-4 cursor-pointer"
+                onClick={() =>
+                  router.push(PATHS.visualizarFotos(activity?.scheduleId))
+                }
+              >
+                <MyIcon name="camera" />
+                <MyTypography
+                  variant="subtitle4"
+                  weight="bold"
+                  className="ml-3"
+                >
+                  Fotos dessa Atividade
+                </MyTypography>
+              </div>
+            </div>
           </div>
-        </div>
+        )}
+
         <MyButton
           variant="outline-neutral"
           borderRadius="squared"

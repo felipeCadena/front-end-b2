@@ -64,13 +64,13 @@ export function MyActivityDatePicker({
           variant="date"
           borderRadius="squared"
           className={cn(
-            "w-full justify-start text-sm items-center gap-2 py-6 border-gray-300 md:bg-white"
+            "w-full justify-start text-base items-center gap-2 py-6 border-gray-300 md:bg-white"
           )}
         >
           {!withlabel && <MyIcon name="date" />}
           {withlabel ? (
             selectedDate ? (
-              <span className="text-black">
+              <span className="text-black ">
                 {format(selectedDate, "dd", { locale: ptBR })}
               </span>
             ) : (
@@ -78,7 +78,7 @@ export function MyActivityDatePicker({
                 variant="body"
                 weight="regular"
                 lightness={400}
-                className="text-sm ml-2"
+                className="text-base ml-2"
               >
                 {withlabel}
               </MyTypography>
@@ -88,7 +88,11 @@ export function MyActivityDatePicker({
               {format(selectedDate, "dd/MM", { locale: ptBR })}
             </span>
           ) : (
-            <MyTypography variant="body" weight="regular" className="text-sm">
+            <MyTypography
+              variant="body-big"
+              weight="regular"
+              className="text-base text-gray-400"
+            >
               Data da Atividade
             </MyTypography>
           )}

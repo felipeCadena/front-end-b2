@@ -105,11 +105,13 @@ export default function ScheduledActivitiesMobile({
                   {getData(activity.schedule.datetime, true).slice(0, 5)}
                 </MyTypography>
               </div>
-              <div className="flex justify-center gap-2">
+              <div className="flex justify-center gap-2 max-h-[9rem]">
                 <div
-                  className="relative z-10 overflow-hidden min-w-[110px] min-h-[6rem] hover:cursor-pointer rounded-md"
+                  className="relative z-10 overflow-hidden min-w-[110px] min-h-[7rem] hover:cursor-pointer rounded-md"
                   onClick={() =>
-                    router.push(PATHS.atividadeRealizada(activity.id))
+                    router.push(
+                      PATHS.visualizarAtividade(activity?.adventure?.id)
+                    )
                   }
                 >
                   <Image
@@ -124,7 +126,7 @@ export default function ScheduledActivitiesMobile({
                     className="w-[110px] h-full object-cover"
                   />
                 </div>
-                <div className="flex flex-col justify-start">
+                <div className="flex flex-col gap-1 justify-start">
                   <div>
                     <div className="flex items-center justify-between gap-1 mb-1 mr-4">
                       <MyBadge
@@ -133,7 +135,8 @@ export default function ScheduledActivitiesMobile({
                       >
                         {handleNameActivity(activity?.adventure?.typeAdventure)}
                       </MyBadge>
-                      {activity?.adventureStatus ===
+
+                      {/* {activity?.adventureStatus ===
                         "cancelado_pelo_cliente" && (
                         <MyBadge
                           className="font-medium text-nowrap p-1 rounded-lg"
@@ -141,7 +144,7 @@ export default function ScheduledActivitiesMobile({
                         >
                           Cancelada
                         </MyBadge>
-                      )}
+                      )} */}
                       {withOptions && (
                         <div className="cursor-pointer z-20">
                           <PopupCancelActivity
@@ -157,13 +160,31 @@ export default function ScheduledActivitiesMobile({
                     </div>
                   </div>
 
+                  {!activity?.personsIsAccounted ? (
+                    <MyBadge variant="error" className="h-6 rounded-lg ">
+                      Pendente de pagamento
+                    </MyBadge>
+                  ) : (
+                    !activity?.partnerConfirmed && (
+                      <MyBadge variant="info" className="h-6 rounded-lg ">
+                        Pendente de confirmação
+                      </MyBadge>
+                    )
+                  )}
                   <MyTypography variant="subtitle3" weight="bold" className="">
                     {activity?.adventure?.title.length > 20
                       ? activity?.adventure?.title.slice(0, 20).trim() + "..."
                       : activity?.adventure?.title}
                   </MyTypography>
                   <MyTypography variant="label" className="pr-2">
-                    {activity.adventure.description.slice(0, 60).concat("...")}
+                    {!activity?.personsIsAccounted ||
+                    !activity?.partnerConfirmed
+                      ? activity.adventure.description
+                          .slice(0, 35)
+                          .concat("...")
+                      : activity.adventure.description
+                          .slice(0, 60)
+                          .concat("...")}
                   </MyTypography>
                 </div>
               </div>

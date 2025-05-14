@@ -1,20 +1,20 @@
-'use client';
+"use client";
 
-import Loading from '@/app/loading';
-import MyTypography from '@/components/atoms/my-typography';
-import ActivityPhotoGalleryCard from '@/components/organisms/activity-photo-gallery-card';
-import { ordersAdventuresService } from '@/services/api/orders';
-import { useQuery } from '@tanstack/react-query';
-import React, { useState } from 'react';
+import Loading from "@/app/loading";
+import MyTypography from "@/components/atoms/my-typography";
+import ActivityPhotoGalleryCard from "@/components/organisms/activity-photo-gallery-card";
+import { ordersAdventuresService } from "@/services/api/orders";
+import { useQuery } from "@tanstack/react-query";
+import React, { useState } from "react";
 
 export default function GaleriaDeFotos() {
-  const [selected, setSelected] = useState('');
+  const [selected, setSelected] = useState("");
 
   const { data: activities = [], isLoading } = useQuery({
-    queryKey: ['activities'],
+    queryKey: ["activities"],
     queryFn: () =>
       ordersAdventuresService.getCustomerSchedules({
-        adventureStatus: 'realizado',
+        adventureStatus: "realizado",
       }),
   });
 
@@ -34,6 +34,7 @@ export default function GaleriaDeFotos() {
             activity={activity}
             selected={selected}
             setSelected={setSelected}
+            key={activity?.id}
           />
         ))
       ) : (
