@@ -1,32 +1,32 @@
-'use client';
+"use client";
 
-import Loading from '@/app/loading';
-import NotFound from '@/app/not-found';
-import MyBadge from '@/components/atoms/my-badge';
-import MyButton from '@/components/atoms/my-button';
-import MyIcon from '@/components/atoms/my-icon';
-import MyTextarea from '@/components/atoms/my-textarea';
-import MyTypography from '@/components/atoms/my-typography';
-import MyStarRatingButton from '@/components/molecules/my-star-rating-button';
-import { ordersAdventuresService } from '@/services/api/orders';
-import { cn } from '@/utils/cn';
-import { handleNameActivity } from '@/utils/formatters';
-import PATHS from '@/utils/paths';
-import { useQuery } from '@tanstack/react-query';
-import { AxiosError } from 'axios';
-import Image from 'next/image';
-import { useParams, useRouter } from 'next/navigation';
-import React, { ChangeEvent, useState } from 'react';
-import { toast } from 'react-toastify';
+import Loading from "@/app/loading";
+import NotFound from "@/app/not-found";
+import MyBadge from "@/components/atoms/my-badge";
+import MyButton from "@/components/atoms/my-button";
+import MyIcon from "@/components/atoms/my-icon";
+import MyTextarea from "@/components/atoms/my-textarea";
+import MyTypography from "@/components/atoms/my-typography";
+import MyStarRatingButton from "@/components/molecules/my-star-rating-button";
+import { ordersAdventuresService } from "@/services/api/orders";
+import { cn } from "@/utils/cn";
+import { handleNameActivity } from "@/utils/formatters";
+import PATHS from "@/utils/paths";
+import { useQuery } from "@tanstack/react-query";
+import { AxiosError } from "axios";
+import Image from "next/image";
+import { useParams, useRouter } from "next/navigation";
+import React, { ChangeEvent, useState } from "react";
+import { toast } from "react-toastify";
 
 export default function AtividadeRealizada() {
   const router = useRouter();
-  const [comment, setComment] = useState('');
+  const [comment, setComment] = useState("");
   const [userRating, setUserRating] = useState(0);
   const { id } = useParams();
 
   const { data: activity, isLoading } = useQuery({
-    queryKey: ['order_schedule'],
+    queryKey: ["order_schedule"],
     queryFn: () =>
       ordersAdventuresService.getCustomerSchedulesById(id as string),
   });
@@ -42,18 +42,18 @@ export default function AtividadeRealizada() {
     const ratingData = { rating: userRating, comment };
     try {
       const { data } = await ordersAdventuresService.rateAdventure(
-        orderAdventureID ? orderAdventureID : '',
+        orderAdventureID ? orderAdventureID : "",
         id as string,
         ratingData
       );
 
-      toast.success('Avaliação enviada com sucesso!');
+      toast.success("Avaliação enviada com sucesso!");
       router.push(PATHS.atividades);
       return data;
     } catch (error) {
       if (error instanceof AxiosError) {
         if (error.status === 401) {
-          toast.error('Token inválido ou expirado. Faça login novamente!');
+          toast.error("Token inválido ou expirado. Faça login novamente!");
           return;
         }
         toast.error(error.response?.data.message);
@@ -61,8 +61,6 @@ export default function AtividadeRealizada() {
       }
     }
   };
-
-  console.log(activity);
 
   return isLoading ? (
     <Loading />
@@ -98,17 +96,17 @@ export default function AtividadeRealizada() {
             width={342}
             height={100}
             className={cn(
-              'w-full h-[250px] object-cover rounded-t-lg',
-              activity?.adventure?.typeAdventure.includes('terra')
-                ? 'object-top'
-                : 'object-bottom'
+              "w-full h-[250px] object-cover rounded-t-lg",
+              activity?.adventure?.typeAdventure.includes("terra")
+                ? "object-top"
+                : "object-bottom"
             )}
           />
 
           <div className="p-8 flex flex-col gap-2">
             <div>
               <MyBadge variant="outline" className="p-1">
-                {handleNameActivity(activity?.adventure?.typeAdventure ?? '')}
+                {handleNameActivity(activity?.adventure?.typeAdventure ?? "")}
               </MyBadge>
             </div>
             <MyTypography variant="subtitle3" weight="bold" className="">

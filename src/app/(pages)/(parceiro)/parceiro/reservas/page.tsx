@@ -6,10 +6,7 @@ import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 import { ptBR } from "date-fns/locale/pt-BR";
 import MyButton from "@/components/atoms/my-button";
-import Hide from "@/components/atoms/my-icon/elements/hide";
 import PATHS from "@/utils/paths";
-import ActivitiesHidden from "@/components/organisms/activities-hidden";
-import { notificationActivities } from "@/common/constants/mock";
 import ModalAlert from "@/components/molecules/modal-alert";
 import { useAlert } from "@/hooks/useAlert";
 import PartnerActivitiesHistoric from "@/components/organisms/partner-activities-historic";
@@ -18,8 +15,6 @@ import { useQuery } from "@tanstack/react-query";
 import { parseISO } from "date-fns";
 import { partnerService } from "@/services/api/partner";
 import PartnerHistoricMobile from "@/components/organisms/partner-historic-mobile";
-import LoadingSpinner from "@/components/atoms/loading-spinner";
-import Loading from "@/components/molecules/loading";
 import Image from "next/image";
 
 export default function Reservas() {
