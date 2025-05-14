@@ -8,18 +8,20 @@ import { ordersAdventuresService } from "@/services/api/orders";
 import { MyFullScheduleCalendar } from "@/components/molecules/my-full-schedule-calendar";
 import MyTypography from "@/components/atoms/my-typography";
 import ScheduledActivitiesMobile from "@/components/organisms/scheduled-activities-mobile";
-import Loading from "@/app/loading";
 import { chatService } from "@/services/api/chats";
-import { useSession } from "next-auth/react";
+import { Pagination } from "@/components/molecules/pagination";
 
 export default function Reservas() {
   const [date, setDate] = React.useState<Date>();
+  const [page, setPage] = React.useState(1);
 
   const { data: schedules, isLoading } = useQuery({
-    queryKey: ["schedules"],
+    queryKey: ["schedules", page],
     queryFn: () =>
       ordersAdventuresService.getCustomerSchedules({
         adventureStatus: "agendado",
+        limit: 30,
+        skip: page * 30 - 30,
       }),
   });
 
@@ -49,12 +51,8 @@ export default function Reservas() {
       ? selectedScheduleActivities
       : schedules;
 
-  return isLoading ? (
-    <div className="w-full h-[30vh] flex justify-center items-center mb-16">
-      <Loading />
-    </div>
-  ) : (
-    <section className="relative px-2">
+  return (
+    <section className="relative px-2 mb-6">
       <MyFullScheduleCalendar
         mode="single"
         bookedDates={gatherDates ?? []}
@@ -63,9 +61,6 @@ export default function Reservas() {
         locale={ptBR}
         className="capitalize"
       />
-      <div className="md:hidden">
-        {/* <ActivitiesDetails withDate activities={agenda ? agenda : []} /> */}
-      </div>
 
       {renderActivities && renderActivities.length > 0 ? (
         <>
@@ -84,13 +79,23 @@ export default function Reservas() {
               activities={renderActivities}
             />
           </div>
+          <div className="flex w-full justify-center items-center">
+            <Pagination
+              setPage={setPage}
+              page={page}
+              limit={30}
+              data={renderActivities ?? []}
+            />
+          </div>
         </>
       ) : (
-        <div className="flex justify-center items-center w-full h-[30vh]">
-          <MyTypography variant="subtitle3">
-            Não há agendamentos disponíveis.
-          </MyTypography>
-        </div>
+        !isLoading && (
+          <div className="flex justify-center items-center w-full h-[30vh]">
+            <MyTypography variant="subtitle3">
+              Não há agendamentos disponíveis.
+            </MyTypography>
+          </div>
+        )
       )}
     </section>
   );

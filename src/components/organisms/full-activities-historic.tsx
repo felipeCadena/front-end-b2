@@ -140,13 +140,16 @@ export default function FullActivitiesHistoric({
           <div
             className={cn(
               "flex items-center gap-4 mt-20 mb-20 w-full",
-              activity?.adventureStatus == "cancelado_pelo_cliente" &&
+              activity?.adventureStatus.includes("cancelado") &&
                 "opacity-60 pointer-events-none"
             )}
             key={index}
           >
             <div
-              className={`relative z-10 flex-shrink-0 overflow-hidden w-[265px] ${isActivityDone ? "h-[265px]" : "h-[200px]"} hover:cursor-pointer rounded-md`}
+              className={cn(
+                `relative z-10 flex-shrink-0 overflow-hidden w-[265px] hover:cursor-pointer rounded-md`,
+                isActivityDone ? "h-[265px]" : "h-[200px]"
+              )}
             >
               <Image
                 alt={`Imagem da atividade ${activity?.adventure?.title}`}
@@ -193,7 +196,9 @@ export default function FullActivitiesHistoric({
                     </div>
                   </div>
                   <MyTypography variant="subtitle3" weight="bold" className="">
-                    {activity?.adventure?.title}
+                    {activity?.adventure?.title.length > 40
+                      ? activity?.adventure?.title.slice(0, 40).trim() + "..."
+                      : activity?.adventure?.title}
                   </MyTypography>
                   <MyTypography
                     variant="subtitle4"
@@ -206,38 +211,48 @@ export default function FullActivitiesHistoric({
                   </MyTypography>
                 </div>
 
-                {isActivityDone && (
-                  <>
-                    <MyButton
-                      variant="outline-neutral"
-                      size="md"
-                      borderRadius="squared"
-                      className="text-base p-2 ml-auto"
-                      onClick={() =>
-                        router.push(
-                          PATHS.atividadeRealizadaCliente(activity.id)
-                        )
-                      }
-                    >
-                      Avaliar
-                    </MyButton>
-
-                    <MyButton
-                      variant="default"
-                      borderRadius="squared"
-                      size="md"
-                      className="text-base ml-auto"
-                      leftIcon={<MyIcon name="clock" className="mr-2" />}
-                      onClick={() =>
-                        router.push(
-                          PATHS.visualizarAtividade(activity.adventure.id)
-                        )
-                      }
-                    >
-                      Refazer atividade
-                    </MyButton>
-                  </>
+                {activity?.adventureStatus.includes("cancelado") && (
+                  <MyBadge
+                    variant="error"
+                    className="p-1 h-6 rounded-lg text-nowrap"
+                  >
+                    Atividade cancelada
+                  </MyBadge>
                 )}
+
+                {isActivityDone &&
+                  !activity?.adventureStatus.includes("cancelado") && (
+                    <>
+                      <MyButton
+                        variant="outline-neutral"
+                        size="md"
+                        borderRadius="squared"
+                        className="text-base p-2 ml-auto"
+                        onClick={() =>
+                          router.push(
+                            PATHS.atividadeRealizadaCliente(activity.id)
+                          )
+                        }
+                      >
+                        Avaliar
+                      </MyButton>
+
+                      <MyButton
+                        variant="default"
+                        borderRadius="squared"
+                        size="md"
+                        className="text-base ml-auto"
+                        leftIcon={<MyIcon name="clock" className="mr-2" />}
+                        onClick={() =>
+                          router.push(
+                            PATHS.visualizarAtividade(activity.adventure.id)
+                          )
+                        }
+                      >
+                        Refazer atividade
+                      </MyButton>
+                    </>
+                  )}
 
                 <div
                   className={cn(
@@ -262,8 +277,7 @@ export default function FullActivitiesHistoric({
                         >
                           Mensagem
                         </MyButton>
-                        {activity?.adventureStatus ==
-                        "cancelado_pelo_cliente" ? (
+                        {activity?.adventureStatus.includes("cancelado") ? (
                           <MyButton
                             variant="red"
                             borderRadius="squared"
@@ -287,6 +301,26 @@ export default function FullActivitiesHistoric({
                       </>
                     )}
                 </div>
+
+                {!activity?.personsIsAccounted && !isActivityDone ? (
+                  <MyBadge
+                    variant="error"
+                    className="p-1 h-6 rounded-lg text-nowrap"
+                  >
+                    Reserva pendente de pagamento
+                  </MyBadge>
+                ) : (
+                  !activity?.partnerConfirmed &&
+                  !isActivityDone && (
+                    <MyBadge
+                      variant="info"
+                      className="p-1 h-6 rounded-lg text-nowrap"
+                    >
+                      Reserva pendente de confirmação
+                    </MyBadge>
+                  )
+                )}
+
                 {withOptions && (
                   <div className="cursor-pointer z-20">
                     <PopupCancelActivity

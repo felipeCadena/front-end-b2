@@ -6,14 +6,13 @@ import SearchActivity from "@/components/organisms/search-activity";
 import ActivitiesFilter from "@/components/organisms/activities-filter";
 import MyTypography from "@/components/atoms/my-typography";
 import CarouselCustom from "@/components/templates/second-section/carousel-custom";
-import { newActivities } from "@/common/constants/mock";
 import MyIcon from "@/components/atoms/my-icon";
 import PATHS from "@/utils/paths";
 import { useRouter } from "next/navigation";
 import { useAlert } from "@/hooks/useAlert";
 import { useQuery } from "@tanstack/react-query";
 import { partnerService } from "@/services/api/partner";
-import { Adventure, adventures } from "@/services/api/adventures";
+import { Adventure } from "@/services/api/adventures";
 
 export default function SuasAtividades() {
   const router = useRouter();

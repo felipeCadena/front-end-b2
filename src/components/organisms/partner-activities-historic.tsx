@@ -6,7 +6,12 @@ import MyBadge from "../atoms/my-badge";
 import StarRating from "../molecules/my-stars";
 import MyTypography from "../atoms/my-typography";
 import MyIcon from "../atoms/my-icon";
-import { getData, getHora, handleNameActivity } from "@/utils/formatters";
+import {
+  getData,
+  getHora,
+  handleNameActivity,
+  isWithinChatWindow,
+} from "@/utils/formatters";
 import MyButton from "../atoms/my-button";
 import { usePathname, useRouter } from "next/navigation";
 import PATHS from "@/utils/paths";
@@ -74,8 +79,8 @@ export default function PartnerActivitiesHistoric({
     );
   };
 
-  const handleChat = (name: string) => {
-    router.push(`/chat?${name}`);
+  const handleChat = () => {
+    router.push(`/chat`);
   };
 
   return (
@@ -186,7 +191,7 @@ export default function PartnerActivitiesHistoric({
                     {activity?.adventure?.title}
                   </MyTypography>
 
-                  <MyTypography variant="label" className="md:w-2/3">
+                  <MyTypography variant="label" className="md:w-[80%]">
                     {activity?.adventure?.description
                       ?.slice(0, 150)
                       .concat("...") ?? ""}
@@ -225,13 +230,9 @@ export default function PartnerActivitiesHistoric({
                   <div className="absolute top-0 right-3 cursor-pointer z-20">
                     <PopupActivity
                       reservation
+                      chat={isWithinChatWindow(activity?.datetime)}
                       onDuplicar={() => console.log("Duplicar")}
-                      onChat={() =>
-                        handleChat(
-                          activity?.ordersScheduleAdventure[index]
-                            ?.orderAdventure?.customer?.name
-                        )
-                      }
+                      onChat={() => handleChat()}
                       onCancelar={() => handleCancel(activity?.id)}
                       onEditar={() => handleEdit(activity.id)}
                       onOcultar={() => console.log("Ocultar")}

@@ -7,6 +7,7 @@ import MyIcon from "@/components/atoms/my-icon";
 import MyTypography from "@/components/atoms/my-typography";
 import { schedules } from "@/services/api/schedules";
 import { getData } from "@/utils/formatters";
+import PATHS from "@/utils/paths";
 import downloadImagesAsZip from "@/utils/zipPhotos";
 import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
@@ -17,6 +18,7 @@ export default function Galeria() {
   const { id } = useParams();
   const router = useRouter();
   const [loading, setLoading] = React.useState(false);
+  const [loadingRedirect, setLoadingRedirect] = React.useState(true);
 
   const { data: activity, isLoading } = useQuery({
     queryKey: ["activity_schedule"],
@@ -62,7 +64,20 @@ export default function Galeria() {
     }
   };
 
-  return isLoading ? (
+  React.useEffect(() => {
+    setLoadingRedirect(true);
+    if (window) {
+      const isMobile = window.innerWidth < 768;
+
+      if (!isMobile) {
+        router.push(`${PATHS.informacoes}?tab=galeria`);
+      } else {
+        setLoadingRedirect(false);
+      }
+    }
+  }, []);
+
+  return loadingRedirect ? (
     <div>
       <Loading />
     </div>

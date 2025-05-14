@@ -6,11 +6,17 @@ import MyBadge from "../atoms/my-badge";
 import StarRating from "../molecules/my-stars";
 import MyTypography from "../atoms/my-typography";
 import MyIcon from "../atoms/my-icon";
-import { getData, getHora, handleNameActivity } from "@/utils/formatters";
+import {
+  getData,
+  getDefaultImage,
+  getHora,
+  handleNameActivity,
+} from "@/utils/formatters";
 import MyButton from "../atoms/my-button";
 import { useRouter } from "next/navigation";
 import PATHS from "@/utils/paths";
 import { CustomerSchedule } from "@/services/api/orders";
+import { cn } from "@/utils/cn";
 
 type FullActivitiesHistoricProps = {
   withDate?: boolean;
@@ -33,25 +39,25 @@ export default function FullActivitiesHistoricMobile({
       router.push(PATHS.visualizarFotos(activity?.scheduleId));
     }
   };
-
   return (
     <section className="">
       {activities &&
         activities.map((activity, index: number) => (
-          <div className="flex flex-col gap-4 mt-8 mb-16" key={index}>
+          <div className={cn("flex flex-col gap-4 mt-8 mb-16")} key={index}>
             <div
-              className="flex justify-around gap-2 cursor-pointer"
-              onClick={() => router.push(PATHS.atividadeRealizada(activity.id))}
+              className={cn(
+                "flex justify-around gap-2 cursor-pointer",
+                activity?.adventureStatus.includes("cancelado") &&
+                  "opacity-60 pointer-events-none"
+              )}
+              onClick={() =>
+                router.push(PATHS.visualizarAtividade(activity?.adventure?.id))
+              }
             >
               <div className="relative z-10 overflow-hidden min-w-[100px] min-h-[7rem] hover:cursor-pointer rounded-md">
                 <Image
-                  alt="Imagens de atividades"
-                  src={
-                    activity.adventure.images[0] &&
-                    activity.adventure.images[0]?.url.length > 0
-                      ? activity.adventure.images[0]?.url
-                      : "/images/atividades/paraquedas.webp"
-                  }
+                  alt="Imagen da atividade"
+                  src={getDefaultImage(activity)}
                   width={250}
                   height={300}
                   className="w-[100px] h-full object-cover"
@@ -99,7 +105,13 @@ export default function FullActivitiesHistoricMobile({
                 </MyTypography>
               </div>
             </div>
-            <div className="w-full flex flex-col items-center gap-3 p-3 mt-2 bg-[#F1F0F587] border border-primary-600/30 border-opacity-80 rounded-lg shadow-sm hover:bg-gray-100 relative">
+            <div
+              className={cn(
+                "w-full flex flex-col items-center gap-3 p-3 mt-2 bg-[#F1F0F587] border border-primary-600/30 border-opacity-80 rounded-lg shadow-sm hover:bg-gray-100 relative",
+                activity?.adventureStatus.includes("cancelado") &&
+                  "opacity-60 pointer-events-none"
+              )}
+            >
               <div className="absolute inset-y-0 left-0 w-3 bg-primary-900 rounded-l-lg"></div>
 
               <div className="w-full flex items-center justify-between gap-1 text-nowrap">
@@ -174,7 +186,11 @@ export default function FullActivitiesHistoricMobile({
             </div>
 
             <div
-              className="p-3 mt-2 bg-[#F1F0F587] border border-primary-600/30 border-opacity-80 rounded-lg shadow-sm hover:bg-gray-100 relative"
+              className={cn(
+                "p-3 mt-2 bg-[#F1F0F587] border border-primary-600/30 border-opacity-80 rounded-lg shadow-sm hover:bg-gray-100 relative",
+                activity?.adventureStatus.includes("cancelado") &&
+                  "opacity-60 pointer-events-none"
+              )}
               onClick={() => handlePhotos(activity)}
             >
               <div className="absolute inset-y-0 left-0 w-3 bg-primary-900 rounded-l-lg"></div>
@@ -189,17 +205,35 @@ export default function FullActivitiesHistoricMobile({
               </div>
             </div>
 
-            <MyButton
-              variant="outline-neutral"
-              borderRadius="squared"
-              size="lg"
-              className="w-full mt-2"
-              onClick={() =>
-                router.push(PATHS.visualizarAtividade(activity.adventure.id))
-              }
-            >
-              Refazer atividade
-            </MyButton>
+            {!activity?.adventureStatus.includes("cancelado") && (
+              <div className="flex gap-2">
+                <MyButton
+                  variant="outline-neutral"
+                  size="sm"
+                  borderRadius="squared"
+                  className="w-full py-6"
+                  onClick={() =>
+                    router.push(PATHS.atividadeRealizadaCliente(activity.id))
+                  }
+                >
+                  Avaliar
+                </MyButton>
+
+                <MyButton
+                  variant="outline-neutral"
+                  borderRadius="squared"
+                  size="sm"
+                  className="w-full py-6"
+                  onClick={() =>
+                    router.push(
+                      PATHS.visualizarAtividade(activity.adventure.id)
+                    )
+                  }
+                >
+                  Refazer atividade
+                </MyButton>
+              </div>
+            )}
           </div>
         ))}
     </section>

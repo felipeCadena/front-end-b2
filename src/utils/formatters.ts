@@ -16,6 +16,34 @@ import {
 } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
+export function isWithinChatWindow(datetimeUTC: string): boolean {
+  const now = new Date();
+  const localNow = new Date(now.getTime() - 3 * 60 * 60 * 1000); // UTC-3
+
+  const eventDateUTC = new Date(datetimeUTC);
+  const eventDateLocal = new Date(eventDateUTC.getTime() - 3 * 60 * 60 * 1000); // UTC-3
+
+  const threeHoursBefore = new Date(
+    eventDateLocal.getTime() - 3 * 60 * 60 * 1000
+  );
+  const threeHoursAfter = new Date(
+    eventDateLocal.getTime() + 3 * 60 * 60 * 1000
+  );
+
+  return localNow >= threeHoursBefore && localNow <= threeHoursAfter;
+}
+
+export const getDefaultImage = (activity: any) => {
+  if (activity?.adventure?.images) {
+    return (
+      activity?.adventure?.images.find((image: any) => image?.isDefault)?.url ??
+      "/images/atividades/paraquedas.webp"
+    );
+  } else {
+    return "/images/atividades/paraquedas.webp";
+  }
+};
+
 export function formatSmartDateTime(datetime: string | Date): string {
   const date = typeof datetime === "string" ? parseISO(datetime) : datetime;
   const now = new Date();
@@ -408,12 +436,14 @@ export const formatIconName = (name: string) => {
 };
 
 export const selectActivityImage = (activity: Adventure) => {
-  if (activity?.images) {
-    if (activity.images.length > 0) {
-      return activity.images[0]?.url;
-    }
+  if (activity?.images && activity?.images.length > 0) {
+    return (
+      activity?.images.find((image: any) => image?.isDefault)?.url ??
+      "/images/atividades/paraquedas.webp"
+    );
+  } else {
+    return "/images/atividades/paraquedas.webp";
   }
-  return `/images/atividades/${activity?.typeAdventure}/${activity?.typeAdventure}-1.jpeg`;
 };
 
 export const handleActivityImages = (activity: Adventure | undefined) => {

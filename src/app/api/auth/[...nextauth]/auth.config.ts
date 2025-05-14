@@ -174,7 +174,7 @@ export const authOptions: NextAuthOptions = {
 
       const now = Date.now();
 
-      if (now > token.expiresAt) {
+      if (now > token.expiresAt && token?.refreshToken) {
         try {
           const dataAuth = await authService.refreshToken(token?.refreshToken);
 

@@ -11,6 +11,7 @@ import { useRouter } from "next/navigation";
 import PATHS from "@/utils/paths";
 import { toast } from "react-toastify";
 import useSearchQueryService from "@/services/use-search-query-service";
+import TimePickerOptional from "../molecules/time-optional-picker";
 
 export default function SearchInfoActivity() {
   const { set } = useSearchQueryService();
@@ -73,7 +74,7 @@ export default function SearchInfoActivity() {
 
         <OneDay date={date} setDate={setDate} />
 
-        <TimePickerModal
+        <TimePickerOptional
           className="text-base "
           selectedTime={hour}
           setSelectedTime={setHour}

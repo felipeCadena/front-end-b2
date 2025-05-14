@@ -3,6 +3,7 @@
 import MyButton from "@/components/atoms/my-button";
 import MyTypography from "@/components/atoms/my-typography";
 import CarouselImages from "@/components/organisms/carousel-images";
+import { Adventure, AdventureImage } from "@/services/api/adventures";
 import PATHS from "@/utils/paths";
 import { useRouter } from "next/navigation";
 import React from "react";
@@ -22,7 +23,7 @@ export default function FirstSection() {
   return (
     <section className="mt-10 md:relative ">
       <div className="max-sm:px-4">
-        <CarouselImages rounded images={images} />
+        <CarouselImages rounded images={images as AdventureImage[]} />
       </div>
       <div className="mt-4 px-4">
         <MyTypography
