@@ -69,27 +69,19 @@ export default function TimePickerModal({
           disabled={availableActivityTimes.length === 0}
         >
           <Time fill={iconColor ?? "#8DC63F"} />
-          {availableActivityTimes.length !== 0 ? (
-            <span
-              className={cn(
-                "text-gray-400",
-                selectedTime !== initialTime && "text-black",
-                className
-              )}
-            >
-              {selectedTime !== initialTime
-                ? selectedTime
-                : "Horário da Atividade"}
+          {availableActivityTimes.length !== 0 &&
+          selectedTime !== initialTime ? (
+            <span className={cn("text-black", className)}>
+              {/* {selectedTime !== initialTime */}
+              {selectedTime}
+              {/* : "Horário da Atividade"} */}
             </span>
           ) : (
             <MyTypography
-              variant="body"
+              variant="body-big"
               weight="regular"
-              lightness={500}
-              // className={cn(
-              //   "text-sm",
-              //   iconColor ? `text-neutral-400` : "text-black"
-              // )}
+              // lightness={500}
+              className="text-gray-400 text-base"
             >
               Horário da Atividade
             </MyTypography>
@@ -116,7 +108,9 @@ export default function TimePickerModal({
                       ? "border border-primary-600 rounded-md"
                       : "opacity-50"
                   )}
-                  onClick={() => setSelectedTime(time)}
+                  onClick={() =>
+                    setSelectedTime(selectedTime === time ? "" : time)
+                  }
                 >
                   {time}
                 </div>

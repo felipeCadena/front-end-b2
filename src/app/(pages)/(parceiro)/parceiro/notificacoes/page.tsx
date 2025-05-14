@@ -1,8 +1,8 @@
 "use client";
-
 import MyButton from "@/components/atoms/my-button";
 import MyIcon from "@/components/atoms/my-icon";
 import MyTypography from "@/components/atoms/my-typography";
+import { Pagination } from "@/components/molecules/pagination";
 import { notificationsService } from "@/services/api/notifications";
 import useNotifications from "@/store/useNotifications";
 
@@ -17,17 +17,19 @@ import React, { useEffect } from "react";
 export default function Notificacoes() {
   const router = useRouter();
   const queryClient = useQueryClient();
+  const [page, setPage] = React.useState(1);
 
   const { notifications, setStoreNotifications } = useNotifications();
 
   const session = useSession();
 
   useQuery({
-    queryKey: ["notifications"],
+    queryKey: ["notifications", page],
     queryFn: async () => {
       if (session.data?.user) {
         const userNotifications = await notificationsService.listNotifications({
-          limit: 30,
+          limit: 12,
+          skip: page * 12 - 12,
         });
         setStoreNotifications(userNotifications);
 
@@ -183,6 +185,16 @@ export default function Notificacoes() {
               </div>
             )
           )}
+          <div className="flex w-full justify-center items-center my-16">
+            {/* {renderPageButtons(notifications.length)} */}
+
+            <Pagination
+              setPage={setPage}
+              page={page}
+              limit={12}
+              data={notifications}
+            />
+          </div>
         </div>
       )}
     </section>

@@ -152,9 +152,9 @@ export const adminService = {
   },
 
   // Notifications
-  async listNotifications(params?: { limit?: number }) {
+  async listNotifications(params?: { limit?: number; skip?: number }) {
     try {
-      const response = await api.get("/notifications/admin", { params });
+      const response = await api.get("/notifications", { params });
       return response.data;
     } catch (error) {
       console.error("Error listing notifications:", error);
@@ -251,6 +251,8 @@ export const adminService = {
     startsAt?: string;
     endsAt?: string;
     partnerIsPaid?: boolean;
+    limit?: number;
+    skip?: number;
   }) {
     try {
       const response = await api.get("/admin/partners/orders", { params });

@@ -65,11 +65,7 @@ export default function PublicPeopleSelector({
         >
           <MyIcon name="pessoas" />
           {adults || children ? (
-            <MyTypography
-              variant="label"
-              weight="medium"
-              className={cn(className)}
-            >
+            <MyTypography variant="label" weight="medium">
               {" "}
               Adultos: {adults} {children != 0 && `+ Crianças: ${children}`}{" "}
             </MyTypography>

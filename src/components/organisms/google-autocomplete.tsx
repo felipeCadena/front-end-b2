@@ -65,12 +65,12 @@ function extractAddressComponents(data: any) {
 }
 
 export default function AutocompleteCombobox({
-  edit,
+  title = "Digite um endereço",
   onLocationSelected,
   setFormData,
   formData,
 }: {
-  edit?: boolean;
+  title?: string;
   onLocationSelected?: (location: LocationData) => void;
   setFormData: (formData: any) => void;
   formData: any;
@@ -120,7 +120,7 @@ export default function AutocompleteCombobox({
       >
         <MyTextInput
           type="text"
-          placeholder="Digite um endereço"
+          placeholder={title}
           noHintText
           className="placeholder:text-gray-400"
           leftIcon={<MyIcon name="localizacao" className="ml-3" />}
