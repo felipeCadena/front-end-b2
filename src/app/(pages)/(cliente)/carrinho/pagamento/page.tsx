@@ -23,6 +23,8 @@ import { useQueryClient, useQuery } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { toast } from "react-toastify";
 import ModalAlert from "@/components/molecules/modal-alert";
+import { PurchaseOrderFormData } from "../../finalizar-compra/page";
+import { formatCpfCnpj, formatPhoneNumber } from "@/utils/formatters";
 
 const formSchema = z.object({
   paymentMethod: z.string().optional(),
@@ -98,7 +100,7 @@ const PagamentoMobile = () => {
   const { addToPaymentStore } = useFinishPayment();
   const queryClient = useQueryClient();
 
-  const installmentsAvailable =
+  const instamentsAvailable =
     process.env.NEXT_PUBLIC_B2_ENABLED_INSTALLMENT_PAY ?? 1;
 
   const handleCardPaymentModal = () => {
@@ -151,7 +153,11 @@ const PagamentoMobile = () => {
   useQuery({
     queryKey: [purchaseOrder],
     queryFn: () => {
-      if (Number(installmentsAvailable) > 1) {
+      if (
+        Number(instamentsAvailable) > 1 &&
+        purchaseOrder &&
+        purchaseOrder?.length > 1
+      ) {
         setIsModalOpen(true);
       }
       return purchaseOrder ?? [];
@@ -193,15 +199,17 @@ const PagamentoMobile = () => {
           name: loggedUser.name,
           email: loggedUser.email,
           phone: loggedUser.phone,
-          cpfCnpj: loggedUser.cpf,
-          mobilePhone: loggedUser.phone,
+          cpfCnpj: formatCpfCnpj(loggedUser.cpf),
+          mobilePhone: formatPhoneNumber(loggedUser.phone),
         },
         adventures: purchaseOrder,
       });
     }
-  }, [userId]);
+  }, [userId, loggedUser, purchaseOrder?.length]);
 
-  const handleSubmit = async (formData: FormData) => {
+  console.log(purchaseOrder);
+
+  const handleSubmit = async (formData: PurchaseOrderFormData) => {
     setIsLoading(true);
     const formattedOrder = {
       ...formData,
@@ -219,6 +227,11 @@ const PagamentoMobile = () => {
           .replaceAll(" ", ""),
         postalCode: formData.creditCardHolderInfo?.postalCode.replaceAll(
           ".",
+          ""
+        ),
+        phone: formData.creditCardHolderInfo?.mobilePhone?.replace(/\D/g, ""),
+        mobilePhone: formData.creditCardHolderInfo?.mobilePhone?.replace(
+          /\D/g,
           ""
         ),
       },
@@ -258,6 +271,15 @@ const PagamentoMobile = () => {
         toast.success("Pedido enviado com sucesso!");
         router.push(`/finalizar-compra/${data.db.id}`);
         return data;
+      }
+
+      if (
+        selectedPayment === "CREDIT_CARD" &&
+        formattedOrder.creditCard.number &&
+        formattedOrder.creditCard.number.length < 16
+      ) {
+        toast.error("Número do cartão inválido.");
+        return;
       }
 
       await ordersAdventuresService.create(formattedOrder, userIP);

@@ -4,8 +4,10 @@ import MyButton from "@/components/atoms/my-button";
 import MyIcon from "@/components/atoms/my-icon";
 import MyTypography from "@/components/atoms/my-typography";
 import MobileActivitiesOrderSummary from "@/components/organisms/mobile-activity-order-summary";
+import { users } from "@/services/api/users";
 import { useCart } from "@/store/useCart";
 import PATHS from "@/utils/paths";
+import { useQuery } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import React from "react";
@@ -14,7 +16,14 @@ export default function Carrinho() {
   const router = useRouter();
   const session = useSession();
 
-  const userId = session.data?.user.id;
+  const { data: loggedUser } = useQuery({
+    queryKey: ["logged_user"],
+    queryFn: () => users.getUserLogged(),
+  });
+
+  const userId = loggedUser?.id ?? "";
+
+  console.log(session);
 
   const { carts } = useCart();
   const userCart = carts.find((cart) => cart.userId === userId);

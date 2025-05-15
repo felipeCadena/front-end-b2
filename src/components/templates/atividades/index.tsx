@@ -13,6 +13,7 @@ import useSearchQueryService from "@/services/use-search-query-service";
 import Loading from "@/app/loading";
 import SearchActivity from "@/components/organisms/search-activity";
 import { cn } from "@/utils/cn";
+import { users } from "@/services/api/users";
 
 export default function AtividadesTemplate() {
   const { params } = useSearchQueryService();
@@ -52,8 +53,13 @@ export default function AtividadesTemplate() {
     if (value) scrollToSection(value);
   };
 
+  const { data: loggedUser } = useQuery({
+    queryKey: ["logged_user"],
+    queryFn: () => users.getUserLogged(),
+  });
+
   const { data } = useSession();
-  const userId = data?.user.id;
+  const userId = loggedUser?.id ?? "";
 
   const { getCartSize } = useCart();
 
