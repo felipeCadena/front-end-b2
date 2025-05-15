@@ -20,6 +20,7 @@ import useLogin from "@/store/useLogin";
 import { toast } from "react-toastify";
 import { adminService } from "@/services/api/admin";
 import { cn } from "@/utils/cn";
+import { users } from "@/services/api/users";
 
 export default function SidebarMenuWeb({}) {
   const pathname = usePathname();
@@ -27,7 +28,13 @@ export default function SidebarMenuWeb({}) {
   const { user, clearUser } = useAuthStore();
   const { data: session } = useSession();
   const { getCartSize } = useCart();
-  const userId = session?.user.id;
+
+  const { data: loggedUser } = useQuery({
+    queryKey: ["logged_user"],
+    queryFn: () => users.getUserLogged(),
+  });
+
+  const userId = loggedUser?.id ?? "";
 
   const cartSize = getCartSize(userId ?? "");
 

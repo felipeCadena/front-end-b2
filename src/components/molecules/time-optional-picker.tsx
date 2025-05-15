@@ -16,7 +16,7 @@ interface TimePickerModalProps {
   className?: string;
 }
 
-export default function TimePickerModal({
+export default function TimePickerOptional({
   iconColor,
   selectedTime,
   setSelectedTime,
@@ -45,19 +45,9 @@ export default function TimePickerModal({
     }
   }, [open, selectedTime]);
 
-  // useEffect(() => {
-  //   if (availableActivityTimes.length > 0 && selectedTime === "") {
-  //     setInitialTime(availableActivityTimes[0]);
-  //     setSelectedTime(availableActivityTimes[0]);
-  //   }
-  //   if (
-  //     availableActivityTimes.length > 0 &&
-  //     availableActivityTimes[0] !== initialTime
-  //   ) {
-  //     setInitialTime(availableActivityTimes[0]);
-  //     setSelectedTime(availableActivityTimes[0]);
-  //   }
-  // }, [availableActivityTimes, selectedTime]);
+  useEffect(() => {
+    setInitialTime(""); // limpa o horário inicial, apenas para evitar comparações visuais
+  }, [availableActivityTimes]);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -69,12 +59,18 @@ export default function TimePickerModal({
           disabled={availableActivityTimes.length === 0}
         >
           <Time fill={iconColor ?? "#8DC63F"} />
-          {availableActivityTimes.length !== 0 && selectedTime ? (
-            <span className={cn("text-black", className)}>{selectedTime}</span>
+          {availableActivityTimes.length !== 0 &&
+          selectedTime !== initialTime ? (
+            <span className={cn("text-black", className)}>
+              {/* {selectedTime !== initialTime */}
+              {selectedTime}
+              {/* : "Horário da Atividade"} */}
+            </span>
           ) : (
             <MyTypography
               variant="body-big"
               weight="regular"
+              // lightness={500}
               className="text-gray-400 text-base"
             >
               Horário da Atividade
@@ -92,21 +88,25 @@ export default function TimePickerModal({
             className="h-48 w-36 flex items-center justify-center rounded-lg overflow-hidden"
           >
             <div className="flex flex-col justify-center items-center min-h-48 w-full ">
-              {availableActivityTimes?.map((time, i) => (
-                <div
-                  key={`${time} - ${i}`}
-                  data-value={time}
-                  className={cn(
-                    `text-center py-[9px] w-full cursor-pointer transition-all`,
-                    selectedTime === time
-                      ? "border border-primary-600 rounded-md"
-                      : "opacity-50"
-                  )}
-                  onClick={() => setSelectedTime(time)}
-                >
-                  {time}
-                </div>
-              ))}
+              {availableActivityTimes?.map((time, i) => {
+                return (
+                  <div
+                    key={`${time} - ${i}`}
+                    data-value={time}
+                    className={cn(
+                      `text-center py-[9px] w-full cursor-pointer transition-all`,
+                      selectedTime === time
+                        ? "border border-primary-600 rounded-md"
+                        : "opacity-80"
+                    )}
+                    onClick={() =>
+                      setSelectedTime(selectedTime === time ? "" : time)
+                    }
+                  >
+                    {time}
+                  </div>
+                );
+              })}
             </div>
           </MyScrollArea>
         </div>

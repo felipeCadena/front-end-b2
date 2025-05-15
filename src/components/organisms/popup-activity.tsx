@@ -21,6 +21,7 @@ interface PopupAtividadesProps {
   onExcluir: () => void;
   onCustomer: () => void;
   reservation?: boolean;
+  chat?: boolean;
 }
 
 const PopupActivity: React.FC<PopupAtividadesProps> = ({
@@ -32,6 +33,7 @@ const PopupActivity: React.FC<PopupAtividadesProps> = ({
   onExcluir,
   onCustomer,
   reservation = false,
+  chat = false,
 }) => {
   return (
     <Popover>
@@ -53,7 +55,7 @@ const PopupActivity: React.FC<PopupAtividadesProps> = ({
             Clientes
           </MyButton>
 
-          {onChat && (
+          {onChat && chat && (
             <MyButton
               variant="text-muted"
               leftIcon={<Chat fill="#9F9F9F" />}

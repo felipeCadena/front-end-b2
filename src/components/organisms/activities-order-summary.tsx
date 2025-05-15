@@ -19,6 +19,8 @@ import MyButton from "../atoms/my-button";
 import { useCart } from "@/store/useCart";
 import { useSession } from "next-auth/react";
 import { toast } from "react-toastify";
+import { useQuery } from "@tanstack/react-query";
+import { users } from "@/services/api/users";
 
 type ActivitiesOrderSummaryProps = {
   activities: AddToCartAdventure[];
@@ -31,9 +33,14 @@ const ActivitiesOrderSummary = ({
   const session = useSession();
   const { removeFromCart } = useCart();
 
-  const handleRemoveActivity = (id: string) => {
-    const userId = session.data?.user.id;
+  const { data: loggedUser } = useQuery({
+    queryKey: ["logged_user"],
+    queryFn: () => users.getUserLogged(),
+  });
 
+  const userId = loggedUser?.id ?? "";
+
+  const handleRemoveActivity = (id: string) => {
     if (userId) {
       removeFromCart(id, userId);
       toast.success("Atividade removida do carrinho!");

@@ -6,10 +6,7 @@ import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 import { ptBR } from "date-fns/locale/pt-BR";
 import MyButton from "@/components/atoms/my-button";
-import Hide from "@/components/atoms/my-icon/elements/hide";
 import PATHS from "@/utils/paths";
-import ActivitiesHidden from "@/components/organisms/activities-hidden";
-import { notificationActivities } from "@/common/constants/mock";
 import ModalAlert from "@/components/molecules/modal-alert";
 import { useAlert } from "@/hooks/useAlert";
 import PartnerActivitiesHistoric from "@/components/organisms/partner-activities-historic";
@@ -18,23 +15,23 @@ import { useQuery } from "@tanstack/react-query";
 import { parseISO } from "date-fns";
 import { partnerService } from "@/services/api/partner";
 import PartnerHistoricMobile from "@/components/organisms/partner-historic-mobile";
-import LoadingSpinner from "@/components/atoms/loading-spinner";
-import Loading from "@/components/molecules/loading";
 import Image from "next/image";
+import { Pagination } from "@/components/molecules/pagination";
 
 export default function Reservas() {
   const router = useRouter();
   const [date, setDate] = React.useState<Date>(new Date());
   const [dates, setDates] = React.useState<Date[]>([]);
+  const [page, setPage] = React.useState(1);
 
   const { handleClose, isModalOpen } = useAlert();
 
   const { data: parterSchedules, isLoading } = useQuery({
-    queryKey: ["parterSchedules", date],
+    queryKey: ["parterSchedules", date, page],
     queryFn: () =>
       partnerService.getMySchedules({
         limit: 50,
-        // isCanceled: false,
+        skip: page * 50 - 50,
         qntConfirmedPersons: "> 0",
       }),
   });
@@ -176,6 +173,14 @@ export default function Reservas() {
           activities={renderActivities}
           withDate
           withOptions
+        />
+      </div>
+      <div className="flex w-full justify-center items-center my-16">
+        <Pagination
+          setPage={setPage}
+          page={page}
+          limit={50}
+          data={renderActivities ?? []}
         />
       </div>
     </main>

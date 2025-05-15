@@ -11,7 +11,11 @@ import Image from "next/image";
 import MyButton from "@/components/atoms/my-button";
 import PATHS from "@/utils/paths";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { adventures, ClientSchedule } from "@/services/api/adventures";
+import {
+  AdventureImage,
+  adventures,
+  ClientSchedule,
+} from "@/services/api/adventures";
 import {
   formatAddress,
   handleActivityImages,
@@ -27,6 +31,7 @@ import ActivityTags from "@/components/organisms/actitity-tags";
 import ActivityHeader from "@/components/organisms/activity-header";
 import { v4 as uuidv4 } from "uuid";
 import Loading from "@/app/loading";
+import { users } from "@/services/api/users";
 
 const initialScheduleState = {
   qntAdults: 0,
@@ -45,16 +50,21 @@ export default function Atividade() {
   const [schedule, setSchedule] =
     useState<ClientSchedule>(initialScheduleState);
 
+  const { data: session } = useSession();
+
   const query = useQueryClient();
-  const session = useSession();
-  const userId = session.data?.user.id;
+
+  const { data: loggedUser } = useQuery({
+    queryKey: ["logged_user"],
+    queryFn: () => users.getUserLogged(),
+  });
+
+  const userId = loggedUser?.id ?? "";
 
   const { data: fetchedActivity, isLoading } = useQuery({
     queryKey: ["this_activity"],
     queryFn: () => adventures.getAdventureById(Number(id)),
   });
-
-  console.log("act", fetchedActivity);
 
   const price = {
     adult: fetchedActivity?.priceAdult,
@@ -72,10 +82,16 @@ export default function Atividade() {
 
       return response;
     },
-    enabled: !!session?.data?.user,
+    enabled: !!session?.user,
   });
 
   const handleFavorite = async () => {
+    if (!session?.user) {
+      toast.error("Você precisa ter uma conta para favoritar uma atividade");
+      router.push(PATHS.login);
+      return;
+    }
+
     const favoriteActivity = favorites.find(
       (favorite) => favorite.adventure.id === Number(id)
     );
@@ -104,6 +120,22 @@ export default function Atividade() {
   const { addToCart } = useCart();
 
   const handleOrder = () => {
+    if (!session?.user) {
+      toast.error("Você precisa ter uma conta para adicionar ao carrinho.");
+      router.push(PATHS.login);
+      return;
+    }
+
+    if (!schedule.scheduleTime) {
+      toast.error("Selecione o horário da atividade.");
+      return;
+    }
+
+    if (schedule.qntAdults === 0) {
+      toast.error("Selecione a quantidade de adultos.");
+      return;
+    }
+
     if (fetchedActivity) {
       const adventureOrder = {
         purchaseId: uuidv4(),
@@ -123,6 +155,22 @@ export default function Atividade() {
   };
 
   const handleMobileOrder = () => {
+    if (!session?.user) {
+      toast.error("Você precisa ter uma conta para adicionar ao carrinho.");
+      router.push(PATHS.login);
+      return;
+    }
+
+    if (!schedule.scheduleTime) {
+      toast.error("Selecione o horário da atividade.");
+      return;
+    }
+
+    if (schedule.qntAdults === 0) {
+      toast.error("Selecione a quantidade de adultos.");
+      return;
+    }
+
     if (fetchedActivity) {
       const adventureOrder = {
         purchaseId: uuidv4(),
@@ -180,7 +228,7 @@ export default function Atividade() {
         />
 
         <div className="md:hidden">
-          <CarouselImages images={images} />
+          <CarouselImages images={images as AdventureImage[]} />
         </div>
         <ActivityHeader activity={fetchedActivity} />
         <div className="max-sm:hidden grid grid-cols-4 grid-rows-2 gap-4">

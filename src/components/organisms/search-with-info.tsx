@@ -11,9 +11,9 @@ import { useRouter } from "next/navigation";
 import PATHS from "@/utils/paths";
 import { toast } from "react-toastify";
 import useSearchQueryService from "@/services/use-search-query-service";
+import TimePickerOptional from "../molecules/time-optional-picker";
 
 export default function SearchInfoActivity() {
-  const router = useRouter();
   const { set } = useSearchQueryService();
 
   const [selectedLocation, setSelectedLocation] =
@@ -30,16 +30,21 @@ export default function SearchInfoActivity() {
   };
 
   const handleSearch = () => {
-    console.log("Localização:", selectedLocation);
+    const formattedDate = date && date?.toISOString().split("T")[0];
+    const limitPersons = (adults || 0) + (children || 0);
+    const state = selectedLocation?.completeAddress?.addressState;
+    const city = selectedLocation?.completeAddress?.addressCity;
 
-    if (!selectedLocation) {
-      toast.error("Por favor, preencha os campos obrigatórios.");
-      return;
-    }
+    // Cria o objeto de forma dinâmica
+    const filters: any = {};
 
-    const state = selectedLocation?.completeAddress.addressState;
+    if (state) filters.state = state;
+    if (city) filters.city = city;
+    if (limitPersons > 0) filters.limitPersons = limitPersons;
+    if (formattedDate) filters.date = formattedDate;
+    if (hour && hour !== "00:00") filters.hour = hour;
 
-    set({ state });
+    set(filters);
   };
 
   return (
@@ -60,7 +65,7 @@ export default function SearchInfoActivity() {
       <div className="mx-auto space-y-5 p-4 max-sm:border max-sm:border-gray-300 rounded-lg">
         <div className="max-sm:mt-4">
           <GoogleAutoComplete
-            title="Localização"
+            title="Cidade"
             setFormData={setSelectedLocation}
             formData={selectedLocation}
             onLocationSelected={handleLocationSelected}
@@ -69,8 +74,8 @@ export default function SearchInfoActivity() {
 
         <OneDay date={date} setDate={setDate} />
 
-        <TimePickerModal
-          className="text-base"
+        <TimePickerOptional
+          className="text-base "
           selectedTime={hour}
           setSelectedTime={setHour}
           availableActivityTimes={hours.map((hour) => hour.value)}

@@ -105,6 +105,8 @@ interface ParamsActivityOrder {
   orderId?: string;
   paymentStatus?: string;
   startDate?: string;
+  limit?: number;
+  skip?: number;
 }
 
 export const ordersAdventuresService = {
@@ -199,12 +201,9 @@ export const ordersAdventuresService = {
     params?: ParamsActivityOrder
   ): Promise<CustomerSchedule[]> => {
     try {
-      const response = await api.get(
-        `/ordersAdventures/orderSchedule?limit=50`,
-        {
-          params,
-        }
-      );
+      const response = await api.get(`/ordersAdventures/orderSchedule`, {
+        params,
+      });
       return response.data;
     } catch (error) {
       console.error(

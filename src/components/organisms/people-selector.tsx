@@ -1,15 +1,15 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import MyIcon from '../atoms/my-icon';
-import MyButton from '../atoms/my-button';
-import MyTypography from '../atoms/my-typography';
-import { Popover, PopoverContent, PopoverTrigger } from '../atoms/my-popover';
-import { ClientSchedule } from '@/services/api/adventures';
-import { useQuery } from '@tanstack/react-query';
-import { formatPrice } from '@/utils/formatters';
-import { MyAlert } from '../atoms/my-alert';
-import ModalAlert from '../molecules/modal-alert';
+import React, { useState } from "react";
+import MyIcon from "../atoms/my-icon";
+import MyButton from "../atoms/my-button";
+import MyTypography from "../atoms/my-typography";
+import { Popover, PopoverContent, PopoverTrigger } from "../atoms/my-popover";
+import { ClientSchedule } from "@/services/api/adventures";
+import { useQuery } from "@tanstack/react-query";
+import { formatPrice } from "@/utils/formatters";
+import { MyAlert } from "../atoms/my-alert";
+import ModalAlert from "../molecules/modal-alert";
 
 type PeopleSelectorProps = {
   schedule: ClientSchedule;
@@ -30,11 +30,11 @@ export default function PeopleSelector({
   isChildrenAllowed,
 }: PeopleSelectorProps) {
   const [open, setOpen] = useState(false);
-  const [adults, setAdults] = useState(1);
+  const [adults, setAdults] = useState(0);
   const [children, setChildren] = useState(0);
 
   useQuery({
-    queryKey: ['schedule', adults, children],
+    queryKey: ["schedule", adults, children],
     queryFn: () => {
       const updated = {
         ...schedule,
@@ -47,14 +47,14 @@ export default function PeopleSelector({
   });
 
   // Função para incrementar ou decrementar valores
-  const handleChange = (type: string, action: 'increase' | 'decrease') => {
-    if (type === 'adult') {
+  const handleChange = (type: string, action: "increase" | "decrease") => {
+    if (type === "adult") {
       setAdults((prev) =>
-        action === 'increase' ? prev + 1 : Math.max(0, prev - 1)
+        action === "increase" ? prev + 1 : Math.max(0, prev - 1)
       );
-    } else if (type === 'child') {
+    } else if (type === "child") {
       setChildren((prev) =>
-        action === 'increase' ? prev + 1 : Math.max(0, prev - 1)
+        action === "increase" ? prev + 1 : Math.max(0, prev - 1)
       );
     }
   };
@@ -70,11 +70,15 @@ export default function PeopleSelector({
           <MyIcon name="pessoas" />
           {adults || children ? (
             <MyTypography variant="label" weight="medium">
-              {' '}
-              Adultos: {adults} {children != 0 && `+ Crianças: ${children}`}{' '}
+              {" "}
+              Adultos: {adults} {children != 0 && `+ Crianças: ${children}`}{" "}
             </MyTypography>
           ) : (
-            <MyTypography variant="body" weight="regular" className="text-sm">
+            <MyTypography
+              variant="body-big"
+              weight="regular"
+              className="text-base text-gray-400"
+            >
               Número de pessoas
             </MyTypography>
           )}
@@ -96,7 +100,7 @@ export default function PeopleSelector({
           <div className="w-full flex justify-between gap-12 items-center">
             <div>
               <MyTypography variant="body-big" weight="semibold">
-                {`Adultos - ${formatPrice(price?.adult ?? '0')}`}
+                {`Adultos - ${formatPrice(price?.adult ?? "0")}`}
               </MyTypography>
               <MyTypography variant="body-big" weight="regular">
                 Idade: acima de 13 anos.
@@ -104,23 +108,23 @@ export default function PeopleSelector({
             </div>
             <div className="flex items-center gap-4">
               <button
-                onClick={() => handleChange('adult', 'decrease')}
+                onClick={() => handleChange("adult", "decrease")}
                 disabled={adults === 0}
               >
                 <MyIcon
-                  name={adults > 0 ? 'subtracao' : 'subtracaoDesativada'}
+                  name={adults > 0 ? "subtracao" : "subtracaoDesativada"}
                 />
               </button>
               <span>{adults}</span>
               <button
                 disabled={adults + children === personsLimit}
-                onClick={() => handleChange('adult', 'increase')}
+                onClick={() => handleChange("adult", "increase")}
               >
                 <MyIcon
                   name={
                     personsLimit && adults + children < personsLimit
-                      ? 'soma'
-                      : 'somaDesativada'
+                      ? "soma"
+                      : "somaDesativada"
                   }
                 />
               </button>
@@ -132,7 +136,7 @@ export default function PeopleSelector({
             <div className="w-full flex justify-between gap-12 items-center">
               <div>
                 <MyTypography variant="body-big" weight="semibold">
-                  {`Crianças - ${formatPrice(price?.children ?? '0')}`}
+                  {`Crianças - ${formatPrice(price?.children ?? "0")}`}
                 </MyTypography>
                 <MyTypography variant="body-big" weight="regular">
                   Idade: de 4 a 12 anos
@@ -140,23 +144,23 @@ export default function PeopleSelector({
               </div>
               <div className="flex items-center gap-4">
                 <button
-                  onClick={() => handleChange('child', 'decrease')}
+                  onClick={() => handleChange("child", "decrease")}
                   disabled={children === 0}
                 >
                   <MyIcon
-                    name={children > 0 ? 'subtracao' : 'subtracaoDesativada'}
+                    name={children > 0 ? "subtracao" : "subtracaoDesativada"}
                   />
                 </button>
                 <span>{children}</span>
                 <button
                   disabled={adults + children === personsLimit}
-                  onClick={() => handleChange('child', 'increase')}
+                  onClick={() => handleChange("child", "increase")}
                 >
                   <MyIcon
                     name={
                       personsLimit && adults + children < personsLimit
-                        ? 'soma'
-                        : 'somaDesativada'
+                        ? "soma"
+                        : "somaDesativada"
                     }
                   />
                 </button>
