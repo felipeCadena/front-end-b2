@@ -1,17 +1,17 @@
-'use client';
+"use client";
 
-import MyBadge from '@/components/atoms/my-badge';
-import MyIcon from '@/components/atoms/my-icon';
-import MyTypography from '@/components/atoms/my-typography';
-import StarRating from '@/components/molecules/my-stars';
-import { Adventure, adventures } from '@/services/api/adventures';
-import { handleNameActivity, selectActivityImage } from '@/utils/formatters';
-import PATHS from '@/utils/paths';
-import { useQueryClient } from '@tanstack/react-query';
-import Image from 'next/image';
-import Link from 'next/link';
-import { toast } from 'react-toastify';
-import MyShareButton from '../atoms/my-share-button';
+import MyBadge from "@/components/atoms/my-badge";
+import MyIcon from "@/components/atoms/my-icon";
+import MyTypography from "@/components/atoms/my-typography";
+import StarRating from "@/components/molecules/my-stars";
+import { Adventure, adventures } from "@/services/api/adventures";
+import { handleNameActivity, selectActivityImage } from "@/utils/formatters";
+import PATHS from "@/utils/paths";
+import { useQueryClient } from "@tanstack/react-query";
+import Image from "next/image";
+import Link from "next/link";
+import { toast } from "react-toastify";
+import MyShareButton from "../atoms/my-share-button";
 
 type FavoriteActivityProps = {
   activity: Adventure;
@@ -30,14 +30,14 @@ export default function FavoriteActivity({
     try {
       await adventures.removeFavorite(id, favoriteID);
       query.invalidateQueries();
-      toast.success('Atividade removida dos favoritos!');
+      toast.success("Atividade removida dos favoritos!");
     } catch (error) {
-      console.error('Falha ao remover dos favoritos');
+      console.error("Falha ao remover dos favoritos");
     }
   };
 
   const frontBaseURL =
-    process.env.NEXT_PUBLIC_PROD_URL ?? 'http://localhost:3000';
+    process.env.NEXT_PUBLIC_PROD_URL ?? "http://localhost:3000";
 
   return (
     <div
@@ -47,8 +47,11 @@ export default function FavoriteActivity({
       <div className="relative z-10 overflow-hidden h-[265px] w-full  rounded-md">
         <Link href={PATHS.visualizarAtividade(id)}>
           <Image
-            alt="sample_file"
-            src={selectActivityImage(activity)}
+            alt="Imagem da atividade"
+            src={
+              selectActivityImage(activity) ??
+              "/images/atividades/paraquedas.webp"
+            }
             width={250}
             height={300}
             className="w-full h-[265px] object-cover"
@@ -73,14 +76,14 @@ export default function FavoriteActivity({
       </div>
       <MyTypography variant="subtitle1" weight="bold" className="md:hidden">
         {activity?.title?.length > 35
-          ? activity.title.slice(0, 35) + '...'
+          ? activity.title.slice(0, 35) + "..."
           : activity.title}
       </MyTypography>
       <MyTypography variant="subtitle1" weight="bold" className="max-sm:hidden">
-        {activity.title.slice(0, 20) + '...'}
+        {activity.title.slice(0, 20) + "..."}
       </MyTypography>
       <MyTypography variant="body-big" className="max-sm:hidden">
-        {activity.description.slice(0, 25).concat('...')}
+        {activity.description.slice(0, 25).concat("...")}
       </MyTypography>
       <MyTypography variant="body-big" className="md:hidden mb-8">
         {activity.description}

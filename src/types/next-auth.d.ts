@@ -28,4 +28,17 @@ declare module "next-auth" {
     expiresIn: number;
     expiresAt: number;
   }
+
+  interface Token {
+    name?: string;
+    email: string;
+    image?: string;
+    accessToken: string;
+    refreshToken: string;
+    role: string;
+    id: string;
+    defaultPath: string;
+    expiresIn: number;
+    expiresAt: number;
+  }
 }

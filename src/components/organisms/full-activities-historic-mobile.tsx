@@ -207,17 +207,19 @@ export default function FullActivitiesHistoricMobile({
 
             {!activity?.adventureStatus.includes("cancelado") && (
               <div className="flex gap-2">
-                <MyButton
-                  variant="outline-neutral"
-                  size="sm"
-                  borderRadius="squared"
-                  className="w-full py-6"
-                  onClick={() =>
-                    router.push(PATHS.atividadeRealizadaCliente(activity.id))
-                  }
-                >
-                  Avaliar
-                </MyButton>
+                {activity?.ratings && activity?.ratings.length == 0 && (
+                  <MyButton
+                    variant="outline-neutral"
+                    size="sm"
+                    borderRadius="squared"
+                    className="w-full py-6"
+                    onClick={() =>
+                      router.push(PATHS.atividadeRealizadaCliente(activity.id))
+                    }
+                  >
+                    Avaliar
+                  </MyButton>
+                )}
 
                 <MyButton
                   variant="outline-neutral"

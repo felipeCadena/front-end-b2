@@ -6,7 +6,11 @@ import MyBadge from "../atoms/my-badge";
 import StarRating from "../molecules/my-stars";
 import MyTypography from "../atoms/my-typography";
 import MyIcon from "../atoms/my-icon";
-import { getData, handleNameActivity } from "@/utils/formatters";
+import {
+  getData,
+  getDefaultImage,
+  handleNameActivity,
+} from "@/utils/formatters";
 import MyButton from "../atoms/my-button";
 import { useRouter } from "next/navigation";
 import PATHS from "@/utils/paths";
@@ -116,11 +120,7 @@ export default function ScheduledActivitiesMobile({
                 >
                   <Image
                     alt="Imagem aventura"
-                    src={
-                      activity?.adventure?.images
-                        ? activity?.adventure?.images[0].url
-                        : "/images/atividades/paraquedas.webp"
-                    }
+                    src={getDefaultImage(activity)}
                     width={250}
                     height={300}
                     className="w-[110px] h-full object-cover"

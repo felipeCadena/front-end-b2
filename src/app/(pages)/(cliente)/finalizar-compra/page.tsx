@@ -29,6 +29,7 @@ import {
   formatInstallmentOptions,
   formatPhoneNumber,
 } from "@/utils/formatters";
+import { useSession } from "next-auth/react";
 
 const formSchema = z.object({
   paymentMethod: z.string().optional(),
@@ -106,6 +107,10 @@ export default function FinalizarCompra() {
   const queryClient = useQueryClient();
   const instamentsAvailable =
     process.env.NEXT_PUBLIC_B2_ENABLED_INSTALLMENT_PAY ?? 1;
+  const { data: session } = useSession();
+  const userId = session?.user?.id ?? "";
+
+  console.log("userId", userId);
 
   const handleCardPaymentModal = () => {
     router.push(PATHS.agenda);
@@ -131,8 +136,6 @@ export default function FinalizarCompra() {
     queryKey: ["user_ip_address"],
     queryFn: () => users.getIP(),
   });
-
-  const userId = loggedUser?.id ?? "";
 
   const userCart = carts.find((cart) => cart.userId === userId);
 
@@ -209,7 +212,7 @@ export default function FinalizarCompra() {
         adventures: purchaseOrder,
       });
     }
-  }, [userId, purchaseOrder?.length]);
+  }, [userId, purchaseOrder?.length, loggedUser]);
 
   const handleSubmit = async (formData: PurchaseOrderFormData) => {
     setIsLoading(true);

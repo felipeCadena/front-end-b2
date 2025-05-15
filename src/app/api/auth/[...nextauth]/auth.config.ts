@@ -19,6 +19,11 @@ type SignCallback = {
   account: any;
 };
 
+type SessionCallback = {
+  session: any;
+  token: any;
+};
+
 interface DecodedToken {
   id: string;
   name: string;
@@ -65,6 +70,8 @@ export const authOptions: NextAuthOptions = {
 
           // Calcula o timestamp exato de expiração
           const expiresAt = Date.now() + response.expires_in * 1000;
+
+          console.log("response login: " + response?.refresh_token);
 
           // Retorna o usuário no formato esperado pelo NextAuth
           return {
@@ -136,6 +143,8 @@ export const authOptions: NextAuthOptions = {
           // Calcula o timestamp exato de expiração
           const expiresAt = Date.now() + response.expires_in * 1000;
 
+          console.log("response google: " + response?.refresh_token);
+
           (user.email = decodedToken.email),
             (user.name = decodedToken.name),
             (user.accessToken = response.access_token),
@@ -158,6 +167,7 @@ export const authOptions: NextAuthOptions = {
     },
     async jwt({ token, user }: JWTCallback) {
       // Quando fizer login, adiciona os dados ao token
+      console.log("token: " + token?.refreshToken);
       if (user) {
         token.accessToken = user.accessToken;
         token.refreshToken = user.refreshToken;
@@ -175,6 +185,7 @@ export const authOptions: NextAuthOptions = {
       const now = Date.now();
 
       if (now > token.expiresAt && token?.refreshToken) {
+        console.log("token if expirado " + token?.refreshToken);
         try {
           const dataAuth = await authService.refreshToken(token?.refreshToken);
 
@@ -187,27 +198,25 @@ export const authOptions: NextAuthOptions = {
           }
         } catch (err) {
           console.error("Erro ao renovar token:", (err as any)?.response?.data);
-          return null;
         }
       }
 
       return token;
     },
-    async session({ session, token }) {
-      return {
-        ...session,
-        user: {
-          ...session.user,
-          accessToken: token.accessToken,
-          refreshToken: token.refreshToken,
-          role: token.role,
-          id: token.id,
-          defaultPath: token.defaultPath,
-          expiresIn: token.expiresIn,
-          email: token.email,
-          expiresAt: token.expiresAt,
-        },
-      };
+    async session({ session, token }: SessionCallback) {
+      if (token) {
+        session.user.accessToken = token?.accessToken;
+        session.user.refreshToken = token?.refreshToken;
+        session.user.role = token?.role;
+        session.user.id = token?.id;
+        session.user.defaultPath = token?.defaultPath;
+        session.user.expiresIn = token?.expiresIn;
+        session.user.email = token?.email;
+        session.user.expiresAt = token?.expiresAt;
+      }
+
+      console.log("session ", session?.user?.refreshToken);
+      return session;
     },
     async redirect({ url, baseUrl }) {
       return url;

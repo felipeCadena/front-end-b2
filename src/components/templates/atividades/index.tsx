@@ -53,13 +53,8 @@ export default function AtividadesTemplate() {
     if (value) scrollToSection(value);
   };
 
-  const { data: loggedUser } = useQuery({
-    queryKey: ["logged_user"],
-    queryFn: () => users.getUserLogged(),
-  });
-
-  const { data } = useSession();
-  const userId = loggedUser?.id ?? "";
+  const { data: session } = useSession();
+  const userId = session?.user?.id ?? "";
 
   const { getCartSize } = useCart();
 

@@ -34,10 +34,15 @@ const CardPaymentOption = ({
   const instalmentOptions = formatInstallmentOptions(
     Number(instamentsAvailable),
     totalPrice,
-    budget
+    budget ?? {}
   );
 
   const { creditCard } = form.watch();
+
+  const selectedInstallment = form.watch("installmentCount") ?? 1;
+  const selectedBudget =
+    budget?.[`CREDIT_CARD_${selectedInstallment}x`] ?? null;
+
   return (
     <div className="max-sm:mt-8 px-4 md:px-0 md:flex md:flex-row-reverse md:items-center md:gap-8 md:col-span-2">
       <Card cardObj={creditCard} />
@@ -143,9 +148,7 @@ const CardPaymentOption = ({
                 weight="regular"
                 className="text-lg md:text-xl"
               >
-                {budget[
-                  `CREDIT_CARD_${form.getValues("installmentCount")}x`
-                ]?.totalGatewayFee.toLocaleString("pt-BR", {
+                {selectedBudget?.totalGatewayFee.toLocaleString("pt-BR", {
                   style: "currency",
                   currency: "BRL",
                 })}
@@ -164,9 +167,7 @@ const CardPaymentOption = ({
                 weight="extrabold"
                 className="text-primary-600 text-lg md:text-xl"
               >
-                {budget[
-                  `CREDIT_CARD_${form.getValues("installmentCount")}x`
-                ]?.orderFinalPrice.toLocaleString("pt-BR", {
+                {selectedBudget?.orderFinalPrice.toLocaleString("pt-BR", {
                   style: "currency",
                   currency: "BRL",
                 })}

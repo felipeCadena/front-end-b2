@@ -30,15 +30,10 @@ const ActivitiesOrderSummary = ({
   activities,
 }: ActivitiesOrderSummaryProps) => {
   const router = useRouter();
-  const session = useSession();
   const { removeFromCart } = useCart();
 
-  const { data: loggedUser } = useQuery({
-    queryKey: ["logged_user"],
-    queryFn: () => users.getUserLogged(),
-  });
-
-  const userId = loggedUser?.id ?? "";
+  const { data: session } = useSession();
+  const userId = session?.user?.id ?? "";
 
   const handleRemoveActivity = (id: string) => {
     if (userId) {
@@ -62,7 +57,7 @@ const ActivitiesOrderSummary = ({
             >
               <Image
                 alt="Imagem Aventura"
-                src={selectActivityImage(adventure)}
+                src={selectActivityImage(adventure) ?? ""}
                 width={265}
                 height={265}
                 priority

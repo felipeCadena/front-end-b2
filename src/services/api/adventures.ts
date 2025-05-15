@@ -33,6 +33,7 @@ export interface GetAdventuresParams {
   orderBy?: string;
   adventureId?: string;
   isAvailable?: boolean;
+  adminApproved?: boolean;
   city?: string;
   date?: string;
   hour?: string;
@@ -179,6 +180,7 @@ export interface Adventure {
   images: AdventureImage[];
   schedules?: Schedules[];
   transportAddress?: string;
+  refusalMsg: string | null | undefined;
 }
 
 export interface CreateAdventureBody {
