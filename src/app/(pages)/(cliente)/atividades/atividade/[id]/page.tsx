@@ -31,6 +31,7 @@ import ActivityTags from "@/components/organisms/actitity-tags";
 import ActivityHeader from "@/components/organisms/activity-header";
 import { v4 as uuidv4 } from "uuid";
 import Loading from "@/app/loading";
+import { users } from "@/services/api/users";
 
 const initialScheduleState = {
   qntAdults: 0,
@@ -49,16 +50,21 @@ export default function Atividade() {
   const [schedule, setSchedule] =
     useState<ClientSchedule>(initialScheduleState);
 
+  const { data: session } = useSession();
+
   const query = useQueryClient();
-  const session = useSession();
-  const userId = session.data?.user.id;
+
+  const { data: loggedUser } = useQuery({
+    queryKey: ["logged_user"],
+    queryFn: () => users.getUserLogged(),
+  });
+
+  const userId = loggedUser?.id ?? "";
 
   const { data: fetchedActivity, isLoading } = useQuery({
     queryKey: ["this_activity"],
     queryFn: () => adventures.getAdventureById(Number(id)),
   });
-
-  console.log("act", fetchedActivity);
 
   const price = {
     adult: fetchedActivity?.priceAdult,
@@ -76,11 +82,11 @@ export default function Atividade() {
 
       return response;
     },
-    enabled: !!session?.data?.user,
+    enabled: !!session?.user,
   });
 
   const handleFavorite = async () => {
-    if (!session?.data?.user) {
+    if (!session?.user) {
       toast.error("Você precisa ter uma conta para favoritar uma atividade");
       router.push(PATHS.login);
       return;
@@ -114,7 +120,7 @@ export default function Atividade() {
   const { addToCart } = useCart();
 
   const handleOrder = () => {
-    if (!session?.data?.user) {
+    if (!session?.user) {
       toast.error("Você precisa ter uma conta para adicionar ao carrinho.");
       router.push(PATHS.login);
       return;
@@ -149,7 +155,7 @@ export default function Atividade() {
   };
 
   const handleMobileOrder = () => {
-    if (!session?.data?.user) {
+    if (!session?.user) {
       toast.error("Você precisa ter uma conta para adicionar ao carrinho.");
       router.push(PATHS.login);
       return;

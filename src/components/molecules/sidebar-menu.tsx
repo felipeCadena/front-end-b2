@@ -24,6 +24,7 @@ import { notificationsService } from "@/services/api/notifications";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { adminService } from "@/services/api/admin";
+import { users } from "@/services/api/users";
 
 export default function SidebarMenu({
   closeSidebar,
@@ -34,6 +35,13 @@ export default function SidebarMenu({
   const queryClient = useQueryClient();
   const { data: session } = useSession();
   const { setSideBarActive, sideBarActive } = useLogin();
+
+  const { data: loggedUser } = useQuery({
+    queryKey: ["logged_user"],
+    queryFn: () => users.getUserLogged(),
+  });
+
+  const userId = loggedUser?.id ?? "";
 
   useEffect(() => {
     switch (session?.user?.role) {
@@ -71,8 +79,6 @@ export default function SidebarMenu({
   };
 
   const { getCartSize } = useCart();
-
-  const userId = session?.user.id;
 
   const cartSize = getCartSize(userId ?? "");
 
