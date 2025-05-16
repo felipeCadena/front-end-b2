@@ -78,7 +78,7 @@ export default function MultiSelect({
 
     // Agora você pode usar esse array para aplicar estilos
     const disabledArray = Array.from(blocked);
-    console.log("Horas desabilitadas:", disabledArray);
+    // console.log("Horas desabilitadas:", disabledArray);
     // Salve em estado se quiser, por exemplo:
     setDisabledTimes(disabledArray);
   };

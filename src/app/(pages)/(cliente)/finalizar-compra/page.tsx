@@ -110,8 +110,6 @@ export default function FinalizarCompra() {
   const { data: session } = useSession();
   const userId = session?.user?.id ?? "";
 
-  console.log("userId", userId);
-
   const handleCardPaymentModal = () => {
     router.push(PATHS.agenda);
   };

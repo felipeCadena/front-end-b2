@@ -199,13 +199,6 @@ export default function AdminMobile() {
 
   return (
     <main className=" space-y-8 mt-6">
-      {/* Busca */}
-      {/* <SearchActivity /> */}
-
-      {/* Filtro de Atividades */}
-      {/* <ActivitiesFilter admin /> */}
-
-      {/* Pagamentos */}
       <div className="px-4">
         <MyTypography variant="subtitle2" weight="bold" className="my-4">
           Pagamentos de Parceiros
@@ -214,7 +207,7 @@ export default function AdminMobile() {
           {pendingPayments?.total_orders == 0 && !isLoading ? (
             <div className="flex items-center justify-center h-[250px]">
               <MyTypography variant="subtitle4" weight="bold">
-                Você ainda não possui pagamentos.
+                Não há pagamentos pendentes
               </MyTypography>
             </div>
           ) : (

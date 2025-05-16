@@ -1,34 +1,34 @@
-'use client';
+"use client";
 
-import { MyTabs, TabsList, TabsTrigger } from '@/components/molecules/my-tabs';
-import { TabsContent } from '@radix-ui/react-tabs';
-import React, { useState } from 'react';
-import SearchActivity from '@/components/organisms/search-activity';
-import MyTypography from '@/components/atoms/my-typography';
-import { useRouter } from 'next/navigation';
+import { MyTabs, TabsList, TabsTrigger } from "@/components/molecules/my-tabs";
+import { TabsContent } from "@radix-ui/react-tabs";
+import React, { useState } from "react";
+import SearchActivity from "@/components/organisms/search-activity";
+import MyTypography from "@/components/atoms/my-typography";
+import { useRouter } from "next/navigation";
 import {
   MySelect,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/atoms/my-select';
-import { months, states } from '@/common/constants/constants';
-import Activities from '@/components/organisms/activities';
-import { useQuery } from '@tanstack/react-query';
-import { adventures } from '@/services/api/adventures';
-import { Pagination } from '@/components/molecules/pagination';
-import ActivitiesFilter from '@/components/organisms/activities-filter';
-import Loading from '@/app/loading';
+} from "@/components/atoms/my-select";
+import { months, states } from "@/common/constants/constants";
+import Activities from "@/components/organisms/activities";
+import { useQuery } from "@tanstack/react-query";
+import { adventures } from "@/services/api/adventures";
+import { Pagination } from "@/components/molecules/pagination";
+import ActivitiesFilter from "@/components/organisms/activities-filter";
+import Loading from "@/app/loading";
 
-type TypeAdventure = 'ar' | 'terra' | 'mar' | '';
+type TypeAdventure = "ar" | "terra" | "mar" | "";
 
 export default function AvaliacoesWeb() {
   const router = useRouter();
-  const [actFilter, setActFilter] = useState('totalFavorites desc');
+  const [actFilter, setActFilter] = useState("totalFavorites desc");
   const [typeAdvFilter, setTypeAdvFilter] = useState<TypeAdventure>();
-  const [stateFilter, setStateFilter] = useState('RJ');
-  const [rateFilter, setRateFilter] = useState('Todos');
+  const [stateFilter, setStateFilter] = useState("RJ");
+  const [rateFilter, setRateFilter] = useState("Todos");
   const [page, setPage] = useState(1);
 
   const { data: activities = [], isLoading } = useQuery({
@@ -36,11 +36,11 @@ export default function AvaliacoesWeb() {
     queryFn: () =>
       adventures.filterAdventures({
         orderBy: actFilter,
-        limit: 4,
-        skip: page * 4 - 4,
+        limit: 8,
+        skip: page * 8 - 8,
         typeAdventure: typeAdvFilter,
         state: stateFilter,
-        averageRating: rateFilter === 'Todos' ? undefined : rateFilter,
+        averageRating: rateFilter === "Todos" ? undefined : rateFilter,
       }),
   });
 
@@ -103,20 +103,20 @@ export default function AvaliacoesWeb() {
         <MyTabs defaultValue="favoritos" className="mb-10">
           <TabsList className="mb-10 grid grid-cols-3">
             <TabsTrigger
-              onClick={() => handleChangeTab('totalFavorites desc')}
+              onClick={() => handleChangeTab("totalFavorites desc")}
               value="favoritos"
               className=""
             >
               Favoritos dos clientes
             </TabsTrigger>
             <TabsTrigger
-              onClick={() => handleChangeTab('qntTotalSales desc')}
+              onClick={() => handleChangeTab("qntTotalSales desc")}
               value="procuradas"
             >
               Atividades mais procuradas
             </TabsTrigger>
             <TabsTrigger
-              onClick={() => handleChangeTab('averageRating asc')}
+              onClick={() => handleChangeTab("averageRating asc")}
               value="menor"
             >
               Atividades com menores avaliações
@@ -141,7 +141,7 @@ export default function AvaliacoesWeb() {
                       data={activities}
                       page={page}
                       setPage={setPage}
-                      limit={4}
+                      limit={8}
                     />
                   </>
                 ) : (
@@ -173,7 +173,7 @@ export default function AvaliacoesWeb() {
                       data={activities}
                       page={page}
                       setPage={setPage}
-                      limit={4}
+                      limit={8}
                     />
                   </>
                 ) : (
@@ -205,7 +205,7 @@ export default function AvaliacoesWeb() {
                       data={activities}
                       page={page}
                       setPage={setPage}
-                      limit={4}
+                      limit={8}
                     />
                   </>
                 ) : (

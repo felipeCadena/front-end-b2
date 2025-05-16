@@ -105,8 +105,6 @@ const PagamentoMobile = () => {
 
   const userId = session?.user?.id ?? "";
 
-  console.log("userId", userId);
-
   const instamentsAvailable =
     process.env.NEXT_PUBLIC_B2_ENABLED_INSTALLMENT_PAY ?? 1;
 

@@ -35,6 +35,8 @@ interface DecodedToken {
   exp: number;
 }
 
+const processedLogins = new Set<string>();
+
 export const authOptions: NextAuthOptions = {
   providers: [
     GoogleProvider({
@@ -59,6 +61,8 @@ export const authOptions: NextAuthOptions = {
 
           const response = await authService.login(credentials);
 
+          // console.log("response login: " + response?.refresh_token);
+
           if (!response?.access_token) {
             signOut();
 
@@ -71,7 +75,7 @@ export const authOptions: NextAuthOptions = {
           // Calcula o timestamp exato de expiração
           const expiresAt = Date.now() + response.expires_in * 1000;
 
-          console.log("response login: " + response?.refresh_token);
+          // console.log("response login: " + response?.refresh_token);
 
           // Retorna o usuário no formato esperado pelo NextAuth
           return {
@@ -98,6 +102,14 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async signIn({ user, account }: SignCallback) {
       try {
+        const userId = user.email; // Use email or another unique identifier
+        if (processedLogins.has(userId)) {
+          // console.log(`Login already processed for user: ${userId}`);
+          return true; // Retorna true para evitar processamento duplicado
+        }
+
+        processedLogins.add(userId);
+
         // Se for login social
         if (account?.provider === "google") {
           if (!account?.id_token) return false;
@@ -108,6 +120,8 @@ export const authOptions: NextAuthOptions = {
           );
 
           if (!response) return false;
+
+          // console.log("response google: " + response?.refresh_token);
 
           const decodedToken = jwtDecode<DecodedToken>(response.access_token);
 
@@ -143,7 +157,7 @@ export const authOptions: NextAuthOptions = {
           // Calcula o timestamp exato de expiração
           const expiresAt = Date.now() + response.expires_in * 1000;
 
-          console.log("response google: " + response?.refresh_token);
+          // console.log("response google: " + response?.refresh_token);
 
           (user.email = decodedToken.email),
             (user.name = decodedToken.name),
@@ -166,8 +180,7 @@ export const authOptions: NextAuthOptions = {
       }
     },
     async jwt({ token, user }: JWTCallback) {
-      // Quando fizer login, adiciona os dados ao token
-      console.log("token: " + token?.refreshToken);
+      // console.log("token: " + token?.refreshToken);
       if (user) {
         token.accessToken = user.accessToken;
         token.refreshToken = user.refreshToken;
@@ -178,6 +191,8 @@ export const authOptions: NextAuthOptions = {
         token.defaultPath = user.defaultPath;
         token.image = user.image ?? "";
         token.expiresAt = user.expiresAt;
+        token.loginSocial = user.loginSocial;
+        token.provider = user.provider;
 
         return token;
       }
@@ -185,9 +200,12 @@ export const authOptions: NextAuthOptions = {
       const now = Date.now();
 
       if (now > token.expiresAt && token?.refreshToken) {
-        console.log("token if expirado " + token?.refreshToken);
+        // console.log("token if expirado " + token?.refreshToken);
         try {
           const dataAuth = await authService.refreshToken(token?.refreshToken);
+
+          // console.log("dataAuth?.access_token: " + dataAuth?.access_token);
+          // console.log("dataAuth?.access_token: " + dataAuth?.refresh_token);
 
           if (dataAuth?.access_token) {
             const newExpiresAt = Date.now() + dataAuth.expires_in * 1000;
@@ -204,6 +222,8 @@ export const authOptions: NextAuthOptions = {
       return token;
     },
     async session({ session, token }: SessionCallback) {
+      // console.log("token session ", token?.refreshToken);
+
       if (token) {
         session.user.accessToken = token?.accessToken;
         session.user.refreshToken = token?.refreshToken;
@@ -215,7 +235,7 @@ export const authOptions: NextAuthOptions = {
         session.user.expiresAt = token?.expiresAt;
       }
 
-      console.log("session ", session?.user?.refreshToken);
+      // console.log("session ", session?.user?.refreshToken);
       return session;
     },
     async redirect({ url, baseUrl }) {

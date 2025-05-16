@@ -25,7 +25,7 @@ export default function SearchInfoActivity() {
   const [children, setChildren] = React.useState(0);
 
   const handleLocationSelected = (location: any) => {
-    console.log("Localização escolhida:", location);
+    // console.log("Localização escolhida:", location);
     setSelectedLocation(location);
   };
 

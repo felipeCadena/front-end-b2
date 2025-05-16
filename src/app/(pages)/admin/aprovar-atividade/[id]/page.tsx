@@ -195,8 +195,6 @@ export default function AprovarAtividade() {
     }
   };
 
-  console.log(partner);
-
   return (
     <section className="my-10">
       <div className="relative">

@@ -440,7 +440,7 @@ export const selectActivityImage = (activity: Adventure) => {
   const defaultImage = activity?.images?.find((image) => image?.isDefault)?.url;
   const firstImage =
     activity?.images?.[0]?.url ?? "/images/atividades/paraquedas.webp";
-  return defaultImage;
+  return defaultImage ?? firstImage;
 };
 
 export const sortImagesByDefaultFirst = (images: AdventureImage[] = []) => {

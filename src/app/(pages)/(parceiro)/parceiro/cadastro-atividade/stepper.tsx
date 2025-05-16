@@ -152,8 +152,6 @@ export default function StepperComponent() {
     }
   };
 
-  console.log(session?.user?.accessToken);
-
   return (
     <main className="w-full max-w-md mx-auto p-4 flex flex-col gap-4 md:gap-8">
       <div className="relative">

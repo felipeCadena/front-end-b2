@@ -48,7 +48,6 @@ export default function PartnerActivitiesHistoric({
   const handleModalCustomers = async (id: string) => {
     try {
       const clients = await partnerService.getPartnerScheduleById(id);
-      console.log(clients);
       setClientList(clients);
       setShowModal(true);
     } catch (error) {
