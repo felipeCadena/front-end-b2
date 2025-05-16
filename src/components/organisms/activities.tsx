@@ -45,7 +45,7 @@ export default function Activities({
           >
             <div className="relative z-10 overflow-hidden h-[265px] w-full hover:cursor-pointer rounded-md">
               <Image
-                alt="sample_file"
+                alt="Imagem da atividade"
                 src={selectActivityImage(activity)}
                 width={250}
                 height={300}

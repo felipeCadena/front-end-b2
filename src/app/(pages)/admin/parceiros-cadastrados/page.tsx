@@ -1,21 +1,27 @@
-"use client";
+'use client';
 
-import MyButton from "@/components/atoms/my-button";
-import MyIcon from "@/components/atoms/my-icon";
-import MyTypography from "@/components/atoms/my-typography";
-import PartnerApprovalCard from "@/components/molecules/partner-approval";
-import { adminService } from "@/services/api/admin";
-import { useQuery } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
-import React from "react";
+import Loading from '@/app/loading';
+import MyIcon from '@/components/atoms/my-icon';
+import MyTypography from '@/components/atoms/my-typography';
+import { Pagination } from '@/components/molecules/pagination';
+import PartnerApprovalCard from '@/components/molecules/partner-approval';
+import { adminService } from '@/services/api/admin';
+import { useQuery } from '@tanstack/react-query';
+import { useRouter } from 'next/navigation';
+import React, { useState } from 'react';
 
 export default function ParceiroCadastrados() {
   const router = useRouter();
+  const [page, setPage] = useState(1);
 
-  const { data: allPartners } = useQuery({
-    queryKey: ["allPartners"],
+  const { data: allPartners = [], isLoading } = useQuery({
+    queryKey: ['allPartners', page],
     queryFn: () =>
-      adminService.searchPartners({ limit: 50, orderBy: "createdAt asc" }),
+      adminService.searchPartners({
+        limit: 18,
+        orderBy: 'createdAt asc',
+        skip: page * 18 - 18,
+      }),
   });
 
   return (
@@ -56,21 +62,42 @@ export default function ParceiroCadastrados() {
       >
         Aprovar todos
       </MyButton> */}
-      <div className="space-y-4 md:grid md:grid-cols-3 md:gap-4 md:items-end">
-        {allPartners &&
-          allPartners.map((partner: any) => (
-            <PartnerApprovalCard
-              key={partner?.id}
-              name={partner?.companyName ?? "Nome do Parceiro"}
-              activitiesCount={partner?._count?.adventures}
-              rating={partner?.averageRating}
-              avatar={partner?.logo?.url ?? "/user.png"}
-              onClick={() =>
-                router.push(`/admin/parceiros-cadastrados/${partner?.id}`)
-              }
-            />
-          ))}
-      </div>
+      {isLoading ? (
+        <div className="h-[30vh] my-16">
+          <Loading height="[30vh]" />
+        </div>
+      ) : (
+        <>
+          <div className="space-y-4 md:grid md:grid-cols-3 md:gap-4 md:items-end">
+            {allPartners.length > 0 ? (
+              allPartners.map((partner: any) => (
+                <PartnerApprovalCard
+                  key={partner?.id}
+                  name={partner?.companyName ?? 'Nome do Parceiro'}
+                  activitiesCount={partner?._count?.adventures}
+                  rating={partner?.averageRating}
+                  avatar={partner?.logo?.url ?? '/user.png'}
+                  onClick={() =>
+                    router.push(`/admin/parceiros-cadastrados/${partner?.id}`)
+                  }
+                />
+              ))
+            ) : (
+              <div>
+                <MyTypography weight="bold" variant="subtitle3">
+                  Não há parceiros cadastrados
+                </MyTypography>
+              </div>
+            )}
+          </div>
+          <Pagination
+            limit={18}
+            data={allPartners}
+            page={page}
+            setPage={setPage}
+          />
+        </>
+      )}
     </main>
   );
 }

@@ -14,7 +14,7 @@ import MyTextInput from "@/components/atoms/my-text-input";
 import MyTypography from "@/components/atoms/my-typography";
 import { useStepperStore } from "@/store/useStepperStore";
 import { cn } from "@/utils/cn";
-import { formatCpfCnpj } from "@/utils/formatters";
+import { formatCpfCnpj, formatPhoneNumber } from "@/utils/formatters";
 import React, { useEffect } from "react";
 
 export default function Informacoes({
@@ -123,7 +123,7 @@ export default function Informacoes({
                   label="Tipo de conta"
                 >
                   <SelectTrigger className="py-6 mt-1 mb-4">
-                    <SelectValue placeholder="Digite seu tipo de chave" />
+                    <SelectValue placeholder="Digite seu tipo de conta" />
                   </SelectTrigger>
                   <SelectContent className="">
                     <SelectItem value="CONTA_CORRENTE">
@@ -219,10 +219,21 @@ export default function Informacoes({
 
               <MyTextInput
                 label="Chave pix"
-                placeholder="Digite sua chave pix"
+                placeholder={
+                  pixAddressKeyType == "PHONE"
+                    ? "(00) 00000-0000"
+                    : "Digite sua chave pix"
+                }
                 className="mt-2"
                 value={pixKey}
-                onChange={(e) => setStepData(4, { pixKey: e.target.value })}
+                onChange={(e) =>
+                  setStepData(4, {
+                    pixKey:
+                      pixAddressKeyType == "PHONE"
+                        ? formatPhoneNumber(e.target.value)
+                        : e.target.value,
+                  })
+                }
               />
             </div>
           )}

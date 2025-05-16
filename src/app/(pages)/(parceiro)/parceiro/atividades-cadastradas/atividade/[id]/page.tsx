@@ -394,7 +394,7 @@ export default function Atividade() {
                     : ""}
                 </MyTypography>
               </div>
-              <div className="flex gap-2 items-center">
+              <div className="flex max-sm:flex-col items-start gap-2 md:items-center">
                 <MyBadge variant="outline" className="p-1 ">
                   {handleNameActivity(activity?.typeAdventure ?? "")}
                 </MyBadge>

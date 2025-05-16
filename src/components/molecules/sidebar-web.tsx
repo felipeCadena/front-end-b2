@@ -29,12 +29,7 @@ export default function SidebarMenuWeb({}) {
   const { data: session } = useSession();
   const { getCartSize } = useCart();
 
-  const { data: loggedUser } = useQuery({
-    queryKey: ["logged_user"],
-    queryFn: () => users.getUserLogged(),
-  });
-
-  const userId = loggedUser?.id ?? "";
+  const userId = session?.user?.id ?? "";
 
   const cartSize = getCartSize(userId ?? "");
 
@@ -62,11 +57,8 @@ export default function SidebarMenuWeb({}) {
 
   const handleLogout = async () => {
     try {
-      await signOut({
-        callbackUrl: "/",
-        redirect: true,
-      });
       await authService.logout(session?.user.refreshToken ?? "");
+      signOut();
       clearUser();
     } catch (error) {
       console.error("Error during logout:", error);

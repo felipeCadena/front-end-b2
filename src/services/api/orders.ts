@@ -53,6 +53,13 @@ interface OrderAdventure {
   totalCost: string;
 }
 
+interface Ratings {
+  comment: string;
+  createdAt: string;
+  id: number;
+  rating: number;
+}
+
 export interface CustomerSchedule {
   adventure: AdventureOrderSummary;
   adventureFinalPrice: string;
@@ -76,6 +83,7 @@ export interface CustomerSchedule {
   taxesPercentage: number;
   totalTaxes: string;
   updatedAt: string;
+  ratings?: Ratings[];
 }
 
 interface ActivityOrder {

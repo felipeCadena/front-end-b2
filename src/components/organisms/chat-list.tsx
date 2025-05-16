@@ -10,6 +10,7 @@ import { cn } from "@/utils/cn";
 import { formatSmartDateTime } from "@/utils/formatters";
 import MyButton from "../atoms/my-button";
 import useChat from "@/store/useChat";
+import useSearchQueryService from "@/services/use-search-query-service";
 
 interface ChatMessage {
   datetime: string;
@@ -60,10 +61,12 @@ export default function ChatList({ chats, setUser }: ChatListProps) {
   );
   const [mobile, setMobile] = React.useState<boolean>(false);
   const { setChat } = useChat();
+  const { params, clear } = useSearchQueryService();
 
   const debounce = useDebounce(localSearch, 500);
 
   const handleChatClick = (chat: ChatType) => {
+    clear();
     setChat({
       userToName: chat?.userToName,
       id: chat?.id,
@@ -84,7 +87,7 @@ export default function ChatList({ chats, setUser }: ChatListProps) {
     } else {
       setUser("");
     }
-  }, [debounce]);
+  }, [debounce, params]);
 
   useEffect(() => {
     if (window) {
@@ -154,14 +157,14 @@ export default function ChatList({ chats, setUser }: ChatListProps) {
                     <span className="font-medium">{chat?.userToName}</span>
                   </div>
 
-                  {chat?.lastMessage &&
-                  chat?.session_token &&
-                  chat?.lastMessage?.text ? (
+                  {chat?.lastMessage && chat?.lastMessage?.text ? (
                     <p className="text-sm font-bold">
                       {chat?.lastMessage?.text.slice(0, 40).concat("...")}
                     </p>
                   ) : (
-                    <p className="text-gray-400 text-xs">Chat encerrado</p>
+                    !chat?.session_token && (
+                      <p className="text-gray-400 text-xs">Chat encerrado</p>
+                    )
                   )}
 
                   {chat?.userToLastOnline && chat?.session_token && (

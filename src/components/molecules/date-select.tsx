@@ -28,7 +28,7 @@ export default function HoursSelect({
 
   function parseDuration(duration?: string): number {
     if (!duration) return 0;
-    console.log(parseFloat(duration.split(":")[0]));
+    // console.log(parseFloat(duration.split(":")[0]));
     return parseFloat(duration.split(":")[0]);
   }
 
@@ -67,7 +67,7 @@ export default function HoursSelect({
 
     // Agora você pode usar esse array para aplicar estilos
     const disabledArray = Array.from(blocked);
-    console.log("Horas desabilitadas:", disabledArray);
+    // console.log("Horas desabilitadas:", disabledArray);
     // Salve em estado se quiser, por exemplo:
     setDisabledTimes(disabledArray);
   };

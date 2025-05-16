@@ -4,6 +4,7 @@ import {
 } from "@/components/organisms/activity-date-picker";
 import {
   Adventure,
+  AdventureImage,
   AdventureSchedule,
   Schedules,
 } from "@/services/api/adventures";
@@ -15,6 +16,11 @@ import {
   parseISO,
 } from "date-fns";
 import { ptBR } from "date-fns/locale";
+
+export function capitalizeFirstLetter(str: string) {
+  if (!str) return "";
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
 
 export function isWithinChatWindow(datetimeUTC: string): boolean {
   const now = new Date();
@@ -436,14 +442,21 @@ export const formatIconName = (name: string) => {
 };
 
 export const selectActivityImage = (activity: Adventure) => {
-  if (activity?.images && activity?.images.length > 0) {
-    return (
-      activity?.images.find((image: any) => image?.isDefault)?.url ??
-      "/images/atividades/paraquedas.webp"
-    );
-  } else {
-    return "/images/atividades/paraquedas.webp";
-  }
+  const defaultImage = activity?.images?.find((image) => image?.isDefault)?.url;
+  const firstImage =
+    activity?.images?.[0]?.url ?? "/images/atividades/paraquedas.webp";
+  return defaultImage ?? firstImage;
+};
+
+export const sortImagesByDefaultFirst = (images: AdventureImage[] = []) => {
+  return [...images].sort((a, b) => {
+    // Se 'a' é default e 'b' não é, 'a' vem antes (retorna -1)
+    if (a.isDefault && !b.isDefault) return -1;
+    // Se 'b' é default e 'a' não é, 'b' vem antes (retorna 1)
+    if (!a.isDefault && b.isDefault) return 1;
+    // Se ambos são ou não são default, mantém ordem original
+    return 0;
+  });
 };
 
 export const handleActivityImages = (activity: Adventure | undefined) => {
@@ -724,7 +737,7 @@ export const formatInstallmentOptions = (
     const key = `CREDIT_CARD_${i}x` as keyof typeof ASAAS_TAXES;
 
     // Se não existir configuração para esse número de parcelas, pula
-    if (!key && !ASAAS_TAXES[key]) continue;
+    if (!ASAAS_TAXES[key]) continue;
 
     const { orderFinalPrice } = ASAAS_TAXES[key];
     const total = formatPrice(orderFinalPrice);

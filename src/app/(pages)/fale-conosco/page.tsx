@@ -97,8 +97,9 @@ export default function FaleConosco() {
           <MyFormInput
             label="Telefone"
             name="phone"
+            isPhoneNumber
             form={form}
-            placeholder="Digite seu telefone"
+            placeholder="+00 (00) 00000-0000"
             className="mt-2"
           />
           <MyFormInput

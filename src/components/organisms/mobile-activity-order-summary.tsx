@@ -30,14 +30,10 @@ const MobileActivitiesOrderSummary = ({
   activities,
 }: ActivitiesOrderSummaryProps) => {
   const router = useRouter();
-  const session = useSession();
   const { removeFromCart } = useCart();
 
-  const { data: loggedUser } = useQuery({
-    queryKey: ["logged_user"],
-    queryFn: () => users.getUserLogged(),
-  });
-  const userId = loggedUser?.id ?? "";
+  const { data: session } = useSession();
+  const userId = session?.user?.id ?? "";
 
   const handleRemoveActivity = (id: string) => {
     if (userId) {
@@ -57,7 +53,7 @@ const MobileActivitiesOrderSummary = ({
               <div className="flex rounded-md w-fit">
                 <Image
                   alt="sample_file"
-                  src={selectActivityImage(adventure)}
+                  src={selectActivityImage(adventure) ?? ""}
                   width={114}
                   height={106}
                   className="w-[94px] h-[106px] object-cover rounded-md"

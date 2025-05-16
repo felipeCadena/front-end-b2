@@ -42,7 +42,7 @@ export default function PartnerPaymentCard({
             lightness={500}
             className="text-gray-600"
           >
-            R$ {amount.toFixed(2)}
+            R$ {amount && amount.toFixed(2)}
           </MyTypography>
         </div>
       </div>
@@ -51,7 +51,7 @@ export default function PartnerPaymentCard({
           variant="secondary-muted"
           size="sm"
           borderRadius="squared"
-          className="text-sm px-6 py-1 font-normal"
+          className="text-sm px-6 py-1 font-normal cursor-default"
         >
           Pago
         </MyButton>

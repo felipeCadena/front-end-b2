@@ -20,7 +20,7 @@ const Layout = ({ children }: { children: JSX.Element | ReactNode }) => {
     "/esqueci-minha-senha",
     "/parceiro/login",
     "/parceiro/esqueci-minha-senha",
-    "/recuperacao/novasenha",
+    "/recuperacao",
   ];
 
   return (

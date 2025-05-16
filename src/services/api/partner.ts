@@ -14,7 +14,8 @@ export interface CreatePartner {
   fantasyName: string;
   businessEmail: string;
   businessPhone: string;
-  cnpj: string;
+  cnpj?: string;
+  cpf?: string;
   userId?: string;
   user?: {
     name: string;
@@ -27,9 +28,9 @@ export interface CreatePartner {
   bankAgency: string | null;
   bankName: string | null;
   pixKey: string | null;
-  about: string | null;
+  about?: string | null;
   payday: number | null;
-  address: string | null;
+  address?: string | null;
 }
 
 export interface Partner {

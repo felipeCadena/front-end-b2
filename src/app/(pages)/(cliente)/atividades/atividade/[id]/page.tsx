@@ -20,6 +20,7 @@ import {
   formatAddress,
   handleActivityImages,
   handleNameActivity,
+  sortImagesByDefaultFirst,
 } from "@/utils/formatters";
 import { useCart } from "@/store/useCart";
 import { toast } from "react-toastify";
@@ -54,12 +55,7 @@ export default function Atividade() {
 
   const query = useQueryClient();
 
-  const { data: loggedUser } = useQuery({
-    queryKey: ["logged_user"],
-    queryFn: () => users.getUserLogged(),
-  });
-
-  const userId = loggedUser?.id ?? "";
+  const userId = session?.user?.id ?? "";
 
   const { data: fetchedActivity, isLoading } = useQuery({
     queryKey: ["this_activity"],
@@ -189,7 +185,7 @@ export default function Atividade() {
     }
   };
 
-  const images = handleActivityImages(fetchedActivity);
+  // const images = handleActivityImages(fetchedActivity);
 
   const address = {
     addressState: fetchedActivity?.addressState ?? "",
@@ -228,21 +224,25 @@ export default function Atividade() {
         />
 
         <div className="md:hidden">
-          <CarouselImages images={images as AdventureImage[]} />
+          <CarouselImages
+            images={fetchedActivity?.images as AdventureImage[]}
+          />
         </div>
         <ActivityHeader activity={fetchedActivity} />
         <div className="max-sm:hidden grid grid-cols-4 grid-rows-2 gap-4">
-          {images &&
-            images.map((image, index) => (
-              <Image
-                key={index}
-                src={image?.url}
-                alt="album"
-                width={300}
-                height={300}
-                className={`w-full max-h-[25rem] rounded-lg object-cover ${index === 0 ? "col-span-2 row-span-2 h-[25rem]" : "h-[12rem] max-h-[12rem]"}`}
-              />
-            ))}
+          {fetchedActivity?.images &&
+            sortImagesByDefaultFirst(fetchedActivity.images).map(
+              (image, index) => (
+                <Image
+                  key={index}
+                  src={image?.url}
+                  alt="album"
+                  width={300}
+                  height={300}
+                  className={`w-full max-h-[25rem] rounded-lg object-cover ${index === 0 ? "col-span-2 row-span-2 h-[25rem]" : "h-[12rem] max-h-[12rem]"}`}
+                />
+              )
+            )}
         </div>
 
         {favorite && (

@@ -32,6 +32,8 @@ export default function PagamentosParceiros() {
   const queryClient = useQueryClient();
   const [loading, setLoading] = React.useState(false);
 
+  const [filter, setFilter] = React.useState("month"); // month or year
+
   const now = new Date();
   const currentMonthKey = format(new Date(), "MM");
 
@@ -96,8 +98,13 @@ export default function PagamentosParceiros() {
     : [];
 
   const valorTotal =
-    paidPartners.reduce((acc, p) => acc + p.total_value_pending, 0) +
-    pendingPartners.reduce((acc, p) => acc + p.total_value_pending, 0);
+    paidPartners.reduce((acc, p) => acc + (p.total_value_paid ?? 0), 0) ??
+    0 +
+      pendingPartners.reduce(
+        (acc, p) => acc + (p.total_value_pending ?? 0),
+        0
+      ) ??
+    0;
 
   const totalPagamentos = paidPartners.length + pendingPartners.length;
 
@@ -126,7 +133,7 @@ export default function PagamentosParceiros() {
             >
               Pagos
             </MyTypography>
-            <div className="ml-auto">
+            {/* <div className="ml-auto">
               <MySelect
                 //   value={}
                 //   onValueChange={}
@@ -140,7 +147,7 @@ export default function PagamentosParceiros() {
                   <SelectItem value="Semanal">Semanal</SelectItem>
                 </SelectContent>
               </MySelect>
-            </div>
+            </div> */}
           </div>
 
           <div className="space-y-3">
@@ -155,7 +162,7 @@ export default function PagamentosParceiros() {
                 <PartnerPaymentCard
                   key={payment?.ordersSchedules}
                   name={payment?.partnerFantasyName}
-                  amount={payment?.total_value_pending}
+                  amount={payment?.total_value_paid}
                   avatar={payment?.partnerLogo}
                   status={hasTotalValuePaid(payment) ? "paid" : "pending"}
                   loading={loading}
@@ -176,7 +183,7 @@ export default function PagamentosParceiros() {
             >
               Aguardando Pagamento
             </MyTypography>
-            <div className="ml-auto">
+            {/* <div className="ml-auto">
               <MySelect value="Mensal">
                 <SelectTrigger className="rounded-2xl text-[#848A9C] text-xs">
                   <SelectValue placeholder="Mensal" />
@@ -186,7 +193,7 @@ export default function PagamentosParceiros() {
                   <SelectItem value="Semanal">Semanal</SelectItem>
                 </SelectContent>
               </MySelect>
-            </div>
+            </div> */}
           </div>
 
           <div className="space-y-3">
@@ -235,7 +242,7 @@ export default function PagamentosParceiros() {
               weight="bold"
               className="text-primary-600"
             >
-              {valorTotal.toLocaleString("pt-BR", {
+              {Number(valorTotal).toLocaleString("pt-BR", {
                 style: "currency",
                 currency: "BRL",
               })}

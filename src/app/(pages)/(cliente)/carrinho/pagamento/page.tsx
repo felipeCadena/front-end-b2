@@ -25,6 +25,7 @@ import { toast } from "react-toastify";
 import ModalAlert from "@/components/molecules/modal-alert";
 import { PurchaseOrderFormData } from "../../finalizar-compra/page";
 import { formatCpfCnpj, formatPhoneNumber } from "@/utils/formatters";
+import { useSession } from "next-auth/react";
 
 const formSchema = z.object({
   paymentMethod: z.string().optional(),
@@ -100,6 +101,10 @@ const PagamentoMobile = () => {
   const { addToPaymentStore } = useFinishPayment();
   const queryClient = useQueryClient();
 
+  const { data: session } = useSession();
+
+  const userId = session?.user?.id ?? "";
+
   const instamentsAvailable =
     process.env.NEXT_PUBLIC_B2_ENABLED_INSTALLMENT_PAY ?? 1;
 
@@ -127,8 +132,6 @@ const PagamentoMobile = () => {
     queryKey: ["user_ip_address"],
     queryFn: () => users.getIP(),
   });
-
-  const userId = loggedUser?.id ?? "";
 
   const userCart = carts.find((cart) => cart.userId === userId);
 
@@ -206,8 +209,6 @@ const PagamentoMobile = () => {
       });
     }
   }, [userId, loggedUser, purchaseOrder?.length]);
-
-  console.log(purchaseOrder);
 
   const handleSubmit = async (formData: PurchaseOrderFormData) => {
     setIsLoading(true);
@@ -326,7 +327,7 @@ const PagamentoMobile = () => {
     queryKey: ["budget", orderBudget],
     queryFn: () =>
       ordersAdventuresService.createBudget({ adventures: orderBudget }, userIP),
-    enabled: Boolean(userIP) && Boolean(orderBudget),
+    enabled: Boolean(userIP) && Boolean(orderBudget?.length),
   });
 
   const activityPrice =

@@ -11,10 +11,13 @@ import { formatStateName, handleNameActivity } from "@/utils/formatters";
 import Loading from "@/app/loading";
 import useSearchQueryService from "@/services/use-search-query-service";
 import { ActivityCardSkeleton } from "@/components/organisms/activities-skeleton";
+import SearchActivity from "@/components/organisms/search-activity";
 
 export default function SecondSection() {
   const { params, clear } = useSearchQueryService();
   const scrollRef = React.useRef<HTMLDivElement>(null);
+
+  const searchRef = React.useRef<HTMLDivElement>(null);
 
   const [selected, setSelected] = React.useState<"ar" | "terra" | "mar" | "">(
     ""
@@ -69,12 +72,23 @@ export default function SecondSection() {
     clear();
   };
 
+  const handleSearch = (adventures: any) => {
+    setAdventures(adventures);
+    if (searchRef.current) {
+      searchRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
+
   return (
     <section className="">
+      <div className="mt-8">
+        <SearchActivity setFormData={handleSearch} />
+      </div>
+
       <ActivitiesFilter selected={selected} setSelected={handleSelect} />
 
-      <div className="max-sm:pl-4">
-        <MyTypography variant="heading2" weight="semibold" className="mt-8">
+      <div className="max-sm:pl-4" ref={searchRef}>
+        <MyTypography variant="heading2" weight="semibold" className="mt-8 ">
           Conheça nossas atividades
         </MyTypography>
         <MyTypography variant="subtitle3" weight="regular" className="mt-1">

@@ -105,6 +105,8 @@ export default function AutocompleteCombobox({
     });
   };
 
+  console.log(formData);
+
   return (
     <div className="relative">
       <StandaloneSearchBox
@@ -124,7 +126,7 @@ export default function AutocompleteCombobox({
           noHintText
           className="placeholder:text-gray-400"
           leftIcon={<MyIcon name="localizacao" className="ml-3" />}
-          value={formData?.address}
+          value={formData}
           onChange={(e) =>
             setFormData({ ...formData, address: e.target.value })
           }

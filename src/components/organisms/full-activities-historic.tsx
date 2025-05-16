@@ -223,19 +223,21 @@ export default function FullActivitiesHistoric({
                 {isActivityDone &&
                   !activity?.adventureStatus.includes("cancelado") && (
                     <>
-                      <MyButton
-                        variant="outline-neutral"
-                        size="md"
-                        borderRadius="squared"
-                        className="text-base p-2 ml-auto"
-                        onClick={() =>
-                          router.push(
-                            PATHS.atividadeRealizadaCliente(activity.id)
-                          )
-                        }
-                      >
-                        Avaliar
-                      </MyButton>
+                      {activity?.ratings && activity?.ratings.length == 0 && (
+                        <MyButton
+                          variant="outline-neutral"
+                          size="md"
+                          borderRadius="squared"
+                          className="text-base p-2 ml-auto"
+                          onClick={() =>
+                            router.push(
+                              PATHS.atividadeRealizadaCliente(activity.id)
+                            )
+                          }
+                        >
+                          Avaliar
+                        </MyButton>
+                      )}
 
                       <MyButton
                         variant="default"

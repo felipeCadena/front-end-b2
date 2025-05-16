@@ -78,7 +78,7 @@ export default function MultiSelect({
 
     // Agora você pode usar esse array para aplicar estilos
     const disabledArray = Array.from(blocked);
-    console.log("Horas desabilitadas:", disabledArray);
+    // console.log("Horas desabilitadas:", disabledArray);
     // Salve em estado se quiser, por exemplo:
     setDisabledTimes(disabledArray);
   };
@@ -121,6 +121,9 @@ export default function MultiSelect({
       <PopoverContent className="w-full p-0">
         <Command>
           <CommandGroup>
+            <p className="text-center mt-2 font-semibold">
+              Horários Disponíveis
+            </p>
             {grid ? (
               <div className={cn("grid grid-cols-4 gap-4 p-4")}>
                 {options.map((option) => (

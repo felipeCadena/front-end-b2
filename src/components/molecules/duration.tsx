@@ -130,6 +130,7 @@ export default function TimePickerModal({
             className="h-48 w-36 flex items-center justify-center rounded-lg overflow-hidden"
           >
             <div className="flex flex-col items-center w-full">
+              <p className="mb-2 font-semibold">Hora</p>
               {hours.map((hour) => (
                 <div
                   key={hour}
@@ -153,6 +154,7 @@ export default function TimePickerModal({
             className="h-48 w-36 flex items-center justify-center rounded-lg overflow-hidden"
           >
             <div className="flex flex-col items-center w-full">
+              <p className="mb-2 font-semibold">Minutos</p>
               {minutes.map((minute) => (
                 <div
                   key={minute}

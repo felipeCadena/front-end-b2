@@ -35,6 +35,7 @@ import {
 } from "@/store/useAdventureStore";
 import MyTextarea from "@/components/atoms/my-textarea";
 import {
+  capitalizeFirstLetter,
   convertToHours,
   convertToTimeString,
   getDifficultyDescription,
@@ -240,6 +241,8 @@ export default function WebForm({
     return `0${hour}:00`;
   };
 
+  console.log(address);
+
   const handleLocationSelected = (locationData: LocationData) => {
     console.log("Location Data Received:", locationData);
 
@@ -314,6 +317,12 @@ export default function WebForm({
     }
   }, []);
 
+  const goBack = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    router.back();
+  };
+
   return (
     <main className="space-y-10 my-6">
       <form>
@@ -340,25 +349,36 @@ export default function WebForm({
           <div className="space-y-6">
             <MyTextInput
               value={title}
-              onChange={(e) => setAdventureData({ title: e.target.value })}
+              onChange={(e) =>
+                setAdventureData({
+                  title: capitalizeFirstLetter(e.target.value),
+                })
+              }
               label="Nome da atividade"
               placeholder="Nome da atividade"
               className="mt-2"
             />
 
-            <MyTextarea
-              value={description}
-              onChange={(e) =>
-                setAdventureData({
-                  description: e.target.value,
-                })
-              }
-              label="Descrição da atividade"
-              placeholder="Fale sobre a atividade e destaque o que só você oferece para torná-la incrível."
-              classNameLabel="text-black text-base font-bold"
-              rows={5}
-              maxLength={2000}
-            />
+            <div className="w-full">
+              <MyTextarea
+                value={description}
+                onChange={(e) => {
+                  setAdventureData({
+                    description: e.target.value,
+                  });
+                }}
+                label="Descrição da atividade"
+                placeholder="Fale sobre a atividade e destaque o que só você oferece para torná-la incrível."
+                classNameLabel="text-black text-base font-bold"
+                rows={5}
+                maxLength={1000}
+                className="resize-y" // permite redimensionar verticalmente
+              />
+
+              <div className="text-sm text-gray-4 text-right mt-1">
+                {description.length} / 1000 caracteres
+              </div>
+            </div>
 
             <div className="grid grid-cols-2 gap-8">
               <MySelect
@@ -769,7 +789,7 @@ export default function WebForm({
               className="h-[12vh]  overflow-hidden"
             >
               <div
-                className="flex h-[12vh] cursor-pointer flex-col items-center justify-center gap-y-1"
+                className="flex min-h-[12vh] h-[12vh] cursor-pointer flex-col items-center justify-center gap-y-1"
                 onClick={handleClickUpload}
               >
                 <MyIcon name="upload" />
@@ -824,7 +844,17 @@ export default function WebForm({
           </div>
 
           {type !== "cadastro" && (
-            <div className={cn("flex justify-center mt-12")}>
+            <div className={cn("flex justify-center gap-4 mt-12")}>
+              <MyButton
+                variant="default"
+                borderRadius="squared"
+                className="w-1/2"
+                size="lg"
+                onClick={(e) => goBack(e)}
+                leftIcon={<MyIcon name="seta-direita" className="rotate-180" />}
+              >
+                Voltar
+              </MyButton>
               <MyButton
                 size="lg"
                 borderRadius="squared"
