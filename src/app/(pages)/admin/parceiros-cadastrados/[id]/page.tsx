@@ -1,26 +1,26 @@
-"use client";
+'use client';
 
-import { recentActivities } from "@/common/constants/mock";
-import MyButton from "@/components/atoms/my-button";
-import MyIcon from "@/components/atoms/my-icon";
+import { recentActivities } from '@/common/constants/mock';
+import MyButton from '@/components/atoms/my-button';
+import MyIcon from '@/components/atoms/my-icon';
 import {
   MySelect,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/atoms/my-select";
-import MyTextInput from "@/components/atoms/my-text-input";
-import MyTypography from "@/components/atoms/my-typography";
-import StarRating from "@/components/molecules/my-stars";
-import ActivitiesHidden from "@/components/organisms/activities-hidden";
-import { adminService } from "@/services/api/admin";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useSession } from "next-auth/react";
-import Image from "next/image";
-import { useParams, useRouter } from "next/navigation";
-import React from "react";
-import { toast } from "react-toastify";
+} from '@/components/atoms/my-select';
+import MyTextInput from '@/components/atoms/my-text-input';
+import MyTypography from '@/components/atoms/my-typography';
+import StarRating from '@/components/molecules/my-stars';
+import PartnerRecentActivities from '@/components/organisms/partner-recent-activities';
+import { adminService } from '@/services/api/admin';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useSession } from 'next-auth/react';
+import Image from 'next/image';
+import { useParams, useRouter } from 'next/navigation';
+import React from 'react';
+import { toast } from 'react-toastify';
 
 export default function Parceiro() {
   const router = useRouter();
@@ -31,33 +31,43 @@ export default function Parceiro() {
 
   const [loading, setLoading] = React.useState(false);
   const [parterData, setPartnerData] = React.useState<any>({
-    logo: { url: "/user.png" },
+    logo: { url: '/user.png' },
     // companyName: "",
     // businessEmail: "",
-    bankAccount: "",
-    bankAgency: "",
-    bankName: "",
-    cnpj: "",
-    payday: "5",
+    bankAccount: '',
+    bankAgency: '',
+    bankName: '',
+    cnpj: '',
+    payday: '5',
     averageRating: 0,
     qntRatings: 0,
   });
 
   const { data: fetchPartner } = useQuery({
-    queryKey: ["fetchPartner"],
+    queryKey: ['fetchPartner'],
     queryFn: () => adminService.getPartnerById(id as string),
+  });
+
+  const { data: partnerSched = [] } = useQuery({
+    queryKey: ['fetch_partner_schedule'],
+    queryFn: () =>
+      adminService.listPartnerSchedules(id as string, {
+        startDate: new Date().toDateString(),
+        limit: 2,
+        orderBy: 'datetime asc',
+      }),
   });
 
   React.useEffect(() => {
     if (fetchPartner) {
       setPartnerData({
         payday: String(fetchPartner?.payday),
-        bankAccount: fetchPartner?.bankAccount ?? "",
-        bankAgency: fetchPartner?.bankAgency ?? "",
-        bankName: fetchPartner?.bankName ?? "",
-        cnpj: fetchPartner?.cnpj ?? "",
-        fantasyName: fetchPartner?.fantasyName ?? "",
-        businessEmail: fetchPartner?.businessEmail ?? "",
+        bankAccount: fetchPartner?.bankAccount ?? '',
+        bankAgency: fetchPartner?.bankAgency ?? '',
+        bankName: fetchPartner?.bankName ?? '',
+        cnpj: fetchPartner?.cnpj ?? '',
+        fantasyName: fetchPartner?.fantasyName ?? '',
+        businessEmail: fetchPartner?.businessEmail ?? '',
       });
     }
   }, [fetchPartner]);
@@ -71,11 +81,11 @@ export default function Parceiro() {
     };
     try {
       await adminService.updatePartner(id as string, data);
-      queryClient.invalidateQueries({ queryKey: ["fetchPartner"] });
-      toast.success("Parceiro atualizado com sucesso!");
+      queryClient.invalidateQueries({ queryKey: ['fetchPartner'] });
+      toast.success('Parceiro atualizado com sucesso!');
     } catch (error) {
-      console.error("Erro ao atualizar parceiro:", error);
-      toast.error("Erro ao atualizar parceiro");
+      console.error('Erro ao atualizar parceiro:', error);
+      toast.error('Erro ao atualizar parceiro');
     } finally {
       setLoading(false);
     }
@@ -85,12 +95,12 @@ export default function Parceiro() {
     setLoading(true);
     try {
       await adminService.deletePartner(id as string);
-      queryClient.invalidateQueries({ queryKey: ["fetchPartner"] });
-      toast.success("Parceiro excluído com sucesso!");
+      queryClient.invalidateQueries({ queryKey: ['fetchPartner'] });
+      toast.success('Parceiro excluído com sucesso!');
       router.back();
     } catch (error) {
-      console.error("Erro ao excluir parceiro:", error);
-      toast.error("Erro ao excluir parceiro");
+      console.error('Erro ao excluir parceiro:', error);
+      toast.error('Erro ao excluir parceiro');
     } finally {
       setLoading(false);
     }
@@ -100,11 +110,11 @@ export default function Parceiro() {
     setLoading(true);
     try {
       await adminService.createChat({ userToId: userId });
-      toast.success("Chat criado com sucesso!");
+      toast.success('Chat criado com sucesso!');
       router.push(`/chat?user=${fetchPartner?.userId}`);
     } catch (error) {
-      console.error("Erro ao criar chat:", error);
-      toast.error("Erro ao criar chat");
+      console.error('Erro ao criar chat:', error);
+      toast.error('Erro ao criar chat');
     } finally {
       setLoading(false);
     }
@@ -136,7 +146,7 @@ export default function Parceiro() {
           <div className="absolute max-sm:hidden -bottom-14 left-16">
             <Image
               alt="avatar"
-              src={fetchPartner?.logo?.url ?? "/user.png"}
+              src={fetchPartner?.logo?.url ?? '/user.png'}
               width={28}
               height={28}
               className="w-28 h-28 rounded-full object-fit relative border-4 border-white"
@@ -150,7 +160,7 @@ export default function Parceiro() {
             <div className="md:hidden relative">
               <Image
                 alt="avatar"
-                src={fetchPartner?.logo?.url ?? "/user.png"}
+                src={fetchPartner?.logo?.url ?? '/user.png'}
                 width={28}
                 height={28}
                 className="w-28 h-28 rounded-full object-fit border-4 border-white"
@@ -184,12 +194,14 @@ export default function Parceiro() {
                 lightness={400}
                 className="mt-2"
               >
-                {fetchPartner?._count?.adventures ?? "0"} Atividades
+                {fetchPartner?._count?.adventures ?? '0'} Atividades
               </MyTypography>
             </div>
 
             <div className="flex gap-2 items-center">
-              <StarRating rating={fetchPartner?.averageRating ?? 0} />
+              <StarRating
+                rating={Math.floor(fetchPartner?.averageRating) ?? 0}
+              />
               <span className="font-bold">
                 {fetchPartner?.averageRating?.toFixed(2)}
               </span>
@@ -203,7 +215,7 @@ export default function Parceiro() {
                 Atividades Recentes
               </MyTypography>
 
-              <ActivitiesHidden notifications={recentActivities} admin />
+              <PartnerRecentActivities recentActivities={partnerSched} admin />
             </div>
 
             <div className="w-full my-6 flex flex-col gap-1">
@@ -217,13 +229,13 @@ export default function Parceiro() {
                   label="E-mail"
                   placeholder="Digite seu e-mail"
                   className="mt-2"
-                  value={fetchPartner?.user?.email ?? ""}
+                  value={fetchPartner?.user?.email ?? ''}
                   disabled
                 />
                 <MyTextInput
                   label="Nome Completo"
                   placeholder="Nome Completo"
-                  value={fetchPartner?.user?.name ?? ""}
+                  value={fetchPartner?.user?.name ?? ''}
                   className="mt-2"
                   disabled
                 />
@@ -233,7 +245,7 @@ export default function Parceiro() {
                   label="Nome Fantasia"
                   placeholder="Nome Fantasia"
                   className="mt-2"
-                  value={parterData?.fantasyName ?? ""}
+                  value={parterData?.fantasyName ?? ''}
                   onChange={(e) =>
                     setPartnerData({
                       ...parterData,
@@ -244,7 +256,7 @@ export default function Parceiro() {
                 <MyTextInput
                   label="CNPJ ou CPF"
                   placeholder="CNPJ ou CPF"
-                  value={parterData?.cnpj ?? ""}
+                  value={parterData?.cnpj ?? ''}
                   className="mt-2"
                   onChange={(e) =>
                     setPartnerData({ ...parterData, cnpj: e.target.value })
@@ -265,7 +277,7 @@ export default function Parceiro() {
                 label="Número da conta"
                 placeholder="0987-6"
                 className="mt-2"
-                value={parterData?.bankAccount ?? ""}
+                value={parterData?.bankAccount ?? ''}
                 onChange={(e) =>
                   setPartnerData({
                     ...parterData,
@@ -279,7 +291,7 @@ export default function Parceiro() {
                   label="Agência"
                   placeholder="Digite sua agência"
                   className="mt-2"
-                  value={parterData?.bankAgency ?? ""}
+                  value={parterData?.bankAgency ?? ''}
                   onChange={(e) =>
                     setPartnerData({
                       ...parterData,
@@ -292,7 +304,7 @@ export default function Parceiro() {
                   label="Banco"
                   placeholder="001"
                   className="mt-2"
-                  value={parterData?.bankName ?? ""}
+                  value={parterData?.bankName ?? ''}
                   onChange={(e) =>
                     setPartnerData({
                       ...parterData,
@@ -303,7 +315,7 @@ export default function Parceiro() {
               </div>
 
               <MySelect
-                value={String(parterData?.payday) ?? ""}
+                value={String(parterData?.payday) ?? ''}
                 onValueChange={(value) =>
                   setPartnerData({ ...parterData, payday: value })
                 }
@@ -341,7 +353,7 @@ export default function Parceiro() {
                   Aprovar
                 </MyButton>
               )} */}
-              {session && session?.user?.role == "superadmin" && (
+              {session && session?.user?.role == 'superadmin' && (
                 <MyButton
                   variant="red"
                   borderRadius="squared"

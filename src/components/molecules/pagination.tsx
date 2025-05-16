@@ -39,12 +39,12 @@ export function Pagination({ limit, page, setPage, data }: PaginationProps) {
       </MyButton>
 
       <MyButton
-        disabled={data.length !== limit}
+        disabled={data?.length !== limit}
         onClick={() => handlePage(page + 1)}
         variant="ghost"
       >
         <MyIcon
-          className={`${data.length !== limit ? 'hidden' : ''}`}
+          className={`${data?.length !== limit ? 'hidden' : ''}`}
           name="right"
         />
       </MyButton>

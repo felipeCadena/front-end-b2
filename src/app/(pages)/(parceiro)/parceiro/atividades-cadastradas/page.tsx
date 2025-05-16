@@ -1,27 +1,27 @@
-"use client";
+'use client';
 
-import { activities } from "@/common/constants/mock";
-import MyButton from "@/components/atoms/my-button";
-import MyIcon from "@/components/atoms/my-icon";
-import MyTypography from "@/components/atoms/my-typography";
-import { Pagination } from "@/components/molecules/pagination";
-import Activities from "@/components/organisms/activities";
-import ActivitiesDetails from "@/components/organisms/activities-details";
-import ActivitiesFilter from "@/components/organisms/activities-filter";
-import { ActivityCardSkeleton } from "@/components/organisms/activities-skeleton";
-import { ActivityCardSkeletonMobile } from "@/components/organisms/activity-skeleton-mobile";
-import SearchActivity from "@/components/organisms/search-activity";
-import { AddToCartAdventure, Adventure } from "@/services/api/adventures";
-import { partnerService } from "@/services/api/partner";
-import PATHS from "@/utils/paths";
-import { useQuery } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
-import React, { useEffect } from "react";
+import { activities } from '@/common/constants/mock';
+import MyButton from '@/components/atoms/my-button';
+import MyIcon from '@/components/atoms/my-icon';
+import MyTypography from '@/components/atoms/my-typography';
+import { Pagination } from '@/components/molecules/pagination';
+import Activities from '@/components/organisms/activities';
+import ActivitiesDetails from '@/components/organisms/activities-details';
+import ActivitiesFilter from '@/components/organisms/activities-filter';
+import { ActivityCardSkeleton } from '@/components/organisms/activities-skeleton';
+import { ActivityCardSkeletonMobile } from '@/components/organisms/activity-skeleton-mobile';
+import SearchActivity from '@/components/organisms/search-activity';
+import { AddToCartAdventure, Adventure } from '@/services/api/adventures';
+import { partnerService } from '@/services/api/partner';
+import PATHS from '@/utils/paths';
+import { useQuery } from '@tanstack/react-query';
+import { useRouter } from 'next/navigation';
+import React from 'react';
 
 export default function AtividadesCadastradas() {
   const router = useRouter();
-  const [selected, setSelected] = React.useState<"ar" | "terra" | "mar" | "">(
-    ""
+  const [selected, setSelected] = React.useState<'ar' | 'terra' | 'mar' | ''>(
+    ''
   );
   const [loading, setLoading] = React.useState(false);
   const [page, setPage] = React.useState(1);
@@ -30,11 +30,11 @@ export default function AtividadesCadastradas() {
     React.useState<Adventure[]>();
 
   const { isLoading } = useQuery({
-    queryKey: ["myAdventures", selected, page],
+    queryKey: ['myAdventures', selected, page],
     queryFn: async () => {
       const activities = await partnerService.getMyAdventures({
         typeAdventure: selected ? selected : undefined,
-        orderBy: "createdAt desc",
+        orderBy: 'createdAt desc',
         limit: 6,
         skip: page * 6 - 6,
       });
@@ -58,7 +58,7 @@ export default function AtividadesCadastradas() {
           variant="default"
           borderRadius="squared"
           className="p-[1.6rem] mt-2"
-          onClick={() => router.push(PATHS["cadastro-atividade"])}
+          onClick={() => router.push(PATHS['cadastro-atividade'])}
           leftIcon={<MyIcon name="plus" className="" />}
         >
           Cadastrar nova atividade
@@ -147,7 +147,7 @@ export default function AtividadesCadastradas() {
           size="lg"
           borderRadius="squared"
           className="w-full"
-          onClick={() => router.push(PATHS["cadastro-atividade"])}
+          onClick={() => router.push(PATHS['cadastro-atividade'])}
         >
           Cadastrar nova atividade
         </MyButton>
