@@ -183,7 +183,7 @@ export default function Cadastro() {
     };
 
     handleSessionUpdate();
-  }, [session, status]);
+  }, [status]);
 
   return (
     <MyForm {...form}>
@@ -230,7 +230,7 @@ export default function Cadastro() {
             isCpfCnpj
             form={form}
             name="cpf"
-            label="CPF/CNPJ"
+            label="CPF"
             className="mb-6"
           />
 

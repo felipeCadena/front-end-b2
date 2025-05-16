@@ -1,20 +1,21 @@
-import { api } from '@/libs/api';
+import { api } from "@/libs/api";
 import {
   AddToCartAdventure,
   Adventure,
   GetAdventuresParams,
   GetAdventuresResponse,
   Schedules,
-} from './adventures';
-import { clearObject } from '@/utils/clear-object';
-import { DateOption } from '@/store/useAdventureStore';
+} from "./adventures";
+import { clearObject } from "@/utils/clear-object";
+import { DateOption } from "@/store/useAdventureStore";
 
 export interface CreatePartner {
   companyName: string;
   fantasyName: string;
   businessEmail: string;
   businessPhone: string;
-  cnpj: string;
+  cnpj?: string;
+  cpf?: string;
   userId?: string;
   user?: {
     name: string;
@@ -27,9 +28,9 @@ export interface CreatePartner {
   bankAgency: string | null;
   bankName: string | null;
   pixKey: string | null;
-  about: string | null;
+  about?: string | null;
   payday: number | null;
-  address: string | null;
+  address?: string | null;
 }
 
 export interface Partner {
@@ -149,7 +150,7 @@ export interface PartnerIncome {
 export interface OrderSchedule {
   id: string;
   adventureFinalPrice: string;
-  adventureStatus: 'realizado' | string;
+  adventureStatus: "realizado" | string;
   partnerIsPaid: boolean;
   partnerValue: string;
   personsIsAccounted: boolean;
@@ -162,26 +163,26 @@ export interface OrderAdventure {
   customer: {
     name: string;
   };
-  paymentStatus: 'CONFIRMED' | 'RECEIVED' | string;
+  paymentStatus: "CONFIRMED" | "RECEIVED" | string;
 }
 
 export const partnerService = {
   getPartnerLogged: async (): Promise<Partner | null> => {
     try {
-      const response = await api.get<Partner>('/partners');
+      const response = await api.get<Partner>("/partners");
       return response.data;
     } catch (error) {
-      console.error('Error fetching partner:', error);
+      console.error("Error fetching partner:", error);
       throw error;
     }
   },
 
   createPartner: async (partner: CreatePartner): Promise<Partner | null> => {
     try {
-      const response = await api.post<Partner>('/partners', partner);
+      const response = await api.post<Partner>("/partners", partner);
       return response.data;
     } catch (error) {
-      console.error('Error creating partner:', error);
+      console.error("Error creating partner:", error);
       throw error;
     }
   },
@@ -194,7 +195,7 @@ export const partnerService = {
       const response = await api.patch<Partner>(`/partners/${id}`, partner);
       return response.data;
     } catch (error) {
-      console.error('Error updating partner:', error);
+      console.error("Error updating partner:", error);
       throw error;
     }
   },
@@ -210,21 +211,21 @@ export const partnerService = {
       const response = await api.post<Media>(`/partners/media`, body);
 
       await fetch(response.data.uploadUrl, {
-        method: 'PUT',
+        method: "PUT",
         body: body.file,
         headers: {
-          'Content-Type': body.mimetype,
+          "Content-Type": body.mimetype,
         },
       }).then((res) => {
         if (!res.ok) {
-          console.log('Failed to upload media', res);
+          console.log("Failed to upload media", res);
         }
         return res;
       });
 
       return response.data.url;
     } catch (error) {
-      console.error('Erro ao adicionar mídia:', error);
+      console.error("Erro ao adicionar mídia:", error);
       throw error;
     }
   },
@@ -232,12 +233,12 @@ export const partnerService = {
     try {
       await api.post(`/partners/${partnerId}/media`, media, {
         headers: {
-          'Content-Type': 'multipart/form-data',
+          "Content-Type": "multipart/form-data",
         },
       });
       return true;
     } catch (error) {
-      console.error('Error adding media to partner:', error);
+      console.error("Error adding media to partner:", error);
       return false;
     }
   },
@@ -247,7 +248,7 @@ export const partnerService = {
       await api.delete(`/partners/${partnerId}/media/${mediaId}`);
       return true;
     } catch (error) {
-      console.error('Error deleting media from partner:', error);
+      console.error("Error deleting media from partner:", error);
       return false;
     }
   },
@@ -261,7 +262,7 @@ export const partnerService = {
       await api.post(`/schedules/adventure/${adventureId}`, schedule);
       return true;
     } catch (error) {
-      console.error('Error creating schedule:', error);
+      console.error("Error creating schedule:", error);
       return false;
     }
   },
@@ -274,7 +275,7 @@ export const partnerService = {
       await api.post(`/schedules/adventure/${adventureId}`, schedule);
       return true;
     } catch (error) {
-      console.error('Error creating schedule:', error);
+      console.error("Error creating schedule:", error);
       return false;
     }
   },
@@ -288,7 +289,7 @@ export const partnerService = {
       });
       return data;
     } catch (error) {
-      console.error('Error fetching adventures:', error);
+      console.error("Error fetching adventures:", error);
       return null;
     }
   },
@@ -298,7 +299,7 @@ export const partnerService = {
       const response = await api.get(`/schedules/${id}/partner`, { params });
       return response.data;
     } catch (error) {
-      console.error('Error listing partner schedules:', error);
+      console.error("Error listing partner schedules:", error);
       throw error;
     }
   },
@@ -316,7 +317,7 @@ export const partnerService = {
       });
       return response.data;
     } catch (error) {
-      console.error('Error listing partner schedules:', error);
+      console.error("Error listing partner schedules:", error);
       throw error;
     }
   },
@@ -330,7 +331,7 @@ export const partnerService = {
       );
       return response.data;
     } catch (error) {
-      console.error('Error listing partner schedules:', error);
+      console.error("Error listing partner schedules:", error);
       throw error;
     }
   },
@@ -346,7 +347,7 @@ export const partnerService = {
       );
       return true;
     } catch (error) {
-      console.error('Error canceling schedule:', error);
+      console.error("Error canceling schedule:", error);
       return false;
     }
   },
@@ -363,7 +364,7 @@ export const partnerService = {
       });
       return response.data;
     } catch (error) {
-      console.error('Error fetching partner income:', error);
+      console.error("Error fetching partner income:", error);
       return null;
     }
   },
@@ -380,7 +381,7 @@ export const partnerService = {
       });
       return response.data;
     } catch (error) {
-      console.error('Error fetching partner income:', error);
+      console.error("Error fetching partner income:", error);
       return null;
     }
   },
@@ -395,7 +396,7 @@ export const partnerService = {
       });
       return data;
     } catch (error) {
-      console.error('Error fetching adventures:', error);
+      console.error("Error fetching adventures:", error);
       return null;
     }
   },

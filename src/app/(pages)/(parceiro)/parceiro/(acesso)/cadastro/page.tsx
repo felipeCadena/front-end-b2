@@ -131,7 +131,7 @@ export default function CadastroParceiro() {
             type={visibility ? "text" : "password"}
             rightIcon={
               <MyIcon
-                name={visibility ? "eye" : "hide"}
+                name={visibility ? "hide" : "eye"}
                 className="mr-4 mt-7 cursor-pointer"
                 onClick={() => setVisibility((prev) => !prev)}
               />
@@ -149,7 +149,7 @@ export default function CadastroParceiro() {
             type={visibilityConfirm ? "text" : "password"}
             rightIcon={
               <MyIcon
-                name={visibilityConfirm ? "eye" : "hide"}
+                name={visibilityConfirm ? "hide" : "eye"}
                 className="mr-4 mt-7 cursor-pointer"
                 onClick={() => setVisibilityConfirm((prev) => !prev)}
               />

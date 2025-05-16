@@ -17,6 +17,11 @@ import {
 } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
+export function capitalizeFirstLetter(str: string) {
+  if (!str) return "";
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
 export function isWithinChatWindow(datetimeUTC: string): boolean {
   const now = new Date();
   const localNow = new Date(now.getTime() - 3 * 60 * 60 * 1000); // UTC-3

@@ -5,7 +5,7 @@ import MyIcon from "@/components/atoms/my-icon";
 import MyTextInput from "@/components/atoms/my-text-input";
 import MyTypography from "@/components/atoms/my-typography";
 import { useStepperStore } from "@/store/useStepperStore";
-import { formatCNPJ } from "@/utils/formatters";
+import { formatCNPJ, formatCpfCnpj } from "@/utils/formatters";
 import React, { useEffect } from "react";
 import { toast } from "react-toastify";
 
@@ -16,7 +16,7 @@ export default function Sobre({
   handleNext: () => void;
   handleBack: () => void;
 }) {
-  const { setStepData, fantasyName, cnpj } = useStepperStore();
+  const { setStepData, fantasyName, cnpjOrCpf } = useStepperStore();
 
   const handleNextStep = (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
@@ -24,14 +24,14 @@ export default function Sobre({
     e.preventDefault();
     e.stopPropagation();
 
-    if (!fantasyName || !cnpj) {
+    if (!fantasyName || !cnpjOrCpf) {
       toast.error("Todos os campos são obrigatórios!");
       return;
     }
 
     setStepData(3, {
       fantasyName,
-      cnpj,
+      cnpjOrCpf,
     });
 
     handleNext();
@@ -64,11 +64,11 @@ export default function Sobre({
           />
           <MyTextInput
             onChange={(e) =>
-              setStepData(3, { cnpj: formatCNPJ(e.target.value) })
+              setStepData(3, { cnpjOrCpf: formatCpfCnpj(e.target.value) })
             }
-            value={cnpj}
-            label="CNPJ"
-            placeholder="xx.xxx.xxx/xxxx-xx"
+            value={cnpjOrCpf}
+            label="CNPJ ou CPF"
+            placeholder="Digite o CNPJ ou CPF"
             className="mt-2"
           />
         </div>

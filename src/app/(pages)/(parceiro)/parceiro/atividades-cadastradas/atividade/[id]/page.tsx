@@ -1,31 +1,31 @@
-'use client';
+"use client";
 
-import MyIcon, { IconsMapTypes } from '@/components/atoms/my-icon';
-import MyTypography from '@/components/atoms/my-typography';
-import CarouselImages from '@/components/organisms/carousel-images';
-import { useParams, useRouter } from 'next/navigation';
-import React from 'react';
-import MyBadge from '@/components/atoms/my-badge';
-import Image from 'next/image';
-import ModalAlert from '@/components/molecules/modal-alert';
-import { useAlert } from '@/hooks/useAlert';
-import { adventures } from '@/services/api/adventures';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import MyIcon, { IconsMapTypes } from "@/components/atoms/my-icon";
+import MyTypography from "@/components/atoms/my-typography";
+import CarouselImages from "@/components/organisms/carousel-images";
+import { useParams, useRouter } from "next/navigation";
+import React from "react";
+import MyBadge from "@/components/atoms/my-badge";
+import Image from "next/image";
+import ModalAlert from "@/components/molecules/modal-alert";
+import { useAlert } from "@/hooks/useAlert";
+import { adventures } from "@/services/api/adventures";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   formatAddress,
   formatPrice,
   handleNameActivity,
-} from '@/utils/formatters';
+} from "@/utils/formatters";
 import {
   ActivityEditMenu,
   EditSection,
-} from '@/components/organisms/edit-activity-menu';
-import { partnerService } from '@/services/api/partner';
-import PATHS from '@/utils/paths';
-import { toast } from 'react-toastify';
-import MyButton from '@/components/atoms/my-button';
-import Link from 'next/link';
-import { cn } from '@/utils/cn';
+} from "@/components/organisms/edit-activity-menu";
+import { partnerService } from "@/services/api/partner";
+import PATHS from "@/utils/paths";
+import { toast } from "react-toastify";
+import MyButton from "@/components/atoms/my-button";
+import Link from "next/link";
+import { cn } from "@/utils/cn";
 
 export default function Atividade() {
   const router = useRouter();
@@ -41,12 +41,12 @@ export default function Atividade() {
   const queryClient = useQueryClient();
 
   const { data: activity, isLoading: isLoadingActivity } = useQuery({
-    queryKey: ['activity'],
+    queryKey: ["activity"],
     queryFn: () => adventures.getAdventureById(Number(id)),
   });
 
   useQuery({
-    queryKey: ['mySchedules'],
+    queryKey: ["mySchedules"],
     queryFn: async () => {
       const schedules = await partnerService.getMySchedules({
         limit: 30,
@@ -67,12 +67,12 @@ export default function Atividade() {
   };
 
   const handleEdit = (section: EditSection) => {
-    if (section == 'cancel') {
+    if (section == "cancel") {
       setCancel(true);
       return;
     }
 
-    if (section == 'hide') {
+    if (section == "hide") {
       setHideActivity(true);
       return;
     }
@@ -197,7 +197,7 @@ export default function Atividade() {
           variant="default"
           size="lg"
           borderRadius="squared"
-          onClick={() => router.push(PATHS['atividades-cadastradas'])}
+          onClick={() => router.push(PATHS["atividades-cadastradas"])}
         >
           Voltar
         </MyButton>
@@ -220,24 +220,24 @@ export default function Atividade() {
     const includedItems = [];
 
     const itemsArray =
-      typeof activity?.itemsIncluded === 'string'
+      typeof activity?.itemsIncluded === "string"
         ? JSON.parse(activity?.itemsIncluded)
         : activity?.itemsIncluded || [];
 
     const map = [
-      { key: 'Água', icon: 'agua', label: 'Água' },
-      { key: 'Alimentação', icon: 'alimentacao', label: 'Alimentação' },
-      { key: 'Combustível', icon: 'combustivel', label: 'Combustível' },
+      { key: "Água", icon: "agua", label: "Água" },
+      { key: "Alimentação", icon: "alimentacao", label: "Alimentação" },
+      { key: "Combustível", icon: "combustivel", label: "Combustível" },
       {
-        key: 'Transporte',
-        icon: 'transporte',
-        label: 'Transporte',
+        key: "Transporte",
+        icon: "transporte",
+        label: "Transporte",
         value: activity?.transportIncluded,
       },
       {
-        key: 'Fotos',
-        icon: 'fotografia',
-        label: 'Fotos',
+        key: "Fotos",
+        icon: "fotografia",
+        label: "Fotos",
         value: activity?.picturesIncluded,
       },
     ];
@@ -266,14 +266,14 @@ export default function Atividade() {
       setConfirmedCancel(true);
       setCancel(false);
     } catch (error) {
-      console.error('Error canceling activity:', error);
+      console.error("Error canceling activity:", error);
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleConfirmCancel = () => {
-    router.push(PATHS['atividades-cadastradas']);
+    router.push(PATHS["atividades-cadastradas"]);
     setConfirmedCancel(false);
   };
 
@@ -289,12 +289,12 @@ export default function Atividade() {
           onSite: true,
         });
       }
-      queryClient.invalidateQueries({ queryKey: ['activity'] });
+      queryClient.invalidateQueries({ queryKey: ["activity"] });
       setHideActivity(false);
       setConfirmedHideActivity(true);
     } catch (error) {
-      console.error('Error hiding activity:', error);
-      toast.error('Erro ao ocultar/ativar atividade. Tente novamente.');
+      console.error("Error hiding activity:", error);
+      toast.error("Erro ao ocultar/ativar atividade. Tente novamente.");
     } finally {
       setIsLoading(false);
     }
@@ -342,13 +342,13 @@ export default function Atividade() {
         onClose={() => setHideActivity(false)}
         onAction={handleHideActivity}
         iconName="warning"
-        title={activity.onSite ? 'Desativar Atividade' : 'Ativar Atividade'}
+        title={activity.onSite ? "Desativar Atividade" : "Ativar Atividade"}
         descrition={
           activity.onSite
-            ? 'A atividade será desativada e não aparecerá mais para os clientes.'
-            : 'A atividade será reativada e aparecerá novamente para os clientes.'
+            ? "A atividade será desativada e não aparecerá mais para os clientes."
+            : "A atividade será reativada e aparecerá novamente para os clientes."
         }
-        button={activity.onSite ? 'Desativar Atividade' : 'Reativar Atividade'}
+        button={activity.onSite ? "Desativar Atividade" : "Reativar Atividade"}
       />
 
       {/* Modal que confirma que a atividade foi ocultada */}
@@ -358,12 +358,12 @@ export default function Atividade() {
         onAction={() => setConfirmedHideActivity(false)}
         iconName="warning"
         title={
-          !activity.onSite ? 'Atividade Desativada' : 'Atividade Reativada'
+          !activity.onSite ? "Atividade Desativada" : "Atividade Reativada"
         }
         descrition={
           !activity.onSite
-            ? 'A atividade foi desativada e não aparecerá mais para os clientes.'
-            : 'A atividade foi reativada e aparecerá novamente para os clientes.'
+            ? "A atividade foi desativada e não aparecerá mais para os clientes."
+            : "A atividade foi reativada e aparecerá novamente para os clientes."
         }
         button="Voltar"
       />
@@ -372,7 +372,7 @@ export default function Atividade() {
         <MyIcon
           name="voltar-black"
           className="absolute z-20 top-8 left-8 md:hidden"
-          onClick={() => router.push(PATHS['atividades-cadastradas'])}
+          onClick={() => router.push(PATHS["atividades-cadastradas"])}
         />
 
         <div className="md:hidden">
@@ -385,18 +385,18 @@ export default function Atividade() {
                 <MyIcon
                   name="voltar-black"
                   className="cursor-pointer max-sm:hidden"
-                  onClick={() => router.push(PATHS['atividades-cadastradas'])}
+                  onClick={() => router.push(PATHS["atividades-cadastradas"])}
                 />
                 <MyTypography variant="heading2" weight="bold" className="">
                   {activity?.title
                     ? activity.title.charAt(0).toUpperCase() +
                       activity.title.slice(1).toLowerCase()
-                    : ''}
+                    : ""}
                 </MyTypography>
               </div>
-              <div className="flex gap-2 items-center">
+              <div className="flex max-sm:flex-col items-start gap-2 md:items-center">
                 <MyBadge variant="outline" className="p-1 ">
-                  {handleNameActivity(activity?.typeAdventure ?? '')}
+                  {handleNameActivity(activity?.typeAdventure ?? "")}
                 </MyBadge>
                 {!activity.onSite && activity.adminApproved && (
                   <MyBadge variant="error" className="md:mx-4 p-1">
@@ -423,7 +423,7 @@ export default function Atividade() {
             <div className="flex items-center gap-2">
               <Image
                 alt="avatar"
-                src={activity?.partner?.logo?.url ?? '/user.png'}
+                src={activity?.partner?.logo?.url ?? "/user.png"}
                 width={6}
                 height={6}
                 className="w-10 h-10 rounded-full object-cover"
@@ -463,11 +463,11 @@ export default function Atividade() {
               .map((image, index) => (
                 <Image
                   key={index}
-                  src={`${image.url ?? '/images/atividades/ar/ar-1.jpeg'}?v=${image.updatedAt ?? image.id}`}
+                  src={`${image.url ?? "/images/atividades/ar/ar-1.jpeg"}?v=${image.updatedAt ?? image.id}`}
                   alt="fotos da atividade"
                   width={300}
                   height={300}
-                  className={`h-full w-ful max-h-[27rem] rounded-lg object-cover ${index === 0 ? 'col-span-2 row-span-2 w-full h-[27rem]' : 'h-[12rem] max-h-[12rem]'}`}
+                  className={`h-full w-ful max-h-[27rem] rounded-lg object-cover ${index === 0 ? "col-span-2 row-span-2 w-full h-[27rem]" : "h-[12rem] max-h-[12rem]"}`}
                 />
               ))}
         </div>
@@ -476,7 +476,7 @@ export default function Atividade() {
           <div className="flex items-center gap-2 mb-4">
             <Image
               alt="avatar"
-              src={activity?.partner?.logo?.url ?? '/user.png'}
+              src={activity?.partner?.logo?.url ?? "/user.png"}
               width={6}
               height={6}
               className="w-10 h-10 rounded-full object-cover"
@@ -512,7 +512,7 @@ export default function Atividade() {
           {formattedItemsIncluded().length > 0 && (
             <div
               className={cn(
-                'grid grid-cols-2 md:grid-cols-3 gap-x-8 gap-y-4 my-10'
+                "grid grid-cols-2 md:grid-cols-3 gap-x-8 gap-y-4 my-10"
               )}
             >
               {formattedItemsIncluded().map((item) => (
@@ -531,8 +531,8 @@ export default function Atividade() {
 
           <div
             className={cn(
-              'grid grid-cols-2 md:grid-cols-3 gap-4 md:my-auto',
-              formattedItemsIncluded().length == 0 && 'my-4 md:my-4'
+              "grid grid-cols-2 md:grid-cols-3 gap-4 md:my-auto",
+              formattedItemsIncluded().length == 0 && "my-4 md:my-4"
             )}
           >
             <div className="bg-primary-900 py-2 rounded-md mb-2 md:h-fit">
@@ -542,8 +542,8 @@ export default function Atividade() {
                 className="text-center"
               >
                 {activity?.isInGroup
-                  ? 'Atividade em grupo'
-                  : 'Atividade individual'}
+                  ? "Atividade em grupo"
+                  : "Atividade individual"}
               </MyTypography>
             </div>
 
@@ -554,8 +554,8 @@ export default function Atividade() {
                 className="text-center"
               >
                 {activity?.isChildrenAllowed
-                  ? 'Permite crianças'
-                  : 'Não permite crianças'}
+                  ? "Permite crianças"
+                  : "Não permite crianças"}
               </MyTypography>
             </div>
 
@@ -638,7 +638,7 @@ export default function Atividade() {
                   </MyTypography>
                   <MyTypography variant="body-big" weight="regular">
                     {activity?.duration +
-                      (activity?.duration == '01:00' ? ' hora' : ' horas')}
+                      (activity?.duration == "01:00" ? " hora" : " horas")}
                   </MyTypography>
                 </div>
               </div>
@@ -653,7 +653,7 @@ export default function Atividade() {
                 </MyTypography>
                 {activity?.hoursBeforeSchedule && (
                   <MyTypography variant="body-big" weight="regular">
-                    • Antecedência mínima para agendamento:{' '}
+                    • Antecedência mínima para agendamento:{" "}
                     <span className="max-sm:block">
                       {activity?.hoursBeforeSchedule}h
                     </span>
@@ -661,7 +661,7 @@ export default function Atividade() {
                 )}
                 {activity?.hoursBeforeCancellation && (
                   <MyTypography variant="body-big" weight="regular">
-                    • Antecedência mínima para cancelamento:{' '}
+                    • Antecedência mínima para cancelamento:{" "}
                     <span className="max-sm:block">
                       {activity?.hoursBeforeCancellation}h
                     </span>
@@ -678,11 +678,11 @@ export default function Atividade() {
                 </MyTypography>
 
                 <MyTypography variant="body-big" weight="regular">
-                  • {activity.isInGroup ? 'Em grupo' : 'Individual'}
+                  • {activity.isInGroup ? "Em grupo" : "Individual"}
                 </MyTypography>
 
                 <MyTypography variant="body-big" weight="regular">
-                  • {activity.isChildrenAllowed ? 'Com criança' : 'Sem criança'}
+                  • {activity.isChildrenAllowed ? "Com criança" : "Sem criança"}
                 </MyTypography>
               </div>
 
@@ -701,7 +701,7 @@ export default function Atividade() {
                     weight="extrabold"
                     className="text-primary-600 text-lg md:text-2xl"
                   >
-                    {formatPrice(activity?.priceAdult ?? '')}
+                    {formatPrice(activity?.priceAdult ?? "")}
                   </MyTypography>
                 </div>
 
@@ -719,7 +719,7 @@ export default function Atividade() {
                       weight="extrabold"
                       className="text-primary-600 text-lg md:text-2xl"
                     >
-                      {formatPrice(activity?.priceChildren ?? '')}
+                      {formatPrice(activity?.priceChildren ?? "")}
                     </MyTypography>
                   </div>
                 )}

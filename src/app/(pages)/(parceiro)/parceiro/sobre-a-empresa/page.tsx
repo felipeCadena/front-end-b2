@@ -15,7 +15,11 @@ import MyTextInput from "@/components/atoms/my-text-input";
 import MyTypography from "@/components/atoms/my-typography";
 import { useStepperStore } from "@/store/useStepperStore";
 import { cn } from "@/utils/cn";
-import { formatCNPJ, formatCpfCnpj } from "@/utils/formatters";
+import {
+  formatCNPJ,
+  formatCpfCnpj,
+  formatPhoneNumber,
+} from "@/utils/formatters";
 import PATHS from "@/utils/paths";
 import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
@@ -25,7 +29,7 @@ export default function SobreAEmpresa() {
   const {
     setStepData,
     fantasyName,
-    cnpj,
+    cnpjOrCpf,
     bankAccount,
     bankAgency,
     bankName,
@@ -70,6 +74,11 @@ export default function SobreAEmpresa() {
         return;
       }
     }
+
+    if (!fantasyName || !cnpjOrCpf) {
+      toast.error("Todos os campos são obrigatórios!");
+      return;
+    }
     // setStepData(3, {
     //   fantasyName,
     //   cnpj,
@@ -90,6 +99,8 @@ export default function SobreAEmpresa() {
       setStepData(4, { bankCode: bank.code });
     }
   }, [bankName]);
+
+  console.log(cnpjOrCpf.length);
 
   return (
     <section className="m-6 space-y-4 md:space-y-8 md:max-w-screen-md md:mx-auto md:mt-12 md:border-2 md:border-gray-200 md:rounded-xl md:py-16">
@@ -122,11 +133,11 @@ export default function SobreAEmpresa() {
           />
           <MyTextInput
             onChange={(e) =>
-              setStepData(3, { cnpj: formatCNPJ(e.target.value) })
+              setStepData(3, { cnpjOrCpf: formatCpfCnpj(e.target.value) })
             }
-            value={cnpj}
-            label="CNPJ"
-            placeholder="XX.XXX.XXX/XXXX-XX"
+            value={cnpjOrCpf}
+            label="CNPJ ou CPF"
+            placeholder="Digite o CNPJ ou CPF"
             className="mt-2"
           />
         </div>
@@ -296,7 +307,14 @@ export default function SobreAEmpresa() {
                 placeholder="Digite sua chave pix"
                 className="mt-2"
                 value={pixKey}
-                onChange={(e) => setStepData(4, { pixKey: e.target.value })}
+                onChange={(e) =>
+                  setStepData(4, {
+                    pixKey:
+                      pixAddressKeyType == "PHONE"
+                        ? formatPhoneNumber(e.target.value)
+                        : e.target.value,
+                  })
+                }
               />
             </div>
           )}

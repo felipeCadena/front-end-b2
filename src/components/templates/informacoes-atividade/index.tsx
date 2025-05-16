@@ -76,7 +76,7 @@ export default function InformacoesAtividade({
     bankAccount,
     bankAgency,
     bankName,
-    cnpj,
+    cnpjOrCpf,
     email,
     fantasyName,
     name,
@@ -156,13 +156,19 @@ export default function InformacoesAtividade({
     return JSON.stringify(items);
   };
 
+  console.log(personsLimit);
+
   // Função pro fluxo de criação de parceiro + atividade
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     setIsLoading(true);
 
-    if (!priceAdult || !personsLimit) {
-      toast.error("Preencha todos os campos.");
+    if (!priceAdult) {
+      toast.error("Preencha o valor por adulto.");
+      return;
+    }
+    if (isInGroup && !personsLimit) {
+      toast.error("Preencha a quantidade de pessoas.");
       return;
     }
 
@@ -175,7 +181,8 @@ export default function InformacoesAtividade({
       fantasyName,
       businessEmail: email,
       businessPhone: phone,
-      cnpj,
+      cnpj: cnpjOrCpf.length != 18 ? undefined : cnpjOrCpf,
+      cpf: cnpjOrCpf.length == 14 ? cnpjOrCpf : undefined,
       bankAccount,
       bankAgency,
       bankName,
@@ -190,8 +197,8 @@ export default function InformacoesAtividade({
         pixAddressKeyType?.length == 0 ? undefined : pixAddressKeyType,
       bankOwnerName,
       bankOwnerDocument,
-      about: "",
-      address: "",
+      about: undefined,
+      address: undefined,
       user: {
         name,
         email,
@@ -239,7 +246,7 @@ export default function InformacoesAtividade({
         isChildrenAllowed,
         priceAdult: priceAdult.length > 0 ? priceAdult : "0",
         priceChildren: priceChildren.length > 0 ? priceChildren : "0",
-        personsLimit,
+        personsLimit: isInGroup ? personsLimit : 1,
         addressCity,
         addressNeighborhood,
         addressState,
@@ -365,6 +372,8 @@ export default function InformacoesAtividade({
     }
   };
 
+  console.log(personsLimit);
+
   // Função apenas pra criar atividade
   const handleCreateAdventure = async (
     e: React.MouseEvent<HTMLButtonElement>
@@ -372,8 +381,12 @@ export default function InformacoesAtividade({
     e.preventDefault();
     setIsLoading(true);
 
-    if (!priceAdult || !personsLimit) {
-      toast.error("Preencha todos os campos.");
+    if (!priceAdult) {
+      toast.error("Preencha o valor por adulto.");
+      return;
+    }
+    if (isInGroup && !personsLimit) {
+      toast.error("Preencha a quantidade de pessoas.");
       return;
     }
 
@@ -394,7 +407,7 @@ export default function InformacoesAtividade({
         isChildrenAllowed,
         priceAdult: priceAdult.length > 0 ? priceAdult : "0",
         priceChildren: priceChildren.length > 0 ? priceChildren : "0",
-        personsLimit,
+        personsLimit: isInGroup ? personsLimit : 1,
         addressCity,
         addressNeighborhood,
         addressState,

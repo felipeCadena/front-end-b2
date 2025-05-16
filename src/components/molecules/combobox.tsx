@@ -121,6 +121,9 @@ export default function MultiSelect({
       <PopoverContent className="w-full p-0">
         <Command>
           <CommandGroup>
+            <p className="text-center mt-2 font-semibold">
+              Horários Disponíveis
+            </p>
             {grid ? (
               <div className={cn("grid grid-cols-4 gap-4 p-4")}>
                 {options.map((option) => (

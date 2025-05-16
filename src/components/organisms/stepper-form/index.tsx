@@ -18,7 +18,7 @@ import { toast } from "react-toastify";
 export default function StepperForm() {
   const [currentStep, setCurrentStep] = useState(0);
   const {
-    cnpj,
+    cnpjOrCpf,
     email,
     fantasyName,
     name,
@@ -40,30 +40,31 @@ export default function StepperForm() {
 
   const totalSteps = 6;
 
-  console.log(currentStep);
-
   const handleNext = () => {
     if (currentStep === 3 && typePayment == "bank") {
       if (
         !bankAccount ||
         !bankAgency ||
         !bankName ||
-        !payday ||
         !bankAccountDigit ||
         !bankAccountType ||
         !bankOwnerName ||
         !bankOwnerDocument ||
-        !bankCode ||
-        !pixAddressKeyType
+        !bankCode
       ) {
         toast.error("Todos os campos são obrigatórios!");
         return;
       }
     } else if (currentStep === 3 && typePayment == "pix") {
-      if (!pixKey || !pixAddressKeyType || !payday) {
+      if (!pixKey || !pixAddressKeyType) {
         toast.error("Todos os campos são obrigatórios!");
         return;
       }
+    }
+
+    if (currentStep === 3 && !payday) {
+      toast.error("O campo dia do pagamento é obrigatório!");
+      return;
     }
 
     if (currentStep < totalSteps - 1) {
