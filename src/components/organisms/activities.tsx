@@ -1,15 +1,15 @@
-'use client';
+"use client";
 
-import MyBadge from '@/components/atoms/my-badge';
-import MyIcon from '@/components/atoms/my-icon';
-import MyTypography from '@/components/atoms/my-typography';
-import StarRating from '@/components/molecules/my-stars';
-import { AddToCartAdventure, Adventure } from '@/services/api/adventures';
-import { cn } from '@/utils/cn';
-import { handleNameActivity, selectActivityImage } from '@/utils/formatters';
-import PATHS from '@/utils/paths';
-import Image from 'next/image';
-import { useRouter } from 'next/navigation';
+import MyBadge from "@/components/atoms/my-badge";
+import MyIcon from "@/components/atoms/my-icon";
+import MyTypography from "@/components/atoms/my-typography";
+import StarRating from "@/components/molecules/my-stars";
+import { AddToCartAdventure, Adventure } from "@/services/api/adventures";
+import { cn } from "@/utils/cn";
+import { handleNameActivity, selectActivityImage } from "@/utils/formatters";
+import PATHS from "@/utils/paths";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 export default function Activities({
   activities,
@@ -25,9 +25,9 @@ export default function Activities({
   const router = useRouter();
 
   const handleActivity = (id: string) => {
-    if (type === 'parceiro') {
+    if (type === "parceiro") {
       return router.push(PATHS.visualizarAtividadeParceiro(id));
-    } else if (type === 'admin') {
+    } else if (type === "admin") {
       return router.push(`/admin/avaliacoes/atividade/${id}`);
     } else {
       router.push(PATHS.visualizarAtividade(id));
@@ -35,7 +35,7 @@ export default function Activities({
   };
 
   return (
-    <section className={cn('grid grid-cols-4 gap-6 ')}>
+    <section className={cn("grid grid-cols-4 gap-6 ")}>
       {activities &&
         activities.map((activity: any, index: number) => (
           <div
@@ -45,7 +45,7 @@ export default function Activities({
           >
             <div className="relative z-10 overflow-hidden h-[265px] w-full hover:cursor-pointer rounded-md">
               <Image
-                alt="sample_file"
+                alt="Imagem da atividade"
                 src={selectActivityImage(activity)}
                 width={250}
                 height={300}
@@ -81,11 +81,11 @@ export default function Activities({
             </div>
             <MyTypography variant="subtitle1" weight="bold" className="">
               {activity.title.length > 25
-                ? activity.title.slice(0, 20).concat('...')
+                ? activity.title.slice(0, 20).concat("...")
                 : activity.title}
             </MyTypography>
             <MyTypography variant="body-big" className="">
-              {activity.description.slice(0, 30).concat('...')}
+              {activity.description.slice(0, 30).concat("...")}
             </MyTypography>
           </div>
         ))}

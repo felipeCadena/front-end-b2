@@ -59,7 +59,6 @@ export default function Step1({
         <MyTextarea
           value={description}
           onChange={(e) => {
-            console.log(JSON.stringify(e.target.value));
             setAdventureData({
               description: e.target.value,
             });

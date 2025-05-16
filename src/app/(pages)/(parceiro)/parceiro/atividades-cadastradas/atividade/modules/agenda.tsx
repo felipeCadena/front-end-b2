@@ -32,7 +32,6 @@ export default function Agenda({ formData, setFormData, onClose }: ModalProps) {
     justificativa?: string
   ) => {
     try {
-      console.log("scheduleId", scheduleId);
       await partnerService.cancelSchedule(
         scheduleId,
         formData.id,

@@ -36,12 +36,7 @@ export default function SidebarMenu({
   const { data: session } = useSession();
   const { setSideBarActive, sideBarActive } = useLogin();
 
-  const { data: loggedUser } = useQuery({
-    queryKey: ["logged_user"],
-    queryFn: () => users.getUserLogged(),
-  });
-
-  const userId = loggedUser?.id ?? "";
+  const userId = session?.user?.id ?? "";
 
   useEffect(() => {
     switch (session?.user?.role) {
@@ -61,11 +56,8 @@ export default function SidebarMenu({
 
   const handleLogout = async () => {
     try {
-      await signOut({
-        callbackUrl: "/",
-        redirect: true,
-      });
       await authService.logout(session?.user.refreshToken ?? "");
+      signOut();
       clearUser();
     } catch (error) {
       console.error("Error during logout:", error);

@@ -195,7 +195,7 @@ export const adminService = {
   // Adventures
   approveOrRejectAdventure: async (
     id: number,
-    payload: { adminApproved: boolean; onSite: boolean }
+    payload: { adminApproved: boolean; onSite: boolean; refusalMsg?: string }
   ): Promise<Adventure> => {
     try {
       const { data } = await api.patch<Adventure>(`/adventures/${id}`, payload);

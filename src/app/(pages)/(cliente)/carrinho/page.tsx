@@ -14,16 +14,8 @@ import React from "react";
 
 export default function Carrinho() {
   const router = useRouter();
-  const session = useSession();
-
-  const { data: loggedUser } = useQuery({
-    queryKey: ["logged_user"],
-    queryFn: () => users.getUserLogged(),
-  });
-
-  const userId = loggedUser?.id ?? "";
-
-  console.log(session);
+  const { data: session } = useSession();
+  const userId = session?.user?.id ?? "";
 
   const { carts } = useCart();
   const userCart = carts.find((cart) => cart.userId === userId);

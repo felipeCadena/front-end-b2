@@ -64,17 +64,15 @@ export const authService = {
   // Refresh do token
   refreshToken: async (token: string): Promise<TokenResponse> => {
     try {
-      api.defaults.headers.common.Authorization = `Bearer ${token}`;
-      const response = await api.post("/auth/refresh");
-      // const response = await axios.post<TokenResponse>(
-      //   `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/refresh`,
-      //   {},
-      //   {
-      //     headers: {
-      //       Authorization: `Bearer ${token}`,
-      //     },
-      //   }
-      // );
+      // api.defaults.headers.common.Authorization = `Bearer ${token}`;
+      // console.log("endpoint: " + token);
+      // const response = await api.post("/auth/refresh");
+      const response = await axios.post<TokenResponse>(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/refresh`,
+        {
+          refresh_token: token,
+        }
+      );
 
       return response.data;
     } catch (error) {

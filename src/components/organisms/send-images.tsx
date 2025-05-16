@@ -36,7 +36,6 @@ export default function SendImages({
 
   const sendFiles = (files: File[] | null) => {
     if (files) {
-      console.log(files);
       handleSendImages(files);
       setFiles(null);
     }

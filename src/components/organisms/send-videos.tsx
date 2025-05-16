@@ -37,7 +37,6 @@ export default function SendVideos({
 
   const sendFiles = (files: File[] | null) => {
     if (files) {
-      console.log(files);
       handleSendImages(files);
       setFiles(null);
     }
@@ -47,8 +46,6 @@ export default function SendVideos({
     setOpen(false);
     setFiles(null);
   };
-
-  console.log(files);
 
   return (
     <section className="space-y-6">

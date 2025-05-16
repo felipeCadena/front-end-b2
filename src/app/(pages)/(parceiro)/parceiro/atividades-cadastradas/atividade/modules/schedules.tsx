@@ -122,7 +122,7 @@ export default function Schedules({
 
   const queryClient = useQueryClient();
   const formattedRecurrences = formatRecurrences();
-  console.log("formattedRecurrences", formattedRecurrences);
+  // console.log("formattedRecurrences", formattedRecurrences);
 
   const handleSubmit = async () => {
     const formattedRecurrences = formatRecurrences();

@@ -36,7 +36,7 @@ export default function Step4() {
   };
 
   const handleLocationSelected = (locationData: LocationData) => {
-    console.log("Location Data Received:", locationData);
+    // console.log("Location Data Received:", locationData);
 
     if (locationData.coordinates) {
       // Atualiza o store com o endereço
