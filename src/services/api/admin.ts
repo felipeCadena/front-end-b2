@@ -101,7 +101,7 @@ export const adminService = {
     orderBy?: string;
     limit?: number;
     skip?: number;
-  }) {
+  }): Promise<Partner[]> {
     try {
       const response = await api.get('/partners/search', { params });
       return response.data;
