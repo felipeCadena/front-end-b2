@@ -21,6 +21,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { AxiosError } from "axios";
 import MySpinner from "@/components/atoms/my-spinner";
 import Loading from "@/app/loading";
+import { ordersAdventuresService } from "@/services/api/orders";
 
 // const formSchema = z
 //   .object({
@@ -79,6 +80,14 @@ export default function Perfil() {
   //     confirmPassword: '',
   //   },
   // });
+
+  const { data: userOrderSchedules } = useQuery({
+    queryKey: ["userOrderSchedules"],
+    queryFn: () =>
+      ordersAdventuresService.getCustomerSchedules({
+        adventureStatus: "realizado",
+      }),
+  });
 
   const {
     data: fetchUser,
@@ -174,12 +183,22 @@ export default function Perfil() {
     refetch();
   }, []);
 
+  const handleActivities = (length: number) => {
+    if (length === 0) {
+      return "Nenhuma atividade realizada";
+    } else if (length === 1) {
+      return "1 atividade realizada";
+    } else {
+      return `${length} atividades realizadas`;
+    }
+  };
+
   return loadingPage ? (
     <div className="w-full h-[30vh] flex justify-center items-center mb-16">
       <Loading />
     </div>
   ) : (
-    <section className="px-6 my-8">
+    <section className="px-6 my-8 md:min-h-[60vh] ">
       <div className="relative flex gap-4 items-center">
         <MyIcon
           name="seta"
@@ -233,7 +252,7 @@ export default function Perfil() {
             lightness={400}
             className="mt-2"
           >
-            250 Atividades realizadas
+            {userOrderSchedules && handleActivities(userOrderSchedules?.length)}
           </MyTypography>
         </div>
       </div>

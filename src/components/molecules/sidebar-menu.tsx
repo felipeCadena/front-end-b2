@@ -41,6 +41,7 @@ export default function SidebarMenu({
   useEffect(() => {
     switch (session?.user?.role) {
       case "admin":
+      case "superadmin":
         setSideBarActive(sideBarAdmin);
         break;
       case "partner":

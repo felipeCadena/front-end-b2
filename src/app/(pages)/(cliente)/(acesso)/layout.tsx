@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { ReactNode } from "react";
 
 const Layout = ({ children }: { children: JSX.Element | ReactNode }) => {
@@ -33,9 +34,11 @@ const Layout = ({ children }: { children: JSX.Element | ReactNode }) => {
             key={index}
             className={`overflow-hidden ${item.span} ${item.padding}`}
           >
-            <img
+            <Image
               src={item.src}
               alt={`Image ${index}`}
+              width={500}
+              height={500}
               className="w-full h-full object-cover rounded-lg"
             />
           </div>

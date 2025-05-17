@@ -483,8 +483,8 @@ export default function FinalizarCompra() {
                     </MyTypography>
                     <MyTypography
                       variant="heading2"
-                      weight="extrabold"
-                      className="text-primary-600 text-lg md:text-xl"
+                      weight="bold"
+                      className="text-lg md:text-xl"
                     >
                       {Number(totalPrice).toLocaleString("pt-BR", {
                         style: "currency",
@@ -495,15 +495,15 @@ export default function FinalizarCompra() {
                   <div className="flex justify-between items-center">
                     <MyTypography
                       variant="subtitle3"
-                      weight="bold"
+                      weight="regular"
                       className="text-sm md:text-md"
                     >
                       Taxas de serviço:
                     </MyTypography>
                     <MyTypography
                       variant="heading3"
-                      weight="extrabold"
-                      className="text-primary-600 text-lg md:text-xl"
+                      weight="regular"
+                      className="text-lg md:text-xl"
                     >
                       {budget["BOLETO_PIX"]?.totalGatewayFee.toLocaleString(
                         "pt-BR",

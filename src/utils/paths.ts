@@ -13,7 +13,7 @@ const ROOTS_INITIAL = "/";
 const ROOTS_LOGIN = "/login";
 const ROOTS_CADASTRO = "/cadastro";
 const ROOTS_SENHA = "/esqueci-minha-senha";
-const ROOTS_RESETAR_SENHA = "/recuperacao";
+const ROOTS_RESETAR_SENHA = "/recuperacao/novasenha";
 const ROOTS_QUEMSOMOS = "/quem-somos";
 const ROOTS_FALE_CONOSCO = "/fale-conosco";
 const ROOTS_ATIVIDADES = "/atividades";
@@ -231,6 +231,7 @@ export const PATHS_CONFIG: PathsConfig = {
 };
 
 export const DEFAULT_ROLE_PATHS = {
+  superadmin: ROOTS_ADMIN,
   admin: ROOTS_ADMIN,
   partner: ROOTS_SUAS_ATIVIDADES,
   customer: ROOTS_ATIVIDADES,

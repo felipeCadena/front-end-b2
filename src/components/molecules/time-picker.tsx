@@ -83,15 +83,18 @@ export default function TimePickerModal({
         </MyButton>
       </PopoverTrigger>
       <PopoverContent
-        className="bg-white flex flex-col items-center max-w-[240px]"
+        className="bg-white flex flex-col items-center max-w-[260px]"
         align="center"
       >
         <div className="flex justify-center items-center w-full">
           <MyScrollArea
             ref={timeRef}
-            className="h-48 w-36 flex items-center justify-center rounded-lg overflow-hidden"
+            className="h-48 w-40 flex items-center justify-center rounded-lg overflow-hidden"
           >
-            <div className="flex flex-col justify-center items-center min-h-48 w-full ">
+            <p className="text-sm font-semibold text-center">
+              Horários Disponíveis
+            </p>
+            <div className="flex flex-col justify-center items-center min-h-48 w-[80%] mx-auto">
               {availableActivityTimes?.map((time, i) => (
                 <div
                   key={`${time} - ${i}`}

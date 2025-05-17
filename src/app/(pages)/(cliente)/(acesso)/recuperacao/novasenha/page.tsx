@@ -1,22 +1,22 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import MyButton from '@/components/atoms/my-button';
-import MyIcon from '@/components/atoms/my-icon';
-import MyLogo from '@/components/atoms/my-logo';
+import React, { useState } from "react";
+import MyButton from "@/components/atoms/my-button";
+import MyIcon from "@/components/atoms/my-icon";
+import MyLogo from "@/components/atoms/my-logo";
 
-import MyTypography from '@/components/atoms/my-typography';
-import PATHS from '@/utils/paths';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { authService } from '@/services/api/auth';
-import { MyForm } from '@/components/atoms/my-form';
-import MyFormInput from '@/components/atoms/my-form-input';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { toast } from 'react-toastify';
-import MySpinner from '@/components/atoms/my-spinner';
-import { AxiosError } from 'axios';
+import MyTypography from "@/components/atoms/my-typography";
+import PATHS from "@/utils/paths";
+import { useRouter, useSearchParams } from "next/navigation";
+import { authService } from "@/services/api/auth";
+import { MyForm } from "@/components/atoms/my-form";
+import MyFormInput from "@/components/atoms/my-form-input";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "react-toastify";
+import MySpinner from "@/components/atoms/my-spinner";
+import { AxiosError } from "axios";
 
 const formSchema = z
   .object({
@@ -24,23 +24,23 @@ const formSchema = z
       if (value.length < 6) {
         ctx.addIssue({
           code: z.ZodIssueCode.too_small,
-          minimum: 6,
-          type: 'string',
+          minimum: 8,
+          type: "string",
           inclusive: true,
-          message: 'A senha deve ter no mínimo 6 caracteres.',
+          message: "A senha deve ter no mínimo 8 caracteres.",
         });
       }
       if (!/[A-Z]/.test(value)) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
-          message: 'A senha deve conter pelo menos uma letra maiúscula.',
+          message: "A senha deve conter pelo menos uma letra maiúscula.",
         });
       }
       if (!/[\W_]/.test(value)) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           message:
-            'A senha deve conter pelo menos um caractere especial e um número.',
+            "A senha deve conter pelo menos um caractere especial e um número.",
         });
       }
     }),
@@ -49,9 +49,9 @@ const formSchema = z
   .superRefine((data, ctx) => {
     if (data.password !== data.confirmPassword) {
       ctx.addIssue({
-        code: 'custom',
-        message: 'As senhas não coincidem',
-        path: ['confirmPassword'],
+        code: "custom",
+        message: "As senhas não coincidem",
+        path: ["confirmPassword"],
       });
     }
   });
@@ -61,16 +61,16 @@ type FormData = z.infer<typeof formSchema>;
 export default function RecuperacaoSenha() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const resetToken = searchParams.get('resetToken');
+  const resetToken = searchParams.get("resetToken");
   const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
-    mode: 'onChange',
-    criteriaMode: 'all',
+    mode: "onChange",
+    criteriaMode: "all",
     defaultValues: {
-      password: '',
-      confirmPassword: '',
+      password: "",
+      confirmPassword: "",
     },
   });
 
@@ -78,14 +78,16 @@ export default function RecuperacaoSenha() {
     const { password } = formData;
     setIsLoading(true);
     try {
-      await authService.resetPassword(password, (resetToken as string) ?? '');
-      toast.success('Solicitação enviada por e-mail.');
+      await authService.resetPassword(password, (resetToken as string) ?? "");
+      toast.success("Senha alterada com sucesso!");
       form.reset();
       router.push(PATHS.login);
     } catch (error) {
       if (error instanceof AxiosError) {
         if (error.status === 401) {
-          toast.error('Token expirado ou inválido. Faça o processo novamente.');
+          toast.error(
+            "Token expirado ou inválido. Faça o processo de recuperação novamente."
+          );
         } else {
           toast.error(error.response?.data.message);
         }
@@ -141,7 +143,7 @@ export default function RecuperacaoSenha() {
             borderRadius="squared"
             size="md"
           >
-            {isLoading ? <MySpinner /> : 'Solicitar nova senha'}
+            {isLoading ? <MySpinner /> : "Solicitar nova senha"}
           </MyButton>
 
           <div className=" flex justify-center items-center text-center mt-12">

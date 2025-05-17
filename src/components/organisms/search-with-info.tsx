@@ -67,7 +67,7 @@ export default function SearchInfoActivity() {
           <GoogleAutoComplete
             title="Cidade"
             setFormData={setSelectedLocation}
-            formData={selectedLocation}
+            formData={selectedLocation?.address}
             onLocationSelected={handleLocationSelected}
           />
         </div>
