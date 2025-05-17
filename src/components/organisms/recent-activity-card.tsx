@@ -17,7 +17,7 @@ type RecentActivityCardProps = {
   index: number;
 };
 
-const RecenActivityCard = ({
+const RecentActivityCard = ({
   recentActivity,
   hidden,
   setShowModal,
@@ -53,7 +53,7 @@ const RecenActivityCard = ({
             : 'border'
       )}
     >
-      {!hidden ? (
+      {!hidden && (
         <div className="absolute top-0 right-3 z-20">
           <PopupActivity
             onDuplicar={() => console.log('Duplicar')}
@@ -63,10 +63,6 @@ const RecenActivityCard = ({
             onExcluir={() => console.log('Excluir')}
             onCustomer={() => setShowModal(true)}
           />
-        </div>
-      ) : (
-        <div className="absolute top-4 right-3 z-20">
-          <Hide iconColor="#9F9F9F" />
         </div>
       )}
 
@@ -115,4 +111,4 @@ const RecenActivityCard = ({
   );
 };
 
-export default RecenActivityCard;
+export default RecentActivityCard;

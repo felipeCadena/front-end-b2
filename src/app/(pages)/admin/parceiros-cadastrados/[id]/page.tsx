@@ -215,7 +215,11 @@ export default function Parceiro() {
                 Atividades Recentes
               </MyTypography>
 
-              <PartnerRecentActivities recentActivities={partnerSched} admin />
+              <PartnerRecentActivities
+                hidden
+                recentActivities={partnerSched}
+                admin
+              />
             </div>
 
             <div className="w-full my-6 flex flex-col gap-1">

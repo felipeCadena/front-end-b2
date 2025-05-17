@@ -148,7 +148,7 @@ export default function Login() {
             type={visibility ? "text" : "password"}
             rightIcon={
               <MyIcon
-                name={visibility ? "hide" : "eye"}
+                name={visibility ? "eye" : "hide"}
                 className="mr-4 mt-6 cursor-pointer"
                 onClick={() => setVisibility((prev) => !prev)}
               />

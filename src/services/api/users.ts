@@ -116,7 +116,7 @@ export const users = {
       const { data } = await axios.get(`https://ipwho.is/${ipData.ip}`);
 
       if (data.success) {
-        return data.region; // Ex: "Minas Gerais"
+        return data.city;
       } else {
         console.warn("Erro na geolocalização:", data.message);
         return null;

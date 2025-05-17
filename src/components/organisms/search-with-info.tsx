@@ -45,6 +45,24 @@ export default function SearchInfoActivity() {
     if (hour && hour !== "00:00") filters.hour = hour;
 
     set(filters);
+    setSelectedLocation({
+      address: "",
+      completeAddress: {
+        addressStreet: "",
+        addressPostalCode: "",
+        addressNumber: "",
+        addressComplement: "",
+        addressNeighborhood: "",
+        addressCity: "",
+        addressState: "",
+        addressCountry: "",
+      },
+      coordinates: null,
+    });
+    setHour("");
+    setDate(undefined);
+    setAdults(0);
+    setChildren(0);
   };
 
   return (
