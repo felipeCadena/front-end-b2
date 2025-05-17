@@ -63,7 +63,7 @@ export default function Atividade() {
         </MyTypography>
       </div>
 
-      {isLoading || loadingMedia ? (
+      {isLoading || loadingActivity ? (
         <div className="w-full">
           <Loading />
         </div>
