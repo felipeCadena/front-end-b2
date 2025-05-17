@@ -18,7 +18,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/molecules/my-table";
-import { lancamentos } from "@/common/constants/mock";
 import { getData, getHora, getYearsArray } from "@/utils/formatters";
 import MyIcon from "@/components/atoms/my-icon";
 import { useRouter } from "next/navigation";
@@ -30,6 +29,7 @@ export default function Lancamentos({
   backButton = false,
   title = "Seus lançamentos",
   filters,
+  isLoading,
   setFilters,
   setSelectedDate,
 }: {
@@ -38,6 +38,7 @@ export default function Lancamentos({
   backButton?: boolean;
   title?: string;
   filters: any;
+  isLoading?: boolean;
   setSelectedDate?: React.Dispatch<React.SetStateAction<Date>>;
   setFilters: React.Dispatch<
     React.SetStateAction<{
@@ -52,16 +53,6 @@ export default function Lancamentos({
 
   const handleMonthChange = (value: string) => {
     setFilters((prev) => ({ ...prev, month: value, typeDate: "month" }));
-    // if (setSelectedDate) {
-    //   const selectedDate = new Date();
-    //   selectedDate.setMonth(Number(value) - 1);
-    //   console.log(selectedDate);
-    //   setSelectedDate(selectedDate);
-    //   setFilters((prev) => ({
-    //     ...prev,
-    //     typeDate: "month",
-    //   }));
-    // }
   };
 
   return (
@@ -125,7 +116,6 @@ export default function Lancamentos({
             <MySelect
               value={filters?.year}
               onValueChange={(value) => {
-                console.log(value);
                 setFilters((prev) => ({
                   ...prev,
                   year: value,
@@ -186,94 +176,110 @@ export default function Lancamentos({
           </TableRow>
         </TableHeader>
         <TableBody>
-          {data && data.ordersSchedules.length > 0 ? (
-            data.ordersSchedules.map((lancamento: any) => (
-              <TableRow
-                key={lancamento?.id}
-                className={cn(
-                  "relative bg-gray-100 text-xs md:text-sm text-center",
-                  lancamento?.partnerIsPaid === "realizado" && "bg-primary-800",
-                  lancamento?.adventureStatus.includes("cancelado") &&
-                    "bg-[#FFE3E3]"
-                )}
-              >
-                <TableCell className="max-sm:px-2 max-sm:py-3 rounded-l-md">
-                  <div className="flex items-center gap-6">
-                    <Image
-                      src={
-                        lancamento?.adventure?.imagens
-                          ? lancamento?.adventure?.imagens[0]?.url
-                          : "/images/atividades/paraquedas.webp"
-                      }
-                      alt={lancamento?.id}
-                      width={80}
-                      height={80}
-                      className="w-[70px] h-[70px] rounded-md object-cover max-sm:hidden"
-                    />
-                    <MyTypography
-                      variant="body"
-                      weight="bold"
-                      className={cn(
-                        lancamento?.adventureStatus.includes("cancelado") &&
-                          "line-through"
-                      )}
-                    >
-                      {lancamento?.adventure?.title}
-                    </MyTypography>
-                  </div>
-                </TableCell>
-                <TableCell className="text-center">
-                  {getData(lancamento?.schedule?.datetime)}{" "}
-                  <span className="max-sm:hidden">{` - ${getHora(lancamento?.schedule?.datetime)}`}</span>
-                </TableCell>
-                <TableCell className="max-sm:hidden md:px-8">
-                  {lancamento?.adventure?.duration} horas
-                </TableCell>
-                <TableCell className="max-sm:hidden md:px-4">
-                  {lancamento?.qntAdults +
-                    lancamento?.qntChildren +
-                    lancamento?.qntBabies}{" "}
-                  pessoas
-                </TableCell>
-                <TableCell
-                  className={cn(
-                    "border-r-8 rounded-r-md border-opacity-50 border-gray-300",
-                    lancamento?.partnerIsPaid && " border-[#C0E197]",
-                    lancamento?.adventureStatus.includes("cancelado") &&
-                      "border-[#FF5757]"
-                  )}
-                >
-                  {lancamento?.adventureStatus.includes("cancelado")
-                    ? "Cancelado"
-                    : `${Number(lancamento?.partnerValue).toLocaleString(
-                        "pt-BR",
-                        {
-                          style: "currency",
-                          currency: "BRL",
-                        }
-                      )} `}
-                </TableCell>
-              </TableRow>
-            ))
-          ) : (
+          {isLoading && (
             <TableRow>
               <TableCell colSpan={5} className="text-center">
-                <MyTypography
-                  variant="subtitle3"
-                  weight="bold"
-                  className="my-12"
-                >
-                  Não há lançamentos{" "}
-                  {filters?.report == "cancelado"
-                    ? "cancelados"
-                    : filters?.report == "a_receber"
-                      ? "a receber"
-                      : "recebidos"}{" "}
-                  {/* para este período */}
-                </MyTypography>
+                <div className="flex items-center justify-center h-[200px] overflow-hidden">
+                  <Image
+                    src="/logo.png"
+                    alt="B2 Adventure Logo"
+                    width={250}
+                    height={250}
+                    className="object-contain animate-pulse"
+                  />
+                </div>
               </TableCell>
             </TableRow>
           )}
+          {data && data.ordersSchedules.length > 0 && !isLoading
+            ? data.ordersSchedules.map((lancamento: any) => (
+                <TableRow
+                  key={lancamento?.id}
+                  className={cn(
+                    "relative bg-gray-100 text-xs md:text-sm text-center",
+                    lancamento?.partnerIsPaid === "realizado" &&
+                      "bg-primary-800",
+                    lancamento?.adventureStatus.includes("cancelado") &&
+                      "bg-[#FFE3E3]"
+                  )}
+                >
+                  <TableCell className="max-sm:px-2 max-sm:py-3 rounded-l-md">
+                    <div className="flex items-center gap-6">
+                      <Image
+                        src={
+                          lancamento?.adventure?.imagens
+                            ? lancamento?.adventure?.imagens[0]?.url
+                            : "/images/atividades/paraquedas.webp"
+                        }
+                        alt={lancamento?.id}
+                        width={80}
+                        height={80}
+                        className="w-[70px] h-[70px] rounded-md object-cover max-sm:hidden"
+                      />
+                      <MyTypography
+                        variant="body"
+                        weight="bold"
+                        className={cn(
+                          lancamento?.adventureStatus.includes("cancelado") &&
+                            "line-through"
+                        )}
+                      >
+                        {lancamento?.adventure?.title}
+                      </MyTypography>
+                    </div>
+                  </TableCell>
+                  <TableCell className="text-center">
+                    {getData(lancamento?.schedule?.datetime)}{" "}
+                    <span className="max-sm:hidden">{` - ${getHora(lancamento?.schedule?.datetime)}`}</span>
+                  </TableCell>
+                  <TableCell className="max-sm:hidden md:px-8">
+                    {lancamento?.adventure?.duration} horas
+                  </TableCell>
+                  <TableCell className="max-sm:hidden md:px-4">
+                    {lancamento?.qntAdults +
+                      lancamento?.qntChildren +
+                      lancamento?.qntBabies}{" "}
+                    pessoas
+                  </TableCell>
+                  <TableCell
+                    className={cn(
+                      "border-r-8 rounded-r-md border-opacity-50 border-gray-300",
+                      lancamento?.partnerIsPaid && " border-[#C0E197]",
+                      lancamento?.adventureStatus.includes("cancelado") &&
+                        "border-[#FF5757]"
+                    )}
+                  >
+                    {lancamento?.adventureStatus.includes("cancelado")
+                      ? "Cancelado"
+                      : `${Number(lancamento?.partnerValue).toLocaleString(
+                          "pt-BR",
+                          {
+                            style: "currency",
+                            currency: "BRL",
+                          }
+                        )} `}
+                  </TableCell>
+                </TableRow>
+              ))
+            : !isLoading && (
+                <TableRow>
+                  <TableCell colSpan={5} className="text-center">
+                    <MyTypography
+                      variant="subtitle3"
+                      weight="bold"
+                      className="my-12"
+                    >
+                      Não há lançamentos{" "}
+                      {filters?.report == "cancelado"
+                        ? "cancelados"
+                        : filters?.report == "a_receber"
+                          ? "a receber"
+                          : "recebidos"}{" "}
+                      {/* para este período */}
+                    </MyTypography>
+                  </TableCell>
+                </TableRow>
+              )}
         </TableBody>
       </MyTable>
 

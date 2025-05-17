@@ -21,14 +21,12 @@ export default function SideBarModal({
   sideBar: any[];
 }) {
   const { clearUser } = useAuthStore();
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const handleExit = async (item: any) => {
     if (item === "Sair") {
       try {
-        await signOut({
-          callbackUrl: "/",
-          redirect: true,
-        });
+        await signOut({ callbackUrl: "/login" });
+
         await authService.logout(session?.user.refreshToken ?? "");
         clearUser();
       } catch (error) {
@@ -37,6 +35,8 @@ export default function SideBarModal({
       }
     }
   };
+
+  console.log(status);
 
   return (
     <MyDropdownMenu>

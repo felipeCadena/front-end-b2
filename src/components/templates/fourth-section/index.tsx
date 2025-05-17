@@ -20,9 +20,9 @@ const FourthSection = () => {
     queryKey: ["user_state-from-ip", userStateFromIp],
     queryFn: () =>
       adventures.filterAdventures({
-        state: userStateFromIp,
+        city: userStateFromIp ?? "",
         limit: 3,
-        orderBy: "createdAt desc",
+        // orderBy: "createdAt desc",
       }),
     enabled: !!userStateFromIp,
   });

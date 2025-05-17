@@ -61,8 +61,6 @@ export const authOptions: NextAuthOptions = {
 
           const response = await authService.login(credentials);
 
-          // console.log("response login: " + response?.refresh_token);
-
           if (!response?.access_token) {
             signOut();
 
@@ -75,7 +73,8 @@ export const authOptions: NextAuthOptions = {
           // Calcula o timestamp exato de expiração
           const expiresAt = Date.now() + response.expires_in * 1000;
 
-          // console.log("response login: " + response?.refresh_token);
+          console.log("response login: " + response?.refresh_token);
+          console.log("response login access_token: " + response?.access_token);
 
           // Retorna o usuário no formato esperado pelo NextAuth
           return {
@@ -121,7 +120,10 @@ export const authOptions: NextAuthOptions = {
 
           if (!response) return false;
 
-          // console.log("response google: " + response?.refresh_token);
+          console.log("response google: " + response?.refresh_token);
+          console.log(
+            "response google access_token: " + response?.access_token
+          );
 
           const decodedToken = jwtDecode<DecodedToken>(response.access_token);
 
@@ -180,7 +182,7 @@ export const authOptions: NextAuthOptions = {
       }
     },
     async jwt({ token, user }: JWTCallback) {
-      // console.log("token: " + token?.refreshToken);
+      console.log("token: " + token?.refreshToken);
       if (user) {
         token.accessToken = user.accessToken;
         token.refreshToken = user.refreshToken;
@@ -204,15 +206,19 @@ export const authOptions: NextAuthOptions = {
         try {
           const dataAuth = await authService.refreshToken(token?.refreshToken);
 
-          // console.log("dataAuth?.access_token: " + dataAuth?.access_token);
-          // console.log("dataAuth?.access_token: " + dataAuth?.refresh_token);
+          console.log("dataAuth?.access_token: " + dataAuth?.access_token);
+          console.log("dataAuth?.access_token: " + dataAuth?.refresh_token);
 
           if (dataAuth?.access_token) {
             const newExpiresAt = Date.now() + dataAuth.expires_in * 1000;
 
-            token.accessToken = dataAuth.access_token;
-            token.refreshToken = dataAuth.refresh_token;
-            token.expiresAt = newExpiresAt;
+            // Atualiza tudo
+            return {
+              ...token, // preserva os campos anteriores
+              accessToken: dataAuth.access_token,
+              refreshToken: dataAuth.refresh_token,
+              expiresAt: newExpiresAt,
+            };
           }
         } catch (err) {
           console.error("Erro ao renovar token:", (err as any)?.response?.data);
@@ -222,7 +228,7 @@ export const authOptions: NextAuthOptions = {
       return token;
     },
     async session({ session, token }: SessionCallback) {
-      // console.log("token session ", token?.refreshToken);
+      console.log("token session ", token?.refreshToken);
 
       if (token) {
         session.user.accessToken = token?.accessToken;
@@ -235,7 +241,7 @@ export const authOptions: NextAuthOptions = {
         session.user.expiresAt = token?.expiresAt;
       }
 
-      // console.log("session ", session?.user?.refreshToken);
+      console.log("session ", session?.user?.refreshToken);
       return session;
     },
     async redirect({ url, baseUrl }) {

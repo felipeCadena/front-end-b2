@@ -69,7 +69,7 @@ export default function Step4() {
           Local
         </MyTypography>
         <AutocompleteCombobox
-          formData={formData}
+          formData={formData?.address}
           setFormData={setAdventureData}
           onLocationSelected={handleLocationSelected}
         />
