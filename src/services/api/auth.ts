@@ -69,8 +69,11 @@ export const authService = {
       // const response = await api.post("/auth/refresh");
       const response = await axios.post<TokenResponse>(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/refresh`,
+        {}, // corpo vazio
         {
-          refresh_token: token,
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
 

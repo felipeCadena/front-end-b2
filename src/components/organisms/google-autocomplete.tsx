@@ -105,8 +105,6 @@ export default function AutocompleteCombobox({
     });
   };
 
-  console.log(formData);
-
   return (
     <div className="relative">
       <StandaloneSearchBox

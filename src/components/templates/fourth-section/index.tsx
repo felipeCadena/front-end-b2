@@ -11,6 +11,8 @@ import { users } from "@/services/api/users";
 import { adventures } from "@/services/api/adventures";
 
 const FourthSection = () => {
+  const [selectedIndex, setSelectedIndex] = React.useState<number | null>(null);
+
   const { data: userStateFromIp = "" } = useQuery({
     queryKey: ["user_state-from-ip"],
     queryFn: () => users.getStateFromIP(),
@@ -20,9 +22,9 @@ const FourthSection = () => {
     queryKey: ["user_state-from-ip", userStateFromIp],
     queryFn: () =>
       adventures.filterAdventures({
-        state: userStateFromIp,
+        city: userStateFromIp ?? "",
         limit: 3,
-        orderBy: "createdAt desc",
+        // orderBy: "createdAt desc",
       }),
     enabled: !!userStateFromIp,
   });
@@ -83,7 +85,10 @@ const FourthSection = () => {
                     name="localizacaoRedonda"
                     className="w-6 h-6 text-primary-900 ml-3 md:hidden"
                   />
-                  <div className="ml-3 md:ml-16 text-nowrap">
+                  <div
+                    className="ml-3 md:ml-16 text-nowrap cursor-pointer"
+                    onClick={() => setSelectedIndex(index)}
+                  >
                     <MyTypography
                       variant="body-big"
                       weight="regular"
@@ -122,13 +127,19 @@ const FourthSection = () => {
           </div>
 
           <div className="max-sm:hidden w-full md:h-full md:flex-1">
-            <GoogleMapsMultiple locations={transformedCoordinates} />
+            <GoogleMapsMultiple
+              locations={transformedCoordinates}
+              selectedIndex={selectedIndex ?? 0}
+            />
           </div>
         </div>
 
         {/* Map */}
         <div className="w-full md:hidden">
-          <GoogleMapsMultiple locations={transformedCoordinates} />
+          <GoogleMapsMultiple
+            locations={transformedCoordinates}
+            selectedIndex={selectedIndex ?? 0}
+          />
         </div>
       </div>
     </section>
