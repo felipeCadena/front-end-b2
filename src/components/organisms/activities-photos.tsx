@@ -1,17 +1,17 @@
-"use client";
+'use client';
 
-import Image from "next/image";
-import React from "react";
-import MyBadge from "../atoms/my-badge";
-import MyTypography from "../atoms/my-typography";
-import MyButton from "../atoms/my-button";
-import MyIcon from "../atoms/my-icon";
-import Camera from "../atoms/my-icon/elements/camera";
-import { useRouter } from "next/navigation";
-import PATHS from "@/utils/paths";
-import { getData, getHora, handleNameActivity } from "@/utils/formatters";
-import { cn } from "@/utils/cn";
-import Edit from "../atoms/my-icon/elements/edit";
+import Image from 'next/image';
+import React from 'react';
+import MyBadge from '../atoms/my-badge';
+import MyTypography from '../atoms/my-typography';
+import MyButton from '../atoms/my-button';
+import MyIcon from '../atoms/my-icon';
+import Camera from '../atoms/my-icon/elements/camera';
+import { useRouter } from 'next/navigation';
+import PATHS from '@/utils/paths';
+import { getData, getHora, handleNameActivity } from '@/utils/formatters';
+import { cn } from '@/utils/cn';
+import Edit from '../atoms/my-icon/elements/edit';
 
 export default function ActivitiesPhotos({
   activities,
@@ -22,29 +22,31 @@ export default function ActivitiesPhotos({
 }) {
   const router = useRouter();
 
-  const handleImagesAdmin = (id: string) => {
-    router.push("/admin/marketing/atividade/" + id);
+  const handleImagesAdmin = (adventureId: string, scheduleId: string) => {
+    router.push(`/admin/marketing/atividade/${adventureId}?sch=${scheduleId}`);
   };
 
   return (
     <section
       className={cn(
         admin &&
-          "md:max-w-4xl md:grid md:grid-cols-2 md:gap-4 md:items-center md:justify-center md:mx-auto"
+          'md:max-w-4xl md:grid md:grid-cols-2 md:gap-4 md:items-center md:justify-center md:mx-auto'
       )}
     >
       {activities &&
-        activities.map((activity: any, index: number) => (
+        activities?.map((activity: any, index: number) => (
           <div key={index}>
             <div
               className="flex max-sm:flex-col md:justify-between gap-2 cursor-pointer my-6 space-y-2"
-              onClick={() => admin && handleImagesAdmin(activity?.scheduleId)}
+              onClick={() =>
+                admin && handleImagesAdmin(activity?.adventureId, activity?.id)
+              }
             >
               <div className="w-full flex gap-2 cursor-pointer">
                 <div
                   className={cn(
-                    "relative z-10 overflow-hidden w-[180px] h-[120px] hover:cursor-pointer rounded-md",
-                    admin && "md:h-[130px] "
+                    'relative z-10 overflow-hidden w-[180px] h-[120px] hover:cursor-pointer rounded-md',
+                    admin && 'md:min-h-[130px] md:min-w-[180px]'
                   )}
                 >
                   <Image
@@ -53,13 +55,13 @@ export default function ActivitiesPhotos({
                       activity?.adventure?.images &&
                       activity?.adventure?.images.length > 0
                         ? activity?.adventure?.images[0].url
-                        : "/images/atividades/paraquedas.webp"
+                        : '/images/atividades/paraquedas.webp'
                     }
                     width={250}
                     height={300}
                     className={cn(
-                      "w-[180px] h-[120px] object-cover",
-                      admin && "md:h-[130px]"
+                      'w-[180px] h-[120px] object-cover',
+                      admin && 'md:min-h-[130px] md:min-w-[180px]'
                     )}
                   />
                 </div>
@@ -67,11 +69,13 @@ export default function ActivitiesPhotos({
                 <div className="space-y-1 max-sm:w-1/2">
                   <MyBadge variant="outline" className="p-1">
                     {handleNameActivity(
-                      activity?.adventure?.typeAdventure ?? "mar"
+                      activity?.adventure?.typeAdventure ?? 'mar'
                     )}
                   </MyBadge>
                   <MyTypography variant="subtitle3" weight="bold" className="">
-                    {activity?.adventure?.title}
+                    {activity?.adventure?.title.length > 20
+                      ? activity?.adventure?.title.slice(0, 20) + '...'
+                      : activity?.adventure?.title}
                   </MyTypography>
 
                   {admin && (
@@ -79,7 +83,7 @@ export default function ActivitiesPhotos({
                       <Image
                         alt="avatar"
                         src={
-                          activity?.adventure?.partner?.logo?.url ?? "user.png"
+                          activity?.adventure?.partner?.logo?.url ?? 'user.png'
                         }
                         width={8}
                         height={8}
@@ -87,14 +91,22 @@ export default function ActivitiesPhotos({
                       />
                       <div>
                         <MyTypography variant="label" weight="regular">
-                          {activity?.parceiro.nome}
+                          {activity?.adventure?.partner?.fantasyName}
                         </MyTypography>
                       </div>
                     </div>
                   )}
-                  <MyTypography variant="body" weight="regular" className="">
-                    {`Data: ${getData(activity?.schedule?.datetime)} - ${getHora(activity?.schedule?.datetime)}`}
-                  </MyTypography>
+
+                  {admin && (
+                    <MyTypography variant="body" weight="regular" className="">
+                      {`Data: ${getData(activity?.datetime)} - ${getHora(activity.datetime)}`}
+                    </MyTypography>
+                  )}
+                  {!admin && (
+                    <MyTypography variant="body" weight="regular" className="">
+                      {`Data: ${getData(activity?.schedule?.datetime)} - ${getHora(activity?.schedule?.datetime)}`}
+                    </MyTypography>
+                  )}
                   {!admin &&
                     (activity?.schedule?.limitDateForMedias &&
                     !activity?.schedule?.dateMediasPosted ? (
@@ -104,9 +116,9 @@ export default function ActivitiesPhotos({
                         lightness={500}
                         className=""
                       >
-                        Enviar fotos ou vídeos da atividade{" "}
+                        Enviar fotos ou vídeos da atividade{' '}
                         <span className="font-bold">
-                          até dia{" "}
+                          até dia{' '}
                           {getData(activity?.schedule?.limitDateForMedias)}
                         </span>
                       </MyTypography>
@@ -117,7 +129,7 @@ export default function ActivitiesPhotos({
                         lightness={500}
                         className=""
                       >
-                        Fotos e vídeos enviados no dia{" "}
+                        Fotos e vídeos enviados no dia{' '}
                         {getData(activity?.schedule?.dateMediasPosted)}
                       </MyTypography>
                     ))}
@@ -133,12 +145,12 @@ export default function ActivitiesPhotos({
                     leftIcon={<Camera color="#8DC63F" />}
                     className="w-full"
                     onClick={() =>
-                      router.push(PATHS["enviar-fotos"](activity?.scheduleId))
+                      router.push(PATHS['enviar-fotos'](activity?.scheduleId))
                     }
                   >
                     {activity?.schedule?.dateMediasPosted
-                      ? "Editar Fotos"
-                      : "Enviar Fotos"}
+                      ? 'Editar Fotos'
+                      : 'Enviar Fotos'}
                   </MyButton>
                   <MyButton
                     variant="secondary-muted"
@@ -147,12 +159,12 @@ export default function ActivitiesPhotos({
                     leftIcon={<MyIcon name="video" />}
                     className="w-full"
                     onClick={() =>
-                      router.push(PATHS["enviar-videos"](activity?.scheduleId))
+                      router.push(PATHS['enviar-videos'](activity?.scheduleId))
                     }
                   >
                     {activity?.schedule?.dateMediasPosted
-                      ? "Editar Vídeos"
-                      : "Enviar Vídeos"}
+                      ? 'Editar Vídeos'
+                      : 'Enviar Vídeos'}
                   </MyButton>
                 </div>
               )}
