@@ -1,5 +1,5 @@
-import { api } from '@/libs/api';
-import { Adventure, GetAdventuresParams, Schedules } from './adventures';
+import { api } from "@/libs/api";
+import { Adventure, GetAdventuresParams, Schedules } from "./adventures";
 
 export interface Partner {
   id: number;
@@ -103,10 +103,10 @@ export const adminService = {
     skip?: number;
   }): Promise<Partner[]> {
     try {
-      const response = await api.get('/partners/search', { params });
+      const response = await api.get("/partners/search", { params });
       return response.data;
     } catch (error) {
-      console.error('Error searching partners:', error);
+      console.error("Error searching partners:", error);
       throw error;
     }
   },
@@ -116,7 +116,7 @@ export const adminService = {
       const response = await api.patch(`/partners/${id}`, data);
       return response.data;
     } catch (error) {
-      console.error('Error updating partner:', error);
+      console.error("Error updating partner:", error);
       throw error;
     }
   },
@@ -126,7 +126,7 @@ export const adminService = {
       const response = await api.delete(`/partners/${id}`);
       return response.data;
     } catch (error) {
-      console.error('Error deleting partner:', error);
+      console.error("Error deleting partner:", error);
       throw error;
     }
   },
@@ -136,7 +136,7 @@ export const adminService = {
       const response = await api.get(`/partners/${id}`);
       return response.data;
     } catch (error) {
-      console.error('Error fetching partner by ID:', error);
+      console.error("Error fetching partner by ID:", error);
       throw error;
     }
   },
@@ -151,7 +151,7 @@ export const adminService = {
       );
       return response.data;
     } catch (error) {
-      console.error('Error listing partner schedules:', error);
+      console.error("Error listing partner schedules:", error);
       throw error;
     }
   },
@@ -167,10 +167,10 @@ export const adminService = {
   },
   createUser: async (userData: Record<string, any>) => {
     try {
-      const response = await api.post('/users', userData);
+      const response = await api.post("/users", userData);
       return response.data;
     } catch (error) {
-      console.error('Error creating user:', error);
+      console.error("Error creating user:", error);
       throw error;
     }
   },
@@ -201,7 +201,7 @@ export const adminService = {
       const { data } = await api.patch<Adventure>(`/adventures/${id}`, payload);
       return data;
     } catch (error) {
-      console.error('Erro ao aprovar ou rejeitar atividade:', error);
+      console.error("Erro ao aprovar ou rejeitar atividade:", error);
       throw error;
     }
   },
@@ -209,12 +209,12 @@ export const adminService = {
     params: GetAdventuresParams
   ): Promise<Adventure[]> => {
     try {
-      const { data } = await api.get<Adventure[]>('/adventures/search', {
+      const { data } = await api.get<Adventure[]>("/adventures/search", {
         params,
       });
       return data;
     } catch (error) {
-      console.error('Erro ao buscar atividades:', error);
+      console.error("Erro ao buscar atividades:", error);
       throw error;
     }
   },
@@ -222,19 +222,19 @@ export const adminService = {
   // Notifications
   async listNotifications(params?: { limit?: number; skip?: number }) {
     try {
-      const response = await api.get('/notifications', { params });
+      const response = await api.get("/notifications", { params });
       return response.data;
     } catch (error) {
-      console.error('Error listing notifications:', error);
+      console.error("Error listing notifications:", error);
       throw error;
     }
   },
   async countUnreadNotificationsAdmin(params?: { limit?: number }) {
     try {
-      const response = await api.get('/notifications/admin/count', { params });
+      const response = await api.get("/notifications/admin/count", { params });
       return response.data;
     } catch (error) {
-      console.error('Error listing notifications:', error);
+      console.error("Error listing notifications:", error);
       throw error;
     }
   },
@@ -242,17 +242,17 @@ export const adminService = {
   // Chat
   async createChat(data: { userToId: string }) {
     try {
-      const response = await api.post('/chats/new', data);
+      const response = await api.post("/chats/new", data);
       return response.data;
     } catch (error) {
-      console.error('Error creating chat:', error);
+      console.error("Error creating chat:", error);
       throw error;
     }
   },
 
   // Config
   async createConfig(data: {
-    type: 'imgSystem' | 'justificativa' | 'textSystem' | 'timeAdventures';
+    type: "imgSystem" | "justificativa" | "textSystem" | "timeAdventures";
     name?: string;
     text?: string;
     localInsert: string;
@@ -262,10 +262,10 @@ export const adminService = {
     };
   }) {
     try {
-      const response = await api.post('/system', data);
+      const response = await api.post("/system", data);
       return response.data;
     } catch (error) {
-      console.error('Error creating config:', error);
+      console.error("Error creating config:", error);
       throw error;
     }
   },
@@ -273,7 +273,7 @@ export const adminService = {
   async updateConfig(
     id: string,
     data: {
-      type: 'imgSystem' | 'justificativa' | 'textSystem' | 'timeAdventures';
+      type: "imgSystem" | "justificativa" | "textSystem" | "timeAdventures";
       name?: string;
       text?: string;
       localInsert: string;
@@ -283,7 +283,7 @@ export const adminService = {
       const response = await api.patch(`/system/${id}`, data);
       return response.data;
     } catch (error) {
-      console.error('Error updating config:', error);
+      console.error("Error updating config:", error);
       throw error;
     }
   },
@@ -299,7 +299,7 @@ export const adminService = {
       const response = await api.put(`/system/${id}/media`, media);
       return response.data;
     } catch (error) {
-      console.error('Error updating media config:', error);
+      console.error("Error updating media config:", error);
       throw error;
     }
   },
@@ -309,7 +309,7 @@ export const adminService = {
       const response = await api.delete(`/system/${id}`);
       return response.data;
     } catch (error) {
-      console.error('Error deleting config:', error);
+      console.error("Error deleting config:", error);
       throw error;
     }
   },
@@ -323,20 +323,20 @@ export const adminService = {
     skip?: number;
   }) {
     try {
-      const response = await api.get('/admin/partners/orders', { params });
+      const response = await api.get("/admin/partners/orders", { params });
       return response.data;
     } catch (error) {
-      console.error('Error listing pending paid partners:', error);
+      console.error("Error listing pending paid partners:", error);
       throw error;
     }
   },
 
   async updatePaidPartnersStatus(ids: string[]) {
     try {
-      const response = await api.post('/admin/partners/paid-status', { ids });
+      const response = await api.post("/admin/partners/paid-status", { ids });
       return response.data;
     } catch (error) {
-      console.error('Error updating paid partners status:', error);
+      console.error("Error updating paid partners status:", error);
       throw error;
     }
   },
@@ -351,28 +351,33 @@ export const adminService = {
       });
       return response.data;
     } catch (error) {
-      console.error('Error fetching partner income:', error);
+      console.error("Error fetching partner income:", error);
       throw error;
     }
   },
 
-  async getB2Income(params: { startsAt: string; endsAt: string }) {
+  async getB2Income(params: {
+    startsAt?: string;
+    endsAt?: string;
+    limit?: number;
+    typeGroup?: string;
+  }) {
     try {
-      const response = await api.get('/admin/b2/income', { params });
+      const response = await api.get("/admin/b2/income", { params });
       return response.data;
     } catch (error) {
-      console.error('Error fetching B2 income:', error);
+      console.error("Error fetching B2 income:", error);
       throw error;
     }
   },
 
   async payPartner(token: string) {
     try {
-      api.defaults.headers.common['x-token-pay-partner'] = token;
-      const response = await api.post('/admin/pay-partner');
+      api.defaults.headers.common["x-token-pay-partner"] = token;
+      const response = await api.post("/admin/pay-partner");
       return response.data;
     } catch (error) {
-      console.error('Error paid partner: ', error);
+      console.error("Error paid partner: ", error);
       throw error;
     }
   },

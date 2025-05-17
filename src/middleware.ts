@@ -38,6 +38,10 @@ export async function middleware(req: NextRequest) {
 
   const role = token.role;
 
+  if (role === "superadmin") {
+    return NextResponse.next();
+  }
+
   // Verifica se o usuário tem acesso à rota privada
   if (
     (isAdmin && role !== "admin") ||

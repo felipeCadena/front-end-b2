@@ -59,67 +59,69 @@ export default function EsqueciMinhaSenha() {
   };
 
   return (
-    <MyForm {...form}>
-      <form
-        className="flex flex-col bg-white rounded-lg max-w-lg m-auto w-full py-16 px-6 md:px-12"
-        onSubmit={form.handleSubmit(handleSubmit)}
-      >
-        <div className="relative flex max-sm:flex-col gap-4 md:items-center">
-          {/* <MyLogo
+    <div className="flex items-center justify-center min-h-screen bg-white px-4">
+      <MyForm {...form}>
+        <form
+          className="flex flex-col bg-white rounded-lg max-w-lg m-auto w-full py-16 px-6 md:px-12"
+          onSubmit={form.handleSubmit(handleSubmit)}
+        >
+          <div className="relative flex max-sm:flex-col gap-4 md:items-center">
+            {/* <MyLogo
           variant="mobile"
           width={200}
           height={200}
           className="mx-auto"
         /> */}
-          <MyIcon
-            name="voltar"
-            className="hover:cursor-pointer"
-            onClick={() => router.push(PATHS.login)}
-          />
-          <MyTypography variant="heading2" weight="bold">
-            Esqueci minha senha
-          </MyTypography>
-        </div>
-
-        <div className="mt-6">
-          <MyFormInput
-            label="E-mail"
-            name="email"
-            type="email"
-            form={form}
-            placeholder="Digite seu e-mail"
-            className="mt-2"
-          />
-        </div>
-        <div className="flex flex-col">
-          <MyButton
-            className="mt-8"
-            variant="default"
-            borderRadius="squared"
-            size="md"
-          >
-            {isLoading ? <MySpinner /> : "Solicitar nova senha"}
-          </MyButton>
-
-          <div className=" flex justify-center items-center text-center mt-12">
-            <MyTypography
-              variant="label"
-              weight="regular"
-              className="text-[#5F5C6B]"
-            >
-              Lembrou da sua senha?
-            </MyTypography>
-            <MyButton
-              variant="text"
-              type="button"
-              className="p-0 ml-2 underline"
+            <MyIcon
+              name="voltar"
+              className="hover:cursor-pointer"
               onClick={() => router.push(PATHS.login)}
-            >
-              Bora lá!
-            </MyButton>
+            />
+            <MyTypography variant="heading2" weight="bold">
+              Esqueci minha senha
+            </MyTypography>
           </div>
-        </div>
-      </form>
-    </MyForm>
+
+          <div className="mt-6">
+            <MyFormInput
+              label="E-mail"
+              name="email"
+              type="email"
+              form={form}
+              placeholder="Digite seu e-mail"
+              className="mt-2"
+            />
+          </div>
+          <div className="flex flex-col">
+            <MyButton
+              className="mt-8"
+              variant="default"
+              borderRadius="squared"
+              size="md"
+            >
+              {isLoading ? <MySpinner /> : "Solicitar nova senha"}
+            </MyButton>
+
+            <div className=" flex justify-center items-center text-center mt-12">
+              <MyTypography
+                variant="label"
+                weight="regular"
+                className="text-[#5F5C6B]"
+              >
+                Lembrou da sua senha?
+              </MyTypography>
+              <MyButton
+                variant="text"
+                type="button"
+                className="p-0 ml-2 underline"
+                onClick={() => router.push(PATHS.login)}
+              >
+                Bora lá!
+              </MyButton>
+            </div>
+          </div>
+        </form>
+      </MyForm>
+    </div>
   );
 }

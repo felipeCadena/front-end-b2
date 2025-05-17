@@ -94,22 +94,22 @@ const renderTooltip = (props: any) => {
               R$ {data.Total ?? 0}
             </p>
           )}
-          {data.arTotal > 0 && (
+          {data.ar > 0 && (
             <p>
               <strong>Ar: </strong>
-              R$ {data.arTotal ?? 0}
+              R$ {data.ar ?? 0}
             </p>
           )}
-          {data.terraTotal > 0 && (
+          {data.terra > 0 && (
             <p>
               <strong>Terra: </strong>
-              R$ {data.terraTotal ?? 0}
+              R$ {data.terra ?? 0}
             </p>
           )}
-          {data.marTotal > 0 && (
+          {data.mar > 0 && (
             <p>
               <strong>Mar: </strong>
-              R$ {data.marTotal}
+              R$ {data.mar}
             </p>
           )}
         </div>
@@ -232,7 +232,10 @@ export default function Dashboard() {
       }),
   });
 
-  const type = typeGroup === "month" ? "2025-05" : "week-1-2025-05";
+  const type =
+    typeGroup === "month"
+      ? `${filters.year}-${filters.month}`
+      : `week-1-${filters.year}-${filters.month}`;
 
   const incomeData = partnerIncome?.[type];
 
@@ -329,12 +332,66 @@ export default function Dashboard() {
     });
   }
 
-  const getMiddleMonthLabel = (data: { name: string; Total: number }[]) => {
-    const monthsWithValue = data.filter((d) => d.Total > 0);
-    if (!monthsWithValue.length) return null;
+  const buildChartData = (dataFromApi: Record<string, any>, type: string) => {
+    return type === "month"
+      ? generateMonthlyChartData(dataFromApi)
+      : generateWeeklyChartData(dataFromApi);
+  };
 
-    const middleIndex = Math.floor(monthsWithValue.length / 2);
-    return monthsWithValue[middleIndex]?.name ?? null;
+  const formatMonth = (label: string) => {
+    return (
+      label.replace(".", "").charAt(0).toUpperCase() +
+      label.replace(".", "").slice(1)
+    );
+  };
+
+  // Gera 6 meses antes e 6 depois do atual
+  const generateMonthlyChartData = (dataFromApi: Record<string, any>) => {
+    const now = new Date();
+    const months = [];
+
+    for (let i = -6; i <= 6; i++) {
+      const date = new Date(now.getFullYear(), now.getMonth() + i, 1);
+      const key = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, "0")}`;
+      const label = date.toLocaleString("pt-BR", { month: "short" }); // Ex: "mai."
+
+      const monthData = Object.entries(dataFromApi).find(([k]) =>
+        k.endsWith(key)
+      )?.[1];
+
+      months.push({
+        name: formatMonth(label), // "Mai"
+        mar: monthData?.marTotal || 0,
+        ar: monthData?.arTotal || 0,
+        terra: monthData?.terraTotal || 0,
+        Total: monthData?.sumTotal || 0,
+      });
+    }
+
+    return months;
+  };
+
+  const generateWeeklyChartData = (dataFromApi: Record<string, any>) => {
+    const entries = Object.entries(dataFromApi)
+      .map(([key, value]) => {
+        const [_, weekStr, year, month] = key.split("-");
+        const week = parseInt(weekStr, 10);
+        const date = new Date(`${year}-${month}-01`);
+        const monthLabel = date.toLocaleString("pt-BR", { month: "short" });
+
+        return {
+          name: `Sem ${week} - ${monthLabel.charAt(0).toUpperCase() + monthLabel.slice(1)}`,
+          week,
+          month: monthLabel,
+          mar: value.marTotal || 0,
+          ar: value.arTotal || 0,
+          terra: value.terraTotal || 0,
+          Total: value.sumTotal || 0,
+        };
+      })
+      .sort((a, b) => a.week - b.week); // garante ordenação correta
+
+    return entries;
   };
 
   const getMiddleLabel = (data: { name: string; Total: number }[]) => {
@@ -344,6 +401,27 @@ export default function Dashboard() {
     const middleIndex = Math.floor(withValue.length / 2);
     return withValue[middleIndex]?.name ?? null;
   };
+
+  const getMiddleMonthLabel = (data: { name: string }[]) => {
+    const now = new Date();
+    const currentMonthLabel = now.toLocaleString("pt-BR", { month: "short" });
+    const formatted =
+      currentMonthLabel.charAt(0).toUpperCase() + currentMonthLabel.slice(1);
+
+    console.log(formatted);
+    console.log(data);
+
+    const found = data.find((item) => `${item.name}.` === formatted);
+    return found?.name ?? null;
+  };
+
+  // const getMiddleLabel = (data: { name: string; Total: number }[]) => {
+  //   const withValue = data.filter((d) => d.Total > 0);
+  //   if (!withValue.length) return null;
+
+  //   const middleIndex = Math.floor(withValue.length / 2);
+  //   return withValue[middleIndex]?.name ?? null;
+  // };
 
   return (
     <main className="max-sm:mx-4 my-6">
@@ -560,10 +638,18 @@ export default function Dashboard() {
               {partnerIncomeYear &&
               Object.keys(partnerIncomeYear).length > 0 ? (
                 (() => {
-                  const chartData = formatChartData(
+                  // const chartData = formatChartData(
+                  //   partnerIncomeYear,
+                  //   typeGroupYear
+                  // );
+
+                  const chartData = buildChartData(
                     partnerIncomeYear,
                     typeGroupYear
                   );
+
+                  console.log(typeGroupYear);
+
                   const reference =
                     typeGroupYear == "month"
                       ? getMiddleMonthLabel(chartData)
@@ -592,11 +678,33 @@ export default function Dashboard() {
                         {reference && (
                           <ReferenceLine
                             x={reference}
-                            stroke="orange"
+                            stroke="#000"
+                            // strokeDasharray="5 5"
                             strokeWidth={2}
                           />
                         )}
                         <Line
+                          type="monotone"
+                          dataKey="mar"
+                          stroke="#00C6FB"
+                          strokeWidth={2}
+                          name="Mar"
+                        />
+                        <Line
+                          type="monotone"
+                          dataKey="ar"
+                          stroke="#FF66B2"
+                          strokeWidth={2}
+                          name="Ar"
+                        />
+                        <Line
+                          type="monotone"
+                          dataKey="terra"
+                          stroke="#FFA500"
+                          strokeWidth={2}
+                          name="Terra"
+                        />
+                        {/* <Line
                           type="monotone"
                           dataKey="Total"
                           stroke="#00C6FB"
@@ -609,8 +717,12 @@ export default function Dashboard() {
                           strokeWidth={2}
                           stroke="rgb(201, 201, 201)"
                           dot={{ r: 0 }}
+                        /> */}
+                        <CartesianGrid
+                          color="#000"
+                          strokeDasharray="2"
+                          vertical={false}
                         />
-                        <CartesianGrid strokeDasharray="2" vertical={false} />
                       </LineChart>
                     </ResponsiveContainer>
                   );

@@ -408,7 +408,7 @@ const PagamentoMobile = () => {
                 </MyTypography>
                 <MyTypography
                   variant="heading2"
-                  weight="regular"
+                  weight="bold"
                   className="text-lg md:text-xl"
                 >
                   {Number(totalPrice).toLocaleString("pt-BR", {
@@ -420,7 +420,7 @@ const PagamentoMobile = () => {
               <div className="flex justify-between items-center">
                 <MyTypography
                   variant="subtitle3"
-                  weight="bold"
+                  weight="regular"
                   className="text-sm md:text-md"
                 >
                   Taxas de serviço:

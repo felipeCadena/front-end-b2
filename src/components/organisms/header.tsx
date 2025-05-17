@@ -21,7 +21,7 @@ export default function Header() {
   const pathname = usePathname();
   const { sideBarActive } = useLogin();
   const { setUser } = useAuthStore();
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
 
   const { data: fetchUser } = useQuery({
     queryKey: ["fetchUser"],
@@ -80,15 +80,7 @@ export default function Header() {
         <LanguageDropdown />
 
         <div className="max-sm:hidden">
-          {!session?.user ? (
-            <button
-              onClick={() => router.push(PATHS.login)}
-              className="text-sm flex items-center font-semibold gap-1 px-2 md:px-4 py-1 text-[0.9rem] text-white bg-black rounded-full shadow-md"
-            >
-              Logar-se
-              <MyIcon name="user" />
-            </button>
-          ) : (
+          {session?.user && status === "authenticated" ? (
             <SideBarModal sideBar={sideBarActive}>
               <div className="flex items-center gap-1 cursor-pointer">
                 <MyIcon name="chevron-down" />
@@ -102,6 +94,14 @@ export default function Header() {
                 />
               </div>
             </SideBarModal>
+          ) : (
+            <button
+              onClick={() => router.push(PATHS.login)}
+              className="text-sm flex items-center font-semibold gap-1 px-2 md:px-4 py-1 text-[0.9rem] text-white bg-black rounded-full shadow-md"
+            >
+              Logar-se
+              <MyIcon name="user" />
+            </button>
           )}
         </div>
       </div>
