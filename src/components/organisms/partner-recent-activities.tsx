@@ -5,7 +5,7 @@ import React, { useState } from 'react';
 import ModalClient from './modal-client';
 import Pessoas from '../atoms/my-icon/elements/pessoas';
 import { PartnerSchedule } from '@/services/api/admin';
-import RecenActivityCard from './recent-activity-card';
+import RecentActivityCard from './recent-activity-card';
 
 type PartnerRecentActivitiesProps = {
   recentActivities: PartnerSchedule[];
@@ -39,7 +39,7 @@ export default function PartnerRecentActivities({
           )}
         >
           {recentActivities.map((recentAct, index) => (
-            <RecenActivityCard
+            <RecentActivityCard
               index={index}
               recentActivity={recentAct}
               setShowModal={setShowModal}
