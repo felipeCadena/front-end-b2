@@ -141,7 +141,7 @@ export default function Atividade() {
                     ) : (
                       <video
                         src={file?.url}
-                        className="h-[200px] w-[200px] rounded-lg object-cover"
+                        className="h-[100px] w-[100px] md:h-[200px] md:w-[200px] rounded-lg object-cover"
                         controls
                       />
                     )}
