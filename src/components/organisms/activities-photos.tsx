@@ -118,6 +118,7 @@ export default function ActivitiesPhotos({
                       {`Data: ${getData(activity?.schedule?.datetime)} - ${getHora(activity?.schedule?.datetime)}`}
                     </MyTypography>
                   )}
+
                   {!admin &&
                     (activity?.schedule?.limitDateForMedias &&
                     !activity?.schedule?.dateMediasPosted ? (
