@@ -25,8 +25,6 @@ export default function GoogleMapsMultiple({
 
   const { isLoaded } = useGoogleMaps();
 
-  if (!isLoaded) return <p>Carregando mapa...</p>;
-
   // Quando selectedIndex mudar, centraliza o mapa no local correspondente
   React.useEffect(() => {
     if (
@@ -36,8 +34,9 @@ export default function GoogleMapsMultiple({
     ) {
       mapRef.current.panTo(locations[selectedIndex]);
     }
-  }, [selectedIndex, locations]);
+  }, [selectedIndex]);
 
+  if (!isLoaded) return <p>Carregando mapa...</p>;
   return (
     <div className="rounded-xl overflow-hidden max-sm:mt-4">
       <GoogleMap
