@@ -22,8 +22,8 @@ export default function ActivitiesPhotos({
 }) {
   const router = useRouter();
 
-  const handleImagesAdmin = (id: string) => {
-    router.push("/admin/marketing/atividade/" + id);
+  const handleImagesAdmin = (adventureId: string, scheduleId: string) => {
+    router.push(`/admin/marketing/atividade/${adventureId}?sch=${scheduleId}`);
   };
 
   return (
@@ -34,17 +34,19 @@ export default function ActivitiesPhotos({
       )}
     >
       {activities &&
-        activities.map((activity: any, index: number) => (
+        activities?.map((activity: any, index: number) => (
           <div key={index}>
             <div
               className="flex max-sm:flex-col md:justify-between gap-2 cursor-pointer my-6 space-y-2"
-              onClick={() => admin && handleImagesAdmin(activity?.scheduleId)}
+              onClick={() =>
+                admin && handleImagesAdmin(activity?.adventureId, activity?.id)
+              }
             >
               <div className="w-full flex gap-2 cursor-pointer">
                 <div
                   className={cn(
                     "relative z-10 overflow-hidden w-[180px] h-[120px] hover:cursor-pointer rounded-md",
-                    admin && "md:h-[130px] "
+                    admin && "md:min-h-[130px] md:min-w-[180px]"
                   )}
                 >
                   <Image
@@ -59,7 +61,7 @@ export default function ActivitiesPhotos({
                     height={300}
                     className={cn(
                       "w-[180px] h-[120px] object-cover",
-                      admin && "md:h-[130px]"
+                      admin && "md:min-h-[130px] md:min-w-[180px]"
                     )}
                   />
                 </div>
@@ -100,14 +102,22 @@ export default function ActivitiesPhotos({
                       />
                       <div>
                         <MyTypography variant="label" weight="regular">
-                          {activity?.parceiro.nome}
+                          {activity?.adventure?.partner?.fantasyName}
                         </MyTypography>
                       </div>
                     </div>
                   )}
-                  <MyTypography variant="body" weight="regular" className="">
-                    {`Data: ${getData(activity?.schedule?.datetime)} - ${getHora(activity?.schedule?.datetime)}`}
-                  </MyTypography>
+
+                  {admin && (
+                    <MyTypography variant="body" weight="regular" className="">
+                      {`Data: ${getData(activity?.datetime)} - ${getHora(activity.datetime)}`}
+                    </MyTypography>
+                  )}
+                  {!admin && (
+                    <MyTypography variant="body" weight="regular" className="">
+                      {`Data: ${getData(activity?.schedule?.datetime)} - ${getHora(activity?.schedule?.datetime)}`}
+                    </MyTypography>
+                  )}
                   {!admin &&
                     (activity?.schedule?.limitDateForMedias &&
                     !activity?.schedule?.dateMediasPosted ? (
