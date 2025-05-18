@@ -15,6 +15,7 @@ import useLogin from "@/store/useLogin";
 import { useQuery } from "@tanstack/react-query";
 import { users } from "@/services/api/users";
 import { useAuthStore } from "@/store/useAuthStore";
+import User from "../atoms/my-icon/elements/user";
 
 export default function Header() {
   const router = useRouter();
@@ -77,7 +78,15 @@ export default function Header() {
 
       {/* Language Dropdown - Alinhado à direita */}
       <div className="flex-shrink-0 md:flex md:items-center md:gap-6 ">
-        <LanguageDropdown />
+        <div className="flex gap-2 items-center">
+          <LanguageDropdown />
+          <button
+            onClick={() => router.push(PATHS.login)}
+            className="md:hidden flex items-center font-semibold gap-1 px-2 py-1 text-white bg-black rounded-full shadow-md"
+          >
+            <User fill="#fff" />
+          </button>
+        </div>
 
         <div className="max-sm:hidden">
           {session?.user && status === "authenticated" ? (

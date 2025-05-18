@@ -448,9 +448,9 @@ export default function Dashboard() {
                       className="mt-1 ml-1"
                     >
                       % das atividades realizadas{" "}
-                      <span className="text-xs text-neutral-400">
+                      <p className="text-xs text-neutral-400 mt-1">
                         Saiba Mais
-                      </span>
+                      </p>
                     </MyTypography>
                   </div>
                 </div>

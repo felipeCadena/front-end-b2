@@ -70,6 +70,7 @@ export default function BasicInfo({
     description: formData.description,
     hoursBeforeSchedule: formData.hoursBeforeSchedule,
     hoursBeforeCancellation: formData.hoursBeforeCancellation,
+    transportAddress: formData.transportAddress,
   };
 
   const handleSubmit = async () => {
@@ -161,7 +162,7 @@ export default function BasicInfo({
 
         {formData?.transportIncluded && (
           <MyTextInput
-            value={formData.transportAddress}
+            value={formData?.transportAddress}
             onChange={(value) =>
               setFormData({ ...formData, transportAddress: value.target.value })
             }

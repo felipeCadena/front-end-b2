@@ -37,6 +37,7 @@ export default function RelatorioPagamentos() {
         endsAt: endOfSelectedMonth,
         typeAdventure: typeAdventure as string,
         orderStatus: filters.report,
+        orderBy: "createdAt desc",
       }),
   });
 

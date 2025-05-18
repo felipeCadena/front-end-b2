@@ -2,9 +2,13 @@
 
 import { cn } from "@/utils/cn";
 import { usePathname } from "next/navigation";
-import { ReactNode } from "react";
+import { ReactNode, useEffect } from "react";
 import { Inter } from "next/font/google";
 import "../globals.css";
+import { useSession } from "next-auth/react";
+import { useQuery } from "@tanstack/react-query";
+import { users } from "@/services/api/users";
+import { partnerService } from "@/services/api/partner";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -14,6 +18,7 @@ const inter = Inter({
 
 const Layout = ({ children }: { children: JSX.Element | ReactNode }) => {
   const pathname = usePathname();
+  const { data: session } = useSession();
   const fullWidthPages = [
     "/login",
     "/cadastro",
@@ -22,6 +27,16 @@ const Layout = ({ children }: { children: JSX.Element | ReactNode }) => {
     "/parceiro/esqueci-minha-senha",
     "/recuperacao/novasenha",
   ];
+
+  // const { data: partner } = useQuery({
+  //   queryKey: ["partner"],
+  //   enabled: !!session?.user,
+  //   queryFn: () => partnerService.getPartnerLogged(),
+  // });
+
+  // useEffect(() => {}, [session?.user]);
+
+  // console.log(session);
 
   return (
     <section

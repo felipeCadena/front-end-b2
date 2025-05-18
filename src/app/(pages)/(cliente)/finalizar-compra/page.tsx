@@ -194,9 +194,6 @@ export default function FinalizarCompra() {
       paymentMethod: selectedPayment,
     },
   });
-  const { errors } = form.formState;
-
-  console.log("error form: " + JSON.stringify(errors));
 
   useEffect(() => {
     if (purchaseOrder && loggedUser) {

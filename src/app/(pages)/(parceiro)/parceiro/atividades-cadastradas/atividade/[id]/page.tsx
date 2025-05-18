@@ -601,7 +601,7 @@ export default function Atividade() {
               )}
 
             <MyTypography variant="body-big" weight="semibold">
-              Ponto de encontro da atividade:
+              Local da atividade:
             </MyTypography>
             <div className="max-sm:my-2 flex items-center mt-2 p-3 bg-[#F1F0F587] border border-primary-600/30 border-opacity-80 rounded-lg shadow-sm hover:bg-gray-100 relative">
               <div className="absolute inset-y-0 left-0 w-3 bg-primary-900 rounded-l-lg"></div>
@@ -624,7 +624,7 @@ export default function Atividade() {
                   weight="regular"
                   className="text-gray-600"
                 >
-                  Ponto de encontro: {activity?.pointRefAddress}
+                  Ponto de referência: {activity?.pointRefAddress}
                 </MyTypography>
               </div>
             </div>
@@ -733,6 +733,16 @@ export default function Atividade() {
             adminAprroved={activity?.adminApproved}
             isOcult={!activity.onSite}
           />
+          <MyButton
+            variant="outline-neutral"
+            size="lg"
+            borderRadius="squared"
+            className="mt-4 w-full md:hidden"
+            leftIcon={<MyIcon name="voltar-black" />}
+            onClick={() => router.push(PATHS["atividades-cadastradas"])}
+          >
+            Ir para atividades
+          </MyButton>
         </div>
       </div>
     </section>

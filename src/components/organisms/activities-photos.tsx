@@ -71,7 +71,20 @@ export default function ActivitiesPhotos({
                     )}
                   </MyBadge>
                   <MyTypography variant="subtitle3" weight="bold" className="">
-                    {activity?.adventure?.title}
+                    {activity?.adventure?.title.length > 16 ? (
+                      <>
+                        <span className="md:hidden">
+                          {activity?.adventure?.title
+                            .slice(0, 14)
+                            .concat("...")}
+                        </span>
+                        <span className="max-sm:hidden">
+                          {activity?.adventure?.title}
+                        </span>
+                      </>
+                    ) : (
+                      activity?.adventure?.title
+                    )}
                   </MyTypography>
 
                   {admin && (
