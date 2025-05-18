@@ -374,6 +374,7 @@ export const partnerService = {
     endsAt?: string;
     typeAdventure?: string;
     orderStatus?: string;
+    orderBy?: string;
   }): Promise<PartnerIncome | null> => {
     try {
       const response = await api.get<PartnerIncome>(`/admin/partner/orders`, {

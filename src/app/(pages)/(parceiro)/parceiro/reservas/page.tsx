@@ -63,7 +63,7 @@ export default function Reservas() {
           <MyIcon
             name="voltar-black"
             className=""
-            onClick={() => router.back()}
+            onClick={() => router.push(PATHS["atividades-cadastradas"])}
           />
 
           <MyTypography variant="subtitle1" weight="semibold">

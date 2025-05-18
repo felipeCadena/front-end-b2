@@ -46,7 +46,10 @@ export default function Activities({
             <div className="relative z-10 overflow-hidden h-[265px] w-full hover:cursor-pointer rounded-md">
               <Image
                 alt="Imagem da atividade"
-                src={selectActivityImage(activity)}
+                src={
+                  selectActivityImage(activity) ??
+                  "/images/atividades/paraquedas.webp"
+                }
                 width={250}
                 height={300}
                 className="w-full h-[265px] object-cover"

@@ -442,10 +442,14 @@ export const formatIconName = (name: string) => {
 };
 
 export const selectActivityImage = (activity: Adventure) => {
-  const defaultImage = activity?.images?.find((image) => image?.isDefault)?.url;
+  const defaultImage = activity?.images?.find(
+    (image) => image?.isDefault == true
+  );
   const firstImage =
     activity?.images?.[0]?.url ?? "/images/atividades/paraquedas.webp";
-  return defaultImage ?? firstImage;
+
+  const imageUpdate = `${defaultImage?.url ?? firstImage}?v=${defaultImage?.updatedAt ?? "1"}`;
+  return imageUpdate ?? firstImage;
 };
 
 export const sortImagesByDefaultFirst = (images: AdventureImage[] = []) => {

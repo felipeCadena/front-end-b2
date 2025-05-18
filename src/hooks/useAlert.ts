@@ -1,6 +1,7 @@
 "use client";
 
 import useSearchQueryService from "@/services/use-search-query-service";
+import { useRouter } from "next/navigation";
 import React from "react";
 
 export function useAlert() {

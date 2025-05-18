@@ -83,7 +83,7 @@ const ActivityCancelationPolicy = ({
           )}
 
           <MyTypography variant="body-big" weight="semibold" className="mt-6">
-            Ponto de encontro da atividade:
+            Local da atividade:
           </MyTypography>
 
           <div className="flex justify-start items-center mt-2 bg-slate-100 border-[1px] border-primary-900 rounded-lg w-full py-2 px-6">

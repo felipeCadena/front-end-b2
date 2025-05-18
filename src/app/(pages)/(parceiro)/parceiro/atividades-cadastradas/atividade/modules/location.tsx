@@ -116,7 +116,7 @@ export default function Location({
             </MyTypography>
             <AutocompleteCombobox
               onLocationSelected={handleLocationSelected}
-              formData={formData}
+              formData={formData?.address}
               setFormData={setFormData}
             />
           </div>
