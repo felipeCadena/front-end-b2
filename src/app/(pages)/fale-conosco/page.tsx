@@ -18,7 +18,10 @@ import MySpinner from "@/components/atoms/my-spinner";
 
 const formschema = z.object({
   name: z.string().min(3, { message: "Por favor, informe seu nome." }),
-  phone: z.string().min(9, { message: "Informe o telefone para contato." }),
+  phone: z.string().regex(/^\+\d{1,3} \(\d{2}\) \d{4,5}-\d{4}$/, {
+    message:
+      "Informe um telefone válido com código do país. Ex: +55 (11) 91234-5678",
+  }),
   email: z.string().email({ message: "Informe seu e-mail." }),
   topic: z.enum(["Elogio", "Sugestão", "Reclamação"]),
   message: z
@@ -95,7 +98,7 @@ export default function FaleConosco() {
             className="mt-2"
           />
           <MyFormInput
-            label="Telefone"
+            label="Telefone (DDI + DDD + Telefone)"
             name="phone"
             isPhoneNumber
             form={form}

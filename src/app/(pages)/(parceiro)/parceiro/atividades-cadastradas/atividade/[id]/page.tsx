@@ -47,18 +47,13 @@ export default function Atividade() {
 
   useQuery({
     queryKey: ["mySchedules"],
-    queryFn: async () => {
-      const schedules = await partnerService.getMySchedules({
+    queryFn: () =>
+      partnerService.getMySchedules({
         limit: 30,
         skip: 0,
         adventureId: id as string,
         isAvailable: true,
-      });
-      if (schedules && schedules?.totalCount > 0) {
-        setHasClient(true);
-      }
-      return schedules ?? [];
-    },
+      }),
   });
 
   const getAddress = (address: string) => {

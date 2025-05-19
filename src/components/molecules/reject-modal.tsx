@@ -38,7 +38,7 @@ export default function RejectModal({
 }: ConfirmModalProps) {
   return (
     <MyDialog>
-      <DialogTrigger>{children}</DialogTrigger>
+      <DialogTrigger asChild>{children}</DialogTrigger>
 
       <DialogContent
         className={cn(
