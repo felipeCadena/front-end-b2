@@ -77,7 +77,7 @@ export default function MyFormInput<T extends FieldValues>({
     <FormField
       control={form.control}
       name={name}
-      render={({ field }) => (
+      render={({ field, fieldState }) => (
         <FormItem className={cn("w-full", className)}>
           <FormControl>
             {withMask ? (
@@ -88,6 +88,8 @@ export default function MyFormInput<T extends FieldValues>({
                   value={field.value}
                   customInput={MyTextInput}
                   format={maskFormat || ""}
+                  stateColor={fieldState.error ? "error" : "default"}
+                  hint={fieldState.error?.message}
                   onValueChange={(values) => {
                     field.onChange({
                       target: {
@@ -108,6 +110,8 @@ export default function MyFormInput<T extends FieldValues>({
                   prefix={prefix}
                   fixedDecimalScale={false}
                   placeholder={placeholder}
+                  stateColor={fieldState.error ? "error" : "default"}
+                  hint={fieldState.error?.message}
                   onValueChange={(values) => {
                     field.onChange({
                       target: {
@@ -150,6 +154,8 @@ export default function MyFormInput<T extends FieldValues>({
                   inputPadding={inputPadding}
                   label={label}
                   className="mt-2"
+                  stateColor={fieldState.error ? "error" : "default"}
+                  hint={fieldState.error?.message}
                 />
                 {type === "password" && (
                   <MyButton
@@ -168,7 +174,7 @@ export default function MyFormInput<T extends FieldValues>({
               </div>
             )}
           </FormControl>
-          <FormMessage />
+          {/* <FormMessage /> */}
         </FormItem>
       )}
     />
