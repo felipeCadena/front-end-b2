@@ -104,6 +104,7 @@ export default function ChatMessages({ chat }: ChatMessagesProps) {
       );
 
       queryClient.invalidateQueries({ queryKey: ["messages"] });
+      setMessage("");
     } catch (error) {
       console.error("Error sending message:", error);
       toast.error("Failed to send message");
