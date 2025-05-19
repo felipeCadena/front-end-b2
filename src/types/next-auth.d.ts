@@ -13,6 +13,11 @@ declare module "next-auth" {
       defaultPath: string;
       expiresIn: number;
       expiresAt: number;
+      partner?: {
+        id: number;
+        fantasyName: string;
+        isActive: boolean;
+      };
     };
   }
 
@@ -27,6 +32,11 @@ declare module "next-auth" {
     defaultPath: string;
     expiresIn: number;
     expiresAt: number;
+    partner?: {
+      id: number;
+      fantasyName: string;
+      isActive: boolean;
+    };
   }
 
   interface Token {
@@ -40,5 +50,10 @@ declare module "next-auth" {
     defaultPath: string;
     expiresIn: number;
     expiresAt: number;
+    partner?: {
+      id: number;
+      fantasyName: string;
+      isActive: boolean;
+    };
   }
 }

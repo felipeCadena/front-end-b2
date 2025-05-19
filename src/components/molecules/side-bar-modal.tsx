@@ -25,9 +25,8 @@ export default function SideBarModal({
   const handleExit = async (item: any) => {
     if (item === "Sair") {
       try {
-        await signOut({ callbackUrl: "/login" });
-
         await authService.logout(session?.user.refreshToken ?? "");
+        await signOut({ callbackUrl: "/" });
         clearUser();
       } catch (error) {
         console.error("Error during logout:", error);
@@ -35,9 +34,6 @@ export default function SideBarModal({
       }
     }
   };
-
-  console.log(status);
-
   return (
     <MyDropdownMenu>
       <DropdownMenuTrigger asChild>{children}</DropdownMenuTrigger>

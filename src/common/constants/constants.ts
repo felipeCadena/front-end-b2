@@ -10,6 +10,39 @@ export const bankList = [
   { name: "C6 Bank", code: "336" },
 ];
 
+export const realReviews = [
+  {
+    avatar: "/images/avaliacoes/carla.jpeg",
+    name: "Carla Delduca",
+    // date: "12/12/2022",
+    description:
+      "Que experiência incrível!! Adorei fazer a trilha da Pedra da Gávea com a B2! Contratei o serviço para não me preocupar com nada e no final foi acima da minha expectativa. ",
+    // Além deles organizarem tudo, eles ainda foram todos atenciosos durante o trajeto, levaram a corda e nos ajudaram a subir a carrasqueira que eu estava mega preocupada, tiraram fotos lindas, já sabendo os melhores ângulos! Contando as horas e programando a próxima aventura!",
+  },
+  {
+    avatar: "/images/avaliacoes/cintia.jpeg",
+    name: "Cintia Kesseles ",
+    // date: "12/12/2024",
+    description:
+      "Eu fiz mais de uma atividade com a B2 Adventure e já quero mais! Eles me proporcionaram experiências incríveis com segurança e um atendimento impecável! Super recomendo!",
+  },
+  {
+    avatar: "/images/avaliacoes/elaine.jpeg",
+    name: "Elaine Brito",
+    // date: "12/12/2024",
+    description:
+      "Nesse nosso estilo de vida, todo trilheiro sonha em conhecer muitos lugares e eu particularmente sonhava em estar lá em cima (Pedra da Gávea). Que sejamos sempre desbravadores, que tenhamos força e muito foco. ",
+    // A emoção ao olhar as fotos é a mesma de quando eu pude ser agraciada com essa vista, com essa brisa que vinha direto do mar. Momentos esses que muitos estão envolvidos e deixo aqui a minha gratidão! ",
+  },
+  {
+    avatar: "/images/avaliacoes/jessica.jpeg",
+    name: "Jéssica Silva",
+    // date: "12/12/2023",
+    description:
+      "Ao final da trilha, há sempre um presente da natureza! 😍 Obrigada B2 Adventure pela experiência incrível!",
+  },
+];
+
 export const daysOfWeek = [
   { label: "1", value: "1" },
   { label: "2", value: "2" },

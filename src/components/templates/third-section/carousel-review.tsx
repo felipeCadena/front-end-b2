@@ -77,7 +77,7 @@ const CarouselReview = ({ reviews }: any) => {
                   src={review?.avatar ?? ""}
                   width={8}
                   height={8}
-                  className="w-12 h-12 rounded-full object-contain"
+                  className="w-12 h-12 rounded-full object-cover"
                 />
                 <MyTypography
                   variant="body-big"

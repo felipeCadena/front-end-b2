@@ -57,9 +57,8 @@ export default function SidebarMenu({
 
   const handleLogout = async () => {
     try {
-      await signOut({ callbackUrl: "/login" });
-
       await authService.logout(session?.user.refreshToken ?? "");
+      await signOut({ callbackUrl: "/" });
       clearUser();
     } catch (error) {
       console.error("Error during logout:", error);
@@ -98,9 +97,13 @@ export default function SidebarMenu({
             <Link
               href={`${item.link}${item.tab ? `?tab=${item.tab}` : ""}`}
               className={cn("flex justify-between")}
-              onClick={(e) => {
+              onClick={async (e) => {
                 handleCloseSidebar(e);
-                item.label === "Sair" && handleLogout();
+
+                if (item.label === "Sair") {
+                  e.preventDefault(); // Impede a navegação automática
+                  await handleLogout(); // Executa o logout corretamente
+                }
               }}
             >
               <div className="flex gap-1 items-center">

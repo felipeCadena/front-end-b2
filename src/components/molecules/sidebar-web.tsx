@@ -58,8 +58,8 @@ export default function SidebarMenuWeb({}) {
 
   const handleLogout = async () => {
     try {
-      await signOut({ callbackUrl: "/login" });
       await authService.logout(session?.user.refreshToken ?? "");
+      await signOut({ callbackUrl: "/" });
       clearUser();
     } catch (error) {
       console.error("Error during logout:", error);
