@@ -68,8 +68,7 @@ const FourthSection = () => {
                 Atividades mais próximas de você
               </MyTypography>
             </div>
-            {adventuresState &&
-              adventuresState?.length > 0 &&
+            {adventuresState && adventuresState?.length > 0 ? (
               adventuresState?.map((location, index) => (
                 <div
                   key={index}
@@ -114,7 +113,14 @@ const FourthSection = () => {
                     </MyTypography>
                   </div>
                 </div>
-              ))}
+              ))
+            ) : (
+              <div className="w-full h-[225px] flex flex-col justify-center items-center">
+                <MyTypography variant="body-big">
+                  Nenhuma atividade encontrada
+                </MyTypography>
+              </div>
+            )}
             <MyButton
               variant="text"
               borderRadius="squared"
