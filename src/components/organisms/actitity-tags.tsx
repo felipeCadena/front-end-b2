@@ -1,4 +1,8 @@
-import { formatDificultyTag } from "@/utils/formatters";
+import {
+  formatDificultyTag,
+  getDifficultyDescription,
+  getDifficultyDescriptionResume,
+} from "@/utils/formatters";
 import React from "react";
 import MyTypography from "../atoms/my-typography";
 
@@ -31,7 +35,7 @@ const ActivityTags = ({
 
       <div className={`bg-gray-200 py-2 rounded-md mb-2 md:h-fit`}>
         <MyTypography variant="body" weight="bold" className="text-center">
-          {`Grau de dificuldade: ${activityDifficulty}`}
+          {`Grau de dificuldade: ${getDifficultyDescriptionResume(activityDifficulty ?? 0)}`}
         </MyTypography>
       </div>
     </div>

@@ -195,12 +195,30 @@ export default function PartnerTerms() {
           dia 05, 10 ou 15 de cada mês, podendo alterá-la posteriormente.
         </li>
         <li>
-          O pagamento será realizado via transferência bancária para a conta
-          informada no cadastro.
+          O pagamento será realizado via transferência bancária ou PIX para a
+          conta informada no cadastro.
         </li>
         <li>
           A B2 Adventure reterá uma taxa de 30% sobre o valor do serviço
           ofertado pelo Parceiro.
+        </li>
+        <li>
+          Impostos aplicáveis à operação serão adicionados sobre o valor da
+          atividade.
+        </li>
+        <li>
+          Impostos aplicáveis à operação serão adicionados sobre o valor da
+          atividade.
+        </li>
+        <li>
+          Todas as transações e repasses de valores ocorrerão em moeda corrente
+          nacional, Real (BRL).
+        </li>
+        <li>
+          Caso o Cliente efetue o pagamento em moeda estrangeira, a conversão
+          para Real será realizada pela plataforma, e o valor final recebido
+          pelo Parceiro considerará a taxa de câmbio praticada pela B2 Adventure
+          no momento da transação.
         </li>
         <li>
           Parceiros cadastrados na plataforma até 01 de junho de 2025 terão
@@ -215,20 +233,6 @@ export default function PartnerTerms() {
               Adventure.
             </li>
           </ul>
-          <li>
-            Impostos aplicáveis à operação serão adicionados sobre o valor da
-            atividade.
-          </li>
-          <li>
-            Todas as transações e repasses de valores ocorrerão em moeda
-            corrente nacional, Real (BRL).
-          </li>
-          <li>
-            Caso o Cliente efetue o pagamento em moeda estrangeira, a conversão
-            para Real será realizada pela plataforma, e o valor final recebido
-            pelo Parceiro considerará a taxa de câmbio praticada pela B2
-            Adventure no momento da transação.
-          </li>
         </li>
       </ul>
 
@@ -260,11 +264,11 @@ export default function PartnerTerms() {
       <ul className="list-disc list-inside mb-4">
         <li>
           A contratação de seguros para as atividades é opcional e fica a
-          critério do Parceiro.
+          critério do Parceiro incluir ou não na sua atividade.
         </li>
         <li>
           A B2 Adventure não se responsabiliza por acidentes, danos ou qualquer
-          ocorrência durante a execução da atividade
+          ocorrência durante a execução da atividade ofertada pelo Parceiro.
         </li>
         <li>
           O Parceiro reconhece que é exclusivamente responsável pela segurança

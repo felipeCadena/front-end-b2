@@ -12,6 +12,8 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   formatAddress,
   formatPrice,
+  getDifficultyDescription,
+  getDifficultyDescriptionResume,
   handleNameActivity,
 } from "@/utils/formatters";
 import PATHS from "@/utils/paths";
@@ -434,7 +436,8 @@ export default function AprovarAtividade() {
                 weight="bold"
                 className="text-center"
               >
-                Grau de dificuldade: {activity?.difficult}
+                Grau de dificuldade:{" "}
+                {getDifficultyDescriptionResume(activity?.difficult)}
               </MyTypography>
             </div>
           </div>

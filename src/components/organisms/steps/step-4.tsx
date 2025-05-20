@@ -31,13 +31,7 @@ export default function Step4() {
   const { setAdventureData, pointRefAddress, coordinates, address } =
     useAdventureStore();
 
-  const formData = {
-    address,
-  };
-
   const handleLocationSelected = (locationData: LocationData) => {
-    // console.log("Location Data Received:", locationData);
-
     if (locationData.coordinates) {
       // Atualiza o store com o endereço
       setAdventureData({
@@ -69,7 +63,7 @@ export default function Step4() {
           Local
         </MyTypography>
         <AutocompleteCombobox
-          formData={formData?.address}
+          formData={address}
           setFormData={setAdventureData}
           onLocationSelected={handleLocationSelected}
         />

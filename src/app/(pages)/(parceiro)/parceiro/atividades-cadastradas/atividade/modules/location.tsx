@@ -85,18 +85,16 @@ export default function Location({
     setIsLoading(true);
 
     try {
-      await adventures.updateAdventureById(formData.id, data);
+      await adventures.updateAdventureById(formData?.id, data);
 
       queryClient.invalidateQueries({ queryKey: ["activity"] });
       toast.success("Atividade atualizada com sucesso!");
+      onClose();
     } catch (error) {
       toast.error("Erro ao atualizar atividade");
       console.error("Error updating adventure:", error);
     }
     setIsLoading(false);
-    onClose();
-
-    console.log("Form Data Updated:", data);
   };
 
   return (
@@ -118,6 +116,7 @@ export default function Location({
               onLocationSelected={handleLocationSelected}
               formData={formData?.address}
               setFormData={setFormData}
+              editAdventure
             />
           </div>
           <MyTextInput
