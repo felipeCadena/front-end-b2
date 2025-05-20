@@ -40,7 +40,10 @@ export default function Activities({
         activities.map((activity: any, index: number) => (
           <div
             key={index}
-            className="min-w-[70%] md:min-w-[30%] lg:min-w-[20%] flex flex-col gap-1 cursor-pointer md:mb-8"
+            className={cn(
+              "min-w-[70%] md:min-w-[30%] lg:min-w-[20%] flex flex-col gap-1 cursor-pointer md:mb-8",
+              !activity?.onSite && activity?.adminApproved && "opacity-50"
+            )}
             onClick={() => handleActivity(activity.id)}
           >
             <div className="relative z-10 overflow-hidden h-[265px] w-full hover:cursor-pointer rounded-md">
@@ -81,6 +84,11 @@ export default function Activities({
               {!withoutShared && (
                 <MyIcon name="shared-muted" className="cursor-pointer mx-2" />
               )}
+              {/* {!activity?.onSite && activity?.adminApproved && (
+                <MyBadge variant="error" className="rounded-md">
+                  Desativada
+                </MyBadge>
+              )} */}
             </div>
             <MyTypography variant="subtitle1" weight="bold" className="">
               {activity.title.length > 25

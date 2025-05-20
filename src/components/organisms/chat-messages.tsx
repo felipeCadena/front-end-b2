@@ -38,6 +38,7 @@ export default function ChatMessages({ chat }: ChatMessagesProps) {
   const queryClient = useQueryClient();
   const [message, setMessage] = React.useState("");
   const inputRef = React.useRef<HTMLInputElement>(null);
+  const messageRef = React.useRef<HTMLInputElement>(null);
   const [file, setFile] = React.useState<File[] | null>(null);
 
   const handleClickUpload = () => {
@@ -111,11 +112,15 @@ export default function ChatMessages({ chat }: ChatMessagesProps) {
     }
   };
 
-  // useEffect(() => {
-  //   if (window && document) {
-  //     window.scrollTo(0, document.body.scrollHeight);
-  //   }
-  // }, []);
+  const scrollToBottom = () => {
+    setTimeout(() => {
+      messageRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, 100); // Dá tempo pro DOM atualizar antes do scroll
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [message]);
 
   return (
     <div className="h-full flex flex-col">
@@ -227,7 +232,7 @@ export default function ChatMessages({ chat }: ChatMessagesProps) {
                 multiple
                 accept="jpg, png, image/*"
               >
-                <div onClick={handleClickUpload}>
+                <div onClick={handleClickUpload} ref={messageRef}>
                   <Plus fill="#2DADE4" className="cursor-pointer" />
                 </div>
               </Dropzone>
@@ -243,6 +248,7 @@ export default function ChatMessages({ chat }: ChatMessagesProps) {
             name="send-message"
             className="cursor-pointer"
             onClick={handleSendMessage}
+
             // onKeyDown={(e) => {
             //   if (e.key === "Enter") {
             //     handleSendMessage();

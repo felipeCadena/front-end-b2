@@ -138,12 +138,12 @@ export default function Schedules({
 
       queryClient.invalidateQueries({ queryKey: ["activity"] });
       toast.success("Atividade atualizada com sucesso!");
+      onClose();
     } catch (error) {
       toast.error("Erro ao atualizar atividade");
       console.error("Error updating adventure:", error);
     }
     setIsLoading(false);
-    onClose();
   };
 
   const handleDateChange = (blockId: string, dates: Date[]) => {

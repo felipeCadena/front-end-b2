@@ -122,7 +122,19 @@ export default function AtividadesTemplate() {
             >
               Atividades Aéreas
             </MyTypography>
-            <CarouselCustom activities={filterActivity(activities, "ar")} />
+            {filterActivity(activities, "ar")?.length > 0 ? (
+              <CarouselCustom activities={filterActivity(activities, "ar")} />
+            ) : (
+              <div className="w-full h-[225px] flex flex-col justify-center items-center">
+                <MyTypography
+                  variant="heading3"
+                  className="text-base md:text-2xl text-center"
+                >
+                  Nenhuma atividade encontrada.
+                  <p>Faça uma nova busca!</p>
+                </MyTypography>
+              </div>
+            )}
           </div>
 
           <div className="border-2 border-gray-200 w-1/2 mx-auto rounded-md mb-6 md:hidden" />
@@ -135,7 +147,21 @@ export default function AtividadesTemplate() {
             >
               Atividades Terrestres
             </MyTypography>
-            <CarouselCustom activities={filterActivity(activities, "terra")} />
+            {filterActivity(activities, "terra")?.length > 0 ? (
+              <CarouselCustom
+                activities={filterActivity(activities, "terra")}
+              />
+            ) : (
+              <div className="w-full h-[225px] flex flex-col justify-center items-center">
+                <MyTypography
+                  variant="heading3"
+                  className="text-base md:text-2xl text-center"
+                >
+                  Nenhuma atividade encontrada.
+                  <p>Faça uma nova busca!</p>
+                </MyTypography>
+              </div>
+            )}
           </div>
 
           <div className="border-2 border-gray-200 w-1/2 mx-auto rounded-md mb-6 md:hidden" />
@@ -148,12 +174,24 @@ export default function AtividadesTemplate() {
             >
               Atividades Aquática
             </MyTypography>
-            <CarouselCustom activities={filterActivity(activities, "mar")} />
+            {filterActivity(activities, "mar")?.length > 0 ? (
+              <CarouselCustom activities={filterActivity(activities, "mar")} />
+            ) : (
+              <div className="w-full h-[225px] flex flex-col justify-center items-center">
+                <MyTypography
+                  variant="heading3"
+                  className="text-base md:text-2xl text-center"
+                >
+                  Nenhuma atividade encontrada.
+                  <p>Faça uma nova busca!</p>
+                </MyTypography>
+              </div>
+            )}
           </div>
         </div>
       )}
-      <ShoppingCard isMobile={false} items={cartSize} />
-      <ShoppingCard isMobile items={cartSize} />
+      {cartSize > 0 && <ShoppingCard isMobile={false} items={cartSize} />}
+      {cartSize > 0 && <ShoppingCard isMobile items={cartSize} />}
     </section>
   );
 }

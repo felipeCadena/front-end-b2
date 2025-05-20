@@ -7,12 +7,14 @@ import { cn } from "@/utils/cn";
 import { ptBR } from "react-day-picker/locale";
 import { format, parseISO } from "date-fns";
 import { Dispatch, SetStateAction } from "react";
+import MyButton from "../atoms/my-button";
 
 type CalendarProps = {
   selected: Date;
-  onSelect: Dispatch<SetStateAction<Date>>;
+  onSelect: Dispatch<SetStateAction<Date | null>>;
   markedDates?: Date[];
   className?: string;
+  preventPastNavigation?: boolean;
 } & Omit<DayPickerProps, "mode" | "selected" | "onSelect">;
 
 function MyFullCalendarMultiple({
@@ -22,9 +24,16 @@ function MyFullCalendarMultiple({
   showOutsideDays = true,
   classNames,
   className,
+  preventPastNavigation,
   ...props
 }: CalendarProps) {
   const [isDesktop, setIsDesktop] = React.useState<boolean>(false);
+
+  const now = new Date();
+  const currentMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+  const [visibleMonth, setVisibleMonth] = React.useState<Date>(currentMonth);
+
+  console.log("currentMonth", currentMonth);
 
   React.useEffect(() => {
     const checkScreenSize = () => {
@@ -52,6 +61,7 @@ function MyFullCalendarMultiple({
         showOutsideDays={showOutsideDays}
         className={cn("md:flex md:justify-center", className)}
         ISOWeek={true}
+        startMonth={preventPastNavigation ? currentMonth : undefined}
         locale={ptBR}
         formatters={{
           formatWeekdayName: (weekday) => {
@@ -109,8 +119,9 @@ function MyFullCalendarMultiple({
           root: "",
           button_next:
             "absolute right-1 top-2 md:right-1/3 border rounded-lg p-2",
-          button_previous:
-            "absolute left-1 top-2 md:left-1/3 border rounded-lg p-2",
+          button_previous: cn(
+            "absolute left-1 top-2 md:left-1/3 border rounded-lg p-2 disabled:opacity-40 disabled:cursor-not-allowed disabled:text-gray-400 disabled:border-gray-300 disabled:bg-gray-100"
+          ),
           months: "flex flex-col mt-1",
           month: "space-y-4 text-center",
           caption: "flex justify-center relative items-center",

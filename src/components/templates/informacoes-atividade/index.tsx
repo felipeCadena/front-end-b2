@@ -156,12 +156,22 @@ export default function InformacoesAtividade({
     return JSON.stringify(items);
   };
 
-  console.log(personsLimit);
+  // console.log("isInGroup", isInGroup);
+  // console.log("isChildrenAllowed", isChildrenAllowed);
 
   // Função pro fluxo de criação de parceiro + atividade
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    setIsLoading(true);
+
+    if (!selectedGroup) {
+      toast.error("Preencha se a atividade é em grupo ou individual.");
+      return;
+    }
+
+    if (!selectedChildren) {
+      toast.error("Preencha se a atividade é com crianças ou sem crianças.");
+      return;
+    }
 
     if (!priceAdult) {
       toast.error("Preencha o valor por adulto.");
@@ -209,6 +219,7 @@ export default function InformacoesAtividade({
     };
     try {
       // 1. Cria partner
+      setIsLoading(true);
 
       try {
         await partnerService.createPartner(partner);
@@ -379,7 +390,16 @@ export default function InformacoesAtividade({
     e: React.MouseEvent<HTMLButtonElement>
   ) => {
     e.preventDefault();
-    setIsLoading(true);
+
+    if (!selectedGroup) {
+      toast.error("Preencha se a atividade é em grupo ou individual.");
+      return;
+    }
+
+    if (!selectedChildren) {
+      toast.error("Preencha se a atividade é com crianças ou sem crianças.");
+      return;
+    }
 
     if (!priceAdult) {
       toast.error("Preencha o valor por adulto.");
@@ -428,6 +448,8 @@ export default function InformacoesAtividade({
         recurrences,
         transportAddress,
       };
+
+      setIsLoading(true);
 
       // 2. Cria a aventura com o access_token
       const adventureResponse = await adventures.createAdventure(adventure);

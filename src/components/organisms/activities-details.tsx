@@ -55,7 +55,12 @@ export default function ActivitiesDetails({
               return (
                 <div
                   key={index}
-                  className="flex flex-col rounded-xl shadow-sm bg-white h-full"
+                  className={cn(
+                    "flex flex-col rounded-xl shadow-sm bg-white h-full",
+                    !adventure?.onSite &&
+                      adventure?.adminApproved &&
+                      "opacity-50"
+                  )}
                 >
                   <div
                     onClick={() => handleActivity(adventure.id.toString())}
@@ -88,6 +93,13 @@ export default function ActivitiesDetails({
                           <StarRating rating={adventure?.averageRating} />
                         )}
                       </div>
+                      {/* <div>
+                        {!adventure?.onSite && adventure?.adminApproved && (
+                          <MyBadge variant="error" className="rounded-md">
+                            Desativada
+                          </MyBadge>
+                        )}
+                      </div> */}
 
                       <MyTypography
                         variant="body-big"

@@ -14,6 +14,8 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   formatAddress,
   formatPrice,
+  getDifficultyDescription,
+  getDifficultyDescriptionResume,
   handleNameActivity,
 } from "@/utils/formatters";
 import {
@@ -560,7 +562,8 @@ export default function Atividade() {
                 weight="bold"
                 className="text-center"
               >
-                Grau de dificuldade: {activity?.difficult}
+                Grau de dificuldade:{" "}
+                {getDifficultyDescriptionResume(activity?.difficult)}
               </MyTypography>
             </div>
           </div>

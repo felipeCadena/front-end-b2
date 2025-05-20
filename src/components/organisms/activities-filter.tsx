@@ -1,25 +1,25 @@
-'use client';
-import React from 'react';
-import MyButton from '../atoms/my-button';
-import MyIcon, { IconsMapTypes } from '../atoms/my-icon';
-import { cn } from '@/utils/cn';
-import MyTypography from '../atoms/my-typography';
-import { usePathname } from 'next/navigation';
-import { useDebounce } from '@/hooks/useDebounce';
-import { useQuery } from '@tanstack/react-query';
-import { adventures } from '@/services/api/adventures';
-import { TypeAdventure } from '@/store/useAdventureStore';
-import Mar from '../atoms/my-icon/elements/mar';
-import Ar from '../atoms/my-icon/elements/ar';
-import Terra from '../atoms/my-icon/elements/terra';
+"use client";
+import React from "react";
+import MyButton from "../atoms/my-button";
+import MyIcon, { IconsMapTypes } from "../atoms/my-icon";
+import { cn } from "@/utils/cn";
+import MyTypography from "../atoms/my-typography";
+import { usePathname } from "next/navigation";
+import { useDebounce } from "@/hooks/useDebounce";
+import { useQuery } from "@tanstack/react-query";
+import { adventures } from "@/services/api/adventures";
+import { TypeAdventure } from "@/store/useAdventureStore";
+import Mar from "../atoms/my-icon/elements/mar";
+import Ar from "../atoms/my-icon/elements/ar";
+import Terra from "../atoms/my-icon/elements/terra";
 
 type ActivitiesFilterProps = {
   withText?: boolean;
   withoutText?: boolean;
   small?: boolean;
   admin?: boolean;
-  selected?: 'ar' | 'terra' | 'mar' | '';
-  setSelected?: (value: 'ar' | 'terra' | 'mar' | '') => void;
+  selected?: "ar" | "terra" | "mar" | "";
+  setSelected?: (value: "ar" | "terra" | "mar" | "") => void;
 };
 
 export default function ActivitiesFilter({
@@ -34,23 +34,23 @@ export default function ActivitiesFilter({
 
   const activities: {
     icon: IconsMapTypes;
-    name: 'ar' | 'terra' | 'mar';
+    name: "ar" | "terra" | "mar";
     title: string;
   }[] = [
     {
-      icon: 'ar',
-      name: 'ar',
-      title: 'Atividades Aéreas',
+      icon: "ar",
+      name: "ar",
+      title: "Atividades Aéreas",
     },
     {
-      icon: 'terra',
-      name: 'terra',
-      title: 'Atividades Terrestres',
+      icon: "terra",
+      name: "terra",
+      title: "Atividades Terrestres",
     },
     {
-      icon: 'mar',
-      name: 'mar',
-      title: 'Atividades Aquáticas',
+      icon: "mar",
+      name: "mar",
+      title: "Atividades Aquáticas",
     },
   ];
 
@@ -61,17 +61,23 @@ export default function ActivitiesFilter({
     e.preventDefault(); // Previne o comportamento padrão
     e.stopPropagation(); // Impede a propagação do evento
 
-    setSelected(filter);
+    if (filter === selected) {
+      // Se o filtro clicado já está selecionado, resetar seleção (mostrar todos)
+      setSelected("");
+    } else {
+      // Caso contrário, aplicar o filtro normalmente
+      setSelected(filter);
+    }
   };
 
   return (
     <section
       className={cn(
-        'flex flex-col justify-around gap-2 mx-auto',
-        withText ? 'mt-6 md:my-12' : 'my-6'
+        "flex flex-col justify-around gap-2 mx-auto",
+        withText ? "mt-6 md:my-12" : "my-6"
       )}
     >
-      {withText && pathname == '/' ? (
+      {withText && pathname == "/" ? (
         <div className="md:hidden mx-4">
           <MyTypography variant="heading2" weight="semibold">
             Como você quer se aventurar?
@@ -83,7 +89,7 @@ export default function ActivitiesFilter({
       ) : (
         withText &&
         !admin && (
-          <div className={cn('md:hidden', withoutText && 'hidden')}>
+          <div className={cn("md:hidden", withoutText && "hidden")}>
             <MyTypography variant="heading2" weight="semibold" className="mx-4">
               Qual sua próxima aventura?
             </MyTypography>
@@ -108,8 +114,8 @@ export default function ActivitiesFilter({
       )}
       <div
         className={cn(
-          'flex justify-center gap-2 max-sm:w-full',
-          small && 'gap-4'
+          "flex justify-center gap-2 max-sm:w-full",
+          small && "gap-4"
         )}
       >
         {activities.map((item, index) => (
@@ -118,20 +124,20 @@ export default function ActivitiesFilter({
             variant="outline-muted"
             size="md"
             className={cn(
-              'flex max-sm:flex-col gap-1 items-center rounded-md max-sm:w-[6.8rem] max-sm:h-[6.5rem] md:py-8 md:w-1/2 border-2 border-black md:text-nowrap',
+              "flex max-sm:flex-col gap-1 items-center rounded-md max-sm:w-[6.8rem] max-sm:h-[6.5rem] md:py-8 md:w-1/2 border-2 border-black md:text-nowrap",
               item.name === selected &&
-                'text-white border-2 border-gray-300 bg-primary-600 opacity-80',
-              small && 'md:flex-col md:w-[10rem] md:h-[5rem]'
+                "text-white border-2 border-gray-300 bg-primary-600 opacity-80",
+              small && "md:flex-col md:w-[10rem] md:h-[5rem]"
             )}
             onClick={(e) => handleFilterClick(e, item.name)}
           >
             {/* <MyIcon name={item.icon as IconsMapTypes} /> */}
-            {item.icon === 'mar' ? (
-              <Mar fill={item.name === selected ? '#fff' : '#1E1E1E'} />
-            ) : item.icon === 'ar' ? (
-              <Ar fill={item.name === selected ? '#fff' : '#1E1E1E'} />
+            {item.icon === "mar" ? (
+              <Mar fill={item.name === selected ? "#fff" : "#1E1E1E"} />
+            ) : item.icon === "ar" ? (
+              <Ar fill={item.name === selected ? "#fff" : "#1E1E1E"} />
             ) : (
-              <Terra fill={item.name === selected ? '#fff' : '#1E1E1E'} />
+              <Terra fill={item.name === selected ? "#fff" : "#1E1E1E"} />
             )}
             <span className="px-4">{item.title}</span>
           </MyButton>

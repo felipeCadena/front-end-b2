@@ -24,6 +24,7 @@ import { toast } from "react-toastify";
 import { ModalProps } from "@/components/organisms/edit-activity";
 import MyIcon from "@/components/atoms/my-icon";
 import MyTypography from "@/components/atoms/my-typography";
+import Duration from "@/components/molecules/duration";
 
 export default function BasicInfo({
   formData,
@@ -32,6 +33,25 @@ export default function BasicInfo({
 }: ModalProps) {
   const [isLoading, setIsLoading] = React.useState(false);
   const queryClient = useQueryClient();
+
+  const formatDuration = (hours: string) => {
+    if (!hours) return "";
+
+    const [h, m] = hours.split("h");
+
+    // Garante que temos números válidos
+    const hour = parseInt(h);
+    const minute = parseInt(m);
+
+    if (isNaN(hour)) return "";
+
+    // Mantém os minutos se existirem e forem diferentes de zero
+    if (!isNaN(minute) && minute > 0) {
+      return `0${hour}:${minute}`;
+    }
+
+    return `0${hour}:00`;
+  };
 
   const handleItemsIncluded = () => {
     const items = JSON.parse(formData.itemsIncluded || "[]"); // garantimos que é array
@@ -71,6 +91,7 @@ export default function BasicInfo({
     hoursBeforeSchedule: formData.hoursBeforeSchedule,
     hoursBeforeCancellation: formData.hoursBeforeCancellation,
     transportAddress: formData.transportAddress,
+    duration: formData.duration,
   };
 
   const handleSubmit = async () => {
@@ -81,13 +102,14 @@ export default function BasicInfo({
 
       queryClient.invalidateQueries({ queryKey: ["activity"] });
       toast.success("Atividade atualizada com sucesso!");
+      onClose();
     } catch (error) {
       toast.error("Erro ao atualizar atividade");
       console.error("Error updating adventure:", error);
     }
     setIsLoading(false);
-    onClose();
   };
+
   return (
     <section className="">
       <div className="flex gap-4 items-center mb-8">
@@ -314,7 +336,7 @@ export default function BasicInfo({
             })
           }
         >
-          <SelectTrigger className="py-6 my-1">
+          <SelectTrigger className="py-6 myt1">
             <SelectValue placeholder="Selecione o número de dias" />
           </SelectTrigger>
           <SelectContent>
@@ -325,6 +347,23 @@ export default function BasicInfo({
             ))}
           </SelectContent>
         </MySelect>
+
+        <div>
+          <MyTypography
+            variant="label"
+            weight="bold"
+            className="mb-1 text-base text-black"
+          >
+            Duração
+          </MyTypography>
+          <Duration
+            iconColor="black"
+            selectedTime={formData?.duration}
+            setSelectedTime={(time) =>
+              setFormData({ ...formData, duration: formatDuration(time) })
+            }
+          />
+        </div>
       </div>
 
       <div className="md:w-1/2 md:mx-auto mt-12">

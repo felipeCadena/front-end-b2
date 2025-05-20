@@ -102,8 +102,12 @@ export default function SecondSection() {
             <CarouselCustom home activities={adventures} />
           ) : (
             <div className="w-full h-[225px] flex flex-col justify-center items-center">
-              <MyTypography variant="heading3">
-                Nenhuma atividade encontrada. Faça uma nova busca!
+              <MyTypography
+                variant="heading3"
+                className="text-base md:text-2xl text-center"
+              >
+                Nenhuma atividade encontrada.
+                <p>Faça uma nova busca!</p>
               </MyTypography>
             </div>
           )
@@ -129,7 +133,19 @@ export default function SecondSection() {
         </MyTypography>
 
         {!popularIsLoading ? (
-          <CarouselCustom home activities={popularAdventures} />
+          popularAdventures && popularAdventures?.length > 0 ? (
+            <CarouselCustom home activities={popularAdventures} />
+          ) : (
+            <div className="w-full h-[225px] flex flex-col justify-center items-center">
+              <MyTypography
+                variant="heading3"
+                className="text-base md:text-2xl text-center"
+              >
+                Nenhuma atividade encontrada.
+                <p>Faça uma nova busca!</p>
+              </MyTypography>
+            </div>
+          )
         ) : (
           <div className="grid md:grid-cols-4 gap-4 max-sm:hidden">
             {Array.from({ length: 4 }).map((_, index) => (
