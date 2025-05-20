@@ -15,6 +15,9 @@ import MyFormTextarea from "@/components/atoms/my-form-textarea";
 import { sendMessage } from "@/services/api/sendMessage";
 import { toast } from "react-toastify";
 import MySpinner from "@/components/atoms/my-spinner";
+import { useSession } from "next-auth/react";
+import { users } from "@/services/api/users";
+import { useQuery } from "@tanstack/react-query";
 
 const formschema = z.object({
   name: z.string().min(3, { message: "Por favor, informe seu nome." }),
@@ -33,6 +36,24 @@ type FormData = z.infer<typeof formschema>;
 
 export default function FaleConosco() {
   const router = useRouter();
+
+  const { data: loggedUser } = useQuery({
+    queryKey: ["logged_user"],
+    queryFn: () => users.getUserLogged(),
+  });
+
+  React.useEffect(() => {
+    if (loggedUser) {
+      form.reset({
+        name: loggedUser?.name ?? "",
+        phone: loggedUser?.phone ?? "",
+        email: loggedUser?.email ?? "",
+        topic: "Elogio",
+        message: "",
+      });
+    }
+  }, [loggedUser]);
+
   const [isLoading, setIsLoading] = useState(false);
 
   const options = ["Elogio", "Sugestão", "Reclamação"];

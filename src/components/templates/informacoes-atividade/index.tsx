@@ -156,7 +156,8 @@ export default function InformacoesAtividade({
     return JSON.stringify(items);
   };
 
-  console.log(personsLimit);
+  // console.log("isInGroup", isInGroup);
+  // console.log("isChildrenAllowed", isChildrenAllowed);
 
   // Função pro fluxo de criação de parceiro + atividade
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -168,6 +169,11 @@ export default function InformacoesAtividade({
       return;
     }
     if (isInGroup && !personsLimit) {
+      toast.error("Preencha a quantidade de pessoas.");
+      return;
+    }
+
+    if (!personsLimit) {
       toast.error("Preencha a quantidade de pessoas.");
       return;
     }

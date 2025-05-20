@@ -15,12 +15,14 @@ import GoogleLoginButton from "@/components/molecules/google-login-button";
 import { signIn, useSession } from "next-auth/react";
 import FacebookLoginButton from "@/components/molecules/facebook-login-button";
 import useLogin from "@/store/useLogin";
+import useSearchQueryService from "@/services/use-search-query-service";
 
 export default function Login() {
   const router = useRouter();
   const { setUser } = useAuthStore();
   const [isLoading, setIsLoading] = React.useState(false);
   const { data: session, status } = useSession();
+  const { params } = useSearchQueryService();
 
   const [visibility, setVisibility] = React.useState(false);
 
@@ -44,6 +46,13 @@ export default function Login() {
             email: userData.email,
             role: userData.role,
           });
+
+          if (params?.redirect) {
+            toast.success("Login realizado com sucesso!");
+            console.log("Redirecionando para:", params.redirect);
+            router.push(params.redirect);
+            return;
+          }
 
           const userRole = session.user.role.toLowerCase();
           const roleMapping = {

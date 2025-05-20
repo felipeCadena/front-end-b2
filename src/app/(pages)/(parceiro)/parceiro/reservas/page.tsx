@@ -20,7 +20,7 @@ import { Pagination } from "@/components/molecules/pagination";
 
 export default function Reservas() {
   const router = useRouter();
-  const [date, setDate] = React.useState<Date>(new Date());
+  const [date, setDate] = React.useState<Date | null>(new Date());
   const [dates, setDates] = React.useState<Date[]>([]);
   const [page, setPage] = React.useState(1);
 
@@ -98,7 +98,8 @@ export default function Reservas() {
       <div className="relative px-2">
         <MyFullCalendarMultiple
           // mode="single"
-          selected={date}
+          preventPastNavigation
+          selected={date ?? new Date()}
           onSelect={setDate}
           markedDates={dates}
           locale={ptBR}
@@ -108,6 +109,18 @@ export default function Reservas() {
       </div>
 
       <div className="h-1 w-1/3 mx-auto bg-gray-200 rounded-xl my-6" />
+
+      <div className="flex justify-end max-sm:justify-center max-sm:gap-4 max-sm:px-4 mb-2">
+        <MyButton
+          variant="outline-neutral"
+          borderRadius="squared"
+          size="lg"
+          className="max-sm:w-full"
+          onClick={() => setDate(null)}
+        >
+          Mostrar todas as datas
+        </MyButton>
+      </div>
 
       <div className="md:hidden w-full flex justify-center gap-4 px-4">
         <MyButton

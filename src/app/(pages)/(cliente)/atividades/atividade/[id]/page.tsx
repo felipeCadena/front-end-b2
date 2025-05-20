@@ -84,7 +84,9 @@ export default function Atividade() {
   const handleFavorite = async () => {
     if (!session?.user) {
       toast.error("Você precisa ter uma conta para favoritar uma atividade");
-      router.push(PATHS.login);
+      router.push(
+        `${PATHS.login}?redirect=${PATHS.visualizarAtividade(id as string)}`
+      );
       return;
     }
 

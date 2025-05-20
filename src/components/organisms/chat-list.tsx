@@ -7,10 +7,11 @@ import MyIcon from "../atoms/my-icon";
 import MyTextInput from "../atoms/my-text-input";
 import { useDebounce } from "@/hooks/useDebounce";
 import { cn } from "@/utils/cn";
-import { formatSmartDateTime } from "@/utils/formatters";
+import { formatSmartDateTime, getData } from "@/utils/formatters";
 import MyButton from "../atoms/my-button";
 import useChat from "@/store/useChat";
 import useSearchQueryService from "@/services/use-search-query-service";
+import { format, parseISO } from "date-fns";
 
 interface ChatMessage {
   datetime: string;
@@ -137,7 +138,7 @@ export default function ChatList({ chats, setUser }: ChatListProps) {
               <div
                 key={chat?.id}
                 className={cn(
-                  "flex items-center p-4 hover:bg-gray-50 cursor-pointer rounded-lg mr-1",
+                  "flex items-center p-4 hover:bg-gray-50 cursor-pointer rounded-lg mr-1 border-b",
                   selectedChatId === chat?.id && "bg-[#2DADE4]/20"
                 )}
                 onClick={() => handleChatClick(chat)}
@@ -156,6 +157,13 @@ export default function ChatList({ chats, setUser }: ChatListProps) {
                   <div className="flex justify-between gap-4">
                     <span className="font-medium">{chat?.userToName}</span>
                   </div>
+
+                  {chat?.openIn && chat?.closeIn && chat?.session_token && (
+                    <span className="text-xs">
+                      <span className="font-semibold">Chat ativo: </span>
+                      {`${format(parseISO(chat.openIn), "dd/MM")} de ${format(parseISO(chat.openIn), "HH:mm")} às ${format(parseISO(chat.closeIn), "HH:mm")}`}
+                    </span>
+                  )}
 
                   {chat?.lastMessage && chat?.lastMessage?.text ? (
                     <p className="text-sm font-bold">
