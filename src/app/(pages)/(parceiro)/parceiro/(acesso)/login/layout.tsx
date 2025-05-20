@@ -8,13 +8,13 @@ const Layout = ({ children }: { children: JSX.Element | ReactNode }) => {
       <div className="hidden md:grid grid-cols-3 gap-4 auto-rows-auto min-h-screen overflow-hidden">
         {[
           {
-            src: "/images/atividades/ar/ar-1.jpeg",
+            src: "/images/atividades/terra/terra-7.jpeg",
             span: "row-span-3",
             padding: "py-2 pr-2",
           },
           { src: "/images/atividades/terra/terra-1.jpeg", span: "row-span-2" },
           {
-            src: "/images/atividades/mar/mar-1.jpeg",
+            src: "/images/atividades/mar/mar-92.jpeg",
             span: "row-span-3",
             padding: "p-2",
           },

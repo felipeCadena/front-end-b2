@@ -7,6 +7,7 @@ import "react-toastify/dist/ReactToastify.css";
 import Layout from "@/components/organisms/layout";
 import AuthProvider from "@/providers/auth-provider";
 import { Provider } from "@/providers/provider";
+import { GoogleMapsProvider } from "@/providers/google-provider";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -29,15 +30,23 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <meta
+          name="facebook-domain-verification"
+          content="zqjcoi9kslkxzreeg9w2vchootdjwg"
+        />
+      </head>
       <body
         suppressHydrationWarning={true}
         className={`${inter.className} antialiased md:min-h-screen`}
       >
         <AuthProvider>
           <Provider>
-            <Suspense>
-              <Layout>{children}</Layout>
-            </Suspense>
+            <GoogleMapsProvider>
+              <Suspense>
+                <Layout>{children}</Layout>
+              </Suspense>
+            </GoogleMapsProvider>
             <ToastContainer
               position="top-right"
               autoClose={3000}
@@ -48,6 +57,7 @@ export default function RootLayout({
               pauseOnFocusLoss
               draggable
               pauseOnHover
+              style={{ zIndex: 9999 }}
             />
           </Provider>
         </AuthProvider>

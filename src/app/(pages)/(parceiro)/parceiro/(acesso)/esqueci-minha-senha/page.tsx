@@ -30,7 +30,7 @@ export default function EsqueciMinhaSenha() {
         <MyTextInput
           label="E-mail"
           noHintText
-          placeholder="b2adventure@gmail.com"
+          placeholder="Digite seu e-mail"
           className="mt-2"
         />
       </div>

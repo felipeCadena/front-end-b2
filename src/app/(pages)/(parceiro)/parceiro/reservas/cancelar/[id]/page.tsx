@@ -1,31 +1,55 @@
-"use client";
+'use client';
 
-import React from "react";
-import MyTypography from "@/components/atoms/my-typography";
-import MyButton from "@/components/atoms/my-button";
-import MyIcon from "@/components/atoms/my-icon";
-import { useRouter } from "next/navigation";
-import PATHS from "@/utils/paths";
-import ModalAlert from "@/components/molecules/modal-alert";
-import { useAlert } from "@/hooks/useAlert";
+import React from 'react';
+import MyTypography from '@/components/atoms/my-typography';
+import MyButton from '@/components/atoms/my-button';
+import MyIcon from '@/components/atoms/my-icon';
+import { useParams, useRouter } from 'next/navigation';
+import PATHS from '@/utils/paths';
+import ModalAlert from '@/components/molecules/modal-alert';
+import { useAlert } from '@/hooks/useAlert';
+import { useQuery } from '@tanstack/react-query';
+import { schedules } from '@/services/api/schedules';
+import { partnerService } from '@/services/api/partner';
+import { toast } from 'react-toastify';
 
 const justificativas = [
-  "Houve um imprevisto e irei precisar cancelar nossa atividade, desculpe!",
-  "Condições climáticas desfavoráveis para a realização da atividade.",
-  "Problemas técnicos com equipamentos necessários.",
-  "Número insuficiente de participantes.",
-  "Motivos de força maior/emergência.",
+  'Houve um imprevisto e irei precisar cancelar nossa atividade, desculpe!',
+  'Condições climáticas desfavoráveis para a realização da atividade.',
+  'Problemas técnicos com equipamentos necessários.',
+  'Número insuficiente de participantes.',
+  'Motivos de força maior/emergência.',
 ];
 
 export default function CancelarAtividade() {
   const router = useRouter();
+  const { id } = useParams();
+
   const [isModalOpen, setIsModalOpen] = React.useState(false);
   const [selectedJustificativa, setSelectedJustificativa] =
-    React.useState<string>("");
+    React.useState<string>('');
 
-  const handleClose = () => {
-    setIsModalOpen(false);
-    router.push(`${PATHS["reservas-parceiro"]}?openModal=true`);
+  const { data: parterSchedules } = useQuery({
+    queryKey: ['parterSchedules'],
+    queryFn: () => schedules.getScheduleById(id as string),
+  });
+
+  const hasClient = parterSchedules?.ordersScheduleAdventure;
+  const handleCancel = async () => {
+    try {
+      await partnerService.cancelSchedule(
+        id as string,
+        String(parterSchedules?.adventureId),
+        selectedJustificativa
+      );
+
+      router.push(`${PATHS['reservas-parceiro']}?openModal=true`);
+    } catch (error) {
+      console.error('Error canceling schedule:', error);
+      toast.error('Erro ao cancelar a atividade. Tente novamente mais tarde.');
+    } finally {
+      setIsModalOpen(false);
+    }
   };
 
   return (
@@ -49,15 +73,27 @@ export default function CancelarAtividade() {
             Cancelamento de Atividade
           </MyTypography>
 
-          <MyTypography variant="body-big" className="text-gray-600 mb-1">
-            Você está prestes a cancelar a atividade de Escalada em Cristo
-            Redentor com <span className="font-semibold">Carla Duarte</span>
-          </MyTypography>
+          {parterSchedules && parterSchedules.ordersScheduleAdventure && (
+            <MyTypography
+              variant="body-big"
+              weight="bold"
+              className="text-red-500 mb-1 uppercase "
+            >
+              Atenção: Essa atividade tem clientes confirmados!
+            </MyTypography>
+          )}
 
+          <MyTypography variant="body-big" className="text-gray-600 mb-1">
+            Você está prestes a cancelar a atividade!
+          </MyTypography>
           <div className="flex items-center gap-2 mt-2">
             <MyTypography variant="body-big">
-              Status da Atividade{" "}
-              <span className="font-semibold">Confirmada</span>
+              Status da Atividade{' '}
+              <span className="font-semibold">
+                {parterSchedules && parterSchedules.isCanceled
+                  ? 'Cancelada'
+                  : 'Confirmada'}
+              </span>
             </MyTypography>
           </div>
           <div className="flex justify-end">
@@ -77,8 +113,8 @@ export default function CancelarAtividade() {
                 key={index}
                 className={`p-4 rounded-lg border cursor-pointer transition-all border-l-8 ${
                   selectedJustificativa === justificativa
-                    ? "border-black bg-gray-50"
-                    : "border-gray-200 bg-gray-50 opacity-80"
+                    ? 'border-black bg-gray-50'
+                    : 'border-gray-200 bg-gray-50 opacity-80'
                 }`}
                 onClick={() => setSelectedJustificativa(justificativa)}
               >
@@ -90,11 +126,15 @@ export default function CancelarAtividade() {
 
         <ModalAlert
           open={isModalOpen}
-          onClose={handleClose}
+          onClose={() => setIsModalOpen(false)}
+          onAction={handleCancel}
           iconName="cancel"
           title="Cancelamento de Atividade"
-          descrition="Tem certeza que deseja cancelar essa
-atividade? O cliente será notificado sobre isso em menos de 2 horas."
+          descrition={
+            hasClient
+              ? 'Tem certeza que deseja cancelar essa atividade? Há clientes que já agendaram essa atividade.'
+              : 'Tem certeza que deseja cancelar?'
+          }
           button="Cancelar atividade "
         />
 

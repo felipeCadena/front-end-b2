@@ -1,15 +1,15 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { authService } from "@/services/api/auth";
 
 export interface User {
-  id: string;
+  id?: string;
   name: string;
   email: string;
   role: string;
   photo?: {
     url: string;
     mimetype: string;
+    updatedAt?: string;
   };
 }
 
@@ -27,7 +27,6 @@ export const useAuthStore = create<AuthStore>()(
       setUser: (user) => set({ user }),
       clearUser: () => {
         set({ user: null });
-        authService.logout();
       },
     }),
     {

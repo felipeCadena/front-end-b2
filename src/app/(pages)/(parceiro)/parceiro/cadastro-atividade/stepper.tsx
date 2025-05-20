@@ -14,6 +14,9 @@ import Step4 from "@/components/organisms/steps/step-4";
 import Step5 from "@/components/organisms/steps/step-5";
 import Step6 from "@/components/organisms/steps/step-6";
 import InformacoesAtividade from "@/components/templates/informacoes-atividade";
+import { useAdventureStore } from "@/store/useAdventureStore";
+import { toast } from "react-toastify";
+import { useSession } from "next-auth/react";
 
 const steps = [
   { label: "1" },
@@ -27,7 +30,25 @@ const steps = [
 
 export default function StepperComponent() {
   const [currentStep, setCurrentStep] = useState(0);
+  const { data: session } = useSession();
+
   const router = useRouter();
+  const {
+    typeAdventure,
+    description,
+    title,
+    hoursBeforeSchedule,
+    hoursBeforeCancellation,
+    selectionBlocks,
+    difficult,
+    duration,
+    address,
+    pointRefAddress,
+    tempImages,
+    transportAddress,
+    transportIncluded,
+  } = useAdventureStore();
+
   const stepsPerPage = 3;
 
   const startIndex =
@@ -38,6 +59,66 @@ export default function StepperComponent() {
   const visibleSteps = steps.slice(startIndex, startIndex + stepsPerPage);
 
   const handleNextTo = () => {
+    const someDate = selectionBlocks.some(
+      (date) =>
+        (date.dates.length || date.recurrenceWeekly.length) &&
+        date.recurrenceHour.length
+    );
+
+    if ((!typeAdventure || !description || !title) && currentStep == 0) {
+      toast.error("Preencha todos os campos.");
+      return;
+    }
+
+    if (
+      (!hoursBeforeCancellation || !hoursBeforeSchedule) &&
+      currentStep == 2
+    ) {
+      toast.error(
+        "Preencha os campos Antecêdencia de Agendamento e Antecedência de Cancelamento."
+      );
+      return;
+    }
+
+    if (!someDate && currentStep == 2) {
+      toast.error(
+        "Em repetir atividade, é necessário selecionar o dia da semana ou dias específicos. Os horários são obrigatórios."
+      );
+      return;
+    }
+
+    if (!difficult && currentStep == 1) {
+      toast.error("Preencha todos os campos.");
+      return;
+    }
+
+    if (duration == "00:00" && currentStep == 1) {
+      toast.error("A duração não pode ser 0.");
+      return;
+    }
+
+    if ((!address || !pointRefAddress) && currentStep == 3) {
+      toast.error("Preencha todos os campos.");
+      return;
+    }
+
+    if (tempImages.length < 5 && currentStep == 5) {
+      toast.error("São necessárias 5 imagens.");
+      return;
+    }
+
+    if (tempImages.length > 5 && currentStep == 5) {
+      toast.error(
+        "São permitidas no máximo 5 imagens. Exclua até ter 5 imagens."
+      );
+      return;
+    }
+
+    if (transportIncluded && !transportAddress && currentStep == 4) {
+      toast.error("Preencha o local de saída e retorno.");
+      return;
+    }
+
     if (currentStep < steps.length - 1) {
       setCurrentStep((prev) => prev + 1);
     } else {
@@ -64,6 +145,9 @@ export default function StepperComponent() {
         break;
       case 5:
         setCurrentStep(4);
+        break;
+      case 6:
+        setCurrentStep(5);
         break;
     }
   };
@@ -122,22 +206,42 @@ export default function StepperComponent() {
 
       {/* Stepper Content */}
       {currentStep === 0 && <Step1 />}
-      {currentStep === 1 && <Step2 />}
-      {currentStep === 2 && <Step3 />}
+      {currentStep === 1 && <Step3 />}
+      {currentStep === 2 && <Step2 />}
       {currentStep === 3 && <Step4 />}
       {currentStep === 4 && <Step5 />}
       {currentStep === 5 && <Step6 />}
-      {currentStep === 6 && <InformacoesAtividade step edit />}
+      {currentStep === 6 && (
+        <InformacoesAtividade
+          onBack={handleBackToInitial}
+          step
+          create={Boolean(session?.user?.accessToken)}
+        />
+      )}
 
-      <MyButton
-        onClick={handleNextTo}
-        size="lg"
-        borderRadius="squared"
-        className="w-full my-8"
-        rightIcon={<MyIcon name="seta-direita" />}
-      >
-        Próximo Passo
-      </MyButton>
+      {currentStep != 6 && (
+        <div className="space-y-4 mt-8">
+          <MyButton
+            onClick={handleBackToInitial}
+            size="lg"
+            borderRadius="squared"
+            className="w-full"
+            variant="black-border"
+            leftIcon={<MyIcon name="seta" className="rotate-180" />}
+          >
+            Passo Anterior
+          </MyButton>
+          <MyButton
+            onClick={handleNextTo}
+            size="lg"
+            borderRadius="squared"
+            className="w-full"
+            rightIcon={<MyIcon name="seta-direita" />}
+          >
+            Próximo Passo
+          </MyButton>
+        </div>
+      )}
     </main>
   );
 }

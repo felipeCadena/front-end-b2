@@ -33,7 +33,7 @@ export default function AreaParceiros() {
           weight="bold"
           className="text-[2.5rem] md:text-[5rem]"
         >
-          bem-vindo
+          Bem-vindo
         </MyTypography>
       </div>
 
@@ -497,10 +497,10 @@ export default function AreaParceiros() {
             weight="regular"
             className="mt-2 md:mt-6 text-[1rem] md:text-[1.125rem]"
           >
-            Trilha, Escalada, Rapel, Surf, Stand Up Paddle, Mergulho, Ciclismo
-            de montanha, Canoagem, Arvorismo, Cavalgada, Pesca, Passeio de
-            veleiro, Wakeboard, Kite surf, Passeio de balão, Canoas havaianas,
-            Paraquedas, Asa delta, Parapente, Paramotor, Motocross e muito mais!
+            Trilha, escalada, rapel, surf, stand up paddle, mergulho, ciclismo
+            de montanha, canoagem, arvorismo, cavalgada, pesca, passeio de
+            veleiro, wakeboard, kite surf, passeio de balão, canoas havaianas,
+            paraquedas, asa delta, parapente, paramotor, motocross e muito mais!
           </MyTypography>
         </div>
       </div>
@@ -542,7 +542,7 @@ export default function AreaParceiros() {
                 weight="regular"
                 className="text-[1rem] md:text-[1.125rem]"
               >
-                Combine endereços e pontos de encontro;
+                Coloque endereço e um ponto de encontro;
               </MyTypography>
             </div>
             <div className="flex md:items-center gap-2">
@@ -645,24 +645,25 @@ export default function AreaParceiros() {
               weight="regular"
               className="text-[1rem] md:text-[1.125rem]"
             >
-              O parceiro que determina os valores, claro.
+              É o parceiro que determina o valor da sua atividade!
             </MyTypography>
             <MyTypography
               variant="subtitle1"
               weight="regular"
               className="text-[1rem] md:text-[1.125rem]"
             >
-              Você é quem mais entende o valor do seu trabalho! Por isso, cabe
-              ao Parceiro o preço de cada atividade, que precisa estar divulgado
-              na descrição e ser igual ao cobrado fora da plataforma.
+              Você é quem mais entende o valor do seu trabalho! Por isso, é você
+              quem determina o preço que o cliente vai pagar para viver essa
+              experiência com você.
             </MyTypography>
             <MyTypography
               variant="subtitle1"
               weight="regular"
               className="text-[1rem] md:text-[1.125rem]"
             >
-              Assim mantemos uma parceria justa diante dos benefícios que
-              entregamos!
+              É importante que o valor final da sua atividade dentro da
+              plataforma seja similar ao fora dela. Assim mantemos uma parceria
+              justa diante dos benefícios que entregamos!
             </MyTypography>
           </div>
         </div>
@@ -685,17 +686,18 @@ export default function AreaParceiros() {
             className="text-white"
           >
             Para garantir toda a segurança, o pagamento dos{" "}
-            <span className="font-bold">Clientes</span> acontece completamente
-            dentro da plataforma, sendo vedada qualquer cobrança extra por fora.
+            <span className="font-bold">clientes</span> é feito 100% dentro da
+            plataforma, sendo vedada qualquer cobrança extra por fora
           </MyTypography>
           <MyTypography
             variant="subtitle1"
             weight="regular"
             className="text-white"
           >
-            O repasse para o <span className="font-bold">Parceiro</span> é
-            mensal, mas é só quando o Cliente paga que a B2 retém um percentual
-            do que foi cobrado. Ou seja, a gente sempre ganha junto!
+            O repasse para o <span className="font-bold">parceiro</span> é
+            mensal, sempre no mês subsequente a atividade realizada, na data pré
+            selecionada pelo parceiro no cadastro. A B2 Adventure retém um
+            percentual desse valor, ou seja, a gente sempre ganha juntos!
           </MyTypography>
         </div>
 

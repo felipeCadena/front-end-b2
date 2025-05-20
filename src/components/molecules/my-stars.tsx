@@ -13,6 +13,7 @@ const StarRating = ({
   bigStars?: boolean;
 }) => {
   const maxRating = 5;
+  const roundedRating = Math.round(rating);
   const stars = Array.from({ length: maxRating }, (_, index) => index + 1); // [1, 2, 3, 4, 5]
 
   return (
@@ -23,9 +24,13 @@ const StarRating = ({
       )}
     >
       {stars.map((star) => {
-        const isFilled = star <= rating;
+        const isFilled = star <= roundedRating;
         const fillColor =
-          rating <= 2 ? "#ff5f6f" : rating >= 3 ? "#8DC63F" : "transparent";
+          roundedRating <= 2
+            ? "#ff5f6f"
+            : roundedRating >= 3
+              ? "#8DC63F"
+              : "transparent";
 
         return bigStars ? (
           isFilled ? (
@@ -36,7 +41,7 @@ const StarRating = ({
         ) : isFilled ? (
           <Star key={star} fill={fillColor} stroke={fillColor} />
         ) : (
-          <MyIcon key={star} name="emptyStar" className="flex-1" />
+          <MyIcon key={star} name="emptyStar" className="flex-1  w-1" />
         );
       })}
     </div>

@@ -1,3 +1,48 @@
+export const bankList = [
+  { name: "Banco do Brasil", code: "001" },
+  { name: "Bradesco", code: "237" },
+  { name: "Caixa Econômica Federal", code: "104" },
+  { name: "Itaú", code: "341" },
+  { name: "Santander", code: "033" },
+  { name: "Nubank", code: "260" },
+  { name: "Banco Inter", code: "077" },
+  { name: "Banco Original", code: "212" },
+  { name: "C6 Bank", code: "336" },
+];
+
+export const realReviews = [
+  {
+    avatar: "/images/avaliacoes/carla.jpeg",
+    name: "Carla Delduca",
+    date: "14/10/2021",
+    description:
+      "Que experiência incrível!! Adorei fazer a trilha da Pedra da Gávea com a B2! Contratei o serviço para não me preocupar com nada e no final foi acima da minha expectativa. ",
+    // Além deles organizarem tudo, eles ainda foram todos atenciosos durante o trajeto, levaram a corda e nos ajudaram a subir a carrasqueira que eu estava mega preocupada, tiraram fotos lindas, já sabendo os melhores ângulos! Contando as horas e programando a próxima aventura!",
+  },
+  {
+    avatar: "/images/avaliacoes/cintia.jpeg",
+    name: "Cintia Kesseles ",
+    date: "25/01/2023",
+    description:
+      "Eu fiz mais de uma atividade com a B2 Adventure e já quero mais! Eles me proporcionaram experiências incríveis com segurança e um atendimento impecável! Super recomendo!",
+  },
+  {
+    avatar: "/images/avaliacoes/elaine.jpeg",
+    name: "Elaine Brito",
+    date: "25/02/2022",
+    description:
+      "Nesse nosso estilo de vida, todo trilheiro sonha em conhecer muitos lugares e eu particularmente sonhava em estar lá em cima (Pedra da Gávea). Que sejamos sempre desbravadores, que tenhamos força e muito foco. ",
+    // A emoção ao olhar as fotos é a mesma de quando eu pude ser agraciada com essa vista, com essa brisa que vinha direto do mar. Momentos esses que muitos estão envolvidos e deixo aqui a minha gratidão! ",
+  },
+  {
+    avatar: "/images/avaliacoes/jessica.jpeg",
+    name: "Jéssica Silva",
+    date: "09/02/2022",
+    description:
+      "Ao final da trilha, há sempre um presente da natureza! 😍 Obrigada B2 Adventure pela experiência incrível!",
+  },
+];
+
 export const daysOfWeek = [
   { label: "1", value: "1" },
   { label: "2", value: "2" },
@@ -9,15 +54,13 @@ export const daysOfWeek = [
 ];
 
 export const days = [
-  "30 min",
-  "1 hora",
-  "3 horas",
-  "5 horas",
-  "12 horas",
   "24 horas",
   "48 horas",
   "72 horas",
+  "4 dias",
   "5 dias",
+  "6 dias",
+  "7 dias",
 ];
 
 export const hours = [
@@ -55,7 +98,7 @@ export const dificulties = [
   "Grau 5 - Extremo / Muito Difícil",
 ];
 
-export const types = [
+export const isInGroupTypes = [
   {
     icon: "group",
     title: "Em grupo",
@@ -64,6 +107,9 @@ export const types = [
     icon: "person",
     title: "Individual",
   },
+];
+
+export const isChildrenAllowedTypes = [
   {
     icon: "baby",
     title: "Com crianças",

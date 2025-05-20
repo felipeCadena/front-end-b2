@@ -49,8 +49,10 @@ import Agua from "./elements/agua";
 import Combustivel from "./elements/combustivel";
 import Alimentacao from "./elements/alimentacao";
 import Guia from "./elements/guia";
+import MobileDuracao from "./elements/mobile-duracao";
 import Duracao from "./elements/duracao";
 import Compartilhar from "./elements/compartilhar";
+import MobileCompartilhar from "./elements/mobile-compartilhar";
 import SetaDireita from "./elements/seta-direita";
 import Perfil from "./elements/perfil";
 import Notificacoes from "./elements/notificacoes";
@@ -120,6 +122,13 @@ import SimpleCalendar from "./elements/simple-calendar";
 import TextIcon from "./elements/text";
 import Atention from "./elements/atention";
 import Marketing from "./elements/marketing";
+import MobileFullHeart from "./mobile-full-heart";
+import DeactivatedSum from "./elements/deactivated-sum";
+import SendMessage from "./elements/send-message";
+import AudioIcon from "./elements/audio";
+import Coins from "./elements/coins";
+import Play from "./elements/play";
+import Pause from "./elements/pause";
 
 export type IconsMapTypes = keyof typeof IconsMap;
 
@@ -156,6 +165,7 @@ const IconsMap = {
   left: <ChevronLeft />,
   right: <ChevronRight />,
   soma: <Sum />,
+  somaDesativada: <DeactivatedSum />,
   subtracao: <Decrease />,
   subtracaoDesativada: <DecreaseEmpty />,
   save: <Save />,
@@ -170,6 +180,7 @@ const IconsMap = {
   "chevron-down": <ChevronDown />,
   file: <File />,
   "full-heart": <FullHeart />,
+  "mobile-full-heart": <MobileFullHeart />,
   "shopping-card": <ShoppingCard />,
   "black-heart": <BlackHeart />,
   "voltar-black": <VoltarBlack />,
@@ -180,7 +191,9 @@ const IconsMap = {
   alimentacao: <Alimentacao />,
   guia: <Guia />,
   duracao: <Duracao />,
+  mobileDuracao: <MobileDuracao />,
   compartilhar: <Compartilhar />,
+  mobileCompartilhar: <MobileCompartilhar />,
   "seta-direita": <SetaDireita />,
   perfil: <Perfil />,
   notificacoes: <Notificacoes />,
@@ -250,6 +263,11 @@ const IconsMap = {
   text: <TextIcon />,
   atention: <Atention />,
   marketing: <Marketing />,
+  "send-message": <SendMessage />,
+  audio: <AudioIcon />,
+  coins: <Coins />,
+  play: <Play />,
+  pause: <Pause />,
 };
 
 export default function MyIcon({

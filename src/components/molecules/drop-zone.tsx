@@ -37,7 +37,7 @@ export const Dropzone = React.forwardRef<HTMLInputElement, DropzoneProps>(
       <div
         className={cn(
           !small &&
-            "w-full rounded-lg border border-dashed border-neutral-400 p-4",
+            "w-full rounded-lg border border-dashed border-neutral-400 p-1",
           {
             "rounded-md border-dashed border-primary-600": isDragging,
           },

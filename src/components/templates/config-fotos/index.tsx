@@ -21,7 +21,7 @@ export default function ConfigFotos() {
           </MyTypography>
         </div>
 
-        <SendImages config />
+        {/* <SendImages config /> */}
       </div>
 
       <div>
@@ -37,7 +37,7 @@ export default function ConfigFotos() {
           </MyTypography>
         </div>
 
-        <SendImages config />
+        {/* <SendImages config /> */}
       </div>
     </section>
   );

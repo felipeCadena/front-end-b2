@@ -7,7 +7,7 @@ const Master = () => (
     xmlns="http://www.w3.org/2000/svg"
   >
     <circle cx="14" cy="14" r="14" fill="#E33A24" />
-    <circle cx="34" cy="14" r="14" fill="#F8CB2E" fill-opacity="0.8" />
+    <circle cx="34" cy="14" r="14" fill="#F8CB2E" fillOpacity="0.8" />
   </svg>
 );
 

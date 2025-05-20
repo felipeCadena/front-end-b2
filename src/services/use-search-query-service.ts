@@ -29,11 +29,11 @@ export default function useSearchQueryService() {
       query.append(value, String(key));
     });
 
-    router.push(`${path}?${query}`);
+    router.push(`${path}?${query}`, { scroll: false });
   };
 
   const clear = () => {
-    router.push(path);
+    router.push(path, { scroll: false });
   };
 
   return {

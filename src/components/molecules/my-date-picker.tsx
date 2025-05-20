@@ -24,10 +24,10 @@ export function MyDatePicker({
   const [open, setOpen] = React.useState(false);
 
   const handleDateSelect = (dates?: Date[] | undefined) => {
-    if (!dates) return; // Se não houver datas, não faz nada
-    const formattedDates = dates.map((date) => format(date, "HH:mm")).join(",");
-    setSelectedDates(dates); // Atualiza o estado com todas as datas selecionadas
-    console.log(formattedDates); // Exibe as datas formatadas no console
+    if (!dates) return;
+
+    // Apenas atualiza as datas selecionadas sem formatação
+    setSelectedDates(dates);
   };
 
   return (
@@ -45,7 +45,7 @@ export function MyDatePicker({
             selectedDates && selectedDates?.length > 0 ? (
               <span className="text-black">
                 {selectedDates
-                  .map((d) => format(d, "dd/MM", { locale: ptBR }))
+                  .map((d) => format(d, "dd", { locale: ptBR }))
                   .join(", ")}
               </span>
             ) : (

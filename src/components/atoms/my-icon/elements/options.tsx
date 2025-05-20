@@ -1,7 +1,15 @@
-const Options = ({ fill = "#8F9BB3" }: { fill?: string }) => (
+const Options = ({
+  fill = "#8F9BB3",
+  width = "13",
+  height = "3",
+}: {
+  fill?: string;
+  width?: string;
+  height?: string;
+}) => (
   <svg
-    width="13"
-    height="3"
+    width={width}
+    height={height}
     viewBox="0 0 13 3"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"

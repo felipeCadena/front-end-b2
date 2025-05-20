@@ -129,9 +129,7 @@ export default function StepperEdit() {
       {currentStep === 3 && <Step4 />}
       {currentStep === 4 && <Step5 />}
       {currentStep === 5 && <Step6 />}
-      {currentStep === 6 && (
-        <InformacoesAtividade onBack={() => setCurrentStep(5)} edit />
-      )}
+      {currentStep === 6 && <InformacoesAtividade edit />}
 
       <MyButton
         onClick={handleNextTo}

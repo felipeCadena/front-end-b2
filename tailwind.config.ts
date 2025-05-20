@@ -9,22 +9,22 @@ const config: Config = {
   theme: {
     extend: {
       dropShadow: {
-        sm: '2px 2px 4px rgba(0, 0, 0, 0.6)',
+        sm: "2px 2px 4px rgba(0, 0, 0, 0.6)",
       },
       borderRadius: {
         "4xl": "1.75rem",
       },
       screens: {
-        'custom': '1130px',
+        custom: "1130px",
       },
       backgroundColor: {
         emerald: {
-          50: '#FDF5EC',
-          100: '#E6F6E7',
-          200: '#B9E8C0',
-          300: '#6EE7B7',
-          400: '#34D399',
-        }
+          50: "#FDF5EC",
+          100: "#E6F6E7",
+          200: "#B9E8C0",
+          300: "#6EE7B7",
+          400: "#34D399",
+        },
       },
       fontFamily: {
         "my-font": ["Montserrat"],
@@ -70,14 +70,14 @@ const config: Config = {
           "700": "var(--color-gray-200)",
         },
         secondary: {
-            "100": "var(--color-secondary-100)",
-            "200": "var(--color-secondary-200)",
-            "300": "var(--color-secondary-300)",
-            "500": "var(--color-secondary-500)",
-            "600": "var(--color-secondary-600)",
-            "700": "var(--color-secondary-700)",
-            "800": "var(--color-secondary-800)",
-            "900": "var(--color-secondary-900)",
+          "100": "var(--color-secondary-100)",
+          "200": "var(--color-secondary-200)",
+          "300": "var(--color-secondary-300)",
+          "500": "var(--color-secondary-500)",
+          "600": "var(--color-secondary-600)",
+          "700": "var(--color-secondary-700)",
+          "800": "var(--color-secondary-800)",
+          "900": "var(--color-secondary-900)",
           purple: {
             "500": "var(--color-secondary-purple-500)",
           },
@@ -105,10 +105,15 @@ const config: Config = {
           from: { height: "var(--radix-collapsible-content-height)" },
           to: { height: "0" },
         },
+        soundwave: {
+          "0%, 100%": { height: "20%" },
+          "50%": { height: "80%" },
+        },
       },
       animation: {
         "collapsible-down": "collapsible-down 0.2s ease-out",
         "collapsible-up": "collapsible-up 0.2s ease-out",
+        soundwave: "soundwave 1s ease-in-out infinite",
       },
     },
   },

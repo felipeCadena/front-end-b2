@@ -9,11 +9,11 @@ const LanguageDropdown = () => {
 
   const languages = [
     "PT - BR",
-    "ENGLISH",
-    "ESPAÑOL",
-    "COREAN",
-    "日本語",
-    "中文",
+    // "ENGLISH",
+    // "ESPAÑOL",
+    // "COREAN",
+    // "日本語",
+    // "中文",
   ];
 
   const toggleMenu = () => setIsOpen((prev) => !prev);
@@ -28,9 +28,10 @@ const LanguageDropdown = () => {
       <button
         onClick={toggleMenu}
         className="flex items-center font-semibold gap-1 px-2 py-1 text-[0.6rem] md:text-sm bg-gray-200 rounded-full shadow-md hover:bg-gray-200"
+        disabled
       >
         {selectedLanguage}
-        <MyIcon name="world"/>
+        <MyIcon name="world" />
       </button>
 
       {isOpen && (

@@ -11,7 +11,8 @@ import Link from "next/link";
 import MyIcon from "../atoms/my-icon";
 import { useAuthStore } from "@/store/useAuthStore";
 import { authService } from "@/services/api/auth";
-import { useRouter } from "next/navigation";
+import { signOut, useSession } from "next-auth/react";
+import { toast } from "react-toastify";
 export default function SideBarModal({
   children,
   sideBar,
@@ -20,14 +21,19 @@ export default function SideBarModal({
   sideBar: any[];
 }) {
   const { clearUser } = useAuthStore();
-  const router = useRouter();
-  const handleExit = (item: any) => {
+  const { data: session, status } = useSession();
+  const handleExit = async (item: any) => {
     if (item === "Sair") {
-      authService.logout();
-      clearUser();
+      try {
+        await authService.logout(session?.user.refreshToken ?? "");
+        await signOut({ callbackUrl: "/" });
+        clearUser();
+      } catch (error) {
+        console.error("Error during logout:", error);
+        toast.error("Erro ao fazer logout. Tente novamente.");
+      }
     }
   };
-
   return (
     <MyDropdownMenu>
       <DropdownMenuTrigger asChild>{children}</DropdownMenuTrigger>

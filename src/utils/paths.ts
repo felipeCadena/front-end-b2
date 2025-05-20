@@ -8,15 +8,20 @@ type PathsConfig = {
 };
 
 // Rotas Públicas
+
 const ROOTS_INITIAL = "/";
 const ROOTS_LOGIN = "/login";
 const ROOTS_CADASTRO = "/cadastro";
 const ROOTS_SENHA = "/esqueci-minha-senha";
+const ROOTS_RESETAR_SENHA = "/recuperacao/novasenha";
 const ROOTS_QUEMSOMOS = "/quem-somos";
 const ROOTS_FALE_CONOSCO = "/fale-conosco";
 const ROOTS_ATIVIDADES = "/atividades";
 const ROOTS_PARCEIRO = "/parceiro";
 const ROOTS_PERFIL = "/perfil";
+const ROOTS_TERMOS = "/termos-de-uso";
+const ROOTS_SERVICO = "/termos-de-servico";
+const ROOTS_PRIVACIDADE = "/politica-de-privacidade";
 const ROOTS_CADASTRO_PARCEIRO = "/parceiro/cadastro";
 const ROOTS_CADASTRO_FLUXO_PARCEIRO = "/parceiro/cadastro-parceiro";
 const ROOTS_LOGIN_PARCEIRO = "/parceiro/login";
@@ -26,7 +31,9 @@ const ROOTS_TERMOS_PARCEIRO = "/parceiro/termos-de-uso";
 
 // Rotas Privadas
 const ROOTS_CARRINHO = "/carrinho";
+const ROOTS_FINALIZAR_COMPRA_MOBILE = "/carrinho/pagamento";
 const ROOTS_FINALIZAR_COMPRA = "/finalizar-compra";
+const ROOTS_SCHEDULES = "/informacoes?tab=reservas";
 // Agrupa Favoritos, Histórico, Reservas e Fotos (Na Web)
 const ROOTS_INFOS = "/informacoes";
 
@@ -59,13 +66,19 @@ const VISUALIZAR_ATIVIDADE = (slug: number | string) =>
   `/atividades/atividade/${slug}`;
 const VISUALIZAR_FOTOS = (slug: number | string) =>
   `/galeria-de-fotos/galeria/${slug}`;
-const ATIVIDADE_REALIZADA = (slug: number | string) =>
+const ATIVIDADE_REALIZADA_CLIENTE = (slug: number | string) =>
   `/informacoes/atividade-realizada/${slug}`;
+const ATIVIDADE_REALIZADA = (slug: number | string) =>
+  `/parceiro/atividades-cadastradas/atividade/${slug}`;
 const VISUALIZAR_NOTIFICACAO = (slug: number | string) =>
   `/notificacoes/notificacao/${slug}`;
 
 const ENVIAR_FOTOS = (slug: number | string) =>
   `/parceiro/fotos-de-passeios/${slug}/enviar-fotos`;
+
+const EDITAR_FOTOS = (slug: number | string) =>
+  `/parceiro/fotos-de-passeios/${slug}/enviar-fotos/editar`;
+
 const ENVIAR_VIDEOS = (slug: number | string) =>
   `/parceiro/fotos-de-passeios/${slug}/enviar-videos`;
 
@@ -73,6 +86,9 @@ const VISUALIZAR_ATIVIDADE_PARCEIRO = (slug: number | string) =>
   `/parceiro/atividades-cadastradas/atividade/${slug}`;
 const EDITAR_ATIVIDADE_PARCEIRO = (slug: number | string) =>
   `/parceiro/atividades-cadastradas/atividade/${slug}/editar`;
+
+const EDITAR_ATIVIDADE_INFO_PARCEIRO = (slug: number | string) =>
+  `/parceiro/atividades-cadastradas/atividade/${slug}/editar/informacoes`;
 
 const CANCELAR_ATIVIDADE_PARCEIRO = (slug: number | string) =>
   `/parceiro/reservas/cancelar/${slug}`;
@@ -82,6 +98,12 @@ const RELATORIO_ATIVIDADE_PARCEIRO = (slug: number | string) =>
 
 const RELATORIO_ADMIN_FINANCEIRO = (slug: number | string) =>
   `/admin/financeiro/relatorio/${slug}`;
+
+const VISUALIZAR_NOTIFICACAO_ADMIN = (slug: number | string) =>
+  `/admin/notificacoes/notificacao/${slug}`;
+
+const VISUALIZAR_NOTIFICACAO_PARCEIRO = (slug: number | string) =>
+  `/parceiro/notificacoes/notificacao/${slug}`;
 
 // ==========================================
 // * Dynamic encode routes
@@ -96,11 +118,14 @@ const PATHS = {
   "senha-parceiro": ROOTS_SENHA_PARCEIRO,
   cadastro: ROOTS_CADASTRO,
   "esqueci-minha-senha": ROOTS_SENHA,
+  "resetar-senha": ROOTS_RESETAR_SENHA,
   atividades: ROOTS_ATIVIDADES,
+  agenda: ROOTS_SCHEDULES,
   informacoes: ROOTS_INFOS,
   quemSomos: ROOTS_QUEMSOMOS,
   carrinho: ROOTS_CARRINHO,
   "finalizar-compra": ROOTS_FINALIZAR_COMPRA,
+  "carrinho-pagamento": ROOTS_FINALIZAR_COMPRA_MOBILE,
   "termos-parceiro": ROOTS_TERMOS_PARCEIRO,
   parceiro: ROOTS_PARCEIRO,
   perfil: ROOTS_PERFIL,
@@ -121,15 +146,20 @@ const PATHS = {
   "relatorio-admin-financeiro": RELATORIO_ADMIN_FINANCEIRO,
   "relatorio-atividade-parceiro": RELATORIO_ATIVIDADE_PARCEIRO,
   "enviar-fotos": ENVIAR_FOTOS,
+  "editar-fotos": EDITAR_FOTOS,
   "enviar-videos": ENVIAR_VIDEOS,
   visualizarAtividade: VISUALIZAR_ATIVIDADE,
   visualizarNotificacao: VISUALIZAR_NOTIFICACAO,
+  atividadeRealizadaCliente: ATIVIDADE_REALIZADA_CLIENTE,
   atividadeRealizada: ATIVIDADE_REALIZADA,
   visualizarFotos: VISUALIZAR_FOTOS,
   visualizarAtividadeParceiro: VISUALIZAR_ATIVIDADE_PARCEIRO,
   editarAtividadeParceiro: EDITAR_ATIVIDADE_PARCEIRO,
   cancelarAtividade: CANCELAR_ATIVIDADE_PARCEIRO,
   relatorioAtividade: RELATORIO_ATIVIDADE_PARCEIRO,
+  editarAtividadeInfo: EDITAR_ATIVIDADE_INFO_PARCEIRO,
+  visualizarNotificacaoParceiro: VISUALIZAR_NOTIFICACAO_PARCEIRO,
+  visualizarNotificacaoAdmin: VISUALIZAR_NOTIFICACAO_ADMIN,
 };
 
 export const PATHS_CONFIG: PathsConfig = {
@@ -149,6 +179,12 @@ export const PATHS_CONFIG: PathsConfig = {
     ROOTS_TERMOS_PARCEIRO,
     ROOTS_FALE_CONOSCO,
     ROOTS_PERFIL,
+    ROOTS_TERMOS,
+    ROOTS_CADASTRO_ATIVIDADE,
+    ROOTS_INFORMACOES_ATIVIDADES,
+    ROOTS_PRIVACIDADE,
+    ROOTS_SERVICO,
+    ROOTS_RESETAR_SENHA,
     "/atividades/atividade/*",
   ],
   private: {
@@ -168,6 +204,7 @@ export const PATHS_CONFIG: PathsConfig = {
       ROOTS_ADMIN_CONFIG_IDIOMAS,
       "/admin/financeiro/relatorio/*",
       "/admin/marketing/atividade/*",
+      "/admin/notificacoes/notificacao/*",
     ],
     partner: [
       ROOTS_ATIVIDADES_CADASTRADAS,
@@ -185,6 +222,8 @@ export const PATHS_CONFIG: PathsConfig = {
     customer: [
       ROOTS_CARRINHO,
       ROOTS_FINALIZAR_COMPRA,
+      ROOTS_SCHEDULES,
+      ROOTS_FINALIZAR_COMPRA_MOBILE,
       ROOTS_INFOS,
       "/notificacoes/notificacao/*",
     ],
@@ -192,6 +231,7 @@ export const PATHS_CONFIG: PathsConfig = {
 };
 
 export const DEFAULT_ROLE_PATHS = {
+  superadmin: ROOTS_ADMIN,
   admin: ROOTS_ADMIN,
   partner: ROOTS_SUAS_ATIVIDADES,
   customer: ROOTS_ATIVIDADES,

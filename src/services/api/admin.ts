@@ -1,5 +1,5 @@
 import { api } from "@/libs/api";
-import { Adventure, GetAdventuresParams } from "./adventures";
+import { Adventure, GetAdventuresParams, Schedules } from "./adventures";
 
 export interface Partner {
   id: number;
@@ -30,9 +30,78 @@ export interface Partner {
   updatedAt: string;
 }
 
+export interface PartnerSchedule {
+  adventure: {
+    averageRating: number;
+    description: string;
+    duration: string;
+    id: number;
+    title: string;
+    typeAdventure: string;
+    images: {
+      adventureId: number;
+      createdAt: string;
+      description: string | null;
+      id: string;
+      index: null;
+      isDefault: boolean;
+      mimetype: string;
+      name: string;
+      scheduleId: string | null;
+      title: string;
+      updatedAt: string;
+      url: string;
+    }[];
+    partner: {
+      businessEmail: string;
+      fantasyName: string;
+      logo: {
+        url: string;
+      };
+    };
+  };
+  adventureFinalPrice: string;
+  adventureId: number;
+  adventureStatus: string;
+  b2AdventureValue: string;
+  b2Percentage: number;
+  createdAt: string;
+  id: string;
+  orderAdventure: {
+    customer: {
+      name: string;
+      email: string;
+    };
+    id: number;
+    orderId: string;
+    paymentStatus: string;
+    totalCost: string;
+  };
+  orderAdventureId: number;
+  partnerConfirmed: boolean;
+  partnerIsPaid: boolean;
+  partnerValue: string;
+  personsIsAccounted: boolean;
+  qntAdults: number;
+  qntBabies: number;
+  qntChildren: number;
+  schedule: Schedules;
+  scheduleId: string;
+  taxesPercentage: number;
+  totalGatewayFee: string;
+  totalTaxes: string;
+  transferPartnerPaymentId: boolean;
+  updatedAt: string;
+}
+
 export const adminService = {
   //Partners
-  async searchPartners(params: { includePhoto?: boolean; orderBy?: string }) {
+  async searchPartners(params?: {
+    includePhoto?: string;
+    orderBy?: string;
+    limit?: number;
+    skip?: number;
+  }): Promise<Partner[]> {
     try {
       const response = await api.get("/partners/search", { params });
       return response.data;
@@ -44,7 +113,7 @@ export const adminService = {
 
   async updatePartner(id: string, data: Partner) {
     try {
-      const response = await api.put(`/partners/${id}`, data);
+      const response = await api.patch(`/partners/${id}`, data);
       return response.data;
     } catch (error) {
       console.error("Error updating partner:", error);
@@ -71,7 +140,10 @@ export const adminService = {
       throw error;
     }
   },
-  async listPartnerSchedules(id: string, params: { startDate: string }) {
+  async listPartnerSchedules(
+    id: string,
+    params: { startDate: string; limit?: number; orderBy?: string }
+  ): Promise<PartnerSchedule[]> {
     try {
       const response = await api.get(
         `/ordersAdventures/orderSchedule/partner/${id}`,
@@ -123,7 +195,7 @@ export const adminService = {
   // Adventures
   approveOrRejectAdventure: async (
     id: number,
-    payload: { adminApproved: boolean; onSite: boolean }
+    payload: { adminApproved: boolean; onSite: boolean; refusalMsg?: string }
   ): Promise<Adventure> => {
     try {
       const { data } = await api.patch<Adventure>(`/adventures/${id}`, payload);
@@ -148,9 +220,18 @@ export const adminService = {
   },
 
   // Notifications
-  async listNotifications(params: { isRead: boolean }) {
+  async listNotifications(params?: { limit?: number; skip?: number }) {
     try {
-      const response = await api.get("/notifications/admin", { params });
+      const response = await api.get("/notifications", { params });
+      return response.data;
+    } catch (error) {
+      console.error("Error listing notifications:", error);
+      throw error;
+    }
+  },
+  async countUnreadNotificationsAdmin(params?: { limit?: number }) {
+    try {
+      const response = await api.get("/notifications/admin/count", { params });
       return response.data;
     } catch (error) {
       console.error("Error listing notifications:", error);
@@ -234,10 +315,12 @@ export const adminService = {
   },
 
   // Payments
-  async listPendingPaidPartners(params: {
-    startsAt: string;
-    endsAt: string;
-    partnerIsPaid: boolean;
+  async listPendingPaidPartners(params?: {
+    startsAt?: string;
+    endsAt?: string;
+    partnerIsPaid?: boolean;
+    limit?: number;
+    skip?: number;
   }) {
     try {
       const response = await api.get("/admin/partners/orders", { params });
@@ -273,12 +356,28 @@ export const adminService = {
     }
   },
 
-  async getB2Income(params: { startsAt: string; endsAt: string }) {
+  async getB2Income(params: {
+    startsAt?: string;
+    endsAt?: string;
+    limit?: number;
+    typeGroup?: string;
+  }) {
     try {
       const response = await api.get("/admin/b2/income", { params });
       return response.data;
     } catch (error) {
       console.error("Error fetching B2 income:", error);
+      throw error;
+    }
+  },
+
+  async payPartner(token: string) {
+    try {
+      api.defaults.headers.common["x-token-pay-partner"] = token;
+      const response = await api.post("/admin/pay-partner");
+      return response.data;
+    } catch (error) {
+      console.error("Error paid partner: ", error);
       throw error;
     }
   },

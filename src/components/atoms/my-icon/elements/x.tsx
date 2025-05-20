@@ -2,16 +2,18 @@ const X = ({
   width = "16",
   height = "16",
   className,
+  stroke = "#000000",
 }: {
   width?: string;
   height?: string;
   className?: string;
+  stroke?: string;
 }) => (
   <svg
     width={width}
     height={height}
     viewBox="0 0 24 24"
-    stroke="#000000"
+    stroke={stroke}
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     className={className}
