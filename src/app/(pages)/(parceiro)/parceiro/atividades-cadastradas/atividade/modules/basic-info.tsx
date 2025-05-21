@@ -55,7 +55,7 @@ export default function BasicInfo({
   };
 
   const handleItemsIncluded = () => {
-    const items = JSON.parse(formData.itemsIncluded || "[]"); // garantimos que é array
+    const items = JSON.parse(formData.itemsIncluded || "[]");
     const included = [];
 
     if (items.includes("Água")) included.push("Água");
