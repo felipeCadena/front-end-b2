@@ -238,11 +238,11 @@ export const authOptions: NextAuthOptions = {
           }
         } catch (err) {
           console.error("Erro ao renovar token:", (err as any)?.response?.data);
-          return null;
-          // return {
-          //   ...token,
-          //   error: "RefreshAccessTokenError", // <- chave para verificar no frontend
-          // };
+          return {
+            ...token,
+            error: "RefreshAccessTokenError", // <- chave para verificar no frontend
+          };
+          // return null;
         }
       }
 
@@ -251,9 +251,9 @@ export const authOptions: NextAuthOptions = {
     async session({ session, token }: SessionCallback) {
       // console.log("token session ", token?.refreshToken);
 
-      // if (token?.error) {
-      //   session.error = token.error;
-      // }
+      if (token?.error) {
+        session.error = {};
+      }
 
       if (token) {
         session.user.accessToken = token?.accessToken;
@@ -269,7 +269,6 @@ export const authOptions: NextAuthOptions = {
         session.partnerIsActive = token?.partner?.isActive;
       }
 
-      // console.log("session ", session?.user?.refreshToken);
       return session;
     },
     async redirect({ url, baseUrl }) {

@@ -11,6 +11,7 @@ import {
   SelectValue,
 } from "@/components/atoms/my-select";
 import {
+  capitalizeFirstLetter,
   convertToHours,
   convertToTimeString,
   getDifficultyDescription,
@@ -122,20 +123,30 @@ export default function BasicInfo({
       <div className="space-y-6">
         <MyTextInput
           label="Título"
-          value={formData.title}
+          value={formData?.title}
           className="mt-1"
-          onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-        />
-        <MyTextarea
-          label="Descrição"
-          rows={5}
-          className="rezize-y"
-          maxLength={2000}
-          value={formData.description}
           onChange={(e) =>
-            setFormData({ ...formData, description: e.target.value })
+            setFormData({
+              ...formData,
+              title: capitalizeFirstLetter(e.target.value),
+            })
           }
         />
+        <div>
+          <MyTextarea
+            label="Descrição"
+            rows={5}
+            className="rezize-y"
+            maxLength={2000}
+            value={formData?.description}
+            onChange={(e) =>
+              setFormData({ ...formData, description: e.target.value })
+            }
+          />
+          <div className="text-sm text-gray-4 text-right mt-1">
+            {formData?.description.length} / 2000 caracteres
+          </div>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 items-center gap-4 space-y-6">

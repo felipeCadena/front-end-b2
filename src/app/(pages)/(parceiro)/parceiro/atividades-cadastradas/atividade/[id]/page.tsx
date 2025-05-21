@@ -385,10 +385,7 @@ export default function Atividade() {
                   onClick={() => router.push(PATHS["atividades-cadastradas"])}
                 />
                 <MyTypography variant="heading2" weight="bold" className="">
-                  {activity?.title
-                    ? activity.title.charAt(0).toUpperCase() +
-                      activity.title.slice(1).toLowerCase()
-                    : ""}
+                  {activity?.title}
                 </MyTypography>
               </div>
               <div className="flex max-sm:flex-col items-start gap-2 md:items-center">
