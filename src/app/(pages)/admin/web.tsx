@@ -110,8 +110,6 @@ export default function AdminWeb() {
     enabled: tab === "atividades",
     queryFn: async () => {
       const adventures = await adminService.searchAdventures({
-        // startsAt,
-        // endsAt,
         adminApproved: false,
         limit: 12,
         skip: pageActivities * 12 - 12,
