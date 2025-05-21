@@ -20,7 +20,10 @@ export default function GoogleMapsMultiple({
 
   const mapRef = React.useRef<google.maps.Map | null>(null);
   // Centraliza no primeiro item do array (caso exista)
-  const center = locations.length > 0 ? locations[1] : { lat: 0, lng: 0 };
+  const center =
+    locations.length > 0
+      ? locations.find((location) => location?.lat)
+      : { lat: 0, lng: 0 };
 
   const { isLoaded } = useGoogleMaps();
 
