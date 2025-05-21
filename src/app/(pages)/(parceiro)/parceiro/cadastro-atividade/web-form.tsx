@@ -280,7 +280,6 @@ export default function WebForm({
       !description ||
       !hoursBeforeCancellation ||
       !hoursBeforeSchedule ||
-      // !selectionBlocks.length ||
       duration === "" ||
       !tempImages.length ||
       !address

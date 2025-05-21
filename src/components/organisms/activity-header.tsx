@@ -28,10 +28,7 @@ const ActivityHeader = ({ activity }: ActivityHeaderProps) => {
               onClick={() => router.back()}
             />
             <MyTypography variant="heading2" weight="bold" className="">
-              {activity?.title
-                ? activity.title.charAt(0).toUpperCase() +
-                  activity.title.slice(1).toLowerCase()
-                : ""}
+              {activity?.title}
             </MyTypography>
           </div>
           <StarRating rating={activity?.averageRating ?? 0} />
