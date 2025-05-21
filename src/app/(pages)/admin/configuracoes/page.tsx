@@ -26,11 +26,11 @@ const systemConfigs = [
     icon: "text",
     path: "/admin/configuracoes/justificativas",
   },
-  {
-    title: "Idioma do Aplicativo",
-    icon: "world",
-    path: "/admin/configuracoes/idioma",
-  },
+  // {
+  //   title: "Idioma do Aplicativo",
+  //   icon: "world",
+  //   path: "/admin/configuracoes/idioma",
+  // },
 ];
 
 export default function ConfiguracoesSistema() {

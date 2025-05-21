@@ -30,6 +30,7 @@ export default function RelatorioAtividade() {
     month: currentMonthKey,
     typeDate: "",
   });
+
   const { data: partnerOrders } = useQuery({
     queryKey: ["partnerOrders", typeAdventure, filters],
     queryFn: () =>

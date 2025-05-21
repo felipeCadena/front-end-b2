@@ -76,7 +76,7 @@ export default function AdminWeb() {
   const [loading, setLoading] = React.useState(false);
 
   const [filter, setFilter] = React.useState("todos");
-  const [tab, setTab] = React.useState("pagamento");
+  const [tab, setTab] = React.useState("atividades");
 
   const [page, setPage] = React.useState(1);
   const [pageActivities, setPageActivities] = React.useState(1);
