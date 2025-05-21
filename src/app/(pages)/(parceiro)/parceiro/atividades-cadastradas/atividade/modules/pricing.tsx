@@ -11,12 +11,14 @@ import {
 import MyTextInput from "@/components/atoms/my-text-input";
 import { adventures } from "@/services/api/adventures";
 import { toast } from "react-toastify";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import MyButton from "@/components/atoms/my-button";
 import { ModalProps } from "@/components/organisms/edit-activity";
 import MyIcon from "@/components/atoms/my-icon";
 import MyTypography from "@/components/atoms/my-typography";
 import { cn } from "@/utils/cn";
+import { partnerService } from "@/services/api/partner";
+import { useSession } from "next-auth/react";
 
 export default function Pricing({
   formData,
@@ -24,10 +26,16 @@ export default function Pricing({
   onClose,
 }: ModalProps) {
   const [isLoading, setIsLoading] = React.useState(false);
+  const { data: session } = useSession();
 
   const b2Tax = process.env.NEXT_PUBLIC_PERCENTAGE_TAX_B2;
   const tax = process.env.NEXT_PUBLIC_PERCENTAGE_TAX;
-  const freeTax = process.env.NEXT_PUBLIC_FREE_TAX;
+
+  const { data: partner } = useQuery({
+    queryKey: ["partner-tag"],
+    queryFn: () => partnerService.getPartnerLogged(),
+    enabled: !!session?.user,
+  });
 
   const handleTaxDetails = () => {
     const taxB2Percentage = Number(b2Tax) || 0;
@@ -39,10 +47,10 @@ export default function Pricing({
     const realTax = (taxTotal * taxPercentage) / 100;
     const allTax = taxTotal + realTax;
 
-    if (Boolean(freeTax)) {
+    if (partner?.tag == "LAUNCH") {
       return {
         valorParceiro: formData?.priceAdult,
-        b2Fee: b2Fee.toFixed(2),
+        b2Fee,
         tax: Math.round(allTax),
         totalCliente: formData?.priceAdult,
       };
@@ -61,28 +69,28 @@ export default function Pricing({
 
   const queryClient = useQueryClient();
 
-  const data = {
-    isInGroup: formData.isInGroup,
-    isChildrenAllowed: formData.isChildrenAllowed,
-    personsLimit: formData.personsLimit,
-    priceAdult: formData.priceAdult,
-    priceChildren: formData.priceChildren,
-  };
-
   const handleSubmit = async () => {
     setIsLoading(true);
 
+    const data = {
+      isInGroup: formData?.isInGroup,
+      isChildrenAllowed: formData?.isChildrenAllowed,
+      personsLimit: formData?.personsLimit,
+      priceAdult: formData?.priceAdult,
+      priceChildren: formData?.priceChildren,
+    };
+
     try {
-      await adventures.updateAdventureById(formData.id, data);
+      await adventures.updateAdventureById(formData?.id, data);
 
       queryClient.invalidateQueries({ queryKey: ["activity"] });
       toast.success("Atividade atualizada com sucesso!");
+      onClose();
     } catch (error) {
       toast.error("Erro ao atualizar atividade");
       console.error("Error updating adventure:", error);
     }
     setIsLoading(false);
-    onClose();
   };
 
   return (
@@ -97,7 +105,7 @@ export default function Pricing({
         <MySelect
           label="Atividade em grupo"
           className="text-base text-black"
-          value={formData.isInGroup ? "true" : "false"}
+          value={formData?.isInGroup ? "true" : "false"}
           onValueChange={(value) =>
             setFormData({
               ...formData,
@@ -121,7 +129,7 @@ export default function Pricing({
         <MySelect
           label="Permite Crianças"
           className="text-base text-black"
-          value={formData.isChildrenAllowed ? "true" : "false"}
+          value={formData?.isChildrenAllowed ? "true" : "false"}
           onValueChange={(value) =>
             setFormData({
               ...formData,
@@ -148,12 +156,12 @@ export default function Pricing({
           classNameLabel="font-bold text-black text-base"
           noHintText
           className="mt-1"
-          value={formData.personsLimit}
+          value={formData?.personsLimit}
           onChange={(e) =>
             setFormData({
               ...formData,
 
-              personsLimit: formData.isInGroup ? Number(e.target.value) : 1,
+              personsLimit: formData?.isInGroup ? Number(e.target.value) : 1,
             })
           }
         />
@@ -164,7 +172,7 @@ export default function Pricing({
           className="mt-1"
           classNameLabel="font-bold text-black text-base"
           noHintText
-          value={formData.priceAdult}
+          value={formData?.priceAdult}
           onChange={(e) =>
             setFormData({
               ...formData,
@@ -173,14 +181,14 @@ export default function Pricing({
           }
         />
 
-        {formData.isChildrenAllowed && (
+        {formData?.isChildrenAllowed && (
           <MyTextInput
             label="Valor por criança"
             placeholder="R$ 100"
             className="mt-1"
             classNameLabel="font-bold text-black text-base"
             noHintText
-            value={formData.priceChildren}
+            value={formData?.priceChildren}
             onChange={(e) =>
               setFormData({
                 ...formData,
@@ -205,14 +213,14 @@ export default function Pricing({
           <MyTypography
             variant="label"
             weight="regular"
-            className={cn("mb-1", Boolean(freeTax) && "line-through")}
+            className={cn("mb-1", partner?.tag == "LAUNCH" && "line-through")}
           >
             Tarifa B2
           </MyTypography>
           <MyTypography
             variant="label"
             weight="regular"
-            className={cn("mb-1", Boolean(freeTax) && "line-through")}
+            className={cn("mb-1", partner?.tag == "LAUNCH" && "line-through")}
           >
             R$ {handleTaxDetails().b2Fee ?? "0,00"}
           </MyTypography>
@@ -222,14 +230,14 @@ export default function Pricing({
           <MyTypography
             variant="label"
             weight="regular"
-            className={cn("mb-1", Boolean(freeTax) && "line-through")}
+            className={cn("mb-1", partner?.tag == "LAUNCH" && "line-through")}
           >
             Imposto
           </MyTypography>
           <MyTypography
             variant="label"
             weight="regular"
-            className={cn("mb-1", Boolean(freeTax) && "line-through")}
+            className={cn("mb-1", partner?.tag == "LAUNCH" && "line-through")}
           >
             R$ {handleTaxDetails().tax ?? "0,00"}
           </MyTypography>

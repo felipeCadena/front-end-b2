@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { ReactNode, useEffect } from "react";
 import { Inter } from "next/font/google";
 import "../globals.css";
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { useQuery } from "@tanstack/react-query";
 import { users } from "@/services/api/users";
 import { partnerService } from "@/services/api/partner";
@@ -34,9 +34,12 @@ const Layout = ({ children }: { children: JSX.Element | ReactNode }) => {
   //   queryFn: () => partnerService.getPartnerLogged(),
   // });
 
-  // useEffect(() => {}, [session?.user]);
-
-  // console.log(session);
+  // useEffect(() => {
+  //   if (session?.user?.error === "RefreshAccessTokenError") {
+  //     // Logout automático ou redirecionamento
+  //     signOut({ callbackUrl: "/login" });
+  //   }
+  // }, [session]);
 
   return (
     <section

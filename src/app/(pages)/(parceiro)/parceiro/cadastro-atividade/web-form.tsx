@@ -241,8 +241,6 @@ export default function WebForm({
     return `0${hour}:00`;
   };
 
-  console.log(address);
-
   const handleLocationSelected = (locationData: LocationData) => {
     console.log("Location Data Received:", locationData);
 

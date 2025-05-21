@@ -286,6 +286,18 @@ export const getDifficultyDescription = (number: number) => {
   return dificulties[number - 1] || null;
 };
 
+export const getDifficultyDescriptionResume = (number: number) => {
+  const dificulties = [
+    "Iniciante / Muito Leve",
+    "Leve",
+    "Moderado / Intenso",
+    "Avançado / Difícil",
+    "Extremo / Muito Difícil",
+  ];
+
+  return dificulties[number - 1] || null;
+};
+
 export const getDifficultyNumber = (description: string) => {
   const dificulties = [
     "Grau 1 - Iniciante / Muito Leve",

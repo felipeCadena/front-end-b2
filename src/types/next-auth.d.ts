@@ -18,6 +18,7 @@ declare module "next-auth" {
         fantasyName: string;
         isActive: boolean;
       };
+      error?: string;
     };
   }
 
@@ -37,6 +38,7 @@ declare module "next-auth" {
       fantasyName: string;
       isActive: boolean;
     };
+    error?: string;
   }
 
   interface Token {
@@ -55,5 +57,6 @@ declare module "next-auth" {
       fantasyName: string;
       isActive: boolean;
     };
+    error?: string;
   }
 }

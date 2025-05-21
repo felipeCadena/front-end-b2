@@ -76,7 +76,7 @@ export default function AdminWeb() {
   const [loading, setLoading] = React.useState(false);
 
   const [filter, setFilter] = React.useState("todos");
-  const [tab, setTab] = React.useState("pagamento");
+  const [tab, setTab] = React.useState("atividades");
 
   const [page, setPage] = React.useState(1);
   const [pageActivities, setPageActivities] = React.useState(1);
@@ -110,8 +110,6 @@ export default function AdminWeb() {
     enabled: tab === "atividades",
     queryFn: async () => {
       const adventures = await adminService.searchAdventures({
-        // startsAt,
-        // endsAt,
         adminApproved: false,
         limit: 12,
         skip: pageActivities * 12 - 12,
@@ -181,7 +179,7 @@ export default function AdminWeb() {
     setLoadingItem({ id });
     const body = {
       adminApproved: true,
-      onSite: false,
+      onSite: true,
       refusalMsg: "",
     };
     try {

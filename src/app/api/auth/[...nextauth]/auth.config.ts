@@ -238,7 +238,10 @@ export const authOptions: NextAuthOptions = {
           }
         } catch (err) {
           console.error("Erro ao renovar token:", (err as any)?.response?.data);
-          return null;
+          return {
+            ...token,
+            error: "RefreshAccessTokenError", // <- chave para verificar no frontend
+          };
         }
       }
 
@@ -246,6 +249,10 @@ export const authOptions: NextAuthOptions = {
     },
     async session({ session, token }: SessionCallback) {
       // console.log("token session ", token?.refreshToken);
+
+      // if (token?.error) {
+      //   session.error = token.error;
+      // }
 
       if (token) {
         session.user.accessToken = token?.accessToken;

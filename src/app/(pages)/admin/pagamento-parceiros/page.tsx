@@ -17,6 +17,7 @@ import { endOfMonth, format, startOfMonth } from "date-fns";
 import { adminService } from "@/services/api/admin";
 import { toast } from "react-toastify";
 import { AxiosError } from "axios";
+import Image from "next/image";
 
 type PartnerPayment = {
   partnerFantasyName: string;
@@ -122,6 +123,18 @@ export default function PagamentosParceiros() {
         </MyTypography>
       </div>
 
+      {isLoading && isLoadingPaid && (
+        <div className="flex items-center justify-center h-[250px]">
+          <Image
+            src="/logo.png"
+            alt="B2 Adventure Logo"
+            width={250}
+            height={250}
+            className="object-contain animate-pulse"
+          />
+        </div>
+      )}
+
       <div className="w-full p-4 space-y-6 md:space-y-16 md:mt-6">
         {/* Pagos */}
         <div>
@@ -220,35 +233,37 @@ export default function PagamentosParceiros() {
         </div>
 
         {/* Resumo */}
-        <div className="bg-primary-900 p-4 rounded-lg flex justify-between items-center">
-          <div>
-            <MyTypography variant="body-big" weight="bold">
-              Pagamentos
-            </MyTypography>
-            <MyTypography variant="body-big" weight="bold">
-              {totalPagamentos} parceiros esse mês
-            </MyTypography>
+        {!isLoadingPaid && !isLoading && (
+          <div className="bg-primary-900 p-4 rounded-lg flex justify-between items-center">
+            <div>
+              <MyTypography variant="body-big" weight="bold">
+                Pagamentos
+              </MyTypography>
+              <MyTypography variant="body-big" weight="bold">
+                {totalPagamentos} parceiros esse mês
+              </MyTypography>
+            </div>
+            <div className="flex flex-col items-center">
+              <MyTypography
+                variant="body-big"
+                weight="bold"
+                className="text-primary-600 self-end"
+              >
+                Total:
+              </MyTypography>
+              <MyTypography
+                variant="body-big"
+                weight="bold"
+                className="text-primary-600"
+              >
+                {Number(valorTotal).toLocaleString("pt-BR", {
+                  style: "currency",
+                  currency: "BRL",
+                })}
+              </MyTypography>
+            </div>
           </div>
-          <div className="flex flex-col items-center">
-            <MyTypography
-              variant="body-big"
-              weight="bold"
-              className="text-primary-600 self-end"
-            >
-              Total:
-            </MyTypography>
-            <MyTypography
-              variant="body-big"
-              weight="bold"
-              className="text-primary-600"
-            >
-              {Number(valorTotal).toLocaleString("pt-BR", {
-                style: "currency",
-                currency: "BRL",
-              })}
-            </MyTypography>
-          </div>
-        </div>
+        )}
       </div>
     </div>
   );

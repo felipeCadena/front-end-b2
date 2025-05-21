@@ -28,6 +28,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const ENV_PRO = process.env.NEXT_PUBLIC_ENV === "prod";
   return (
     <html lang="en">
       <head>
@@ -35,6 +36,7 @@ export default function RootLayout({
           name="facebook-domain-verification"
           content="zqjcoi9kslkxzreeg9w2vchootdjwg"
         />
+        {!ENV_PRO && <meta name="robots" content="noindex" />}
       </head>
       <body
         suppressHydrationWarning={true}

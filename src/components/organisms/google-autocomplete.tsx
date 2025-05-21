@@ -69,11 +69,13 @@ export default function AutocompleteCombobox({
   onLocationSelected,
   setFormData,
   formData,
+  editAdventure = false,
 }: {
   title?: string;
   onLocationSelected?: (location: LocationData) => void;
   setFormData: (formData: any) => void;
   formData: any;
+  editAdventure?: boolean;
 }) {
   const { isLoaded } = useGoogleMaps();
   const [searchBoxRef, setSearchBoxRef] =
@@ -92,10 +94,10 @@ export default function AutocompleteCombobox({
     };
 
     // Atualizar o formulário
-    setFormData({
-      ...formData,
-      address: place.formatted_address,
-    });
+    // setFormData({
+    //   ...formData,
+    //   address: place.formatted_address,
+    // });
 
     // Notificar o componente pai
     onLocationSelected?.({
@@ -118,17 +120,36 @@ export default function AutocompleteCombobox({
           }
         }}
       >
-        <MyTextInput
-          type="text"
-          placeholder={title}
-          noHintText
-          className="placeholder:text-gray-400"
-          leftIcon={<MyIcon name="localizacao" className="ml-3" />}
-          value={formData}
-          onChange={(e) =>
-            setFormData({ ...formData, address: e.target.value })
-          }
-        />
+        {!editAdventure ? (
+          <MyTextInput
+            type="text"
+            placeholder={title}
+            noHintText
+            className="placeholder:text-gray-400"
+            leftIcon={<MyIcon name="localizacao" className="ml-3" />}
+            value={formData}
+            onChange={(e) =>
+              setFormData({
+                address: e.target.value,
+              })
+            }
+          />
+        ) : (
+          <MyTextInput
+            type="text"
+            placeholder={title}
+            noHintText
+            className="placeholder:text-gray-400"
+            leftIcon={<MyIcon name="localizacao" className="ml-3" />}
+            value={formData}
+            onChange={(e) =>
+              setFormData((prev: any) => ({
+                ...prev,
+                address: e.target.value,
+              }))
+            }
+          />
+        )}
       </StandaloneSearchBox>
     </div>
   );

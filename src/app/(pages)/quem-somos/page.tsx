@@ -2,7 +2,7 @@
 
 import MyIcon from "@/components/atoms/my-icon";
 import MyTypography from "@/components/atoms/my-typography";
-import SearchActivity from "@/components/organisms/search-activity";
+import PATHS from "@/utils/paths";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React from "react";
@@ -17,7 +17,7 @@ export default function QuemSomos() {
             <MyIcon
               name="voltar-black"
               className="cursor-pointer"
-              onClick={() => router.back()}
+              onClick={() => router.push(PATHS.initial)}
             />
             <MyTypography variant="heading2" weight="bold" className="">
               Quem somos

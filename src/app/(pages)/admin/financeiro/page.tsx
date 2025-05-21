@@ -43,6 +43,7 @@ import {
 } from "recharts";
 import { toast } from "react-toastify";
 import { AxiosError } from "axios";
+import { getYearsArray } from "@/utils/formatters";
 
 type PartnerPayment = {
   partnerFantasyName: string;
@@ -127,22 +128,22 @@ const renderTooltip = (props: any) => {
               R$ {data.Total ?? 0}
             </p>
           )}
-          {data.arTotal > 0 && (
+          {data.ar > 0 && (
             <p>
               <strong>Ar: </strong>
-              R$ {data.arTotal ?? 0}
+              R$ {data.ar ?? 0}
             </p>
           )}
-          {data.terraTotal > 0 && (
+          {data.terra > 0 && (
             <p>
               <strong>Terra: </strong>
-              R$ {data.terraTotal ?? 0}
+              R$ {data.terra ?? 0}
             </p>
           )}
-          {data.marTotal > 0 && (
+          {data.mar > 0 && (
             <p>
               <strong>Mar: </strong>
-              R$ {data.marTotal}
+              R$ {data.mar}
             </p>
           )}
         </div>
@@ -151,6 +152,104 @@ const renderTooltip = (props: any) => {
   }
 
   return null;
+};
+
+const renderTooltipGeneral = (props: any) => {
+  const { active, payload, label } = props;
+
+  if (active && payload && payload.length) {
+    // Pega os dados de cada item
+    const data = payload[0].payload;
+    return (
+      <div className="custom-tooltip text-center p-2 bg-white border border-gray-300 rounded">
+        <p>
+          <strong>{getFullMonthName(label)}</strong>
+        </p>
+        <div className="text-left">
+          {data.ar > 0 && (
+            <p>
+              <strong>Ar: </strong>
+              R$ {data.ar ?? 0}
+            </p>
+          )}
+          {data.terra > 0 && (
+            <p>
+              <strong>Terra: </strong>
+              R$ {data.terra ?? 0}
+            </p>
+          )}
+          {data.mar > 0 && (
+            <p>
+              <strong>Mar: </strong>
+              R$ {data.mar}
+            </p>
+          )}
+          {data.totalb2 > 0 && (
+            <p>
+              <strong>Total B2: </strong>
+              R$ {data.totalb2 ?? 0}
+            </p>
+          )}
+          {data.total > 0 && (
+            <p>
+              <strong>Total geral: </strong>
+              R$ {Number(data.total).toFixed(0) ?? 0}
+            </p>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  return null;
+};
+
+const mock = {
+  "2025-04": {
+    countTotal: 8,
+    sumTotalOrdersValue: 9766.329999999998,
+    sumTotalAdventuresValue: 9552.95,
+    sumTotalPartnersValue: 4100,
+    sumTotalB2Value: 1230,
+    sumTotalTaxes: 225.68,
+    sumTotalGatewayTaxes: 213.38000000000002,
+    marTotal: 210,
+    marPercent: 17.07,
+    arTotal: 540,
+    arPercent: 43.9,
+    terraTotal: 480,
+    terraPercent: 39.02,
+  },
+  "2025-05": {
+    countTotal: 8,
+    sumTotalOrdersValue: 5000,
+    sumTotalAdventuresValue: 9552.95,
+    sumTotalPartnersValue: 4100,
+    sumTotalB2Value: 1230,
+    sumTotalTaxes: 225.68,
+    sumTotalGatewayTaxes: 213.38000000000002,
+    marTotal: 210,
+    marPercent: 17.07,
+    arTotal: 540,
+    arPercent: 43.9,
+    terraTotal: 480,
+    terraPercent: 39.02,
+  },
+  "2025-06": {
+    countTotal: 8,
+    sumTotalOrdersValue: 12520,
+    sumTotalAdventuresValue: 9552.95,
+    sumTotalPartnersValue: 4100,
+    sumTotalB2Value: 1230,
+    sumTotalTaxes: 225.68,
+    sumTotalGatewayTaxes: 213.38000000000002,
+    marTotal: 210,
+    marPercent: 17.07,
+    arTotal: 540,
+    arPercent: 43.9,
+    terraTotal: 480,
+    terraPercent: 39.02,
+  },
 };
 
 const RADIAN = Math.PI / 180;
@@ -164,7 +263,7 @@ const renderCustomizedLabel = ({
 }: any) => {
   const radius = (innerRadius + outerRadius) / 2; // Ajuste fino da posição
   const x = cx + radius * Math.cos(-midAngle * RADIAN);
-  const y = cy + (radius + 3) * Math.sin(-midAngle * RADIAN);
+  const y = cy + (radius + 1) * Math.sin(-midAngle * RADIAN);
 
   return (
     <text
@@ -200,6 +299,9 @@ export default function Dashboard() {
   const router = useRouter();
   const queryClient = useQueryClient();
   const currentMonthKey = format(new Date(), "MM");
+  const [year, setYear] = React.useState("2025");
+
+  const [yearGeneral, setYearGeneral] = React.useState("2025");
 
   const [filters, setFilters] = React.useState({
     report: "",
@@ -208,7 +310,6 @@ export default function Dashboard() {
     typeDate: "", // month or year
   });
   const [typeGroup, setTypeGroup] = React.useState("month");
-  const [typeGroupYear, setTypeGroupYear] = React.useState("month");
 
   const [loading, setLoading] = React.useState(false);
 
@@ -217,9 +318,34 @@ export default function Dashboard() {
   const startsAt = format(startOfMonth(now), "yyyy-MM-dd'T'00:00:00");
   const endsAt = format(endOfMonth(now), "yyyy-MM-dd'T'00:00:00");
 
-  const startOfCurrentYear = format(startOfYear(now), "yyyy-MM-dd'T'00:00:00");
+  const { startOfCurrentYear, endOfCurrentYear } = React.useMemo(() => {
+    const selectedDate = new Date(Number(year), 0); // Janeiro do ano selecionado
+    return {
+      startOfCurrentYear: format(
+        startOfYear(selectedDate),
+        "yyyy-MM-dd'T'00:00:00"
+      ),
+      endOfCurrentYear: format(
+        endOfYear(selectedDate),
+        "yyyy-MM-dd'T'23:59:59"
+      ),
+    };
+  }, [year]);
 
-  const endOfCurrentYear = format(endOfYear(now), "yyyy-MM-dd'T'23:59:59");
+  const { startOfCurrentYearGeneral, endOfCurrentYearGeneral } =
+    React.useMemo(() => {
+      const selectedDate = new Date(Number(yearGeneral), 0); // Janeiro do ano selecionado
+      return {
+        startOfCurrentYearGeneral: format(
+          startOfYear(selectedDate),
+          "yyyy-MM-dd'T'00:00:00"
+        ),
+        endOfCurrentYearGeneral: format(
+          endOfYear(selectedDate),
+          "yyyy-MM-dd'T'23:59:59"
+        ),
+      };
+    }, [yearGeneral]);
 
   const { data: pending, isLoading } = useQuery({
     queryKey: ["pendingPayments"],
@@ -232,34 +358,55 @@ export default function Dashboard() {
   });
 
   const { data: adminIncome } = useQuery({
-    queryKey: ["adminIncome"],
+    queryKey: ["adminIncome", typeGroup],
     queryFn: () =>
       adminService.getB2Income({
         startsAt,
         endsAt,
+        typeGroup,
       }),
   });
 
-  const handleFilterYear = (value: string) => {
-    setTypeGroupYear(value);
-  };
-
   const { data: adminIncomeYear } = useQuery({
-    queryKey: ["adminIncomeYear", typeGroupYear],
+    queryKey: ["adminIncomeYear", year],
     queryFn: () =>
       adminService.getB2Income({
         startsAt: startOfCurrentYear,
         endsAt: endOfCurrentYear,
-        typeGroup: typeGroupYear,
       }),
   });
+
+  const { data: adminIncomeYearGeneral } = useQuery({
+    queryKey: ["adminIncomeYearGeneral", yearGeneral],
+    queryFn: () =>
+      adminService.getB2Income({
+        startsAt: startOfCurrentYearGeneral,
+        endsAt: endOfCurrentYearGeneral,
+      }),
+  });
+
+  function getLatestWeekKey(data: Record<string, any>): string | null {
+    const keys = Object.keys(data);
+
+    if (keys.length === 0) return null;
+
+    const sorted = keys.sort((a, b) => {
+      const getWeekNum = (key: string) => {
+        const match = key.match(/week-(\d+)-/);
+        return match ? parseInt(match[1], 10) : 0;
+      };
+      return getWeekNum(b) - getWeekNum(a); // ordem decrescente
+    });
+
+    return sorted[0];
+  }
 
   const type =
     typeGroup === "month"
       ? `${filters.year}-${filters.month}`
-      : `week-1-${filters.year}-${filters.month}`;
+      : adminIncome && getLatestWeekKey(adminIncome);
 
-  const incomeData = adminIncome?.[type];
+  const incomeData = adminIncome?.[type ?? ""];
 
   const handleFilter = (value: string) => {
     setTypeGroup(value);
@@ -345,78 +492,72 @@ export default function Dashboard() {
     (item) => item?.value && item?.value > 0
   );
 
-  const barData = [
-    { name: "Jan", atual: 2400, anterior: 1800 },
-    { name: "Fev", atual: 1398, anterior: 1000 },
-    { name: "Mar", atual: 1800, anterior: 2200 },
-    { name: "Abr", atual: 1500, anterior: 2400 },
-    { name: "Mai", atual: 2200, anterior: 1800 },
-    { name: "Jun", atual: 2800, anterior: 2000 },
-    { name: "Jul", atual: 1600, anterior: 2400 },
-  ];
+  const getMiddleMonthLabel = (data: any) => {
+    const now = new Date();
+    const currentMonthLabel = now.toLocaleString("pt-BR", { month: "short" });
+    const formatted =
+      currentMonthLabel.charAt(0).toUpperCase() + currentMonthLabel.slice(1);
 
-  const lineData = [
-    { name: "Jan", before: 50, value: 80 },
-    { name: "Fev", before: 70, value: 100 },
-    { name: "Mar", before: 90, value: 150 },
-    { name: "Abr", before: 150, value: 300 },
-    { name: "Mai", before: 300, value: 600 },
-    { name: "Jun", before: 350, value: 400 },
-    { name: "Jul", before: 400, value: 500 },
-  ];
+    const found = data.find((item: any) => `${item.name}.` === formatted);
+    return found?.name ?? null;
+  };
 
-  function formatChartData(data: IncomeTypeYear | undefined, type: string) {
-    if (!data) return [];
+  function generateMonthlyChartData(dataFromApi: Record<string, any>) {
+    const now = new Date();
+    const currentYear = now.getFullYear();
+    const months = [];
 
-    if (type === "week") {
-      const weekEntries = Object.entries(data)
-        .filter(([key]) => key.startsWith("week-"))
-        .sort(([a], [b]) => a.localeCompare(b)); // ordena pela chave (semana)
+    // const isMobile = window && window.innerWidth < 768 ? 6 : 12;
 
-      const chartData = weekEntries.map(([key, value], index) => ({
-        name: `Semana ${index + 1}`, // Use o weekLabels ou um fallback
-        Total: value?.sumTotal ?? 0, // Valor total da semana
-        arTotal: value?.arTotal ?? 0, // Valor AR
-        terraTotal: value?.terraTotal ?? 0, // Valor Terra
-        marTotal: value?.marTotal ?? 0, // Valor Mar
-        countTotal: value?.countTotal ?? 0, // Contagem total
-      }));
+    for (let month = 0; month < 12; month++) {
+      const date = new Date(currentYear, month, 1);
+      const key = `${date.getFullYear()}-${(month + 1).toString().padStart(2, "0")}`;
+      const label = date.toLocaleString("pt-BR", { month: "short" });
 
-      return [{ name: "", Total: 0 }, ...chartData];
+      const monthData = Object.entries(dataFromApi).find(([k]) =>
+        k.endsWith(key)
+      )?.[1];
+
+      months.push({
+        name: label.charAt(0).toUpperCase() + label.slice(1).replace(".", ""),
+        mar: monthData?.marTotal || 0,
+        ar: monthData?.arTotal || 0,
+        terra: monthData?.terraTotal || 0,
+        Total: monthData?.sumTotalB2Value || 0,
+      });
     }
 
-    // Padrão: mensal
-    return Array.from({ length: 6 }, (_, index) => {
-      const month = String(index + 1).padStart(2, "0");
-      const key = `2025-${month}`;
-      const value = data[key];
-
-      return {
-        name: monthLabels[index],
-        Total: value?.sumTotal ?? 0,
-        arTotal: value?.arTotal ?? 0,
-        terraTotal: value?.terraTotal ?? 0,
-        marTotal: value?.marTotal ?? 0,
-        countTotal: value?.countTotal ?? 0,
-      };
-    });
+    return months;
   }
 
-  const getMiddleMonthLabel = (data: { name: string; Total: number }[]) => {
-    const monthsWithValue = data.filter((d) => d.Total > 0);
-    if (!monthsWithValue.length) return null;
+  function generateCharDataGeneral(dataFromApi: Record<string, any>) {
+    const now = new Date();
+    const currentYear = now.getFullYear();
+    const months = [];
 
-    const middleIndex = Math.floor(monthsWithValue.length / 2);
-    return monthsWithValue[middleIndex]?.name ?? null;
-  };
+    // const isMobile = window && window.innerWidth < 768 ? 6 : 12;
 
-  const getMiddleLabel = (data: { name: string; Total: number }[]) => {
-    const withValue = data.filter((d) => d.Total > 0);
-    if (!withValue.length) return null;
+    for (let month = 0; month < 12; month++) {
+      const date = new Date(currentYear, month, 1);
+      const key = `${date.getFullYear()}-${(month + 1).toString().padStart(2, "0")}`;
+      const label = date.toLocaleString("pt-BR", { month: "short" });
 
-    const middleIndex = Math.floor(withValue.length / 2);
-    return withValue[middleIndex]?.name ?? null;
-  };
+      const monthData = Object.entries(dataFromApi).find(([k]) =>
+        k.endsWith(key)
+      )?.[1];
+
+      months.push({
+        name: label.charAt(0).toUpperCase() + label.slice(1).replace(".", ""),
+        mar: monthData?.marTotal || 0,
+        ar: monthData?.arTotal || 0,
+        terra: monthData?.terraTotal || 0,
+        total: monthData?.sumTotalOrdersValue || 0,
+        totalb2: monthData?.sumTotalB2Value || 0,
+      });
+    }
+
+    return months;
+  }
 
   return (
     <main className="max-sm:mx-4 my-6 space-y-8">
@@ -475,7 +616,7 @@ export default function Dashboard() {
         </MyButton>
       </div>
 
-      <div className="max-sm:space-y-6 md:grid md:grid-cols-3 md:gap-6 md:items-center md:my-12">
+      <div className="max-sm:space-y-6 md:grid md:grid-cols-2 md:gap-6 md:items-center md:my-12">
         <MyCard className="pb-8 md:h-full">
           <CardContent className="p-4 space-y-4 relative mx-auto">
             <div className="w-full flex items-center justify-between">
@@ -484,7 +625,7 @@ export default function Dashboard() {
                 weight="bold"
                 className="text-nowrap"
               >
-                Seus Rendimentos
+                Receita Total
               </MyTypography>
 
               <div className="ml-auto">
@@ -530,7 +671,11 @@ export default function Dashboard() {
                     </Pie>
                   </PieChart>
                 </ResponsiveContainer>
-                <div className="text-center absolute top-[35%] left-[35%] md:left-[33%] opacity-6">
+                <div
+                  className={cn(
+                    "text-center absolute top-[35%] left-[30%] md:left-[39%] opacity-6"
+                  )}
+                >
                   <MyTypography variant="body-big" lightness={400} className="">
                     Total
                   </MyTypography>
@@ -579,9 +724,15 @@ export default function Dashboard() {
           </CardContent>
         </MyCard>
 
-        <MyCard className="md:h-full max-sm:hidden">
-          <CardContent className="space-y-4">
-            <h2 className="text-lg font-semibold">Atividades</h2>
+        <MyCard className="md:h-full">
+          <CardContent className="space-y-4 p-3">
+            <MyTypography
+              variant="subtitle3"
+              weight="bold"
+              className="text-nowrap"
+            >
+              Extrato parcial das atividade
+            </MyTypography>
             {activities.map((activity, index) => (
               <div
                 key={index}
@@ -593,7 +744,7 @@ export default function Dashboard() {
                 <div className="flex items-center gap-4 relative">
                   <MyTypography
                     variant="caption"
-                    className="text-sm font-semibold absolute top-[39%] left-[7%]"
+                    className="text-sm font-semibold absolute left-5"
                   >
                     {Math.round(activity.progress)}%
                   </MyTypography>
@@ -650,44 +801,48 @@ export default function Dashboard() {
             ))}
           </CardContent>
         </MyCard>
-
-        <MyCard className="md:h-full">
-          <CardContent className="w-full h-full flex flex-col gap-12 items-center p-3">
-            <div className="w-full flex items-center justify-between">
-              <MyTypography
-                variant="subtitle3"
-                weight="bold"
-                className="text-nowrap"
+      </div>
+      <MyCard className="md:h-full max-sm:mt-4">
+        <CardContent className="w-full h-full flex flex-col gap-10 items-center p-3 overflow-y-hidden overflow-x-auto">
+          <div className="w-full flex items-center justify-between">
+            <MyTypography
+              variant="subtitle3"
+              weight="bold"
+              className="text-nowrap"
+            >
+              Fluxo B2
+            </MyTypography>
+            <div className="ml-auto">
+              <MySelect
+                value={year}
+                onValueChange={(value) => {
+                  setYear(value);
+                }}
               >
-                Entradas
-              </MyTypography>
-              <div className="ml-auto">
-                <MySelect
-                  value={typeGroupYear}
-                  onValueChange={(value) => handleFilterYear(value)}
-                >
-                  <SelectTrigger className="rounded-2xl text-[#848A9C] text-xs">
-                    <SelectValue placeholder="Mensal" />
-                  </SelectTrigger>
-                  <SelectContent className="rounded-lg">
-                    <SelectItem value="month">Mensal</SelectItem>
-                    <SelectItem value="week">Semanal</SelectItem>
-                  </SelectContent>
-                </MySelect>
-              </div>
+                <SelectTrigger className="rounded-2xl w-[100px] text-[#848A9C] text-xs">
+                  <SelectValue placeholder="Ano vigente" />
+                </SelectTrigger>
+                <SelectContent className="rounded-lg">
+                  {getYearsArray().map((year) => (
+                    <SelectItem key={year} value={year}>
+                      {year}
+                    </SelectItem>
+                  ))}
+                  <SelectItem key="2026" value="2026">
+                    2026
+                  </SelectItem>
+                </SelectContent>
+              </MySelect>
             </div>
+          </div>
 
-            <div className="h-[250px] w-full mt-4">
+          <div className="h-[250px] w-full mt-4">
+            <div className="min-w-[600px] sm:min-w-full h-full">
               {adminIncomeYear && Object.keys(adminIncomeYear).length > 0 ? (
                 (() => {
-                  const chartData = formatChartData(
-                    adminIncomeYear,
-                    typeGroupYear
-                  );
-                  const reference =
-                    typeGroupYear == "month"
-                      ? getMiddleMonthLabel(chartData)
-                      : getMiddleLabel(chartData);
+                  const chartData = generateMonthlyChartData(adminIncomeYear);
+
+                  const reference = getMiddleMonthLabel(chartData);
 
                   return (
                     <ResponsiveContainer width="100%" height="100%">
@@ -712,188 +867,160 @@ export default function Dashboard() {
                         {reference && (
                           <ReferenceLine
                             x={reference}
-                            stroke="orange"
+                            stroke="#000"
+                            strokeDasharray="5 5"
                             strokeWidth={2}
                           />
                         )}
                         <Line
                           type="monotone"
-                          dataKey="Total"
+                          dataKey="mar"
                           stroke="#00C6FB"
                           strokeWidth={2}
-                          dot={{ r: 0 }}
+                          name="Mar"
                         />
                         <Line
                           type="monotone"
-                          dataKey="before"
+                          dataKey="ar"
+                          stroke="#FF66B2"
                           strokeWidth={2}
-                          stroke="rgb(201, 201, 201)"
-                          dot={{ r: 0 }}
+                          name="Ar"
                         />
-                        <CartesianGrid strokeDasharray="2" vertical={false} />
+                        <Line
+                          type="monotone"
+                          dataKey="terra"
+                          stroke="#FFA500"
+                          strokeWidth={2}
+                          name="Terra"
+                        />
+                        <CartesianGrid
+                          color="#000"
+                          strokeDasharray="2"
+                          vertical={false}
+                        />
                       </LineChart>
                     </ResponsiveContainer>
                   );
                 })()
               ) : (
-                <div className="flex items-center justify-center mt-6">
+                <div className="flex items-center md:justify-center mt-6">
                   <MyTypography variant="body-big" weight="bold">
                     Você ainda não possui passeios realizados
                   </MyTypography>
                 </div>
               )}
             </div>
-          </CardContent>
-        </MyCard>
-      </div>
+          </div>
+        </CardContent>
+      </MyCard>
 
       <MyCard className="md:h-full">
-        <CardContent className="p-4 space-y-4 relative mx-auto">
+        <CardContent className="w-full h-full flex flex-col gap-16 items-center p-3 overflow-y-hidden overflow-x-auto">
           <div className="w-full flex items-center justify-between">
-            <MyTypography
-              variant="subtitle3"
-              weight="bold"
-              className="text-nowrap"
-            >
-              Saídas
-            </MyTypography>
+            <div className="flex flex-col gap-2">
+              <MyTypography
+                variant="subtitle3"
+                weight="bold"
+                className="text-nowrap"
+              >
+                Fluxo geral e B2{" "}
+              </MyTypography>
+              {/* Legenda */}
+              <div className="flex gap-6 w-full">
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 rounded-full border-2 border-[#00C6FB]" />
+                  <MyTypography variant="body" lightness={400}>
+                    Valor geral
+                  </MyTypography>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 rounded-full border-2 border-[#FFA500]" />
+                  <MyTypography variant="body" lightness={400}>
+                    Tarifa B2
+                  </MyTypography>
+                </div>
+              </div>
+            </div>
+
             <div className="ml-auto">
               <MySelect
-              //   value={}
-              //   onValueChange={}
+                value={yearGeneral}
+                onValueChange={(value) => {
+                  setYearGeneral(value);
+                }}
               >
-                <SelectTrigger className="rounded-2xl text-[#848A9C] text-xs">
-                  <SelectValue placeholder="Mensal" />
+                <SelectTrigger className="rounded-2xl w-[100px] text-[#848A9C] text-xs">
+                  <SelectValue placeholder="Ano vigente" />
                 </SelectTrigger>
                 <SelectContent className="rounded-lg">
-                  <SelectItem value="Mensal">Mensal</SelectItem>
-                  <SelectItem value="Semanal">Semanal</SelectItem>
+                  {getYearsArray().map((year) => (
+                    <SelectItem key={year} value={year}>
+                      {year}
+                    </SelectItem>
+                  ))}
+                  <SelectItem key="2026" value="2026">
+                    2026
+                  </SelectItem>
                 </SelectContent>
               </MySelect>
             </div>
           </div>
 
-          {/* Legenda */}
-          <div className="flex gap-6 w-full">
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded-full border-2 border-[#00C6FB]" />
-              <MyTypography variant="body" lightness={400}>
-                Esse Mês
-              </MyTypography>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded-full border-2 border-[#FFA500]" />
-              <MyTypography variant="body" lightness={400}>
-                Mês Passado
-              </MyTypography>
-            </div>
-          </div>
+          <div className="h-[250px] w-full mt-4">
+            <div className="min-w-[600px] sm:min-w-full h-full">
+              {adminIncomeYearGeneral &&
+              Object.keys(adminIncomeYearGeneral).length > 0 ? (
+                (() => {
+                  const chartData = generateCharDataGeneral(
+                    adminIncomeYearGeneral
+                  );
 
-          <div className="h-[250px] w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart
-                data={barData}
-                margin={{
-                  top: 20,
-                  right: 0,
-                  left: 0,
-                  bottom: 5,
-                }}
-                barGap={-16}
-              >
-                <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                <XAxis
-                  dataKey="name"
-                  axisLine={false}
-                  tickLine={false}
-                  fontSize={12}
-                />
-                <YAxis
-                  hide // Esconde completamente o eixo Y
-                />
-                <Tooltip />
-                <Bar
-                  dataKey="atual"
-                  fill="#00C6FB"
-                  radius={[4, 4, 0, 0]}
-                  maxBarSize={6}
-                />
-                <Bar
-                  dataKey="anterior"
-                  fill="#FFA500"
-                  radius={[4, 4, 0, 0]}
-                  maxBarSize={6}
-                />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </CardContent>
-      </MyCard>
-
-      <MyCard className="md:h-full md:hidden">
-        <CardContent className="space-y-4">
-          <h2 className="text-lg font-semibold">Atividades</h2>
-          {activities.map((activity, index) => (
-            <div
-              key={index}
-              className="flex flex-col gap-4 md:cursor-pointer"
-              onClick={() =>
-                router.push(`/admin/financeiro/relatorio/${activity.id}`)
-              }
-            >
-              <div className="flex items-center gap-4 relative">
-                <MyTypography
-                  variant="caption"
-                  className="text-sm font-semibold absolute top-[39%] left-[7%]"
-                >
-                  {activity.progress}%
-                </MyTypography>
-                <ResponsiveContainer width={70} height={70}>
-                  <PieChart>
-                    <Pie
-                      data={[
-                        { name: activity.name, value: activity.progress },
-                        { name: "Restante", value: 100 - activity.progress },
-                      ]}
-                      dataKey="value"
-                      innerRadius={28}
-                      outerRadius={35}
-                      startAngle={90}
-                      endAngle={450}
-                      isAnimationActive={false}
-                    >
-                      <Cell fill={activity.color} />
-                      <Cell fill="#E5E7EB" />
-                    </Pie>
-                  </PieChart>
-                </ResponsiveContainer>
-                <div className="flex-1">
-                  <MyTypography
-                    variant="body-big"
-                    weight="semibold"
-                    className="flex items-center space-x-2"
-                  >
-                    <MyIcon
-                      name={activity.icon as IconsMapTypes}
-                      className="text-gray-700"
-                    />
-                    <span>{activity.name}</span>
-                  </MyTypography>
-                  <MyTypography
-                    variant="body-big"
-                    lightness={500}
-                    className="mt-1 ml-1"
-                  >
-                    % das atividades realizadas.{" "}
-                    <span className="text-xs text-neutral-400">Saiba Mais</span>
+                  return (
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart
+                        data={chartData}
+                        margin={{
+                          top: 20,
+                          right: 0,
+                          left: 0,
+                          bottom: 5,
+                        }}
+                        barGap={-36}
+                      >
+                        <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                        <XAxis
+                          dataKey="name"
+                          axisLine={false}
+                          tickLine={false}
+                          fontSize={12}
+                        />
+                        <YAxis fontSize={12} axisLine={false} />
+                        <Tooltip content={renderTooltipGeneral} />
+                        <Bar
+                          dataKey="total"
+                          fill="#00C6FB"
+                          radius={[4, 4, 0, 0]}
+                          maxBarSize={8}
+                        />
+                        <Bar
+                          dataKey="totalb2"
+                          fill="#FFA500"
+                          radius={[4, 4, 0, 0]}
+                          maxBarSize={8}
+                        />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  );
+                })()
+              ) : (
+                <div className="flex items-center md:justify-center mt-6">
+                  <MyTypography variant="body-big" weight="bold">
+                    Você ainda não possui passeios realizados
                   </MyTypography>
                 </div>
-              </div>
-              {index !== activities.length - 1 && (
-                <div className="w-full h-1 border-t border-dashed" />
               )}
             </div>
-          ))}
+          </div>
         </CardContent>
       </MyCard>
     </main>

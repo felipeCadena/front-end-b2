@@ -60,11 +60,7 @@ const ActivityCancelationPolicy = ({
         <div>
           {transportAddress && transportAddress?.length > 0 && (
             <>
-              <MyTypography
-                variant="body-big"
-                weight="semibold"
-                className="mt-4"
-              >
+              <MyTypography variant="body-big" weight="semibold" className="">
                 Local de saida e retorno do transporte incluído:
               </MyTypography>
               <div className="flex justify-start items-center mt-2 bg-slate-100 border-[1px] border-primary-900 rounded-lg w-full py-2 px-6">
@@ -82,7 +78,7 @@ const ActivityCancelationPolicy = ({
             </>
           )}
 
-          <MyTypography variant="body-big" weight="semibold" className="mt-6">
+          <MyTypography variant="body-big" weight="semibold" className="mt-4">
             Local da atividade:
           </MyTypography>
 
