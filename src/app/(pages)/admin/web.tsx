@@ -181,7 +181,7 @@ export default function AdminWeb() {
     setLoadingItem({ id });
     const body = {
       adminApproved: true,
-      onSite: false,
+      onSite: true,
       refusalMsg: "",
     };
     try {

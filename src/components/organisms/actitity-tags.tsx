@@ -18,7 +18,7 @@ const ActivityTags = ({
   activityDifficulty,
 }: ActivityTagsProps) => {
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 gap-4 ">
+    <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-4">
       <div className="bg-gray-200 py-2 rounded-md mb-2 md:h-fit">
         <MyTypography variant="body" weight="bold" className="text-center">
           {isInGroup ? "Atividade em grupo" : "Atividade individual"}

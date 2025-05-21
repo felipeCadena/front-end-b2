@@ -528,7 +528,7 @@ export default function Atividade() {
 
           <div
             className={cn(
-              "grid grid-cols-2 md:grid-cols-3 gap-4 md:my-auto",
+              "grid grid-cols-2 md:grid-cols-3 gap-4 md:my-auto mb-4",
               formattedItemsIncluded().length == 0 && "my-4 md:my-4"
             )}
           >
@@ -577,7 +577,7 @@ export default function Atividade() {
                   <MyTypography
                     variant="body-big"
                     weight="semibold"
-                    className="mt-4"
+                    className=""
                   >
                     Local de saida e retorno do transporte incluído:
                   </MyTypography>
