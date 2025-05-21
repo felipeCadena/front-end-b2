@@ -7,6 +7,7 @@ import { cn } from "@/utils/cn";
 import MyTypography from "../atoms/my-typography";
 import { MyScrollArea } from "../atoms/my-scroll-area";
 import Time from "../atoms/my-icon/elements/time";
+import { toast } from "react-toastify";
 
 interface TimePickerModalProps {
   iconColor?: string;
@@ -59,14 +60,22 @@ export default function TimePickerModal({
   //   }
   // }, [availableActivityTimes, selectedTime]);
 
+  const handleOpen = () => {
+    if (availableActivityTimes.length === 0) {
+      toast.error("Selecione uma data antes de escolher o horário");
+      return;
+    }
+    setOpen(true);
+  };
+
   return (
-    <Popover open={open} onOpenChange={setOpen}>
+    <Popover open={open} onOpenChange={handleOpen}>
       <PopoverTrigger asChild>
         <MyButton
           variant="date"
           borderRadius="squared"
-          className="w-full justify-start text-sm items-center gap-2 py-6 border-gray-300 md:bg-white disabled:bg-slate-100"
-          disabled={availableActivityTimes.length === 0}
+          className="w-full justify-start text-sm items-center gap-2 py-6 border-gray-300 md:bg-white "
+          // disabled={availableActivityTimes.length === 0}
         >
           <Time fill={iconColor ?? "#8DC63F"} />
           {availableActivityTimes.length !== 0 && selectedTime ? (

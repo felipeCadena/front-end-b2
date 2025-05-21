@@ -120,7 +120,9 @@ export default function Atividade() {
   const handleOrder = () => {
     if (!session?.user) {
       toast.error("Você precisa ter uma conta para adicionar ao carrinho.");
-      router.push(PATHS.login);
+      router.push(
+        `${PATHS.login}?redirect=${PATHS.visualizarAtividade(id as string)}`
+      );
       return;
     }
 
@@ -155,7 +157,9 @@ export default function Atividade() {
   const handleMobileOrder = () => {
     if (!session?.user) {
       toast.error("Você precisa ter uma conta para adicionar ao carrinho.");
-      router.push(PATHS.login);
+      router.push(
+        `${PATHS.login}?redirect=${PATHS.visualizarAtividade(id as string)}`
+      );
       return;
     }
 

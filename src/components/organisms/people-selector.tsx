@@ -10,6 +10,7 @@ import { useQuery } from "@tanstack/react-query";
 import { formatPrice } from "@/utils/formatters";
 import { MyAlert } from "../atoms/my-alert";
 import ModalAlert from "../molecules/modal-alert";
+import { toast } from "react-toastify";
 
 type PeopleSelectorProps = {
   schedule: ClientSchedule;
@@ -46,6 +47,9 @@ export default function PeopleSelector({
     },
   });
 
+  console.log(schedule);
+  console.log(personsLimit);
+
   // Função para incrementar ou decrementar valores
   const handleChange = (type: string, action: "increase" | "decrease") => {
     if (type === "adult") {
@@ -59,8 +63,17 @@ export default function PeopleSelector({
     }
   };
 
+  const handleOpen = () => {
+    if (schedule?.scheduleTime === "") {
+      toast.error("Selecione um horário.");
+      return;
+    }
+
+    setOpen(true);
+  };
+
   return (
-    <Popover open={open} onOpenChange={setOpen}>
+    <Popover open={open} onOpenChange={handleOpen}>
       <PopoverTrigger asChild>
         <MyButton
           variant="date"
