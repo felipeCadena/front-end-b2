@@ -50,6 +50,8 @@ export default function Atividade() {
   const [favorite, setFavorite] = useState(false);
   const [schedule, setSchedule] =
     useState<ClientSchedule>(initialScheduleState);
+  const [expanded, setExpanded] = React.useState(false);
+  const MAX_LENGTH = 1000;
 
   const { data: session } = useSession();
 
@@ -65,6 +67,43 @@ export default function Atividade() {
   const price = {
     adult: fetchedActivity?.priceAdult,
     children: fetchedActivity?.priceChildren,
+  };
+
+  const renderDescription = () => {
+    const full = fetchedActivity?.description ?? "";
+    const isLong = full.length > MAX_LENGTH;
+
+    if (!isLong) {
+      return (
+        <MyTypography
+          variant="body-big"
+          weight="regular"
+          className="mt-1 whitespace-pre-wrap"
+        >
+          {full}
+        </MyTypography>
+      );
+    }
+
+    const displayedText = expanded ? full : full.slice(0, MAX_LENGTH);
+    const toggleText = expanded ? "Ver menos" : "Ver mais";
+
+    return (
+      <MyTypography
+        variant="body-big"
+        weight="regular"
+        className="mt-1 whitespace-pre-wrap"
+      >
+        {displayedText}
+        {isLong && !expanded && "..."}
+        <span
+          onClick={() => setExpanded(!expanded)}
+          className="px-1 inline text-gray-400 underline cursor-pointer"
+        >
+          {toggleText}
+        </span>
+      </MyTypography>
+    );
   };
 
   const { data: favorites = [] } = useQuery({
@@ -314,7 +353,7 @@ export default function Atividade() {
             weight="regular"
             className="mt-1 whitespace-pre-wrap"
           >
-            {fetchedActivity?.description}
+            {renderDescription()}
           </MyTypography>
         </div>
       </div>

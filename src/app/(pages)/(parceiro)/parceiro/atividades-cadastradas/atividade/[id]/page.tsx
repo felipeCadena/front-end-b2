@@ -42,10 +42,50 @@ export default function Atividade() {
   const { handleClose, isModalOpen } = useAlert();
   const queryClient = useQueryClient();
 
+  const [expanded, setExpanded] = React.useState(false);
+  const MAX_LENGTH = 1000;
+
   const { data: activity, isLoading: isLoadingActivity } = useQuery({
     queryKey: ["activity"],
     queryFn: () => adventures.getAdventureById(Number(id)),
   });
+
+  const renderDescription = () => {
+    const full = activity?.description ?? "";
+    const isLong = full.length > MAX_LENGTH;
+
+    if (!isLong) {
+      return (
+        <MyTypography
+          variant="body-big"
+          weight="regular"
+          className="mt-1 whitespace-pre-wrap"
+        >
+          {full}
+        </MyTypography>
+      );
+    }
+
+    const displayedText = expanded ? full : full.slice(0, MAX_LENGTH);
+    const toggleText = expanded ? "Ver menos" : "Ver mais";
+
+    return (
+      <MyTypography
+        variant="body-big"
+        weight="regular"
+        className="mt-1 whitespace-pre-wrap"
+      >
+        {displayedText}
+        {isLong && !expanded && "..."}
+        <span
+          onClick={() => setExpanded(!expanded)}
+          className="px-1 inline text-gray-400 underline cursor-pointer"
+        >
+          {toggleText}
+        </span>
+      </MyTypography>
+    );
+  };
 
   useQuery({
     queryKey: ["mySchedules"],
@@ -78,101 +118,6 @@ export default function Atividade() {
       `/parceiro/atividades-cadastradas/atividade/${id}/editar?section=${section}`
     );
   };
-
-  // const formattedActivity = React.useMemo(() => {
-  //   if (!activity) return null;
-
-  //   const today = new Date();
-  //   const baseYear = today.getFullYear();
-  //   const baseMonth = today.getMonth();
-
-  //   return {
-  //     id: activity.id,
-  //     title: activity.title,
-  //     addressStreet: activity.addressStreet,
-  //     addressPostalCode: activity.addressPostalCode,
-  //     addressNumber: activity.addressNumber,
-  //     addressComplement: activity.addressComplement,
-  //     addressNeighborhood: activity.addressNeighborhood,
-  //     addressCity: activity.addressCity,
-  //     addressState: activity.addressState,
-  //     addressCountry: activity.addressCountry,
-  //     address: formatAddress({
-  //       addressStreet: activity.addressStreet,
-  //       addressNumber: activity.addressNumber,
-  //       addressNeighborhood: activity.addressNeighborhood,
-  //       addressCity: activity.addressCity,
-  //       addressState: activity.addressState,
-  //       addressPostalCode: activity.addressPostalCode,
-  //       addressCountry: activity.addressCountry,
-  //     }),
-  //     coordinates: {
-  //       lat: Number(activity.coordinates.split(":")[0]),
-  //       lng: Number(activity.coordinates.split(":")[1]),
-  //     },
-  //     pointRefAddress: activity.pointRefAddress,
-  //     description: activity.description,
-  //     itemsIncluded: activity.itemsIncluded,
-  //     duration: activity.duration,
-  //     priceAdult: activity.priceAdult,
-  //     priceChildren: activity.priceChildren,
-  //     transportIncluded: activity.transportIncluded,
-  //     picturesIncluded: activity.picturesIncluded,
-  //     typeAdventure: activity.typeAdventure,
-  //     personsLimit: activity.personsLimit,
-  //     partnerId: activity.partnerId,
-  //     isInGroup: activity.isInGroup,
-  //     isChildrenAllowed: activity.isChildrenAllowed,
-  //     difficult: activity.difficult,
-  //     hoursBeforeSchedule: activity.hoursBeforeSchedule,
-  //     hoursBeforeCancellation: activity.hoursBeforeCancellation,
-  //     isRepeatable: activity.isRepeatable,
-  //     images: activity.images,
-  //     schedules: activity.schedules,
-  //     recurrences: activity.recurrence
-  //       ? Object.values(
-  //           activity.recurrence.reduce(
-  //             (acc, rec) => {
-  //               const group = acc[rec.groupId] || {
-  //                 groupId: rec.groupId,
-  //                 recurrenceWeekly: [],
-  //                 dates: [],
-  //                 recurrenceHour: [],
-  //               };
-
-  //               if (rec.type === "WEEKLY") {
-  //                 group.recurrenceWeekly.push(String(rec.value));
-  //               } else if (rec.type === "MONTHLY") {
-  //                 const day = Number(rec.value);
-  //                 const date = new Date(baseYear, baseMonth, day); // Converte para Date real
-  //                 group.dates.push(date);
-  //               } else if (rec.type === "HOUR") {
-  //                 const hours = Math.floor(rec.value / 100);
-  //                 const minutes = rec.value % 100;
-  //                 group.recurrenceHour.push(
-  //                   `${hours.toString().padStart(2, "0")}:${minutes
-  //                     .toString()
-  //                     .padStart(2, "0")}`
-  //                 );
-  //               }
-
-  //               acc[rec.groupId] = group;
-  //               return acc;
-  //             },
-  //             {} as Record<
-  //               string,
-  //               {
-  //                 dates: Date[];
-  //                 recurrenceHour: string[];
-  //                 recurrenceWeekly: string[];
-  //                 groupId: string;
-  //               }
-  //             >
-  //           )
-  //         )
-  //       : null,
-  //   };
-  // }, [activity, activity?.images]);
 
   if (!activity) {
     return isLoadingActivity ? (
@@ -444,7 +389,7 @@ export default function Atividade() {
                 weight="regular"
                 className="mt-1 whitespace-pre-wrap"
               >
-                {activity?.description}
+                {renderDescription()}
               </MyTypography>
             </div>
           </div>
@@ -496,7 +441,7 @@ export default function Atividade() {
             weight="regular"
             className="mt-1 whitespace-pre-wrap"
           >
-            {activity?.description}
+            {renderDescription()}
           </MyTypography>
         </div>
       </div>

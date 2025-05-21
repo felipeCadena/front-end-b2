@@ -136,7 +136,7 @@ export default function BasicInfo({
           <MyTextarea
             label="Descrição"
             rows={5}
-            className="rezize-y"
+            className="resize-y"
             maxLength={2000}
             value={formData?.description}
             onChange={(e) =>
