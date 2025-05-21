@@ -369,12 +369,12 @@ export default function WebForm({
                 placeholder="Fale sobre a atividade e destaque o que só você oferece para torná-la incrível."
                 classNameLabel="text-black text-base font-bold"
                 rows={5}
-                maxLength={1000}
+                maxLength={2000}
                 className="resize-y" // permite redimensionar verticalmente
               />
 
               <div className="text-sm text-gray-4 text-right mt-1">
-                {description.length} / 1000 caracteres
+                {description.length} / 2000 caracteres
               </div>
             </div>
 

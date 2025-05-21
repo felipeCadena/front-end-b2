@@ -25,7 +25,7 @@ import { useRouter } from "next/navigation";
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import { partnerService } from "@/services/api/partner";
-import { endOfMonth, format, startOfMonth } from "date-fns";
+import { endOfMonth, format, parse, startOfMonth } from "date-fns";
 import { adminService } from "@/services/api/admin";
 import { Pagination } from "@/components/molecules/pagination";
 
@@ -48,26 +48,42 @@ export default function RelatorioAdmin() {
   const currentMonthKey = format(new Date(), "MM");
 
   const [filters, setFilters] = React.useState({
-    report: "",
     year: "2025",
     month: currentMonthKey,
-    typeDate: "",
   });
 
-  const { data: adminExecutedPayments, isLoading } = useQuery({
-    queryKey: ["adminExecutedPayments", page],
+  const selectedMonthDate = React.useMemo(() => {
+    return parse(
+      `${filters.year}-${filters.month}-01`,
+      "yyyy-MM-dd",
+      new Date()
+    );
+  }, [filters?.month, filters.year]);
+
+  const startDate = React.useMemo(() => {
+    return format(startOfMonth(selectedMonthDate), "yyyy-MM-dd'T'00:00:00");
+  }, [selectedMonthDate]);
+
+  const endDate = React.useMemo(() => {
+    return format(endOfMonth(selectedMonthDate), "yyyy-MM-dd'T'23:59:59");
+  }, [selectedMonthDate]);
+
+  const { data: allOrders, isLoading } = useQuery({
+    queryKey: ["listOrders", page, filters],
     queryFn: () =>
       adminService.listOrders({
+        startsAt: startDate,
+        endsAt: endDate,
         limit: 100,
         skip: page * 100 - 100,
       }),
   });
 
   const handleMonthChange = (value: string) => {
-    setFilters((prev) => ({ ...prev, month: value, typeDate: "month" }));
+    setFilters((prev) => ({ ...prev, month: value }));
   };
 
-  const parsedRows = adminExecutedPayments?.flatMap((pedido: any) => {
+  const parsedRows = allOrders?.flatMap((pedido: any) => {
     const groupedByPartner: Record<string, any[]> = {};
 
     pedido.ordersScheduleAdventure.forEach((item: any) => {
@@ -128,55 +144,53 @@ export default function RelatorioAdmin() {
             Relatório
           </MyTypography>
         </div>
+      </div>
+      <div className="flex justify-end w-full mb-4">
+        <div className="flex gap-2 ">
+          <MySelect
+            value={filters?.year}
+            onValueChange={(value) => {
+              setFilters((prev) => ({
+                ...prev,
+                year: value,
+              }));
+            }}
+          >
+            <SelectTrigger className="rounded-2xl w-[150px] text-[#848A9C] text-xs">
+              <SelectValue placeholder="Setembro" />
+            </SelectTrigger>
+            <SelectContent className="rounded-lg">
+              {getYearsArray().map((year) => (
+                <SelectItem key={year} value={year}>
+                  {year}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </MySelect>
 
-        {
-          <div className="flex gap-4 max-sm:hidden">
-            <MySelect
-              value={filters?.year}
-              onValueChange={(value) => {
-                setFilters((prev) => ({
-                  ...prev,
-                  year: value,
-                  typeDate: "year",
-                }));
-              }}
-            >
-              <SelectTrigger className="rounded-2xl w-[150px] text-[#848A9C] text-xs">
-                <SelectValue placeholder="Setembro" />
-              </SelectTrigger>
-              <SelectContent className="rounded-lg">
-                {getYearsArray().map((year) => (
-                  <SelectItem key={year} value={year}>
-                    {year}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </MySelect>
-
-            <MySelect
-              value={filters?.month}
-              onValueChange={(value) => handleMonthChange(value)}
-            >
-              <SelectTrigger className="rounded-2xl w-[150px] text-[#848A9C] text-xs">
-                <SelectValue placeholder="Mês" />
-              </SelectTrigger>
-              <SelectContent className="rounded-lg">
-                <SelectItem value="01">Janeiro</SelectItem>
-                <SelectItem value="02">Fevereiro</SelectItem>
-                <SelectItem value="03">Março</SelectItem>
-                <SelectItem value="04">Abril</SelectItem>
-                <SelectItem value="05">Maio</SelectItem>
-                <SelectItem value="06">Junho</SelectItem>
-                <SelectItem value="07">Julho</SelectItem>
-                <SelectItem value="08">Agosto</SelectItem>
-                <SelectItem value="09">Setembro</SelectItem>
-                <SelectItem value="10">Outubro</SelectItem>
-                <SelectItem value="11">Novembro</SelectItem>
-                <SelectItem value="12">Dezembro</SelectItem>
-              </SelectContent>
-            </MySelect>
-          </div>
-        }
+          <MySelect
+            value={filters?.month}
+            onValueChange={(value) => handleMonthChange(value)}
+          >
+            <SelectTrigger className="rounded-2xl w-[150px] text-[#848A9C] text-xs">
+              <SelectValue placeholder="Mês" />
+            </SelectTrigger>
+            <SelectContent className="rounded-lg">
+              <SelectItem value="01">Janeiro</SelectItem>
+              <SelectItem value="02">Fevereiro</SelectItem>
+              <SelectItem value="03">Março</SelectItem>
+              <SelectItem value="04">Abril</SelectItem>
+              <SelectItem value="05">Maio</SelectItem>
+              <SelectItem value="06">Junho</SelectItem>
+              <SelectItem value="07">Julho</SelectItem>
+              <SelectItem value="08">Agosto</SelectItem>
+              <SelectItem value="09">Setembro</SelectItem>
+              <SelectItem value="10">Outubro</SelectItem>
+              <SelectItem value="11">Novembro</SelectItem>
+              <SelectItem value="12">Dezembro</SelectItem>
+            </SelectContent>
+          </MySelect>
+        </div>
       </div>
 
       <MyTable className="md:border-collapse mt-4">
@@ -268,8 +282,13 @@ export default function RelatorioAdmin() {
             ))
           ) : (
             <TableRow>
-              <TableCell colSpan={6} className="text-center">
-                Nenhum dado encontrado.
+              <TableCell
+                colSpan={6}
+                className="h-52 md:text-center max-sm:pr-12"
+              >
+                <span className="text-md md:text-xl">
+                  Nenhum pedido encontrado para o mês e/ou ano selecionados
+                </span>
               </TableCell>
             </TableRow>
           )}
@@ -280,14 +299,14 @@ export default function RelatorioAdmin() {
             <TableHead className="text-center">Valores totais</TableHead>
             <TableCell className="text-center text-white">0</TableCell>
             <TableCell className="text-center">
-              {adminExecutedPayments?.reduce(
+              {allOrders?.reduce(
                 (acc: number, lancamento: any) =>
                   acc + Number(lancamento?.ordersScheduleAdventure?.length),
                 0
               )}
             </TableCell>
             <TableCell className="text-center">
-              {adminExecutedPayments
+              {allOrders
                 ?.reduce(
                   (acc: number, lancamento: any) =>
                     acc + Number(lancamento?.b2AdventureTotalValue),
@@ -299,7 +318,7 @@ export default function RelatorioAdmin() {
                 })}
             </TableCell>
             <TableCell className="text-center">
-              {adminExecutedPayments
+              {allOrders
                 ?.reduce(
                   (acc: number, lancamento: any) =>
                     acc + Number(lancamento?.partnersTotalValue),
@@ -311,7 +330,7 @@ export default function RelatorioAdmin() {
                 })}
             </TableCell>
             <TableCell className="text-center">
-              {adminExecutedPayments
+              {allOrders
                 ?.reduce(
                   (acc: number, lancamento: any) =>
                     acc + Number(lancamento?.totalTaxes),
@@ -323,7 +342,7 @@ export default function RelatorioAdmin() {
                 })}
             </TableCell>
             <TableCell className="text-center">
-              {adminExecutedPayments
+              {allOrders
                 ?.reduce(
                   (acc: number, lancamento: any) =>
                     acc + Number(lancamento?.totalCost),
@@ -343,7 +362,7 @@ export default function RelatorioAdmin() {
           setPage={setPage}
           page={page}
           limit={100}
-          data={adminExecutedPayments ?? []}
+          data={allOrders ?? []}
         />
       </div>
     </section>

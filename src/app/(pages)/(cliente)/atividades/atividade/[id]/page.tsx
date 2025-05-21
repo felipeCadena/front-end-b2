@@ -273,10 +273,7 @@ export default function Atividade() {
 
         <div className="m-4 mx-6 md:hidden">
           <MyTypography variant="heading2" weight="bold" className="">
-            {fetchedActivity?.title
-              ? fetchedActivity.title.charAt(0).toUpperCase() +
-                fetchedActivity.title.slice(1).toLowerCase()
-              : ""}
+            {fetchedActivity?.title}
           </MyTypography>
           <div className="flex items-center justify-between">
             <MyBadge variant="outline" className="p-1">

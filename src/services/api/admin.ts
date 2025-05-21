@@ -205,6 +205,24 @@ export const adminService = {
       throw error;
     }
   },
+  async listOrdersAdventures(params: {
+    startCreatedAt: string;
+    endCreatedAt: string;
+    limit?: number;
+    adventureType?: string;
+    orderBy?: string;
+    skip?: number;
+  }): Promise<PartnerSchedule[]> {
+    try {
+      const response = await api.get(`/ordersAdventures/orderSchedule/search`, {
+        params,
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error listing ordersAdventures:", error);
+      throw error;
+    }
+  },
   searchAdventures: async (
     params: GetAdventuresParams
   ): Promise<Adventure[]> => {
@@ -368,6 +386,7 @@ export const adminService = {
     startsAt?: string;
     endsAt?: string;
     limit?: number;
+    typeAdventure?: string;
     skip?: number;
   }) {
     try {
