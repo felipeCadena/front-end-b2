@@ -180,7 +180,7 @@ export default function Parceiro() {
                 height={28}
                 className="w-28 h-28 rounded-full object-fit border-4 border-white"
               />
-              <div className="absolute top-0 right-1 w-8 h-8 bg-primary-400 rounded-full border-4 border-white" />
+              {/* <div className="absolute top-0 right-1 w-8 h-8 bg-primary-400 rounded-full border-4 border-white" /> */}
             </div>
 
             <div className="relative">
@@ -224,7 +224,7 @@ export default function Parceiro() {
             </div>
           </div>
 
-          <div className="space-y-6 md:p-6 md:max-w-4xl md:mx-auto md:pt-24">
+          <div className="space-y-6 md:p-6 md:max-w-4xl md:mx-auto md:pt-10">
             <div>
               <MyTypography variant="subtitle1" weight="bold" className="">
                 Atividades Recentes
@@ -286,6 +286,7 @@ export default function Parceiro() {
                     type="empresa"
                     label="Nome Fantasia"
                     placeholder="Nome Fantasia"
+                    noHintText
                     className="mt-2"
                     value={parterData?.fantasyName ?? ""}
                     onChange={(e) =>
@@ -298,7 +299,7 @@ export default function Parceiro() {
                   <MyTextInput
                     label="CNPJ ou CPF"
                     placeholder="CNPJ ou CPF"
-                    classNameLabel="mt-2"
+                    noHintText
                     value={
                       parterData?.cnpj
                         ? formatCNPJ(parterData?.cnpj)

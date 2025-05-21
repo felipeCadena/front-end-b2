@@ -46,7 +46,7 @@ export default function ActivitiesPhotos({
                 <div
                   className={cn(
                     "relative z-10 overflow-hidden w-[180px] h-[120px] hover:cursor-pointer rounded-md",
-                    admin && "md:min-h-[130px] md:min-w-[180px]"
+                    admin && "md:min-h-[170px] md:min-w-[180px]"
                   )}
                 >
                   <Image
@@ -61,12 +61,18 @@ export default function ActivitiesPhotos({
                     height={300}
                     className={cn(
                       "w-[180px] h-[120px] object-cover",
-                      admin && "md:min-h-[130px] md:min-w-[180px]"
+                      admin && "md:min-h-[170px] md:min-w-[180px]"
                     )}
                   />
                 </div>
 
-                <div className="space-y-1 max-sm:w-1/2">
+                <div
+                  className={cn(
+                    "space-y-1 max-sm:w-1/2",
+                    admin &&
+                      "md:flex flex-col md:items-start md:justify-between"
+                  )}
+                >
                   <MyBadge variant="outline" className="p-1">
                     {handleNameActivity(
                       activity?.adventure?.typeAdventure ?? "mar"

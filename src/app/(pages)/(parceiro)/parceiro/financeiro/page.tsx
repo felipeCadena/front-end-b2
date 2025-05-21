@@ -359,9 +359,6 @@ export default function Dashboard() {
     const formatted =
       currentMonthLabel.charAt(0).toUpperCase() + currentMonthLabel.slice(1);
 
-    console.log(formatted);
-    console.log(data);
-
     const found = data.find((item: any) => `${item.name}.` === formatted);
     return found?.name ?? null;
   };
@@ -589,7 +586,7 @@ export default function Dashboard() {
               weight="bold"
               className="text-nowrap"
             >
-              Passeios do mês
+              Passeios por mês
             </MyTypography>
 
             <div className="ml-auto">
@@ -600,7 +597,7 @@ export default function Dashboard() {
                 }}
               >
                 <SelectTrigger className="rounded-2xl w-[100px] text-[#848A9C] text-xs">
-                  <SelectValue placeholder="Setembro" />
+                  <SelectValue placeholder="Ano vigente" />
                 </SelectTrigger>
                 <SelectContent className="rounded-lg">
                   {getYearsArray().map((year) => (
@@ -608,9 +605,6 @@ export default function Dashboard() {
                       {year}
                     </SelectItem>
                   ))}
-                  <SelectItem key="2026" value="2026">
-                    2026
-                  </SelectItem>
                 </SelectContent>
               </MySelect>
             </div>
