@@ -269,7 +269,6 @@ export const authOptions: NextAuthOptions = {
         session.partnerIsActive = token?.partner?.isActive;
       }
 
-      // console.log("session ", session?.user?.refreshToken);
       return session;
     },
     async redirect({ url, baseUrl }) {
