@@ -207,10 +207,6 @@ export default function PartnerTerms() {
           atividade.
         </li>
         <li>
-          Impostos aplicáveis à operação serão adicionados sobre o valor da
-          atividade.
-        </li>
-        <li>
           Todas as transações e repasses de valores ocorrerão em moeda corrente
           nacional, Real (BRL).
         </li>
