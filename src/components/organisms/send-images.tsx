@@ -151,7 +151,7 @@ export default function SendImages({
             </MyTypography>
             <MyTypography lightness={400}>JPG e PNG</MyTypography>
             <MyTypography lightness={400}>
-              Tamanho máximo de cada imagem: 1MB
+              Tamanho máximo de cada imagem: 6MB
             </MyTypography>
           </div>
         </div>

@@ -795,7 +795,7 @@ export default function WebForm({
                     Enviar imagens ou arraste os arquivos aqui
                   </MyTypography>
                   <MyTypography lightness={400}>
-                    JPG e PNG. Tamanho máximo de cada imagem: 1MB
+                    JPG e PNG. Tamanho máximo de cada imagem: 6MB
                   </MyTypography>
                 </div>
               </div>

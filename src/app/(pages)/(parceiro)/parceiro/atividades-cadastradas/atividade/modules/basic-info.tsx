@@ -55,7 +55,7 @@ export default function BasicInfo({
   };
 
   const handleItemsIncluded = () => {
-    const items = JSON.parse(formData.itemsIncluded || "[]"); // garantimos que é array
+    const items = JSON.parse(formData.itemsIncluded || "[]");
     const included = [];
 
     if (items.includes("Água")) included.push("Água");
@@ -136,7 +136,7 @@ export default function BasicInfo({
           <MyTextarea
             label="Descrição"
             rows={5}
-            className="rezize-y"
+            className="resize-y"
             maxLength={2000}
             value={formData?.description}
             onChange={(e) =>

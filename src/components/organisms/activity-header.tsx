@@ -10,6 +10,7 @@ import { Adventure } from "@/services/api/adventures";
 import Image from "next/image";
 import MyIcon from "../atoms/my-icon";
 import { useRouter } from "next/navigation";
+import MyButton from "../atoms/my-button";
 
 type ActivityHeaderProps = {
   activity: Adventure | undefined;
@@ -17,6 +18,14 @@ type ActivityHeaderProps = {
 
 const ActivityHeader = ({ activity }: ActivityHeaderProps) => {
   const router = useRouter();
+  const [expanded, setExpanded] = React.useState(false);
+  const MAX_LENGTH = 1000;
+
+  const isLongText = (activity?.description.length ?? 0) > MAX_LENGTH;
+  const displayText = expanded
+    ? activity?.description
+    : activity?.description.slice(0, MAX_LENGTH);
+
   return (
     <div className="max-sm:hidden flex flex-col my-8">
       <div className="flex flex-col gap-2">
@@ -69,12 +78,22 @@ const ActivityHeader = ({ activity }: ActivityHeaderProps) => {
         <MyTypography variant="subtitle3" weight="bold" className="">
           Descrição da atividade:
         </MyTypography>
+
         <MyTypography
           variant="body-big"
           weight="regular"
           className="mt-1 whitespace-pre-wrap"
         >
-          {activity?.description}
+          {displayText}
+          {isLongText && !expanded && "..."}
+          {isLongText && (
+            <span
+              onClick={() => setExpanded(!expanded)}
+              className="px-1 inline text-gray-400 underline cursor-pointer"
+            >
+              {expanded ? "Ver menos" : "Ver mais"}
+            </span>
+          )}
         </MyTypography>
       </div>
     </div>
