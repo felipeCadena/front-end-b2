@@ -77,14 +77,6 @@ export default function SobreAEmpresa() {
       toast.error("Todos os campos são obrigatórios!");
       return;
     }
-    // setStepData(3, {
-    //   fantasyName,
-    //   cnpj,
-    //   bankAccount,
-    //   bankAgency,
-    //   bankName,
-    //   payday,
-    // });
 
     router.push(PATHS["cadastro-atividade"]);
   };
