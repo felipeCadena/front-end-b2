@@ -366,6 +366,7 @@ export default function AprovarAtividade() {
             </div>
           </div>
         </div>
+
         <div className="max-sm:hidden grid grid-cols-4 grid-rows-2 gap-4">
           {activity?.images?.length &&
             sortImagesByDefaultFirst(activity.images)
