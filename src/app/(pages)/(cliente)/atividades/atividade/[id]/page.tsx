@@ -351,7 +351,7 @@ export default function Atividade() {
           <MyTypography
             variant="body-big"
             weight="regular"
-            className="mt-1 whitespace-pre-wrap"
+            className="mt-1 whitespace-pre-wrap break-words"
           >
             {renderDescription()}
           </MyTypography>
