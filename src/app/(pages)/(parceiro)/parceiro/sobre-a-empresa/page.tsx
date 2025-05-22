@@ -57,25 +57,23 @@ export default function SobreAEmpresa() {
         !bankAccount ||
         !bankAgency ||
         !bankName ||
-        !payday ||
         !bankAccountDigit ||
         !bankAccountType ||
         !bankOwnerName ||
         !bankOwnerDocument ||
-        !bankCode ||
-        !pixAddressKeyType
+        !bankCode
       ) {
         toast.error("Todos os campos são obrigatórios!");
         return;
       }
     } else if (typePayment == "pix") {
-      if (!pixKey || !pixAddressKeyType || !payday) {
+      if (!pixKey || !pixAddressKeyType) {
         toast.error("Todos os campos são obrigatórios!");
         return;
       }
     }
 
-    if (!fantasyName || !cnpjOrCpf) {
+    if (!fantasyName || !cnpjOrCpf || !payday) {
       toast.error("Todos os campos são obrigatórios!");
       return;
     }
@@ -99,8 +97,6 @@ export default function SobreAEmpresa() {
       setStepData(4, { bankCode: bank.code });
     }
   }, [bankName]);
-
-  console.log(cnpjOrCpf.length);
 
   return (
     <section className="m-6 space-y-4 md:space-y-8 md:max-w-screen-md md:mx-auto md:mt-12 md:border-2 md:border-gray-200 md:rounded-xl md:py-16">
