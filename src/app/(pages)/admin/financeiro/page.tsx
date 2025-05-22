@@ -738,7 +738,7 @@ export default function Dashboard() {
                 key={index}
                 className="flex flex-col gap-4 md:cursor-pointer"
                 onClick={() =>
-                  router.push(`/admin/financeiro/relatorio/${activity.id}`)
+                  router.push(`/admin/financeiro/relatorio/${activity?.icon}`)
                 }
               >
                 <div className="flex items-center gap-4 relative">

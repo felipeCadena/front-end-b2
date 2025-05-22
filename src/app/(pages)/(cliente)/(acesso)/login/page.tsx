@@ -78,7 +78,7 @@ export default function Login() {
     };
 
     handleSessionUpdate();
-  }, [status]);
+  }, [status, session]);
 
   const handleLogin = async () => {
     setIsLoading(true);

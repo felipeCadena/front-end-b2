@@ -76,7 +76,7 @@ export default function AdminWeb() {
   const [loading, setLoading] = React.useState(false);
 
   const [filter, setFilter] = React.useState("todos");
-  const [tab, setTab] = React.useState("atividades");
+  const [tab, setTab] = React.useState("pagamento");
 
   const [page, setPage] = React.useState(1);
   const [pageActivities, setPageActivities] = React.useState(1);
@@ -95,7 +95,7 @@ export default function AdminWeb() {
 
   const { data: pendingPayments, isLoading } = useQuery({
     queryKey: ["pendingPayments", page],
-    enabled: tab === "pagamento",
+    enabled: tab == "pagamento",
     queryFn: () =>
       adminService.listPendingPaidPartners({
         startsAt,
@@ -107,7 +107,7 @@ export default function AdminWeb() {
 
   const { isLoading: activitiesLoading } = useQuery({
     queryKey: ["activitiesNotAprooved", pageActivities],
-    enabled: tab === "atividades",
+    enabled: tab == "atividades",
     queryFn: async () => {
       const adventures = await adminService.searchAdventures({
         adminApproved: false,

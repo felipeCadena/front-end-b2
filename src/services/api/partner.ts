@@ -2,12 +2,21 @@ import { api } from "@/libs/api";
 import {
   AddToCartAdventure,
   Adventure,
+  CreateAdventureBody,
   GetAdventuresParams,
   GetAdventuresResponse,
   Schedules,
 } from "./adventures";
 import { clearObject } from "@/utils/clear-object";
 import { DateOption } from "@/store/useAdventureStore";
+
+export interface CreateUserPartner {
+  name: string;
+  email: string;
+  password: string;
+  cpf?: string | null;
+  phone: string;
+}
 
 export interface CreatePartner {
   companyName: string;
@@ -17,17 +26,11 @@ export interface CreatePartner {
   cnpj?: string;
   cpf?: string;
   userId?: string;
-  user?: {
-    name: string;
-    email: string;
-    password: string;
-    cpf?: string | null;
-    phone: string;
-  };
+  user?: CreateUserPartner;
   bankAccount: string | null;
   bankAgency: string | null;
   bankName: string | null;
-  pixKey: string | null;
+  pixKey?: string | null;
   about?: string | null;
   payday: number | null;
   address?: string | null;
@@ -180,6 +183,24 @@ export const partnerService = {
   createPartner: async (partner: CreatePartner): Promise<Partner | null> => {
     try {
       const response = await api.post<Partner>("/partners", partner);
+      return response.data;
+    } catch (error) {
+      console.error("Error creating partner:", error);
+      throw error;
+    }
+  },
+
+  createPartnerAndAdventure: async (
+    user: CreateUserPartner,
+    partner: CreatePartner,
+    adventure: CreateAdventureBody
+  ): Promise<any | null> => {
+    try {
+      const response = await api.post<any>("/partners", {
+        user,
+        partner,
+        adventure,
+      });
       return response.data;
     } catch (error) {
       console.error("Error creating partner:", error);

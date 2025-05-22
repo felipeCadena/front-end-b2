@@ -156,9 +156,6 @@ export default function InformacoesAtividade({
     return JSON.stringify(items);
   };
 
-  // console.log("isInGroup", isInGroup);
-  // console.log("isChildrenAllowed", isChildrenAllowed);
-
   // Função pro fluxo de criação de parceiro + atividade
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -187,6 +184,14 @@ export default function InformacoesAtividade({
       return;
     }
 
+    const user = {
+      name,
+      email,
+      password,
+      cpf,
+      phone,
+    };
+
     const partner = {
       fantasyName,
       businessEmail: email,
@@ -196,7 +201,7 @@ export default function InformacoesAtividade({
       bankAccount,
       bankAgency,
       bankName,
-      pixKey,
+      pixKey: pixKey.length == 0 ? undefined : pixKey,
       payday,
       companyName: fantasyName,
       bankAccountDigit,
@@ -209,86 +214,57 @@ export default function InformacoesAtividade({
       bankOwnerDocument,
       about: undefined,
       address: undefined,
-      user: {
-        name,
-        email,
-        password,
-        cpf,
-        phone,
-      },
     };
+
+    const adventure = {
+      title,
+      pointRefAddress,
+      typeAdventure: typeAdventure as "terra" | "ar" | "mar",
+      coordinates: coordinatesString,
+      isInGroup,
+      isChildrenAllowed,
+      priceAdult: priceAdult.length > 0 ? priceAdult : "0",
+      priceChildren: priceChildren.length > 0 ? priceChildren : "0",
+      personsLimit: isInGroup ? personsLimit : 1,
+      addressCity,
+      addressNeighborhood,
+      addressState,
+      transportAddress,
+      addressStreet,
+      addressPostalCode,
+      addressNumber,
+      addressComplement,
+      addressCountry,
+      description,
+      partnerId: "",
+      difficult,
+      itemsIncluded: handleItemsIncluded(),
+      transportIncluded,
+      picturesIncluded,
+      duration,
+      hoursBeforeSchedule,
+      hoursBeforeCancellation,
+      isRepeatable,
+      recurrences,
+    };
+
     try {
-      // 1. Cria partner
       setIsLoading(true);
 
-      try {
-        await partnerService.createPartner(partner);
-      } catch (err) {
-        console.log(err);
-        if (err instanceof AxiosError) {
-          const message =
-            err.response?.data?.message || "Erro ao criar parceiro.";
-          toast.error(
-            `${typeof message === "string" && message !== null ? `Erro: ${message}` : "Erro ao criar parceiro."}`
-          );
-        } else {
-          toast.error("Erro ao criar parceiro.");
-        }
-        return;
-      }
+      const response = await partnerService.createPartnerAndAdventure(
+        user,
+        partner,
+        adventure
+      );
 
       const credentials = {
         email,
         password,
       };
 
-      // 2. Faz login para obter o access_token
-      const userData = await authService.login(credentials);
-      const { access_token } = userData;
+      const adventureId = response?.adventure?.id;
+      const access_token = response?.tokens?.access_token;
 
-      // 3. Cria a aventura
-
-      const adventure = {
-        title,
-        pointRefAddress,
-        typeAdventure: typeAdventure as "terra" | "ar" | "mar",
-        coordinates: coordinatesString,
-        isInGroup,
-        isChildrenAllowed,
-        priceAdult: priceAdult.length > 0 ? priceAdult : "0",
-        priceChildren: priceChildren.length > 0 ? priceChildren : "0",
-        personsLimit: isInGroup ? personsLimit : 1,
-        addressCity,
-        addressNeighborhood,
-        addressState,
-        transportAddress,
-        addressStreet,
-        addressPostalCode,
-        addressNumber,
-        addressComplement,
-        addressCountry,
-        description,
-        partnerId: "",
-        difficult,
-        itemsIncluded: handleItemsIncluded(),
-        transportIncluded,
-        picturesIncluded,
-        duration,
-        hoursBeforeSchedule,
-        hoursBeforeCancellation,
-        isRepeatable,
-        recurrences,
-      };
-
-      // 4. Cria a aventura com o access_token
-      const adventureResponse = await adventures.createAdventureWithToken(
-        adventure,
-        access_token
-      );
-
-      const adventureId = adventureResponse.id;
-
-      // 5. Converte base64 para Blob e cria estrutura dos arquivos
       const files = await Promise.all(
         tempImages.map(async (base64Image, index) => {
           if (typeof base64Image !== "string") {
@@ -315,53 +291,34 @@ export default function InformacoesAtividade({
         })
       );
 
-      // 6. Chama addMedia para obter os uploadUrls
-      try {
-        const uploadMedias = await adventures.addMediaWithToken(
-          String(adventureId),
-          files.map(({ filename, mimetype, isDefault }) => ({
-            filename,
-            mimetype,
-            isDefault,
-          })),
-          access_token
-        );
-        await Promise.all(
-          uploadMedias.map((media, index) =>
-            fetch(media.uploadUrl, {
-              method: "PUT",
-              body: files[index].file,
-              headers: {
-                "Content-Type": files[index].mimetype,
-              },
-            }).then((res) => {
-              if (!res.ok) {
-                console.error(`Falha ao enviar imagem ${index}`, res);
-              }
-            })
-          )
-        );
-      } catch (err) {
-        console.log(err);
-        if (err instanceof AxiosError) {
-          const message =
-            err.response?.data?.message || "Erro ao adicionar imagens.";
-          toast.error(
-            `${typeof message === "string" && message !== null ? `Erro: ${message}` : "Erro ao adicionar imagens."}`
-          );
-        } else {
-          toast.error("Erro ao adicionar imagens.");
-        }
-        return;
-      }
+      const uploadMedias = await adventures.addMediaWithToken(
+        String(adventureId),
+        files.map(({ filename, mimetype, isDefault }) => ({
+          filename,
+          mimetype,
+          isDefault,
+        })),
+        access_token
+      );
+      await Promise.all(
+        uploadMedias.map((media, index) =>
+          fetch(media.uploadUrl, {
+            method: "PUT",
+            body: files[index].file,
+            headers: {
+              "Content-Type": files[index].mimetype,
+            },
+          }).then((res) => {
+            if (!res.ok) {
+              console.error(`Falha ao enviar imagem ${index}`, res);
+            }
+          })
+        )
+      );
 
-      // 7. Envia os blobs para os uploadUrls
-
-      // 8. Limpa o estado global
       clearForm();
       clearAdventure();
 
-      // 9. Faz o login no NextAuth + set Session + Redirect
       await signIn("credentials", {
         ...credentials,
         callbackUrl: `${PATHS.visualizarAtividadeParceiro(adventureId)}?openModal=true`,
@@ -371,19 +328,18 @@ export default function InformacoesAtividade({
     } catch (err) {
       if (err instanceof AxiosError) {
         const message =
-          err.response?.data?.message || "Erro ao realizar pagamento.";
+          err.response?.data?.message ||
+          "Erro ao criar parceiro e/ou aventura.";
         toast.error(
-          `${typeof message === "string" && message !== null ? `Erro: ${message}` : "Erro desconhecido ao realizar pagamento."}`
+          `${typeof message === "string" && message !== null ? `Erro: ${message}` : "Erro desconhecido ao criar parceiro e/ou aventura."}`
         );
       } else {
-        toast.error("Erro desconhecido ao realizar pagamento.");
+        toast.error("Erro desconhecido ao criar parceiro e/ou aventura.");
       }
     } finally {
       setIsLoading(false);
     }
   };
-
-  console.log(personsLimit);
 
   // Função apenas pra criar atividade
   const handleCreateAdventure = async (

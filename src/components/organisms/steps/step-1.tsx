@@ -70,12 +70,12 @@ export default function Step1({
             placeholder="Fale sobre a atividade e destaque o que só você oferece para torná-la incrível."
             classNameLabel="text-black text-base font-bold"
             rows={5}
-            maxLength={1000}
+            maxLength={2000}
             className="resize-y" // permite redimensionar verticalmente
           />
 
           <div className="text-sm text-gray-400 text-right mt-1">
-            {description.length} / 1000 caracteres
+            {description.length} / 2000 caracteres
           </div>
         </div>
       </div>

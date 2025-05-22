@@ -280,7 +280,6 @@ export default function WebForm({
       !description ||
       !hoursBeforeCancellation ||
       !hoursBeforeSchedule ||
-      // !selectionBlocks.length ||
       duration === "" ||
       !tempImages.length ||
       !address
@@ -369,12 +368,12 @@ export default function WebForm({
                 placeholder="Fale sobre a atividade e destaque o que só você oferece para torná-la incrível."
                 classNameLabel="text-black text-base font-bold"
                 rows={5}
-                maxLength={1000}
+                maxLength={2000}
                 className="resize-y" // permite redimensionar verticalmente
               />
 
               <div className="text-sm text-gray-4 text-right mt-1">
-                {description.length} / 1000 caracteres
+                {description.length} / 2000 caracteres
               </div>
             </div>
 
@@ -796,7 +795,7 @@ export default function WebForm({
                     Enviar imagens ou arraste os arquivos aqui
                   </MyTypography>
                   <MyTypography lightness={400}>
-                    JPG e PNG. Tamanho máximo de cada imagem: 1MB
+                    JPG e PNG. Tamanho máximo de cada imagem: 6MB
                   </MyTypography>
                 </div>
               </div>

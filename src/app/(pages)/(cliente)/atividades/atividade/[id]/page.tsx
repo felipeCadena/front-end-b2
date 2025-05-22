@@ -50,6 +50,8 @@ export default function Atividade() {
   const [favorite, setFavorite] = useState(false);
   const [schedule, setSchedule] =
     useState<ClientSchedule>(initialScheduleState);
+  const [expanded, setExpanded] = React.useState(false);
+  const MAX_LENGTH = 1000;
 
   const { data: session } = useSession();
 
@@ -65,6 +67,43 @@ export default function Atividade() {
   const price = {
     adult: fetchedActivity?.priceAdult,
     children: fetchedActivity?.priceChildren,
+  };
+
+  const renderDescription = () => {
+    const full = fetchedActivity?.description ?? "";
+    const isLong = full.length > MAX_LENGTH;
+
+    if (!isLong) {
+      return (
+        <MyTypography
+          variant="body-big"
+          weight="regular"
+          className="mt-1 whitespace-pre-wrap"
+        >
+          {full}
+        </MyTypography>
+      );
+    }
+
+    const displayedText = expanded ? full : full.slice(0, MAX_LENGTH);
+    const toggleText = expanded ? "Ver menos" : "Ver mais";
+
+    return (
+      <MyTypography
+        variant="body-big"
+        weight="regular"
+        className="mt-1 whitespace-pre-wrap"
+      >
+        {displayedText}
+        {isLong && !expanded && "..."}
+        <span
+          onClick={() => setExpanded(!expanded)}
+          className="px-1 inline text-gray-400 underline cursor-pointer"
+        >
+          {toggleText}
+        </span>
+      </MyTypography>
+    );
   };
 
   const { data: favorites = [] } = useQuery({
@@ -273,10 +312,7 @@ export default function Atividade() {
 
         <div className="m-4 mx-6 md:hidden">
           <MyTypography variant="heading2" weight="bold" className="">
-            {fetchedActivity?.title
-              ? fetchedActivity.title.charAt(0).toUpperCase() +
-                fetchedActivity.title.slice(1).toLowerCase()
-              : ""}
+            {fetchedActivity?.title}
           </MyTypography>
           <div className="flex items-center justify-between">
             <MyBadge variant="outline" className="p-1">
@@ -315,13 +351,12 @@ export default function Atividade() {
           <MyTypography
             variant="body-big"
             weight="regular"
-            className="mt-1 whitespace-pre-wrap"
+            className="mt-1 whitespace-pre-wrap break-words"
           >
-            {fetchedActivity?.description}
+            {renderDescription()}
           </MyTypography>
         </div>
       </div>
-
       <div className="mx-6">
         <div className="md:grid md:grid-cols-2 md:gap-8 my-4">
           <ActivityIncludedItems
