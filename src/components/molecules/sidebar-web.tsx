@@ -53,7 +53,7 @@ export default function SidebarMenuWeb({}) {
   const { data: notifications = { messagesUnred: 0 } } = useQuery({
     queryKey: ["unread_notifications"],
     queryFn: () => notificationsService.countUnreadNotifications(),
-    enabled: Boolean(userId),
+    enabled: !!session?.user?.id,
   });
 
   const handleLogout = async () => {

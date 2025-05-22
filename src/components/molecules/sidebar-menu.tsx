@@ -78,7 +78,7 @@ export default function SidebarMenu({
   const { data: notifications = { messagesUnred: 0 } } = useQuery({
     queryKey: ["unread_notifications"],
     queryFn: () => notificationsService.countUnreadNotifications(),
-    enabled: Boolean(userId),
+    enabled: !!session?.user?.id,
   });
 
   return (
@@ -106,7 +106,7 @@ export default function SidebarMenu({
                 }
               }}
             >
-              <div className="flex gap-1 items-center">
+              <div className="flex gap-1 items-center relative">
                 <MyIcon name={item.icon} />
                 {item.label}
               </div>

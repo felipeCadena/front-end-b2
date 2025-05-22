@@ -1,20 +1,20 @@
-'use client';
+"use client";
 
-import Loading from '@/app/loading';
-import MyButton from '@/components/atoms/my-button';
-import MyIcon from '@/components/atoms/my-icon';
-import MyTypography from '@/components/atoms/my-typography';
-import { Pagination } from '@/components/molecules/pagination';
-import { adminService } from '@/services/api/admin';
-import useNotifications from '@/store/useNotifications';
+import Loading from "@/app/loading";
+import MyButton from "@/components/atoms/my-button";
+import MyIcon from "@/components/atoms/my-icon";
+import MyTypography from "@/components/atoms/my-typography";
+import { Pagination } from "@/components/molecules/pagination";
+import { adminService } from "@/services/api/admin";
+import useNotifications from "@/store/useNotifications";
 
-import { cn } from '@/utils/cn';
-import { formatDate, getHora } from '@/utils/formatters';
-import PATHS from '@/utils/paths';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
+import { cn } from "@/utils/cn";
+import { formatDate, getHora } from "@/utils/formatters";
+import PATHS from "@/utils/paths";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
 
 export default function Notificacoes() {
   const router = useRouter();
@@ -26,7 +26,7 @@ export default function Notificacoes() {
   const session = useSession();
 
   useQuery({
-    queryKey: ['adminNotifications', page],
+    queryKey: ["adminNotifications", page],
     queryFn: async () => {
       if (session.data?.user) {
         const userNotifications = await adminService.listNotifications({
@@ -44,24 +44,24 @@ export default function Notificacoes() {
 
   useEffect(() => {
     queryClient.invalidateQueries({
-      queryKey: ['adminNotifications'],
+      queryKey: ["adminNotifications"],
     });
   }, []);
 
   const getMonthName = (timestamp: string) => {
     const months = [
-      'Janeiro',
-      'Fevereiro',
-      'Março',
-      'Abril',
-      'Maio',
-      'Junho',
-      'Julho',
-      'Agosto',
-      'Setembro',
-      'Outubro',
-      'Novembro',
-      'Dezembro',
+      "Janeiro",
+      "Fevereiro",
+      "Março",
+      "Abril",
+      "Maio",
+      "Junho",
+      "Julho",
+      "Agosto",
+      "Setembro",
+      "Outubro",
+      "Novembro",
+      "Dezembro",
     ];
 
     const date = new Date(timestamp);
@@ -86,7 +86,7 @@ export default function Notificacoes() {
       <div className="flex gap-4 items-center my-6">
         <MyIcon
           name="voltar-black"
-          className="hover:cursor-pointer"
+          className="hover:cursor-pointer z-30"
           onClick={() => router.back()}
         />
         <MyTypography variant="subtitle1" weight="bold" className="">
@@ -118,7 +118,7 @@ export default function Notificacoes() {
                       <div
                         key={index}
                         className={cn(
-                          'w-full flex flex-col gap-2 px-3 py-2 bg-[#F1F0F5] rounded-lg shadow-sm hover:bg-gray-100 relative cursor-pointer'
+                          "w-full flex flex-col gap-2 px-3 py-2 bg-[#F1F0F5] rounded-lg shadow-sm hover:bg-gray-100 relative cursor-pointer"
                         )}
                         onClick={() =>
                           router.push(
@@ -138,14 +138,14 @@ export default function Notificacoes() {
                             className="ml-1 mt-1 flex gap-2 items-center"
                           >
                             {formatDate(notification.createdAt) ==
-                              'Agora pouco' && <MyIcon name="now" />}
+                              "Agora pouco" && <MyIcon name="now" />}
                             {formatDate(notification.createdAt)}
                             {formatDate(notification.createdAt) !=
-                              'Agora pouco' &&
+                              "Agora pouco" &&
                               ` - ${getHora(notification.createdAt)}`}
                           </MyTypography>
                           {formatDate(notification.createdAt) ==
-                            'Agora pouco' && (
+                            "Agora pouco" && (
                             <MyButton
                               className="ml-1"
                               borderRadius="squared"
@@ -164,10 +164,10 @@ export default function Notificacoes() {
                         >
                           {page * 12 - 12 + index < 9
                             ? `0${page * 12 - 12 + index + 1}`
-                            : page * 12 - 12 + index + 1}{' '}
-                          -{' '}
+                            : page * 12 - 12 + index + 1}{" "}
+                          -{" "}
                           {notification?.title?.length > 33
-                            ? notification.title.slice(0, 33) + '...'
+                            ? notification.title.slice(0, 33) + "..."
                             : notification.title}
                         </MyTypography>
 
@@ -176,9 +176,9 @@ export default function Notificacoes() {
                           weight="regular"
                           className="ml-1 flex justify-between"
                         >
-                          {notification.text?.slice(0, 40) + '...'}
+                          {notification.text?.slice(0, 40) + "..."}
                           <MyIcon
-                            name={notification.isRead ? 'read' : 'unread'}
+                            name={notification.isRead ? "read" : "unread"}
                           />
                         </MyTypography>
                       </div>
