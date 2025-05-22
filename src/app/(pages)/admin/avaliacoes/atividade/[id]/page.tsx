@@ -138,7 +138,7 @@ export default function Atividade() {
     setIsLoading(true);
     const body = {
       adminApproved: true,
-      onSite: false,
+      onSite: true,
       refusalMsg: "",
     };
     try {
