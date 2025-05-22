@@ -361,6 +361,7 @@ export default function Atividade() {
         <div className="md:grid md:grid-cols-2 md:gap-8 my-4">
           <ActivityIncludedItems
             transportIncluded={fetchedActivity?.transportIncluded ?? false}
+            picturesIncluded={fetchedActivity?.picturesIncluded ?? false}
             itemsIncluded={parsedItems}
           />
 

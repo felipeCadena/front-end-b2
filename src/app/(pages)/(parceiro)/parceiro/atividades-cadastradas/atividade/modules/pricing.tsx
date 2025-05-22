@@ -19,6 +19,7 @@ import MyTypography from "@/components/atoms/my-typography";
 import { cn } from "@/utils/cn";
 import { partnerService } from "@/services/api/partner";
 import { useSession } from "next-auth/react";
+import { brlToApiNumberString } from "@/utils/formatters";
 
 export default function Pricing({
   formData,
@@ -37,11 +38,26 @@ export default function Pricing({
     enabled: !!session?.user,
   });
 
+  const formatCurrency = (value: string) => {
+    const numeric = value.replace(/\D/g, "");
+    const number = (parseInt(numeric) / 100).toFixed(2);
+    return number.replace(".", ",").replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  };
+
+  function parseFormattedNumber(value: string): number {
+    if (!value) return 0;
+    // Remove pontos (milhar) e troca vírgula por ponto (decimal)
+    return Number(value.replace(/\./g, "").replace(",", "."));
+  }
+
   const handleTaxDetails = () => {
     const taxB2Percentage = Number(b2Tax) || 0;
     const taxPercentage = Number(tax) || 0;
 
-    const b2Fee = (Number(formData?.priceAdult) * taxB2Percentage) / 100;
+    const priceAdult = parseFormattedNumber(formData?.priceAdult);
+
+    const b2Fee = (priceAdult * taxB2Percentage) / 100;
+
     const taxTotal = (Number(b2Fee) * taxPercentage) / 100;
 
     const realTax = (taxTotal * taxPercentage) / 100;
@@ -50,18 +66,18 @@ export default function Pricing({
     if (partner?.tag == "LAUNCH") {
       return {
         valorParceiro: formData?.priceAdult,
-        b2Fee,
+        b2Fee: b2Fee.toFixed(2),
         tax: Math.round(allTax),
         totalCliente: formData?.priceAdult,
       };
     }
 
-    const totalCliente =
-      Number(formData?.priceAdult) + b2Fee + taxTotal + realTax;
+    const totalCliente = priceAdult + b2Fee + taxTotal + realTax;
 
     return {
       valorParceiro: formData?.priceAdult,
-      b2Fee,
+      b2Fee: b2Fee.toFixed(2),
+
       tax: Math.round(allTax),
       totalCliente: Math.round(totalCliente),
     };
@@ -76,8 +92,8 @@ export default function Pricing({
       isInGroup: formData?.isInGroup,
       isChildrenAllowed: formData?.isChildrenAllowed,
       personsLimit: formData?.personsLimit,
-      priceAdult: formData?.priceAdult,
-      priceChildren: formData?.priceChildren,
+      priceAdult: brlToApiNumberString(formData?.priceAdult),
+      priceChildren: brlToApiNumberString(formData?.priceChildren),
     };
 
     try {
@@ -172,11 +188,11 @@ export default function Pricing({
           className="mt-1"
           classNameLabel="font-bold text-black text-base"
           noHintText
-          value={formData?.priceAdult}
+          value={formatCurrency(formData?.priceAdult)}
           onChange={(e) =>
             setFormData({
               ...formData,
-              priceAdult: e.target.value,
+              priceAdult: formatCurrency(e.target.value),
             })
           }
         />
@@ -188,11 +204,11 @@ export default function Pricing({
             className="mt-1"
             classNameLabel="font-bold text-black text-base"
             noHintText
-            value={formData?.priceChildren}
+            value={formatCurrency(formData?.priceChildren)}
             onChange={(e) =>
               setFormData({
                 ...formData,
-                priceChildren: e.target.value,
+                priceChildren: formatCurrency(e.target.value),
               })
             }
           />

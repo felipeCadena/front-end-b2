@@ -15,6 +15,7 @@ import {
   getDifficultyDescription,
   getDifficultyDescriptionResume,
   handleNameActivity,
+  sortImagesByDefaultFirst,
 } from "@/utils/formatters";
 import PATHS from "@/utils/paths";
 import { toast } from "react-toastify";
@@ -34,6 +35,8 @@ export default function AprovarAtividade() {
   const [isLoading, setIsLoading] = React.useState(false);
   const [isLoadingChat, setIsLoadingChat] = React.useState(false);
   const queryClient = useQueryClient();
+  const [expanded, setExpanded] = React.useState(false);
+  const MAX_LENGTH = 1000;
 
   const [refusalMsg, setRefusalMsg] = React.useState("");
 
@@ -52,6 +55,43 @@ export default function AprovarAtividade() {
   const getAddress = (address: string) => {
     const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
     return googleMapsUrl;
+  };
+
+  const renderDescription = () => {
+    const full = activity?.description ?? "";
+    const isLong = full.length > MAX_LENGTH;
+
+    if (!isLong) {
+      return (
+        <MyTypography
+          variant="body-big"
+          weight="regular"
+          className="mt-1 whitespace-pre-wrap"
+        >
+          {full}
+        </MyTypography>
+      );
+    }
+
+    const displayedText = expanded ? full : full.slice(0, MAX_LENGTH);
+    const toggleText = expanded ? "Ver menos" : "Ver mais";
+
+    return (
+      <MyTypography
+        variant="body-big"
+        weight="regular"
+        className="mt-1 whitespace-pre-wrap"
+      >
+        {displayedText}
+        {isLong && !expanded && "..."}
+        <span
+          onClick={() => setExpanded(!expanded)}
+          className="px-1 inline text-gray-400 underline cursor-pointer"
+        >
+          {toggleText}
+        </span>
+      </MyTypography>
+    );
   };
 
   if (!activity) {
@@ -321,16 +361,16 @@ export default function AprovarAtividade() {
                 weight="regular"
                 className="mt-1 whitespace-pre-wrap"
               >
-                {activity?.description}
+                {renderDescription()}
               </MyTypography>
             </div>
           </div>
         </div>
+
         <div className="max-sm:hidden grid grid-cols-4 grid-rows-2 gap-4">
           {activity?.images?.length &&
-            activity.images
+            sortImagesByDefaultFirst(activity.images)
               .slice(0, 5)
-              .sort((a, b) => (b.isDefault ? 1 : 0) - (a.isDefault ? 1 : 0))
               .map((image, index) => (
                 <Image
                   key={index}
@@ -338,7 +378,7 @@ export default function AprovarAtividade() {
                   alt="fotos da atividade"
                   width={300}
                   height={300}
-                  className={`h-full w-ful max-h-[27rem] rounded-lg object-cover ${index === 0 ? "col-span-2 row-span-2 w-full h-[27rem]" : "h-[12rem] max-h-[12rem]"}`}
+                  className={`w-full max-h-[25rem] rounded-lg object-cover ${index === 0 ? "col-span-2 row-span-2 h-[25rem]" : "h-[12rem] max-h-[12rem]"}`}
                 />
               ))}
         </div>

@@ -19,6 +19,11 @@ export default function EditarAtividade() {
     queryFn: () => adventures.getAdventureById(Number(id)),
   });
 
+  function formatApiValueToBR(value: string): string {
+    if (!value) return "0,00";
+    return value.replace(".", ",");
+  }
+
   const formattedActivity = React.useMemo(() => {
     if (!activity) return null;
 
@@ -54,8 +59,8 @@ export default function EditarAtividade() {
       description: activity.description,
       itemsIncluded: activity.itemsIncluded,
       duration: activity.duration,
-      priceAdult: activity.priceAdult,
-      priceChildren: activity.priceChildren,
+      priceAdult: formatApiValueToBR(activity.priceAdult),
+      priceChildren: formatApiValueToBR(activity.priceChildren),
       transportIncluded: activity.transportIncluded,
       picturesIncluded: activity.picturesIncluded,
       typeAdventure: activity.typeAdventure,

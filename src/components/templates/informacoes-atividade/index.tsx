@@ -15,6 +15,7 @@ import { partnerService } from "@/services/api/partner";
 import { useAdventureStore } from "@/store/useAdventureStore";
 import { useStepperStore } from "@/store/useStepperStore";
 import { cn } from "@/utils/cn";
+import { brlToApiNumberString } from "@/utils/formatters";
 import PATHS from "@/utils/paths";
 import { useQuery } from "@tanstack/react-query";
 import { AxiosError } from "axios";
@@ -115,11 +116,57 @@ export default function InformacoesAtividade({
   const cutoffDate = new Date("2025-05-31");
   const isFreeTaxPeriod = today <= cutoffDate;
 
+  function parseFormattedNumber(value: string): number {
+    if (!value) return 0;
+    // Remove pontos (milhar) e troca vírgula por ponto (decimal)
+    return Number(value.replace(/\./g, "").replace(",", "."));
+  }
+
+  // const handleTaxDetails = () => {
+  //   const taxB2Percentage = Number(b2Tax) || 0;
+  //   const taxPercentage = Number(tax) || 0;
+
+  //   const adultPrice = parseFormattedNumber(priceAdult);
+
+  //   const b2Fee = (Number(adultPrice) * taxB2Percentage) / 100;
+  //   const taxTotal = (Number(b2Fee) * taxPercentage) / 100;
+
+  //   const realTax = (taxTotal * taxPercentage) / 100;
+  //   const allTax = taxTotal + realTax;
+
+  //   if (isFreeTaxPeriod || partner?.tag == "LAUNCH") {
+  //     return {
+  //       valorParceiro: adultPrice,
+  //       b2Fee,
+  //       tax: Math.round(allTax),
+  //       totalCliente: adultPrice,
+  //     };
+  //   }
+
+  //   const totalCliente = Number(adultPrice) + b2Fee + taxTotal + realTax;
+
+  //   return {
+  //     valorParceiro: adultPrice,
+  //     b2Fee,
+  //     tax: Math.round(allTax),
+  //     totalCliente: Math.round(totalCliente),
+  //   };
+  // };
+
+  const formatCurrency = (value: string) => {
+    const numeric = value.replace(/\D/g, "");
+    const number = (parseInt(numeric) / 100).toFixed(2);
+    return number.replace(".", ",").replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  };
+
   const handleTaxDetails = () => {
     const taxB2Percentage = Number(b2Tax) || 0;
     const taxPercentage = Number(tax) || 0;
 
-    const b2Fee = (Number(priceAdult) * taxB2Percentage) / 100;
+    const adultPrice = parseFormattedNumber(String(priceAdult));
+
+    const b2Fee = (adultPrice * taxB2Percentage) / 100;
+
     const taxTotal = (Number(b2Fee) * taxPercentage) / 100;
 
     const realTax = (taxTotal * taxPercentage) / 100;
@@ -127,18 +174,19 @@ export default function InformacoesAtividade({
 
     if (isFreeTaxPeriod || partner?.tag == "LAUNCH") {
       return {
-        valorParceiro: priceAdult,
-        b2Fee,
+        valorParceiro: adultPrice,
+        b2Fee: b2Fee.toFixed(2),
         tax: Math.round(allTax),
-        totalCliente: priceAdult,
+        totalCliente: adultPrice,
       };
     }
 
-    const totalCliente = Number(priceAdult) + b2Fee + taxTotal + realTax;
+    const totalCliente = adultPrice + b2Fee + taxTotal + realTax;
 
     return {
-      valorParceiro: priceAdult,
-      b2Fee,
+      valorParceiro: adultPrice,
+      b2Fee: b2Fee.toFixed(2),
+
       tax: Math.round(allTax),
       totalCliente: Math.round(totalCliente),
     };
@@ -151,8 +199,8 @@ export default function InformacoesAtividade({
     if (waterIncluded) items.push("Água");
     if (foodIncluded) items.push("Alimentação");
     if (fuelIncluded) items.push("Combustível");
-    if (transportIncluded) items.push("Transporte");
-    if (picturesIncluded) items.push("Fotos");
+    // if (transportIncluded) items.push("Transporte");
+    // if (picturesIncluded) items.push("Fotos");
     return JSON.stringify(items);
   };
 
@@ -223,8 +271,10 @@ export default function InformacoesAtividade({
       coordinates: coordinatesString,
       isInGroup,
       isChildrenAllowed,
-      priceAdult: priceAdult.length > 0 ? priceAdult : "0",
-      priceChildren: priceChildren.length > 0 ? priceChildren : "0",
+      priceAdult:
+        priceAdult.length > 0 ? brlToApiNumberString(priceAdult) : "0",
+      priceChildren:
+        priceChildren.length > 0 ? brlToApiNumberString(priceChildren) : "0",
       personsLimit: isInGroup ? personsLimit : 1,
       addressCity,
       addressNeighborhood,
@@ -381,8 +431,10 @@ export default function InformacoesAtividade({
         coordinates: coordinatesString,
         isInGroup,
         isChildrenAllowed,
-        priceAdult: priceAdult.length > 0 ? priceAdult : "0",
-        priceChildren: priceChildren.length > 0 ? priceChildren : "0",
+        priceAdult:
+          priceAdult.length > 0 ? brlToApiNumberString(priceAdult) : "0",
+        priceChildren:
+          priceChildren.length > 0 ? brlToApiNumberString(priceChildren) : "0",
         personsLimit: isInGroup ? personsLimit : 1,
         addressCity,
         addressNeighborhood,
@@ -617,7 +669,7 @@ export default function InformacoesAtividade({
           value={priceAdult}
           onChange={(e) =>
             setAdventureData({
-              priceAdult: e.target.value,
+              priceAdult: formatCurrency(e.target.value),
             })
           }
         />
@@ -632,7 +684,7 @@ export default function InformacoesAtividade({
             value={priceChildren}
             onChange={(e) =>
               setAdventureData({
-                priceChildren: e.target.value,
+                priceChildren: formatCurrency(e.target.value),
               })
             }
           />
