@@ -38,7 +38,7 @@ export default function Notificacao() {
       <div className="flex gap-4 items-center">
         <MyIcon
           name="voltar-black"
-          className="hover:cursor-pointer"
+          className="hover:cursor-pointer z-30"
           onClick={() => router.back()}
         />
         <MyTypography variant="subtitle1" weight="bold" className="">

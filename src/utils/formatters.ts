@@ -22,6 +22,13 @@ export function capitalizeFirstLetter(str: string) {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
+export function brlToApiNumberString(value: string): string {
+  if (!value) return "0.00";
+
+  // Remove pontos de milhar e troca vírgula por ponto decimal
+  return value.replace(/\./g, "").replace(",", ".");
+}
+
 export function isWithinChatWindow(datetimeUTC: string): boolean {
   const now = new Date();
   const localNow = new Date(now.getTime() - 3 * 60 * 60 * 1000); // UTC-3
