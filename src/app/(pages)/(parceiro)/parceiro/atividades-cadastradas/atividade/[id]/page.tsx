@@ -213,7 +213,6 @@ export default function Atividade() {
       setIsLoading(false);
     }
   };
-
   const handleConfirmCancel = () => {
     router.push(PATHS["atividades-cadastradas"]);
     setConfirmedCancel(false);

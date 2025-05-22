@@ -357,7 +357,6 @@ export default function Atividade() {
           </MyTypography>
         </div>
       </div>
-
       <div className="mx-6">
         <div className="md:grid md:grid-cols-2 md:gap-8 my-4">
           <ActivityIncludedItems
