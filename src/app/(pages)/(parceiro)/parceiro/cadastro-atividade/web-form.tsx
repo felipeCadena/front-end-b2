@@ -350,7 +350,6 @@ export default function WebForm({
       toast.error("São necessárias 5 imagens.");
       return;
     }
-
     if (tempImages.length > 5) {
       toast.error(
         "São permitidas no máximo 5 imagens. Exclua até ter 5 imagens."
