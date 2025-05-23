@@ -56,7 +56,7 @@ export default function ActivitiesDetails({
                 <div
                   key={index}
                   className={cn(
-                    "flex flex-col rounded-xl shadow-sm bg-white h-full",
+                    "flex flex-col rounded-xl bg-white h-full",
                     !adventure?.onSite &&
                       adventure?.adminApproved &&
                       "opacity-50"

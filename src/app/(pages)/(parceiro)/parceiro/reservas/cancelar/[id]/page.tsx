@@ -1,36 +1,42 @@
-'use client';
+"use client";
 
-import React from 'react';
-import MyTypography from '@/components/atoms/my-typography';
-import MyButton from '@/components/atoms/my-button';
-import MyIcon from '@/components/atoms/my-icon';
-import { useParams, useRouter } from 'next/navigation';
-import PATHS from '@/utils/paths';
-import ModalAlert from '@/components/molecules/modal-alert';
-import { useAlert } from '@/hooks/useAlert';
-import { useQuery } from '@tanstack/react-query';
-import { schedules } from '@/services/api/schedules';
-import { partnerService } from '@/services/api/partner';
-import { toast } from 'react-toastify';
+import React from "react";
+import MyTypography from "@/components/atoms/my-typography";
+import MyButton from "@/components/atoms/my-button";
+import MyIcon from "@/components/atoms/my-icon";
+import { useParams, useRouter } from "next/navigation";
+import PATHS from "@/utils/paths";
+import ModalAlert from "@/components/molecules/modal-alert";
+import { useAlert } from "@/hooks/useAlert";
+import { useQuery } from "@tanstack/react-query";
+import { schedules } from "@/services/api/schedules";
+import { partnerService } from "@/services/api/partner";
+import { toast } from "react-toastify";
+import { adminService } from "@/services/api/admin";
 
-const justificativas = [
-  'Houve um imprevisto e irei precisar cancelar nossa atividade, desculpe!',
-  'Condições climáticas desfavoráveis para a realização da atividade.',
-  'Problemas técnicos com equipamentos necessários.',
-  'Número insuficiente de participantes.',
-  'Motivos de força maior/emergência.',
-];
+// const justificativas = [
+//   'Houve um imprevisto e irei precisar cancelar nossa atividade, desculpe!',
+//   'Condições climáticas desfavoráveis para a realização da atividade.',
+//   'Problemas técnicos com equipamentos necessários.',
+//   'Número insuficiente de participantes.',
+//   'Motivos de força maior/emergência.',
+// ];
 
 export default function CancelarAtividade() {
   const router = useRouter();
   const { id } = useParams();
 
+  const { data: justificativas, isLoading } = useQuery({
+    queryKey: ["configs"],
+    queryFn: () => adminService.listConfig({ type: "justificativa" }),
+  });
+
   const [isModalOpen, setIsModalOpen] = React.useState(false);
   const [selectedJustificativa, setSelectedJustificativa] =
-    React.useState<string>('');
+    React.useState<string>("");
 
   const { data: parterSchedules } = useQuery({
-    queryKey: ['parterSchedules'],
+    queryKey: ["parterSchedules"],
     queryFn: () => schedules.getScheduleById(id as string),
   });
 
@@ -43,10 +49,10 @@ export default function CancelarAtividade() {
         selectedJustificativa
       );
 
-      router.push(`${PATHS['reservas-parceiro']}?openModal=true`);
+      router.push(`${PATHS["reservas-parceiro"]}?openModal=true`);
     } catch (error) {
-      console.error('Error canceling schedule:', error);
-      toast.error('Erro ao cancelar a atividade. Tente novamente mais tarde.');
+      console.error("Error canceling schedule:", error);
+      toast.error("Erro ao cancelar a atividade. Tente novamente mais tarde.");
     } finally {
       setIsModalOpen(false);
     }
@@ -88,11 +94,11 @@ export default function CancelarAtividade() {
           </MyTypography>
           <div className="flex items-center gap-2 mt-2">
             <MyTypography variant="body-big">
-              Status da Atividade{' '}
+              Status da Atividade{" "}
               <span className="font-semibold">
                 {parterSchedules && parterSchedules.isCanceled
-                  ? 'Cancelada'
-                  : 'Confirmada'}
+                  ? "Cancelada"
+                  : "Confirmada"}
               </span>
             </MyTypography>
           </div>
@@ -108,19 +114,22 @@ export default function CancelarAtividade() {
           </MyTypography>
 
           <div className="space-y-3">
-            {justificativas.map((justificativa, index) => (
-              <div
-                key={index}
-                className={`p-4 rounded-lg border cursor-pointer transition-all border-l-8 ${
-                  selectedJustificativa === justificativa
-                    ? 'border-black bg-gray-50'
-                    : 'border-gray-200 bg-gray-50 opacity-80'
-                }`}
-                onClick={() => setSelectedJustificativa(justificativa)}
-              >
-                <MyTypography variant="body-big">{justificativa}</MyTypography>
-              </div>
-            ))}
+            {justificativas &&
+              justificativas.map((justificativa: any, index: number) => (
+                <div
+                  key={index}
+                  className={`p-4 rounded-lg border cursor-pointer transition-all border-l-8 ${
+                    selectedJustificativa === justificativa?.text
+                      ? "border-black bg-gray-50"
+                      : "border-gray-200 bg-gray-50 opacity-80"
+                  }`}
+                  onClick={() => setSelectedJustificativa(justificativa?.text)}
+                >
+                  <MyTypography variant="body-big">
+                    {justificativa?.text}
+                  </MyTypography>
+                </div>
+              ))}
           </div>
         </div>
 
@@ -132,8 +141,8 @@ export default function CancelarAtividade() {
           title="Cancelamento de Atividade"
           descrition={
             hasClient
-              ? 'Tem certeza que deseja cancelar essa atividade? Há clientes que já agendaram essa atividade.'
-              : 'Tem certeza que deseja cancelar?'
+              ? "Tem certeza que deseja cancelar essa atividade? Há clientes que já agendaram essa atividade."
+              : "Tem certeza que deseja cancelar?"
           }
           button="Cancelar atividade "
         />

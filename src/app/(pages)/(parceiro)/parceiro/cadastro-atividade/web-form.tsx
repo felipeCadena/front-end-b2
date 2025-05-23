@@ -38,6 +38,7 @@ import {
   capitalizeFirstLetter,
   convertToHours,
   convertToTimeString,
+  formatDuration,
   getDifficultyDescription,
   getDifficultyNumber,
 } from "@/utils/formatters";
@@ -201,6 +202,60 @@ export default function WebForm({
   const handleNextStep = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
+    if (
+      !typeAdventure ||
+      !title ||
+      !description ||
+      !hoursBeforeCancellation ||
+      !hoursBeforeSchedule
+    ) {
+      toast.error("Preencha todos os campos.");
+      return;
+    }
+    if (!difficult) {
+      toast.error("Preencha todos os campos.");
+      return;
+    }
+
+    const someDate = selectionBlocks.some(
+      (date) =>
+        (date.dates.length || date.recurrenceWeekly.length) &&
+        date.recurrenceHour.length
+    );
+
+    if (duration === "00:00") {
+      toast.error("A duração não pode ser 0.");
+      return;
+    }
+    if (!someDate) {
+      toast.error(
+        "Em calendário da atividade, é necessário selecionar o dia da semana ou dias específicos. Os horários são obrigatórios."
+      );
+      return;
+    }
+
+    if (!address || !pointRefAddress) {
+      toast.error("Preencha o endereço e o ponto de referência.");
+      return;
+    }
+
+    if (tempImages.length < 5) {
+      toast.error("São necessárias 5 imagens.");
+      return;
+    }
+
+    if (tempImages.length > 5) {
+      toast.error(
+        "São permitidas no máximo 5 imagens. Exclua até ter 5 imagens."
+      );
+      return;
+    }
+
+    if (transportIncluded && !transportAddress) {
+      toast.error("Preencha o local de saída e retorno.");
+      return;
+    }
+
     handleNext && handleNext();
   };
 
@@ -219,26 +274,6 @@ export default function WebForm({
   const handleAddSelectionBlock = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     addSelectionBlock();
-  };
-
-  // Converte de "HH:mm" para "Xh" ou "XhYY"
-  const formatDuration = (hours: string) => {
-    if (!hours) return "";
-
-    const [h, m] = hours.split("h");
-
-    // Garante que temos números válidos
-    const hour = parseInt(h);
-    const minute = parseInt(m);
-
-    if (isNaN(hour)) return "";
-
-    // Mantém os minutos se existirem e forem diferentes de zero
-    if (!isNaN(minute) && minute > 0) {
-      return `0${hour}:${minute}`;
-    }
-
-    return `0${hour}:00`;
   };
 
   const handleLocationSelected = (locationData: LocationData) => {
@@ -279,17 +314,35 @@ export default function WebForm({
       !title ||
       !description ||
       !hoursBeforeCancellation ||
-      !hoursBeforeSchedule ||
-      duration === "" ||
-      !tempImages.length ||
-      !address
+      !hoursBeforeSchedule
     ) {
       toast.error("Preencha todos os campos.");
       return;
     }
+    if (!difficult) {
+      toast.error("Preencha todos os campos.");
+      return;
+    }
+
+    const someDate = selectionBlocks.some(
+      (date) =>
+        (date.dates.length || date.recurrenceWeekly.length) &&
+        date.recurrenceHour.length
+    );
 
     if (duration === "00:00") {
       toast.error("A duração não pode ser 0.");
+      return;
+    }
+    if (!someDate) {
+      toast.error(
+        "Em calendário da atividade, é necessário selecionar o dia da semana ou dias específicos. Os horários são obrigatórios."
+      );
+      return;
+    }
+
+    if (!address || !pointRefAddress) {
+      toast.error("Preencha o endereço e o ponto de referência.");
       return;
     }
 
@@ -302,6 +355,11 @@ export default function WebForm({
       toast.error(
         "São permitidas no máximo 5 imagens. Exclua até ter 5 imagens."
       );
+      return;
+    }
+
+    if (transportIncluded && !transportAddress) {
+      toast.error("Preencha o local de saída e retorno.");
       return;
     }
 

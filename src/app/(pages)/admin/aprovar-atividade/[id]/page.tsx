@@ -206,9 +206,14 @@ export default function AprovarAtividade() {
       await adminService.createChat({ userToId: userId });
       router.push(`/chat`);
       toast.success("Chat criado com sucesso!");
-    } catch (error) {
-      console.error("Erro ao criar chat:", error);
-      toast.error("Erro ao criar chat");
+    } catch (err) {
+      console.error("Erro ao criar chat:", err);
+      if (err instanceof AxiosError) {
+        const message = err.response?.data?.error;
+        toast.error(`${message}`);
+      } else {
+        toast.error("Erro ao criar chat");
+      }
     } finally {
       setIsLoadingChat(false);
     }
@@ -259,10 +264,7 @@ export default function AprovarAtividade() {
                   onClick={() => router.back()}
                 />
                 <MyTypography variant="heading2" weight="bold" className="">
-                  {activity?.title
-                    ? activity.title.charAt(0).toUpperCase() +
-                      activity.title.slice(1).toLowerCase()
-                    : ""}
+                  {activity?.title}
                 </MyTypography>
               </div>
               <div className="flex gap-2 items-center">
