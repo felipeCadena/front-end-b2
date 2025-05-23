@@ -29,6 +29,7 @@ export default function TimePickerModal({
 
     const hour = match[1].padStart(2, "0");
     const minutes = (match[2] || "0").padStart(2, "0");
+
     return { hour, minute: minutes };
   };
 
@@ -47,11 +48,11 @@ export default function TimePickerModal({
   );
 
   // Atualiza a seleção quando o valor externo muda
-  useEffect(() => {
-    const { hour, minute } = parseValue(selectedTime);
-    setSelectedHour(hour);
-    setSelectedMinute(minute);
-  }, [selectedTime]);
+  // useEffect(() => {
+  //   const { hour, minute } = parseValue(selectedTime);
+  //   setSelectedHour(hour);
+  //   setSelectedMinute(minute);
+  // }, [selectedTime]);
 
   // Formata e envia o valor quando a seleção muda
   useEffect(() => {
@@ -59,7 +60,10 @@ export default function TimePickerModal({
       const hour = parseInt(selectedHour);
       const minute = parseInt(selectedMinute);
       // Só inclui os minutos se forem maiores que zero
-      const formattedValue = minute > 0 ? `${hour}:${minute}` : `${hour}:00`;
+      const formattedValue =
+        minute > 0
+          ? `${hour}:${minute > 9 ? minute : `0${minute}`}`
+          : `${hour}:00`;
       setSelectedTime(formattedValue);
     }
   }, [selectedHour, selectedMinute]);

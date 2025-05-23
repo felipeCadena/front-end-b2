@@ -139,7 +139,9 @@ export default function ActivitiesFilter({
             ) : (
               <Terra fill={item.name === selected ? "#fff" : "#1E1E1E"} />
             )}
-            <span className="px-4">{item.title}</span>
+            <span className="text-center text-sm leading-tight break-words px-1">
+              {item.title}
+            </span>
           </MyButton>
         ))}
       </div>

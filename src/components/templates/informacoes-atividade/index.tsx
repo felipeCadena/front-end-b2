@@ -206,7 +206,7 @@ export default function InformacoesAtividade({
 
   // Função pro fluxo de criação de parceiro + atividade
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
+    // e.preventDefault();
 
     if (!selectedGroup) {
       toast.error("Preencha se a atividade é em grupo ou individual.");
@@ -395,7 +395,7 @@ export default function InformacoesAtividade({
   const handleCreateAdventure = async (
     e: React.MouseEvent<HTMLButtonElement>
   ) => {
-    e.preventDefault();
+    // e.preventDefault();
 
     if (!selectedGroup) {
       toast.error("Preencha se a atividade é em grupo ou individual.");
@@ -439,12 +439,14 @@ export default function InformacoesAtividade({
         addressCity,
         addressNeighborhood,
         addressState,
+        transportAddress,
         addressStreet,
         addressPostalCode,
         addressNumber,
         addressComplement,
         addressCountry,
         description,
+        partnerId: "",
         difficult,
         itemsIncluded: handleItemsIncluded(),
         transportIncluded,
@@ -454,7 +456,6 @@ export default function InformacoesAtividade({
         hoursBeforeCancellation,
         isRepeatable,
         recurrences,
-        transportAddress,
       };
 
       setIsLoading(true);
