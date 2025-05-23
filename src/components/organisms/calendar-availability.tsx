@@ -13,14 +13,16 @@ import HoursSelect from "../molecules/date-select";
 import ConfirmModal from "../molecules/confirm-modal";
 import ModalAlert from "../molecules/modal-alert";
 import MyTypography from "../atoms/my-typography";
+import { useQuery } from "@tanstack/react-query";
+import { adminService } from "@/services/api/admin";
 
-const justificativas = [
-  "Houve um imprevisto e irei precisar cancelar nossa atividade, desculpe!",
-  "Condições climáticas desfavoráveis para a realização da atividade.",
-  "Problemas técnicos com equipamentos necessários.",
-  "Número insuficiente de participantes.",
-  "Motivos de força maior/emergência.",
-];
+// const justificativas = [
+//   "Houve um imprevisto e irei precisar cancelar nossa atividade, desculpe!",
+//   "Condições climáticas desfavoráveis para a realização da atividade.",
+//   "Problemas técnicos com equipamentos necessários.",
+//   "Número insuficiente de participantes.",
+//   "Motivos de força maior/emergência.",
+// ];
 
 interface Schedule {
   id: string;
@@ -68,6 +70,11 @@ function CalendarAvailability({
     React.useState<string>("");
   const [hasClient, setHasClient] = React.useState(false);
   const [hasClientAllCancel, setHasClientAllCancel] = React.useState(false);
+
+  const { data: justificativas } = useQuery({
+    queryKey: ["configs"],
+    queryFn: () => adminService.listConfig({ type: "justificativa" }),
+  });
 
   const [isModalCancelOpen, setIsModalCancelOpen] = React.useState(false);
 
@@ -510,23 +517,29 @@ function CalendarAvailability({
                           </MyTypography>
 
                           <div className="space-y-3">
-                            {justificativas.map((justificativa, index) => (
-                              <div
-                                key={index}
-                                className={`p-4 rounded-lg border cursor-pointer transition-all border-l-8 ${
-                                  selectedJustificativa === justificativa
-                                    ? "border-black bg-gray-50"
-                                    : "border-gray-200 bg-gray-50 opacity-80"
-                                }`}
-                                onClick={() =>
-                                  setSelectedJustificativa(justificativa)
-                                }
-                              >
-                                <MyTypography variant="body-big">
-                                  {justificativa}
-                                </MyTypography>
-                              </div>
-                            ))}
+                            {justificativas &&
+                              justificativas.map(
+                                (justificativa: any, index: number) => (
+                                  <div
+                                    key={index}
+                                    className={`p-4 rounded-lg border cursor-pointer transition-all border-l-8 ${
+                                      selectedJustificativa ===
+                                      justificativa?.text
+                                        ? "border-black bg-gray-50"
+                                        : "border-gray-200 bg-gray-50 opacity-80"
+                                    }`}
+                                    onClick={() =>
+                                      setSelectedJustificativa(
+                                        justificativa?.text
+                                      )
+                                    }
+                                  >
+                                    <MyTypography variant="body-big">
+                                      {justificativa?.text}
+                                    </MyTypography>
+                                  </div>
+                                )
+                              )}
                           </div>
 
                           <div className="flex gap-4">
@@ -590,23 +603,26 @@ function CalendarAvailability({
                       </MyTypography>
 
                       <div className="space-y-3">
-                        {justificativas.map((justificativa, index) => (
-                          <div
-                            key={index}
-                            className={`p-4 rounded-lg border cursor-pointer transition-all border-l-8 ${
-                              selectedJustificativa === justificativa
-                                ? "border-black bg-gray-50"
-                                : "border-gray-200 bg-gray-50 opacity-80"
-                            }`}
-                            onClick={() =>
-                              setSelectedJustificativa(justificativa)
-                            }
-                          >
-                            <MyTypography variant="body-big">
-                              {justificativa}
-                            </MyTypography>
-                          </div>
-                        ))}
+                        {justificativas &&
+                          justificativas.map(
+                            (justificativa: any, index: number) => (
+                              <div
+                                key={index}
+                                className={`p-4 rounded-lg border cursor-pointer transition-all border-l-8 ${
+                                  selectedJustificativa === justificativa.text
+                                    ? "border-black bg-gray-50"
+                                    : "border-gray-200 bg-gray-50 opacity-80"
+                                }`}
+                                onClick={() =>
+                                  setSelectedJustificativa(justificativa.text)
+                                }
+                              >
+                                <MyTypography variant="body-big">
+                                  {justificativa.text}
+                                </MyTypography>
+                              </div>
+                            )
+                          )}
                       </div>
 
                       <div className="flex gap-4">

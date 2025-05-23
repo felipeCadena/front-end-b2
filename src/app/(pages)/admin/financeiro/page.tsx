@@ -828,9 +828,6 @@ export default function Dashboard() {
                       {year}
                     </SelectItem>
                   ))}
-                  <SelectItem key="2026" value="2026">
-                    2026
-                  </SelectItem>
                 </SelectContent>
               </MySelect>
             </div>
@@ -958,9 +955,6 @@ export default function Dashboard() {
                       {year}
                     </SelectItem>
                   ))}
-                  <SelectItem key="2026" value="2026">
-                    2026
-                  </SelectItem>
                 </SelectContent>
               </MySelect>
             </div>

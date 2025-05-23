@@ -11,16 +11,16 @@ import JustificativasTemplate from "@/components/templates/config-justificativas
 import ConfigIdiomas from "@/components/templates/config-idiomas";
 
 const systemConfigs = [
-  {
-    title: "Editar Fotos",
-    icon: "images",
-    path: "/admin/configuracoes/fotos",
-  },
-  {
-    title: "Editar Textos",
-    icon: "atention",
-    path: "/admin/configuracoes/textos",
-  },
+  // {
+  //   title: "Editar Fotos",
+  //   icon: "images",
+  //   path: "/admin/configuracoes/fotos",
+  // },
+  // {
+  //   title: "Editar Textos",
+  //   icon: "atention",
+  //   path: "/admin/configuracoes/textos",
+  // },
   {
     title: "Editar Justificativas",
     icon: "text",

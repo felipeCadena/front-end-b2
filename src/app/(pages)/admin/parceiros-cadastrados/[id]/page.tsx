@@ -21,6 +21,7 @@ import {
   formatPhoneNumberDDI,
 } from "@/utils/formatters";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { AxiosError } from "axios";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
@@ -127,9 +128,14 @@ export default function Parceiro() {
       await adminService.createChat({ userToId: userId });
       toast.success("Chat criado com sucesso!");
       router.push(`/chat?user=${fetchPartner?.userId}`);
-    } catch (error) {
-      console.error("Erro ao criar chat:", error);
-      toast.error("Erro ao criar chat");
+    } catch (err) {
+      console.error("Erro ao criar chat:", err);
+      if (err instanceof AxiosError) {
+        const message = err.response?.data?.error;
+        toast.error(`${message}`);
+      } else {
+        toast.error("Erro ao criar chat");
+      }
     } finally {
       setLoading(false);
     }

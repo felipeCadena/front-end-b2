@@ -34,12 +34,12 @@ const Layout = ({ children }: { children: JSX.Element | ReactNode }) => {
   //   queryFn: () => partnerService.getPartnerLogged(),
   // });
 
-  // useEffect(() => {
-  //   if (session?.user?.error === "RefreshAccessTokenError") {
-  //     // Logout automático ou redirecionamento
-  //     signOut({ callbackUrl: "/login" });
-  //   }
-  // }, [session]);
+  useEffect(() => {
+    if (session?.user?.error === "RefreshAccessTokenError") {
+      // Logout automático ou redirecionamento
+      signOut({ callbackUrl: "/login" });
+    }
+  }, [session]);
 
   return (
     <section

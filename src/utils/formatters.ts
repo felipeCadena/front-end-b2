@@ -17,6 +17,27 @@ import {
 } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
+// Converte de "HH:mm" para "Xh" ou "XhYY"
+export const formatDuration = (hours: string) => {
+  if (!hours) return "";
+
+  const [h, m] = hours.split(":");
+
+  // Garante que temos números válidos
+  const hour = parseInt(h);
+  const minute = parseInt(m);
+
+  if (isNaN(hour)) return "";
+
+  const formattedHour = hour <= 9 ? `0${hour}` : `${hour}`;
+  const formattedMinute =
+    !isNaN(minute) && minute > 0
+      ? `${minute > 9 ? minute : `0${minute}`}`
+      : "00";
+
+  return `${formattedHour}:${formattedMinute}`;
+};
+
 export function capitalizeFirstLetter(str: string) {
   if (!str) return "";
   return str.charAt(0).toUpperCase() + str.slice(1);

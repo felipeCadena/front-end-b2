@@ -25,7 +25,7 @@ export default function JustificativasTemplate() {
     try {
       await adminService.createConfig({
         type: "justificativa",
-        name: `${justificativa}${index}`,
+        name: `justificativa-${index}`,
         text: justificativa,
         localInsert: "justificativa",
       });
@@ -43,6 +43,7 @@ export default function JustificativasTemplate() {
   const deleteJustificativa = async (id: string) => {
     try {
       await adminService.deleteConfig(id);
+      setSelectedJustificativa("");
       queryClient.invalidateQueries({ queryKey: ["configs"] });
       toast.success("Justificativa deletada com sucesso!");
     } catch (error) {
@@ -78,7 +79,7 @@ export default function JustificativasTemplate() {
           placeholder="Digite uma justificativa"
           className="mt-1"
           onChange={(e) => setSelectedJustificativa(e.target.value)}
-          // value={selectedJustificativa}
+          value={selectedJustificativa}
         />
 
         <MyButton
@@ -98,7 +99,7 @@ export default function JustificativasTemplate() {
 
       <div className="space-y-4">
         <MyTypography variant="subtitle2" weight="bold" className="">
-          Justificativa cadastradas
+          Justificativas cadastradas
         </MyTypography>
         <div className="space-y-3 relative">
           {configs &&

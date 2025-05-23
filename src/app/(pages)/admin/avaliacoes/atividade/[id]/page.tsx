@@ -166,9 +166,14 @@ export default function Atividade() {
       await adminService.createChat({ userToId: userId });
       router.push(`/chat`);
       toast.success("Chat criado com sucesso!");
-    } catch (error) {
-      console.error("Erro ao criar chat:", error);
-      toast.error("Erro ao criar chat");
+    } catch (err) {
+      console.error("Erro ao criar chat:", err);
+      if (err instanceof AxiosError) {
+        const message = err.response?.data?.error;
+        toast.error(`${message}`);
+      } else {
+        toast.error("Erro ao criar chat");
+      }
     } finally {
       setIsLoadingChat(false);
     }

@@ -13,6 +13,7 @@ import Duration from "@/components/molecules/duration";
 import TimePickerModal from "@/components/molecules/time-picker";
 import { useAdventureStore } from "@/store/useAdventureStore";
 import {
+  formatDuration,
   getDifficultyDescription,
   getDifficultyNumber,
 } from "@/utils/formatters";
@@ -20,29 +21,6 @@ import React from "react";
 
 export default function Step3() {
   const { difficult, setAdventureData, duration } = useAdventureStore();
-
-  console.log("Dificuldade", difficult);
-  console.log("Duração", duration);
-
-  // Converte de "HH:mm" para "Xh" ou "XhYY"
-  const formatDuration = (hours: string) => {
-    if (!hours) return "";
-
-    const [h, m] = hours.split("h");
-
-    // Garante que temos números válidos
-    const hour = parseInt(h);
-    const minute = parseInt(m);
-
-    if (isNaN(hour)) return "";
-
-    // Mantém os minutos se existirem e forem diferentes de zero
-    if (!isNaN(minute) && minute > 0) {
-      return `0${hour}:${minute}`;
-    }
-
-    return `0${hour}:00`;
-  };
 
   React.useEffect(() => {
     if (window) {

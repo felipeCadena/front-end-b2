@@ -44,6 +44,19 @@ export default function Pricing({
     return number.replace(".", ",").replace(/\B(?=(\d{3})+(?!\d))/g, ".");
   };
 
+  const formatCurrencyInput = (value: string) => {
+    const numeric = value.replace(/\D/g, "");
+
+    if (!numeric) return "0,00";
+
+    const number = Number(numeric).toLocaleString("pt-BR", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+
+    return number;
+  };
+
   function parseFormattedNumber(value: string): number {
     if (!value) return 0;
     // Remove pontos (milhar) e troca vírgula por ponto (decimal)
@@ -188,7 +201,7 @@ export default function Pricing({
           className="mt-1"
           classNameLabel="font-bold text-black text-base"
           noHintText
-          value={formatCurrency(formData?.priceAdult)}
+          value={formData?.priceAdult}
           onChange={(e) =>
             setFormData({
               ...formData,
@@ -204,7 +217,7 @@ export default function Pricing({
             className="mt-1"
             classNameLabel="font-bold text-black text-base"
             noHintText
-            value={formatCurrency(formData?.priceChildren)}
+            value={formData?.priceChildren}
             onChange={(e) =>
               setFormData({
                 ...formData,
