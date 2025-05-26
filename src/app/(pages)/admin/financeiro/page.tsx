@@ -536,7 +536,6 @@ export default function Dashboard() {
     const months = [];
 
     // const isMobile = window && window.innerWidth < 768 ? 6 : 12;
-
     for (let month = 0; month < 12; month++) {
       const date = new Date(currentYear, month, 1);
       const key = `${date.getFullYear()}-${(month + 1).toString().padStart(2, "0")}`;
