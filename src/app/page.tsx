@@ -7,8 +7,21 @@ import ThirdSection from "@/components/templates/third-section";
 import FourthSection from "@/components/templates/fourth-section";
 import FifithSection from "@/components/templates/fifth-section";
 import Review from "@/components/templates/third-section/review";
+import { signOut, useSession } from "next-auth/react";
+import { toast } from "react-toastify";
 
 export default function Home() {
+  const { data: session } = useSession();
+
+  React.useEffect(() => {
+    if (session?.error === "RefreshAccessTokenError") {
+      // Logout automático ou redirecionamento
+      console.log("Session expired, logging out...");
+      signOut({ callbackUrl: "/login" });
+      toast.error("Sua sessão expirou. Por favor, faça login novamente.");
+    }
+  }, [session]);
+
   return (
     <main className="md:mx-auto w-full md:max-w-screen-custom md:px-8">
       <div className="overflow-x-hidden ">

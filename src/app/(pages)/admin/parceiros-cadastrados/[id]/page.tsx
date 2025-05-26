@@ -15,6 +15,7 @@ import MyTypography from "@/components/atoms/my-typography";
 import StarRating from "@/components/molecules/my-stars";
 import PartnerRecentActivities from "@/components/organisms/partner-recent-activities";
 import { adminService } from "@/services/api/admin";
+import useChat from "@/store/useChat";
 import {
   formatCNPJ,
   formatCPF,
@@ -32,6 +33,7 @@ export default function Parceiro() {
   const router = useRouter();
   const { id } = useParams();
   const queryClient = useQueryClient();
+  const { setChat } = useChat();
 
   const { data: session } = useSession();
 
@@ -125,9 +127,10 @@ export default function Parceiro() {
   const handleChat = async (userId: string) => {
     setLoading(true);
     try {
-      await adminService.createChat({ userToId: userId });
+      const chat = await adminService.createChat({ userToId: userId });
       toast.success("Chat criado com sucesso!");
-      router.push(`/chat?user=${fetchPartner?.userId}`);
+      setChat(chat);
+      router.push(`/chat?id=${chat?.id}`);
     } catch (err) {
       console.error("Erro ao criar chat:", err);
       if (err instanceof AxiosError) {

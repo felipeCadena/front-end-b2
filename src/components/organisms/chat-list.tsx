@@ -88,6 +88,10 @@ export default function ChatList({ chats, setUser }: ChatListProps) {
     } else {
       setUser("");
     }
+
+    if (params?.id) {
+      setSelectedChatId(params?.id);
+    }
   }, [debounce, params]);
 
   useEffect(() => {

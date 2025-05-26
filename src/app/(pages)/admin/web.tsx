@@ -75,7 +75,7 @@ export default function AdminWeb() {
 
   const [loading, setLoading] = React.useState(false);
 
-  const [filter, setFilter] = React.useState("todos");
+  const [filter, setFilter] = React.useState("pendente");
   const [tab, setTab] = React.useState("pagamento");
 
   const [page, setPage] = React.useState(1);
@@ -115,7 +115,12 @@ export default function AdminWeb() {
         skip: pageActivities * 12 - 12,
       });
       setAllActivities(adventures);
-      setActivitiesNotAprovved(adventures);
+      setActivitiesNotAprovved(
+        adventures.filter(
+          (activity) =>
+            !activity.refusalMsg || activity.refusalMsg.trim() === ""
+        )
+      );
       return adventures;
     },
   });
@@ -140,9 +145,9 @@ export default function AdminWeb() {
       );
     }
 
-    if (value === "todos") {
-      setActivitiesNotAprovved(allActivities);
-    }
+    // if (value === "todos") {
+    //   setActivitiesNotAprovved(allActivities);
+    // }
   };
 
   function hasTotalValuePaid(partner: Record<string, any>): boolean {
@@ -213,6 +218,7 @@ export default function AdminWeb() {
       await adminService.approveOrRejectAdventure(id, body);
       toast.success("Atividade rejeitada com sucesso!");
       queryClient.invalidateQueries({ queryKey: ["activitiesNotAprooved"] });
+      setRefusalMsg("");
     } catch (err: unknown) {
       if (err instanceof AxiosError) {
         const message =
@@ -319,7 +325,7 @@ export default function AdminWeb() {
                     <SelectValue placeholder="Selecione" />
                   </SelectTrigger>
                   <SelectContent className="rounded-lg">
-                    <SelectItem value="todos">Todos</SelectItem>
+                    {/* <SelectItem value="todos">Todos</SelectItem> */}
                     <SelectItem value="pendente">Pendente</SelectItem>
                     <SelectItem value="recusado">Recusado</SelectItem>
                   </SelectContent>
@@ -327,18 +333,26 @@ export default function AdminWeb() {
               </div>
 
               {!activitiesLoading &&
-                activitiesNotAprovved &&
-                activitiesNotAprovved?.map((activity) => (
-                  <ActivityStatusCard
-                    isLoading={loadingItem?.id === activity.id}
-                    key={activity.id}
-                    refusalMsg={refusalMsg}
-                    setRefusalMsg={setRefusalMsg}
-                    activity={activity}
-                    onApprove={() => onApproveActivity(activity?.id)}
-                    onReject={() => onRejectActivity(activity?.id)}
-                  />
-                ))}
+              activitiesNotAprovved &&
+              activitiesNotAprovved?.length > 0
+                ? activitiesNotAprovved?.map((activity) => (
+                    <ActivityStatusCard
+                      isLoading={loadingItem?.id === activity.id}
+                      key={activity.id}
+                      refusalMsg={refusalMsg}
+                      setRefusalMsg={setRefusalMsg}
+                      activity={activity}
+                      onApprove={() => onApproveActivity(activity?.id)}
+                      onReject={() => onRejectActivity(activity?.id)}
+                    />
+                  ))
+                : !activitiesLoading && (
+                    <div className="flex items-center justify-center h-[250px]">
+                      <MyTypography variant="subtitle4" weight="bold">
+                        Não há atividades pendentes
+                      </MyTypography>
+                    </div>
+                  )}
             </div>
           </TabsContent>
         </MyTabs>

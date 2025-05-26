@@ -9,6 +9,7 @@ import { signOut, useSession } from "next-auth/react";
 import { useQuery } from "@tanstack/react-query";
 import { users } from "@/services/api/users";
 import { partnerService } from "@/services/api/partner";
+import { toast } from "react-toastify";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -28,16 +29,12 @@ const Layout = ({ children }: { children: JSX.Element | ReactNode }) => {
     "/recuperacao/novasenha",
   ];
 
-  // const { data: partner } = useQuery({
-  //   queryKey: ["partner"],
-  //   enabled: !!session?.user,
-  //   queryFn: () => partnerService.getPartnerLogged(),
-  // });
-
   useEffect(() => {
-    if (session?.user?.error === "RefreshAccessTokenError") {
+    if (session?.error === "RefreshAccessTokenError") {
       // Logout automático ou redirecionamento
+      console.log("Session expired, logging out...");
       signOut({ callbackUrl: "/login" });
+      toast.error("Sua sessão expirou. Por favor, faça login novamente.");
     }
   }, [session]);
 

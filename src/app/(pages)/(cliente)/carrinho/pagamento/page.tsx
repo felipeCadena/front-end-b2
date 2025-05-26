@@ -24,7 +24,11 @@ import { AxiosError } from "axios";
 import { toast } from "react-toastify";
 import ModalAlert from "@/components/molecules/modal-alert";
 import { PurchaseOrderFormData } from "../../finalizar-compra/page";
-import { formatCpfCnpj, formatPhoneNumber } from "@/utils/formatters";
+import {
+  formatCpfCnpj,
+  formatPhoneNumber,
+  formatPhoneNumberDDI,
+} from "@/utils/formatters";
 import { useSession } from "next-auth/react";
 
 const formSchema = z
@@ -280,9 +284,9 @@ const PagamentoMobile = () => {
           ...paymentDefaultValues.creditCardHolderInfo,
           name: loggedUser.name,
           email: loggedUser.email,
-          phone: loggedUser.phone,
+          phone: formatPhoneNumberDDI(loggedUser.phone),
           cpfCnpj: formatCpfCnpj(loggedUser.cpf),
-          mobilePhone: formatPhoneNumber(loggedUser.phone),
+          mobilePhone: formatPhoneNumberDDI(loggedUser.phone),
         },
         adventures: purchaseOrder,
       });

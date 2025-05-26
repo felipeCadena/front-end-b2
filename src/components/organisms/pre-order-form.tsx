@@ -30,7 +30,7 @@ const PreOrderForm = ({ form }: PreOrderFormProps) => {
       <div className="flex max-sm:flex-col gap-4 md:mt-4">
         <MyFormInput
           label="Telefone"
-          placeholder="(xx) xxxxx-xxxx"
+          placeholder="+00 (00) 00000-0000"
           className="mt-2"
           isPhoneNumber
           name="creditCardHolderInfo.mobilePhone"

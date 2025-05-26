@@ -345,7 +345,6 @@ export default function WebForm({
       toast.error("Preencha o endereço e o ponto de referência.");
       return;
     }
-
     if (tempImages.length < 5) {
       toast.error("São necessárias 5 imagens.");
       return;

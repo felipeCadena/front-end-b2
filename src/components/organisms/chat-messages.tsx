@@ -113,17 +113,17 @@ export default function ChatMessages({ chat }: ChatMessagesProps) {
   };
 
   const scrollToBottom = () => {
-    setTimeout(() => {
-      messageRef.current?.scrollIntoView({ behavior: "smooth" });
-    }, 100); // Dá tempo pro DOM atualizar antes do scroll
+    messageRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   useEffect(() => {
-    scrollToBottom();
-  }, [message]);
+    if (window && window.innerWidth < 768) {
+      scrollToBottom();
+    }
+  }, []);
 
   return (
-    <div className="h-full flex flex-col">
+    <div className="h-full md:h-[75vh] flex flex-col">
       <div className="flex items-center p-4">
         <MyIcon
           name="left"
