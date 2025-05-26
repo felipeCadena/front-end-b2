@@ -29,6 +29,7 @@ export default function SuasAtividades() {
       const activities = await partnerService.getMyAdventures({
         typeAdventure: selected ? selected : undefined,
         orderBy: "averageRating desc",
+        limit: 100,
       });
 
       if (activities) {
@@ -41,7 +42,10 @@ export default function SuasAtividades() {
   const { data: allAdventures } = useQuery({
     queryKey: ["adventuresPartners"],
     queryFn: () =>
-      partnerService.getMyAdventures({ orderBy: "qntTotalSales desc" }),
+      partnerService.getMyAdventures({
+        orderBy: "qntTotalSales desc",
+        limit: 100,
+      }),
   });
 
   return (

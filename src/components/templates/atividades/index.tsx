@@ -27,7 +27,7 @@ export default function AtividadesTemplate() {
     enabled: !!params,
     queryFn: () =>
       adventures.filterAdventures({
-        limit: 50,
+        limit: 100,
         skip: 0,
         ...params,
       }),

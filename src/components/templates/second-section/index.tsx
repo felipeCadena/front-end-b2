@@ -36,6 +36,7 @@ export default function SecondSection() {
       const filterAdventures = await adventuresService.filterAdventures({
         typeAdventure: selected ? selected : undefined,
         ...params,
+        limit: 100,
       });
 
       setSearchedAdventures(selected);
@@ -52,6 +53,7 @@ export default function SecondSection() {
       queryFn: async () =>
         await adventuresService.getAdventures({
           orderBy: "qntTotalSales desc",
+          limit: 100,
         }),
     });
 

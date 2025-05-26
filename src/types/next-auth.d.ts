@@ -18,8 +18,8 @@ declare module "next-auth" {
         fantasyName: string;
         isActive: boolean;
       };
-      error?: string;
     };
+    error?: string;
   }
 
   interface User {

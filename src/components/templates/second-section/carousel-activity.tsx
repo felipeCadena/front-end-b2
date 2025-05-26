@@ -71,7 +71,7 @@ const CarouselActivity = ({
   return (
     <div
       key={activity.id}
-      className="min-w-[80%] md:w-[25%] md:min-w-[25%] flex flex-col gap-1 items-start md:mb-8 "
+      className="min-w-[80%] md:w-[25%] md:min-w-[25%] flex flex-col gap-1 items-start md:mb-8 whitespace-pre-wrap"
     >
       <div className="relative z-10 overflow-hidden h-[225px] w-full md:w-[250px] hover:cursor-pointer rounded-md">
         <Image
@@ -142,7 +142,7 @@ const CarouselActivity = ({
         <MyTypography variant="subtitle1" weight="bold">
           {activity?.title}
         </MyTypography>
-        <MyTypography variant="body-big" className="md:pr-4">
+        <MyTypography variant="body-big" className="md:pr-4 break-all">
           {activity?.description.slice(0, 105).concat("...")}
           <MyTypography
             variant="body-big"

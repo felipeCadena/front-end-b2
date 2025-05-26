@@ -36,6 +36,7 @@ export function MyActivityDatePicker({
   setSelectedDates,
 }: MyActivityDatePickerProps) {
   const [open, setOpen] = useState(false);
+  const [initialMonth, setInitialMonth] = useState<Date>(new Date());
 
   const handleDateSelect = (dates?: Date | undefined) => {
     if (!dates) return;
@@ -47,15 +48,47 @@ export function MyActivityDatePicker({
   const partnerScheduledDays =
     partnerSchedules?.map((sch) => parseISO(sch.date)) ?? [];
 
-  const monthlyRecurrences = formatRecurrencesToDates(
-    activityRecurrences,
-    "monthly"
+  const monthlyRecurrences = React.useMemo(
+    () => formatRecurrencesToDates(activityRecurrences, "monthly"),
+    [activityRecurrences]
   );
 
-  const weeklyRecurrences = formatRecurrencesToDates(
-    activityRecurrences,
-    "weekly"
+  const weeklyRecurrences = React.useMemo(
+    () => formatRecurrencesToDates(activityRecurrences, "weekly"),
+    [activityRecurrences]
   );
+  React.useEffect(() => {
+    const now = new Date();
+
+    // Agrupar todas as datas disponíveis
+    const availableDates: Date[] = [
+      ...(partnerSchedules?.map((s) => parseISO(s.date)) || []),
+      ...weeklyRecurrences,
+      ...monthlyRecurrences,
+    ];
+
+    // Ordenar e filtrar datas no futuro
+    const futureDates = availableDates
+      .filter((d) => d >= now)
+      .sort((a, b) => a.getTime() - b.getTime());
+
+    if (futureDates.length === 0) return; // nenhuma data disponível
+
+    const currentMonth = now.getMonth();
+    const currentYear = now.getFullYear();
+
+    const hasDateThisMonth = futureDates.some(
+      (date) =>
+        date.getMonth() === currentMonth && date.getFullYear() === currentYear
+    );
+
+    if (
+      !hasDateThisMonth &&
+      futureDates[0].getTime() !== initialMonth.getTime()
+    ) {
+      setInitialMonth(futureDates[0]);
+    }
+  }, [partnerSchedules, weeklyRecurrences, monthlyRecurrences]);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -111,6 +144,8 @@ export function MyActivityDatePicker({
           markedDates={monthlyRecurrences}
           markedDays={[...weeklyRecurrences, ...partnerScheduledDays]}
           hoursBeforeSchedule={hourBeforeSchedule}
+          initialMonth={initialMonth}
+          onMonthChange={setInitialMonth}
         />
         <MyButton
           variant="default"

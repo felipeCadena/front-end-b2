@@ -27,6 +27,16 @@ export default function Chat() {
     refetchInterval: 5000,
   });
 
+  console.log(chat);
+
+  // const { data: chatById } = useQuery({
+  //   queryKey: ["chatById", params?.id],
+  //   queryFn: () =>
+  //     chatService.listMessages(params?.id ?? "", chat?.session_token ?? ""),
+  //   enabled: !!params?.id,
+  //   refetchInterval: 5000,
+  // });
+
   // useEffect(() => {
   //   queryClient.invalidateQueries({ queryKey: ["chat"] });
   //   queryClient.invalidateQueries({ queryKey: ["messages"] });
@@ -60,7 +70,7 @@ export default function Chat() {
           </div>
           <div className="w-[2rem] bg-gray-500 mx-4 rounded" />
           <div className="w-2/3">
-            {chat.id ? (
+            {chat?.id ? (
               <ChatMessages chat={chat} />
             ) : (
               <div className="flex flex-col items-center justify-center gap-4 mt-12">

@@ -32,14 +32,13 @@ const RecentActivityCard = ({
   const durationHours = hoursStr.includes("h")
     ? Number(hoursStr.split("h")[0])
     : Number(hoursStr);
-  const durationMinutes = Number(minutesStr);
+  const durationMinutes = isNaN(Number(minutesStr)) ? 0 : Number(minutesStr);
 
   const activityStartAt = activityDateTime.toISOString().slice(11, 16);
 
   const withHours = addHours(activityDateTime, durationHours);
   const activityEndDate = addMinutes(withHours, durationMinutes ?? 0);
-  const activityEndAt =
-    activityEndDate && activityEndDate.toISOString().slice(11, 16);
+  const activityEndAt = activityEndDate.toISOString().slice(11, 16);
 
   const handleCancel = (id: string | number) => {
     router.push(PATHS.cancelarAtividade(id));
