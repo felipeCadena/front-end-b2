@@ -71,7 +71,7 @@ export default function CartConflictCheckerWithModal({ cart }: any) {
 
   return (
     <MyDialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="max-w-[90%] md:max-w-sm rounded-2xl py-12 px-6 text-center">
+      <DialogContent className="max-w-[90%] md:max-w-sm rounded-2xl py-12 md:px-6 text-center">
         <MyIcon
           name="x"
           className="absolute top-4 right-4 cursor-pointer"
@@ -87,7 +87,7 @@ export default function CartConflictCheckerWithModal({ cart }: any) {
             <MyTypography
               variant="subtitle4"
               lightness={500}
-              className="w-11/12 mx-auto"
+              className="md:w-11/12 md:mx-auto"
             >
               Você adicionou duas ou mais atividades no mesmo horário. Isso pode
               causar problemas na sua programação.

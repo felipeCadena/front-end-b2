@@ -44,7 +44,7 @@ export default function AdminMobile() {
   const router = useRouter();
   const queryClient = useQueryClient();
   const [loading, setLoading] = React.useState(false);
-  const [filter, setFilter] = React.useState("todos");
+  const [filter, setFilter] = React.useState("pendente");
 
   const [pageActivities, setPageActivities] = React.useState(1);
   const [refusalMsg, setRefusalMsg] = React.useState("");
@@ -84,7 +84,12 @@ export default function AdminMobile() {
         skip: pageActivities * 6 - 6,
       });
       setAllActivities(adventures);
-      setActivitiesNotAprovved(adventures);
+      setActivitiesNotAprovved(
+        adventures.filter(
+          (activity) =>
+            !activity.refusalMsg || activity.refusalMsg.trim() === ""
+        )
+      );
       return adventures;
     },
   });
@@ -109,9 +114,9 @@ export default function AdminMobile() {
       );
     }
 
-    if (value === "todos") {
-      setActivitiesNotAprovved(allActivities);
-    }
+    // if (value === "todos") {
+    //   setActivitiesNotAprovved(allActivities);
+    // }
   };
 
   function hasTotalValuePaid(partner: Record<string, any>): boolean {
@@ -266,25 +271,34 @@ export default function AdminMobile() {
                   <SelectValue placeholder="Selecione" />
                 </SelectTrigger>
                 <SelectContent className="rounded-lg">
-                  <SelectItem value="todos">Todos</SelectItem>
+                  {/* <SelectItem value="todos">Todos</SelectItem> */}
                   <SelectItem value="pendente">Pendente</SelectItem>
                   <SelectItem value="recusado">Recusado</SelectItem>
                 </SelectContent>
               </MySelect>
             </div>
 
-            {activitiesNotAprovved &&
-              activitiesNotAprovved?.map((activity) => (
-                <ActivityStatusCard
-                  isLoading={loadingItem?.id === activity.id}
-                  key={activity.id}
-                  refusalMsg={refusalMsg}
-                  setRefusalMsg={setRefusalMsg}
-                  activity={activity}
-                  onApprove={() => onApproveActivity(activity?.id)}
-                  onReject={() => onRejectActivity(activity?.id)}
-                />
-              ))}
+            {!activitiesLoading &&
+            activitiesNotAprovved &&
+            activitiesNotAprovved?.length > 0
+              ? activitiesNotAprovved?.map((activity) => (
+                  <ActivityStatusCard
+                    isLoading={loadingItem?.id === activity.id}
+                    key={activity.id}
+                    refusalMsg={refusalMsg}
+                    setRefusalMsg={setRefusalMsg}
+                    activity={activity}
+                    onApprove={() => onApproveActivity(activity?.id)}
+                    onReject={() => onRejectActivity(activity?.id)}
+                  />
+                ))
+              : !activitiesLoading && (
+                  <div className="flex items-center justify-center h-[250px]">
+                    <MyTypography variant="subtitle4" weight="bold">
+                      Não há atividades pendentes
+                    </MyTypography>
+                  </div>
+                )}
 
             <div className="flex w-full justify-center items-center">
               <Pagination

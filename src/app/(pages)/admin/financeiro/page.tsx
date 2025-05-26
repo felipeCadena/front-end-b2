@@ -122,12 +122,6 @@ const renderTooltip = (props: any) => {
           <strong>{getFullMonthName(label)}</strong>
         </p>
         <div className="text-left">
-          {data.Total > 0 && (
-            <p>
-              <strong>Total: </strong>
-              R$ {data.Total ?? 0}
-            </p>
-          )}
           {data.ar > 0 && (
             <p>
               <strong>Ar: </strong>
@@ -144,6 +138,12 @@ const renderTooltip = (props: any) => {
             <p>
               <strong>Mar: </strong>
               R$ {data.mar}
+            </p>
+          )}
+          {data.Total > 0 && (
+            <p>
+              <strong>Total: </strong>
+              R$ {data.Total ?? 0}
             </p>
           )}
         </div>
@@ -536,7 +536,6 @@ export default function Dashboard() {
     const months = [];
 
     // const isMobile = window && window.innerWidth < 768 ? 6 : 12;
-
     for (let month = 0; month < 12; month++) {
       const date = new Date(currentYear, month, 1);
       const key = `${date.getFullYear()}-${(month + 1).toString().padStart(2, "0")}`;

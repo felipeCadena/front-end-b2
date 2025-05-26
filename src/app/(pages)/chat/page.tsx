@@ -27,8 +27,6 @@ export default function Chat() {
     refetchInterval: 5000,
   });
 
-  console.log(chat);
-
   // const { data: chatById } = useQuery({
   //   queryKey: ["chatById", params?.id],
   //   queryFn: () =>
