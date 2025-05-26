@@ -122,12 +122,6 @@ const renderTooltip = (props: any) => {
           <strong>{getFullMonthName(label)}</strong>
         </p>
         <div className="text-left">
-          {data.Total > 0 && (
-            <p>
-              <strong>Total: </strong>
-              R$ {data.Total ?? 0}
-            </p>
-          )}
           {data.ar > 0 && (
             <p>
               <strong>Ar: </strong>
@@ -144,6 +138,12 @@ const renderTooltip = (props: any) => {
             <p>
               <strong>Mar: </strong>
               R$ {data.mar}
+            </p>
+          )}
+          {data.Total > 0 && (
+            <p>
+              <strong>Total: </strong>
+              R$ {data.Total ?? 0}
             </p>
           )}
         </div>

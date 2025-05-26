@@ -4,6 +4,7 @@ import MyButton from "@/components/atoms/my-button";
 import MyIcon from "@/components/atoms/my-icon";
 import MyTypography from "@/components/atoms/my-typography";
 import MobileActivitiesOrderSummary from "@/components/organisms/mobile-activity-order-summary";
+import CartConflictCheckerWithModal from "@/components/organisms/modal-cart-conflit";
 import { users } from "@/services/api/users";
 import { useCart } from "@/store/useCart";
 import PATHS from "@/utils/paths";
@@ -22,6 +23,8 @@ export default function Carrinho() {
 
   return (
     <section className="m-4 -z-10 md:hidden">
+      <CartConflictCheckerWithModal cart={userCart?.cart ?? []} />
+
       <div className="flex gap-4 items-center">
         <MyIcon
           name="voltar-black"

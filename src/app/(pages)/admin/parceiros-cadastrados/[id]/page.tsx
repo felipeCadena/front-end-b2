@@ -144,6 +144,26 @@ export default function Parceiro() {
     }
   };
 
+  const handleChatMobile = async (userId: string) => {
+    setLoading(true);
+    try {
+      const chat = await adminService.createChat({ userToId: userId });
+      toast.success("Chat criado com sucesso!");
+      setChat(chat);
+      router.push(`/chat/${chat?.id}`);
+    } catch (err) {
+      console.error("Erro ao criar chat:", err);
+      if (err instanceof AxiosError) {
+        const message = err.response?.data?.error;
+        toast.error(`${message}`);
+      } else {
+        toast.error("Erro ao criar chat");
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <main className="space-y-6 px-4 mb-8">
       <div className="flex items-center gap-3 bg-white">
@@ -199,6 +219,7 @@ export default function Parceiro() {
               <MyIcon
                 name="chat-web"
                 className="cursor-pointer md:hidden absolute top-0 -right-10"
+                onClick={() => handleChatMobile(fetchPartner?.userId)}
               />
 
               <MyButton
