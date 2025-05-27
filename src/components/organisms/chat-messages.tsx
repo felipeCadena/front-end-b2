@@ -115,10 +115,14 @@ export default function ChatMessages({ chat }: ChatMessagesProps) {
   };
 
   const scrollToBottom = () => {
-    messageRef.current?.scrollIntoView({
-      behavior: "smooth",
-      block: "end",
-    });
+    const timeout = setTimeout(() => {
+      messageRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "end",
+      });
+    }, 300); // Pequeno delay garante que os elementos renderizaram
+
+    return () => clearTimeout(timeout);
   };
 
   useEffect(() => {
@@ -127,20 +131,21 @@ export default function ChatMessages({ chat }: ChatMessagesProps) {
     }
     if (!messages || messages.length === 0) return;
 
-    const isIOS = navigator && /iPhone|iPad|iPod/i.test(navigator.userAgent);
+    const isIOS =
+      navigator &&
+      /iP(ad|hone|od).+Version\/[\d.]+.*Safari/i.test(navigator.userAgent);
+
     console.log(isIOS, "iOS detected");
 
     if (isIOS) {
-      // Pequeno delay ajuda no iOS
-      setTimeout(
-        () => {
-          messageRef.current?.scrollIntoView({
-            behavior: "smooth",
-            block: "end",
-          });
-        },
-        isIOS ? 400 : 100
-      ); // maior delay no iOS
+      const timeout = setTimeout(() => {
+        messageRef.current?.scrollIntoView({
+          behavior: "smooth",
+          block: "end",
+        });
+      }, 300); // Pequeno delay garante que os elementos renderizaram
+
+      return () => clearTimeout(timeout);
     }
   }, [messages]);
 
@@ -282,6 +287,7 @@ export default function ChatMessages({ chat }: ChatMessagesProps) {
       ) : (
         <p className="text-gray-400 text-center text-xl my-4">Chat encerrado</p>
       )}
+      <div ref={messageRef} />
     </div>
   );
 }
