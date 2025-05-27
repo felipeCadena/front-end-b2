@@ -26,6 +26,7 @@ import { ModalProps } from "@/components/organisms/edit-activity";
 import MyIcon from "@/components/atoms/my-icon";
 import MyTypography from "@/components/atoms/my-typography";
 import Duration from "@/components/molecules/duration";
+import ActivitiesFilter from "@/components/organisms/activities-filter";
 
 export default function BasicInfo({
   formData,
@@ -93,6 +94,7 @@ export default function BasicInfo({
     hoursBeforeCancellation: formData.hoursBeforeCancellation,
     transportAddress: formData.transportAddress,
     duration: formData.duration,
+    typeAdventure: formData.typeAdventure,
   };
 
   const handleSubmit = async () => {
@@ -113,7 +115,7 @@ export default function BasicInfo({
 
   return (
     <section className="">
-      <div className="flex gap-4 items-center mb-8">
+      <div className="flex gap-4 items-center mb-10">
         <MyIcon name="voltar-black" className="-ml-2" onClick={onClose} />
         <MyTypography variant="subtitle1" weight="bold" className="">
           Editar Informações Gerais
@@ -121,6 +123,17 @@ export default function BasicInfo({
       </div>
 
       <div className="space-y-6">
+        <ActivitiesFilter
+          withText={false}
+          setSelected={(value) =>
+            setFormData({
+              ...formData,
+              typeAdventure: value,
+            })
+          }
+          selected={formData?.typeAdventure}
+        />
+
         <MyTextInput
           label="Título"
           value={formData?.title}

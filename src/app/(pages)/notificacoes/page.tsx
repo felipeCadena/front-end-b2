@@ -27,18 +27,15 @@ export default function Notificacoes() {
 
   const { isLoading } = useQuery({
     queryKey: ["notifications", page],
+    enabled: !!session.data?.user?.id,
     queryFn: async () => {
-      if (session.data?.user) {
-        const userNotifications = await notificationsService.listNotifications({
-          limit: 12,
-          skip: page * 12 - 12,
-        });
-        setStoreNotifications(userNotifications);
+      const userNotifications = await notificationsService.listNotifications({
+        limit: 12,
+        skip: page * 12 - 12,
+      });
+      setStoreNotifications(userNotifications);
 
-        return userNotifications;
-      }
-
-      return [];
+      return userNotifications;
     },
   });
 
