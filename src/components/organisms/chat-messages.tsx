@@ -211,7 +211,7 @@ export default function ChatMessages({ chat }: ChatMessagesProps) {
       </div>
 
       {chat?.session_token ? (
-        <div className="flex items-center gap-3 p-4 mb-2">
+        <div className="flex items-center gap-3 px-4 py-6 max-sm:fixed max-sm:bottom-0 max-sm:bg-white">
           <MyTextInput
             type="text"
             placeholder="Digite uma mensagem..."
