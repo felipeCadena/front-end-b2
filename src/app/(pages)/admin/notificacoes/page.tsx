@@ -27,18 +27,15 @@ export default function Notificacoes() {
 
   useQuery({
     queryKey: ["adminNotifications", page],
+    enabled: !!session.data?.user?.id,
     queryFn: async () => {
-      if (session.data?.user) {
-        const userNotifications = await adminService.listNotifications({
-          limit: 12,
-          skip: page * 12 - 12,
-        });
-        setStoreNotifications(userNotifications);
+      const userNotifications = await adminService.listNotifications({
+        limit: 12,
+        skip: page * 12 - 12,
+      });
+      setStoreNotifications(userNotifications);
 
-        return userNotifications;
-      }
-
-      return [];
+      return userNotifications;
     },
   });
 

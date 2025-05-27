@@ -4,7 +4,6 @@ import React, { useState, useRef } from "react";
 import MyIcon from "../atoms/my-icon";
 import X from "../atoms/my-icon/elements/x";
 import Check from "../atoms/my-icon/elements/check";
-import { toast } from "react-toastify";
 
 interface AudioRecorderProps {
   onAudioRecorded: (audioFile: File) => void;
@@ -28,7 +27,7 @@ export default function AudioRecorder({ onAudioRecorded }: AudioRecorderProps) {
 
   const startRecording = async () => {
     if (!MediaRecorder.isTypeSupported(MIME_TYPE)) {
-      alert("Este navegador não suporta gravação");
+      alert("Este navegador não suporta gravação em WEBM.");
       return;
     }
 
