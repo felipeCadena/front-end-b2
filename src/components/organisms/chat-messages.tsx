@@ -96,7 +96,7 @@ export default function ChatMessages({ chat }: ChatMessagesProps) {
     }
   };
 
-  const handleSendMessage = async () => {
+  const handleSendMessage = async (message: string) => {
     try {
       await chatService.sendMessage(
         chat?.id ?? "",
@@ -104,11 +104,13 @@ export default function ChatMessages({ chat }: ChatMessagesProps) {
         chat?.session_token ?? ""
       );
 
-      queryClient.invalidateQueries({ queryKey: ["messages"] });
-      setMessage("");
+      queryClient.invalidateQueries({ queryKey: ["messages", chat?.id] });
     } catch (error) {
       console.error("Error sending message:", error);
       toast.error("Failed to send message");
+    } finally {
+      setMessage("");
+      scrollToBottom();
     }
   };
 
@@ -120,7 +122,24 @@ export default function ChatMessages({ chat }: ChatMessagesProps) {
     if (window && window.innerWidth < 768) {
       scrollToBottom();
     }
-  }, []);
+    if (!messages || messages.length === 0) return;
+
+    const isIOS = navigator && /iPhone|iPad|iPod/i.test(navigator.userAgent);
+    console.log(isIOS, "iOS detected");
+
+    if (isIOS) {
+      // Pequeno delay ajuda no iOS
+      setTimeout(
+        () => {
+          messageRef.current?.scrollIntoView({
+            behavior: "smooth",
+            block: "end",
+          });
+        },
+        isIOS ? 400 : 100
+      ); // maior delay no iOS
+    }
+  }, [messages]);
 
   return (
     <div className="h-[100dvh] flex flex-col">
@@ -149,7 +168,7 @@ export default function ChatMessages({ chat }: ChatMessagesProps) {
         {/* <Options width="20" height="5" /> */}
       </div>
 
-      <div className="flex-1 flex flex-col-reverse overflow-y-auto scrollbar-thin p-4 gap-2">
+      <div className="flex-1 flex flex-col-reverse overflow-y-auto scrollbar-thin p-4 gap-2 pb-[90px]">
         {messages &&
           messages?.map((message: any, index: number) => (
             <div
@@ -211,7 +230,7 @@ export default function ChatMessages({ chat }: ChatMessagesProps) {
       </div>
 
       {chat?.session_token ? (
-        <div className="flex items-center gap-3 p-4 max-sm:px-4 max-sm:py-6 max-sm:fixed max-sm:bottom-0 max-sm:bg-white">
+        <div className="flex items-center max-sm:h-[6rem] gap-3 p-4 max-sm:px-4 max-sm:py-6 max-sm:fixed max-sm:bottom-0 max-sm:bg-white">
           <MyTextInput
             type="text"
             placeholder="Digite uma mensagem..."
@@ -239,7 +258,8 @@ export default function ChatMessages({ chat }: ChatMessagesProps) {
             }
             onKeyDown={(e) => {
               if (e.key === "Enter") {
-                handleSendMessage();
+                e.preventDefault();
+                handleSendMessage(message);
               }
             }}
           />
@@ -247,7 +267,7 @@ export default function ChatMessages({ chat }: ChatMessagesProps) {
           <MyIcon
             name="send-message"
             className="cursor-pointer"
-            onClick={handleSendMessage}
+            onClick={() => handleSendMessage(message)}
 
             // onKeyDown={(e) => {
             //   if (e.key === "Enter") {

@@ -251,9 +251,8 @@ export const authOptions: NextAuthOptions = {
 
       if (token?.error) {
         session.error = "RefreshAccessTokenError";
-      }
-
-      if (token) {
+        session.user = null;
+      } else if (token) {
         session.user = {
           accessToken: token.accessToken,
           refreshToken: token.refreshToken,
