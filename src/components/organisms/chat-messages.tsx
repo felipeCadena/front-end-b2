@@ -115,7 +115,10 @@ export default function ChatMessages({ chat }: ChatMessagesProps) {
   };
 
   const scrollToBottom = () => {
-    messageRef.current?.scrollIntoView({ behavior: "smooth" });
+    messageRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "end",
+    });
   };
 
   useEffect(() => {
