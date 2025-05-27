@@ -10,7 +10,7 @@ interface AudioRecorderProps {
   onAudioRecorded: (audioFile: File) => void;
 }
 
-const MIME_TYPE = "audio/mp4";
+const MIME_TYPE = "audio/webm";
 
 export default function AudioRecorder({ onAudioRecorded }: AudioRecorderProps) {
   const [isRecording, setIsRecording] = useState(false);
@@ -19,9 +19,16 @@ export default function AudioRecorder({ onAudioRecorded }: AudioRecorderProps) {
   const chunksRef = useRef<Blob[]>([]);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
+  const resetRecorderState = () => {
+    chunksRef.current = [];
+    setIsRecording(false);
+    if (timerRef.current) clearInterval(timerRef.current);
+    setRecordingTime(0);
+  };
+
   const startRecording = async () => {
     if (!MediaRecorder.isTypeSupported(MIME_TYPE)) {
-      alert("Este navegador não suporta gravação em MP4.");
+      alert("Este navegador não suporta gravação em WEBM.");
       return;
     }
 
@@ -46,11 +53,12 @@ export default function AudioRecorder({ onAudioRecorded }: AudioRecorderProps) {
       //   return;
       // }
 
-      const audioFile = new File([audioBlob], "audio-message.mp4", {
+      const audioFile = new File([audioBlob], "audio-message.webm", {
         type: MIME_TYPE,
       });
 
       onAudioRecorded(audioFile);
+      resetRecorderState();
       chunksRef.current = [];
     };
 
@@ -59,7 +67,7 @@ export default function AudioRecorder({ onAudioRecorded }: AudioRecorderProps) {
     setIsRecording(true);
     timerRef.current = setInterval(() => {
       setRecordingTime((prev) => prev + 1);
-    }, 1000);
+    }, 300);
   };
 
   const stopRecording = () => {
