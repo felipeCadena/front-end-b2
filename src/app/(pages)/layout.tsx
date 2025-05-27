@@ -29,8 +29,6 @@ const Layout = ({ children }: { children: JSX.Element | ReactNode }) => {
     "/recuperacao/novasenha",
   ];
 
-  console.log(session?.user?.accessToken);
-
   useEffect(() => {
     if (
       session?.error === "RefreshAccessTokenError" &&

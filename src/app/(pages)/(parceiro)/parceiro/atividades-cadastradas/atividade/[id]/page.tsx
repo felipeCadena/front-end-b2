@@ -445,25 +445,30 @@ export default function Atividade() {
         </div>
       </div>
 
-      <div className="mx-6">
+      <div className="mx-6 mt-4">
         <div className="md:grid md:grid-cols-2 md:gap-8">
           {formattedItemsIncluded().length > 0 && (
-            <div
-              className={cn(
-                "grid grid-cols-2 md:grid-cols-3 gap-x-8 gap-y-4 my-10"
-              )}
-            >
-              {formattedItemsIncluded().map((item) => (
-                <div key={item.label} className="flex items-center gap-2">
-                  <MyIcon
-                    name={item.icon as IconsMapTypes}
-                    className="p-2 bg-primary-900 rounded-md text-white"
-                  />
-                  <MyTypography variant="body" weight="bold">
-                    {item.label}
-                  </MyTypography>
-                </div>
-              ))}
+            <div>
+              <MyTypography variant="subtitle4" weight="bold" className="">
+                Está incluso:
+              </MyTypography>
+              <div
+                className={cn(
+                  "grid grid-cols-2 md:grid-cols-3 gap-x-8 gap-y-4 mt-4 mb-8"
+                )}
+              >
+                {formattedItemsIncluded().map((item) => (
+                  <div key={item.label} className="flex items-center gap-2">
+                    <MyIcon
+                      name={item.icon as IconsMapTypes}
+                      className="p-2 bg-primary-900 rounded-md text-white"
+                    />
+                    <MyTypography variant="body" weight="bold">
+                      {item.label}
+                    </MyTypography>
+                  </div>
+                ))}
+              </div>
             </div>
           )}
 

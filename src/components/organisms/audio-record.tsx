@@ -10,9 +10,7 @@ interface AudioRecorderProps {
   onAudioRecorded: (audioFile: File) => void;
 }
 
-const MIME_TYPE = "audio/ogg;codecs=opus";
-
-console.log(MIME_TYPE);
+const MIME_TYPE = "audio/webm";
 
 export default function AudioRecorder({ onAudioRecorded }: AudioRecorderProps) {
   const [isRecording, setIsRecording] = useState(false);
@@ -55,7 +53,7 @@ export default function AudioRecorder({ onAudioRecorded }: AudioRecorderProps) {
       //   return;
       // }
 
-      const audioFile = new File([audioBlob], "audio-message.ogg", {
+      const audioFile = new File([audioBlob], "audio-message.webm", {
         type: MIME_TYPE,
       });
 
