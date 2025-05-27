@@ -57,7 +57,7 @@ export default function Chat() {
         </MyTypography>
       </div>
 
-      <div className="min-h-[75vh] max-h-screen overflow-y-hidden bg-white md:border rounded-2xl shadow-md px-4 mb-6">
+      <div className="min-h-[75vh] max-h-screen overflow-y-hidden bg-white md:border rounded-2xl md:shadow-md px-4 md:mb-6">
         <div className="md:hidden">
           <ChatList chats={chats} setUser={setUser} />
         </div>
