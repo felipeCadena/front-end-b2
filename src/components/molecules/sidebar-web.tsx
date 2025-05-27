@@ -72,13 +72,16 @@ export default function SidebarMenuWeb({}) {
   return (
     <div className="flex items-center gap-10 ">
       {sideBarActive.map((item) => {
-        const isActive = pathname.startsWith(
-          item.link == "/carrinho"
+        const link =
+          item.link === "/carrinho"
             ? "/finalizar-compra"
-            : item.link == "/chat"
+            : item.link === "/chat"
               ? "nao-incluir"
-              : item.link
-        );
+              : item.link;
+
+        if (link === "nao-incluir") return false;
+
+        const isActive = pathname === link;
 
         return (
           <React.Fragment key={item.label}>
@@ -112,7 +115,7 @@ export default function SidebarMenuWeb({}) {
                         ? "bg-red-400 h-[1.125rem]"
                         : "bg-slate-300 h-[1.125rem]",
                       notifications?.messagesUnred > 10 &&
-                        "h-[1.3rem] w-[1.6rem]"
+                        "h-[1.3rem] w-[1.8rem]"
                     )}
                   >
                     {notifications?.messagesUnred}

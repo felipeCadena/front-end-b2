@@ -25,23 +25,81 @@ type TypeAdventure = "ar" | "terra" | "mar" | "";
 
 export default function AvaliacoesWeb() {
   const router = useRouter();
-  const [actFilter, setActFilter] = useState("totalFavorites desc");
-  const [typeAdvFilter, setTypeAdvFilter] = useState<TypeAdventure>();
+  const [actFilter, setActFilter] = useState("favoritos");
+  const [typeAdvFilter, setTypeAdvFilter] = useState<TypeAdventure>("");
   const [stateFilter, setStateFilter] = useState("RJ");
   const [rateFilter, setRateFilter] = useState("Todos");
   const [page, setPage] = useState(1);
 
-  const { data: activities = [], isLoading } = useQuery({
-    queryKey: [actFilter, page, typeAdvFilter, stateFilter, rateFilter],
+  const [activeTab, setActiveTab] = useState<TabKey>("favoritos");
+  const [pageMap, setPageMap] = useState<Record<TabKey, number>>({
+    favoritos: 1,
+    procuradas: 1,
+    menor: 1,
+  });
+
+  const tabFilters = {
+    favoritos: "totalFavorites desc",
+    procuradas: "qntTotalSales desc",
+    menor: "averageRating asc",
+  } as const;
+
+  type TabKey = keyof typeof tabFilters;
+
+  const { data: activitiesFavoritos = [], isLoading: loadingFavoritos } =
+    useQuery({
+      queryKey: [
+        "favoritos",
+        pageMap.favoritos,
+        typeAdvFilter,
+        stateFilter,
+        rateFilter,
+      ],
+      queryFn: () =>
+        adventures.filterAdventures({
+          orderBy: tabFilters.favoritos,
+          limit: 8,
+          skip: pageMap.favoritos * 8 - 8,
+          typeAdventure: typeAdvFilter || undefined,
+          state: stateFilter,
+          averageRating: rateFilter === "Todos" ? undefined : rateFilter,
+        }),
+      enabled: activeTab === "favoritos",
+    });
+
+  const { data: activitiesProcuradas = [], isLoading: loadingProcuradas } =
+    useQuery({
+      queryKey: [
+        "procuradas",
+        pageMap.procuradas,
+        typeAdvFilter,
+        stateFilter,
+        rateFilter,
+      ],
+      queryFn: () =>
+        adventures.filterAdventures({
+          orderBy: tabFilters.procuradas,
+          limit: 8,
+          skip: pageMap.procuradas * 8 - 8,
+          typeAdventure: typeAdvFilter || undefined,
+          state: stateFilter,
+          averageRating: rateFilter === "Todos" ? undefined : rateFilter,
+        }),
+      enabled: activeTab === "procuradas",
+    });
+
+  const { data: activitiesMenor = [], isLoading: loadingMenor } = useQuery({
+    queryKey: ["menor", pageMap.menor, typeAdvFilter, stateFilter, rateFilter],
     queryFn: () =>
       adventures.filterAdventures({
-        orderBy: actFilter,
+        orderBy: tabFilters.menor,
         limit: 8,
-        skip: page * 8 - 8,
-        typeAdventure: typeAdvFilter,
+        skip: pageMap.menor * 8 - 8,
+        typeAdventure: typeAdvFilter || undefined,
         state: stateFilter,
         averageRating: rateFilter === "Todos" ? undefined : rateFilter,
       }),
+    enabled: activeTab === "menor",
   });
 
   const handleChangeTab = (tabFilter: string) => {
@@ -103,42 +161,38 @@ export default function AvaliacoesWeb() {
         <MyTabs defaultValue="favoritos" className="mb-10">
           <TabsList className="mb-10 grid grid-cols-3">
             <TabsTrigger
-              onClick={() => handleChangeTab("totalFavorites desc")}
               value="favoritos"
-              className=""
+              onClick={() => setActiveTab("favoritos")}
             >
               Favoritos dos clientes
             </TabsTrigger>
             <TabsTrigger
-              onClick={() => handleChangeTab("qntTotalSales desc")}
+              onClick={() => setActiveTab("procuradas")}
               value="procuradas"
             >
               Atividades mais procuradas
             </TabsTrigger>
-            <TabsTrigger
-              onClick={() => handleChangeTab("averageRating asc")}
-              value="menor"
-            >
+            <TabsTrigger value="menor" onClick={() => setActiveTab("menor")}>
               Atividades com menores avaliações
             </TabsTrigger>
           </TabsList>
           <TabsContent value="favoritos">
-            {isLoading ? (
+            {loadingFavoritos ? (
               <div className="h-[50vh] flex justify-center items-center">
                 <Loading height="[10vh]" />
               </div>
             ) : (
               <div className="space-y-3">
-                {activities.length > 0 ? (
+                {activitiesFavoritos.length > 0 ? (
                   <>
                     <Activities
-                      activities={activities}
+                      activities={activitiesFavoritos}
                       withoutHeart
                       withoutShared
                       type="admin"
                     />
                     <Pagination
-                      data={activities}
+                      data={activitiesFavoritos}
                       page={page}
                       setPage={setPage}
                       limit={8}
@@ -155,22 +209,22 @@ export default function AvaliacoesWeb() {
             )}
           </TabsContent>
           <TabsContent value="procuradas">
-            {isLoading ? (
+            {loadingProcuradas ? (
               <div className="h-[50vh] flex justify-center items-center">
                 <Loading height="[10vh]" />
               </div>
             ) : (
               <div className="space-y-3">
-                {activities.length > 0 ? (
+                {activitiesProcuradas.length > 0 ? (
                   <>
                     <Activities
-                      activities={activities}
+                      activities={activitiesProcuradas}
                       withoutHeart
                       withoutShared
                       type="admin"
                     />
                     <Pagination
-                      data={activities}
+                      data={activitiesProcuradas}
                       page={page}
                       setPage={setPage}
                       limit={8}
@@ -187,22 +241,22 @@ export default function AvaliacoesWeb() {
             )}
           </TabsContent>
           <TabsContent value="menor">
-            {isLoading ? (
+            {loadingMenor ? (
               <div className="h-[50vh] flex justify-center items-center">
                 <Loading height="[10vh]" />
               </div>
             ) : (
               <div className="space-y-3">
-                {activities.length > 0 ? (
+                {activitiesMenor.length > 0 ? (
                   <>
                     <Activities
-                      activities={activities}
+                      activities={activitiesMenor}
                       withoutHeart
                       withoutShared
                       type="admin"
                     />
                     <Pagination
-                      data={activities}
+                      data={activitiesMenor}
                       page={page}
                       setPage={setPage}
                       limit={8}

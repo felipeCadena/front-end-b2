@@ -6,10 +6,8 @@ import { ReactNode, useEffect } from "react";
 import { Inter } from "next/font/google";
 import "../globals.css";
 import { signOut, useSession } from "next-auth/react";
-import { useQuery } from "@tanstack/react-query";
-import { users } from "@/services/api/users";
-import { partnerService } from "@/services/api/partner";
 import { toast } from "react-toastify";
+import { useAuthStore } from "@/store/useAuthStore";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -20,6 +18,8 @@ const inter = Inter({
 const Layout = ({ children }: { children: JSX.Element | ReactNode }) => {
   const pathname = usePathname();
   const { data: session } = useSession();
+  const { clearUser } = useAuthStore();
+
   const fullWidthPages = [
     "/login",
     "/cadastro",
@@ -30,10 +30,14 @@ const Layout = ({ children }: { children: JSX.Element | ReactNode }) => {
   ];
 
   useEffect(() => {
-    if (session?.error === "RefreshAccessTokenError") {
+    if (
+      session?.error === "RefreshAccessTokenError" &&
+      !session?.user?.accessToken
+    ) {
       // Logout automático ou redirecionamento
       console.log("Session expired, logging out...");
       signOut({ callbackUrl: "/login" });
+      clearUser();
       toast.error("Sua sessão expirou. Por favor, faça login novamente.");
     }
   }, [session]);

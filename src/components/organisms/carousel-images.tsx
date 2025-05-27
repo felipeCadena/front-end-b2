@@ -63,7 +63,7 @@ export default function CarouselImages({
             >
               <Image
                 alt="Imagens de atividades"
-                src={`${image.url ?? "/images/atividades/ar/ar-1.jpeg"}?v=${Date.now()}`}
+                src={`${image.url ?? "/images/atividades/ar/ar-1.jpeg"}?v=${image?.updatedAt}`}
                 width={250}
                 height={300}
                 className={cn(

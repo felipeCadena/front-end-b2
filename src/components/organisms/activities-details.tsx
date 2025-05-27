@@ -49,8 +49,8 @@ export default function ActivitiesDetails({
       <div className="grid gap-4 grid-cols-1 md:grid-cols-3">
         {activities && activities.length > 0
           ? activities.map((adventure: Adventure, index: number) => {
-              const date = "2025-03-12T08:00:00"; // substitua se for dinâmico
-              const isPast = isDateInPast(date);
+              const date = adventure?.schedules?.[index].datetime; // substitua se for dinâmico
+              const isPast = date ? isDateInPast(date) : null;
 
               return (
                 <div
@@ -116,7 +116,7 @@ export default function ActivitiesDetails({
                         {adventure?.description}
                       </MyTypography>
 
-                      {withDate && (
+                      {withDate && date && (
                         <div className="flex items-center gap-2 mt-2 text-sm">
                           <MyIcon
                             name={isPast ? "calendar-opacity" : "calendar"}

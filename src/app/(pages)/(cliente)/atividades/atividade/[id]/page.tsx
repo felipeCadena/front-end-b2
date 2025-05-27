@@ -280,7 +280,7 @@ export default function Atividade() {
               (image, index) => (
                 <Image
                   key={index}
-                  src={image?.url}
+                  src={image?.url ?? "/images/atividades/terra/terra-5.jpeg"}
                   alt="album"
                   width={300}
                   height={300}
