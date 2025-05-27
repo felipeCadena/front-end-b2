@@ -10,7 +10,9 @@ interface AudioRecorderProps {
   onAudioRecorded: (audioFile: File) => void;
 }
 
-const MIME_TYPE = "audio/webm";
+const MIME_TYPE = "audio/ogg;codecs=opus";
+
+console.log(MIME_TYPE);
 
 export default function AudioRecorder({ onAudioRecorded }: AudioRecorderProps) {
   const [isRecording, setIsRecording] = useState(false);
@@ -28,7 +30,7 @@ export default function AudioRecorder({ onAudioRecorded }: AudioRecorderProps) {
 
   const startRecording = async () => {
     if (!MediaRecorder.isTypeSupported(MIME_TYPE)) {
-      alert("Este navegador não suporta gravação em WEBM.");
+      alert("Este navegador não suporta gravação");
       return;
     }
 
@@ -53,7 +55,7 @@ export default function AudioRecorder({ onAudioRecorded }: AudioRecorderProps) {
       //   return;
       // }
 
-      const audioFile = new File([audioBlob], "audio-message.webm", {
+      const audioFile = new File([audioBlob], "audio-message.ogg", {
         type: MIME_TYPE,
       });
 
@@ -67,7 +69,7 @@ export default function AudioRecorder({ onAudioRecorded }: AudioRecorderProps) {
     setIsRecording(true);
     timerRef.current = setInterval(() => {
       setRecordingTime((prev) => prev + 1);
-    }, 300);
+    }, 1000);
   };
 
   const stopRecording = () => {
