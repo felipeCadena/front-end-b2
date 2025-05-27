@@ -29,6 +29,8 @@ const Layout = ({ children }: { children: JSX.Element | ReactNode }) => {
     "/recuperacao/novasenha",
   ];
 
+  console.log(session?.user?.accessToken);
+
   useEffect(() => {
     if (
       session?.error === "RefreshAccessTokenError" &&
@@ -36,8 +38,8 @@ const Layout = ({ children }: { children: JSX.Element | ReactNode }) => {
     ) {
       // Logout automático ou redirecionamento
       console.log("Session expired, logging out...");
-      signOut({ callbackUrl: "/login" });
       clearUser();
+      signOut({ redirect: true, callbackUrl: "/login" });
       toast.error("Sua sessão expirou. Por favor, faça login novamente.");
     }
   }, [session]);
