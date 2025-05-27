@@ -5,7 +5,6 @@ declare module "next-auth" {
     user: {
       name?: string;
       email: string;
-      image?: string;
       accessToken: string;
       refreshToken: string;
       role: string;
@@ -25,7 +24,6 @@ declare module "next-auth" {
   interface User {
     name?: string;
     email: string;
-    image?: string;
     accessToken: string;
     refreshToken: string;
     role: string;
@@ -44,7 +42,6 @@ declare module "next-auth" {
   interface Token {
     name?: string;
     email: string;
-    image?: string;
     accessToken: string;
     refreshToken: string;
     role: string;

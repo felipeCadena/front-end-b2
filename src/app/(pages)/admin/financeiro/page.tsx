@@ -386,6 +386,9 @@ export default function Dashboard() {
   });
 
   function getLatestWeekKey(data: Record<string, any>): string | null {
+    if (!data) {
+      return null;
+    }
     const keys = Object.keys(data);
 
     if (keys.length === 0) return null;
@@ -405,6 +408,8 @@ export default function Dashboard() {
     typeGroup === "month"
       ? `${filters.year}-${filters.month}`
       : adminIncome && getLatestWeekKey(adminIncome);
+
+  console.log(getLatestWeekKey(adminIncome));
 
   const incomeData = adminIncome?.[type ?? ""];
 
@@ -670,11 +675,7 @@ export default function Dashboard() {
                     </Pie>
                   </PieChart>
                 </ResponsiveContainer>
-                <div
-                  className={cn(
-                    "text-center absolute top-[35%] left-[30%] md:left-[39%] opacity-6"
-                  )}
-                >
+                <div className="text-center absolute top-[40%] md:top-[38%] left-1/2 transform -translate-x-1/2 -translate-y-1/4">
                   <MyTypography variant="body-big" lightness={400} className="">
                     Total
                   </MyTypography>
@@ -743,7 +744,10 @@ export default function Dashboard() {
                 <div className="flex items-center gap-4 relative">
                   <MyTypography
                     variant="caption"
-                    className="text-sm font-semibold absolute left-5"
+                    className={cn(
+                      "text-sm font-semibold absolute",
+                      activity?.progress > 0 ? "left-5" : "left-6"
+                    )}
                   >
                     {Math.round(activity.progress)}%
                   </MyTypography>
@@ -787,9 +791,9 @@ export default function Dashboard() {
                       className="mt-1 ml-1"
                     >
                       % das atividades realizadas{" "}
-                      <span className="text-xs text-neutral-400">
+                      <p className="text-xs text-neutral-400 mt-1">
                         Saiba Mais
-                      </span>
+                      </p>
                     </MyTypography>
                   </div>
                 </div>
@@ -978,7 +982,7 @@ export default function Dashboard() {
                           left: 0,
                           bottom: 5,
                         }}
-                        barGap={-36}
+                        barGap={-16}
                       >
                         <CartesianGrid strokeDasharray="3 3" vertical={false} />
                         <XAxis

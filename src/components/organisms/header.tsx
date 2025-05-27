@@ -16,6 +16,7 @@ import { useQuery } from "@tanstack/react-query";
 import { users } from "@/services/api/users";
 import { useAuthStore } from "@/store/useAuthStore";
 import User from "../atoms/my-icon/elements/user";
+import MyButton from "../atoms/my-button";
 
 export default function Header() {
   const router = useRouter();
@@ -91,17 +92,20 @@ export default function Header() {
         <div className="max-sm:hidden">
           {session?.user && status === "authenticated" ? (
             <SideBarModal sideBar={sideBarActive}>
-              <div className="flex items-center gap-1 cursor-pointer">
+              <MyButton
+                variant="text"
+                className="flex items-center gap-1 cursor-pointer focus-visible:outline-none focus-visible:ring-0"
+              >
                 <MyIcon name="chevron-down" />
                 <Image
-                  key={fetchUser?.photo?.updatedAt}
-                  src={`${isPhotoAvailable ? `${fetchUser?.photo?.url}?v=${new Date(fetchUser?.photo?.updatedAt ?? Date.now()).getTime()}` : "/user.png"}`}
+                  key={fetchUser?.photo?.updatedAt ?? "foto do usuario"}
+                  src={`${isPhotoAvailable ? `${fetchUser?.photo?.url}?v=${fetchUser?.photo?.updatedAt}` : "/user.png"}`}
                   alt="Avatar"
                   width={50}
                   height={50}
                   className="rounded-full w-14 h-14 object-cover"
                 />
-              </div>
+              </MyButton>
             </SideBarModal>
           ) : (
             <button

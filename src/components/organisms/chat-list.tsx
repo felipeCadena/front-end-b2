@@ -12,6 +12,13 @@ import MyButton from "../atoms/my-button";
 import useChat from "@/store/useChat";
 import useSearchQueryService from "@/services/use-search-query-service";
 import { format, parseISO } from "date-fns";
+import {
+  MySelect,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../atoms/my-select";
 
 interface ChatMessage {
   datetime: string;
@@ -60,6 +67,10 @@ export default function ChatList({ chats, setUser }: ChatListProps) {
   const [selectedChatId, setSelectedChatId] = React.useState<string | null>(
     null
   );
+  const [sortOption, setSortOption] = React.useState<"active" | "unread">(
+    "unread"
+  );
+
   const [mobile, setMobile] = React.useState<boolean>(false);
   const { setChat } = useChat();
   const { params, clear } = useSearchQueryService();
@@ -101,9 +112,29 @@ export default function ChatList({ chats, setUser }: ChatListProps) {
     }
   }, []);
 
+  const sortedChats = React.useMemo(() => {
+    if (!chats) return [];
+
+    if (sortOption === "active") {
+      return [...chats].sort(
+        (a, b) => (b.session_token ? 1 : 0) - (a.session_token ? 1 : 0)
+      );
+    }
+
+    if (sortOption === "unread") {
+      return [...chats].sort((a, b) => {
+        const aUnread = a.lastMessage && !a.lastMessage.isRead ? 1 : 0;
+        const bUnread = b.lastMessage && !b.lastMessage.isRead ? 1 : 0;
+        return bUnread - aUnread;
+      });
+    }
+
+    return chats;
+  }, [chats, sortOption]);
+
   return (
     <div className="h-full flex flex-col">
-      <div className="p-4">
+      <div className="px-4 py-6 space-y-4 border-b">
         <MyTextInput
           placeholder="Procurar"
           leftIcon={<MyIcon name="search" />}
@@ -114,6 +145,28 @@ export default function ChatList({ chats, setUser }: ChatListProps) {
             setLocalSearch(e.target.value);
           }}
         />
+        <div className="">
+          <MySelect
+            label="Ordernar por"
+            className="text-base text-black"
+            value={sortOption}
+            onValueChange={(value) => {
+              setSortOption(value as "active" | "unread");
+            }}
+          >
+            <SelectTrigger className="py-6">
+              <SelectValue placeholder="Selecione" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem key="Não lidas" value="unread">
+                Não lidas
+              </SelectItem>
+              <SelectItem key="Mais Recentes" value="active">
+                Mais Recentes
+              </SelectItem>
+            </SelectContent>
+          </MySelect>
+        </div>
       </div>
 
       {chats?.length === 0 && (
@@ -133,70 +186,66 @@ export default function ChatList({ chats, setUser }: ChatListProps) {
       )}
 
       <div className="flex-1 overflow-y-auto scrollbar-thin">
-        {chats &&
-          chats
-            .sort(
-              (a, b) => (b.session_token ? 1 : 0) - (a.session_token ? 1 : 0)
-            )
-            .map((chat) => (
-              <div
-                key={chat?.id}
-                className={cn(
-                  "flex items-center p-4 hover:bg-gray-50 cursor-pointer rounded-lg mr-1 border-b",
-                  selectedChatId === chat?.id && "bg-[#2DADE4]/20"
+        {sortedChats &&
+          sortedChats.map((chat) => (
+            <div
+              key={chat?.id}
+              className={cn(
+                "flex items-center p-4 hover:bg-gray-50 cursor-pointer rounded-lg mr-1 border-b",
+                selectedChatId === chat?.id && "bg-[#2DADE4]/20"
+              )}
+              onClick={() => handleChatClick(chat)}
+            >
+              <div className="relative">
+                <Image
+                  src={chat?.userToPhoto ?? "/user.png"}
+                  alt={chat?.userToName ?? "User avatar"}
+                  width={48}
+                  height={48}
+                  className="rounded-full"
+                />
+              </div>
+
+              <div className="ml-3 flex-1 space-y-1">
+                <div className="flex justify-between gap-4">
+                  <span className="font-medium">{chat?.userToName}</span>
+                </div>
+
+                {chat?.openIn && chat?.closeIn && chat?.session_token && (
+                  <span className="text-xs">
+                    <span className="font-semibold">Chat ativo: </span>
+                    {`${format(parseISO(chat.openIn), "dd/MM")} de ${format(parseISO(chat.openIn), "HH:mm")} às ${format(parseISO(chat.closeIn), "HH:mm")}`}
+                  </span>
                 )}
-                onClick={() => handleChatClick(chat)}
-              >
-                <div className="relative">
-                  <Image
-                    src={chat?.userToPhoto ?? "/user.png"}
-                    alt={chat?.userToName ?? "User avatar"}
-                    width={48}
-                    height={48}
-                    className="rounded-full"
-                  />
-                </div>
 
-                <div className="ml-3 flex-1 space-y-1">
-                  <div className="flex justify-between gap-4">
-                    <span className="font-medium">{chat?.userToName}</span>
-                  </div>
+                {chat?.lastMessage && chat?.lastMessage?.text ? (
+                  <p className="text-sm font-bold">
+                    {chat?.lastMessage?.text.slice(0, 40).concat("...")}
+                  </p>
+                ) : (
+                  !chat?.session_token && (
+                    <p className="text-gray-400 text-xs">Chat encerrado</p>
+                  )
+                )}
 
-                  {chat?.openIn && chat?.closeIn && chat?.session_token && (
-                    <span className="text-xs">
-                      <span className="font-semibold">Chat ativo: </span>
-                      {`${format(parseISO(chat.openIn), "dd/MM")} de ${format(parseISO(chat.openIn), "HH:mm")} às ${format(parseISO(chat.closeIn), "HH:mm")}`}
-                    </span>
-                  )}
-
-                  {chat?.lastMessage && chat?.lastMessage?.text ? (
-                    <p className="text-sm font-bold">
-                      {chat?.lastMessage?.text.slice(0, 40).concat("...")}
-                    </p>
-                  ) : (
-                    !chat?.session_token && (
-                      <p className="text-gray-400 text-xs">Chat encerrado</p>
-                    )
-                  )}
-
-                  {chat?.userToLastOnline && chat?.session_token && (
-                    <p className="text-xs opacity-70">
-                      Visto por último{" "}
-                      {formatSmartDateTime(chat?.userToLastOnline)}
-                    </p>
-                  )}
-                  {chat?.orderScheduleAdventure && (
-                    <p className="text-gray-600 text-xs">
-                      <span className="font-bold">Atividade:</span>{" "}
-                      {chat?.orderScheduleAdventure?.adventure?.title}
-                    </p>
-                  )}
-                </div>
-                {chat?.lastMessage && !chat?.lastMessage?.isRead && (
-                  <div className="w-3 h-3 bg-[#2DADE4] rounded-full" />
+                {chat?.userToLastOnline && chat?.session_token && (
+                  <p className="text-xs opacity-70">
+                    Visto por último{" "}
+                    {formatSmartDateTime(chat?.userToLastOnline)}
+                  </p>
+                )}
+                {chat?.orderScheduleAdventure && (
+                  <p className="text-gray-600 text-xs">
+                    <span className="font-bold">Atividade:</span>{" "}
+                    {chat?.orderScheduleAdventure?.adventure?.title}
+                  </p>
                 )}
               </div>
-            ))}
+              {chat?.lastMessage && !chat?.lastMessage?.isRead && (
+                <div className="w-3 h-3 bg-[#2DADE4] rounded-full" />
+              )}
+            </div>
+          ))}
       </div>
     </div>
   );

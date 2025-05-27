@@ -118,7 +118,7 @@ export default function SidebarMenu({
                     notifications?.messagesUnred > 0
                       ? "bg-red-400"
                       : "bg-slate-300",
-                    notifications?.messagesUnred > 10 && "h-[1.2rem] w-[1.3rem]"
+                    notifications?.messagesUnred > 10 && "h-[1.2rem] w-[1.8rem]"
                   )}
                 >
                   {notifications?.messagesUnred}

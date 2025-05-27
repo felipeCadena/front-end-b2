@@ -31,7 +31,20 @@ export default function Login() {
 
   useEffect(() => {
     const handleSessionUpdate = async () => {
-      if (status === "authenticated" && session?.user?.role) {
+      // Se a sessão ainda está carregando, não faça nada
+      if (status === "loading") return;
+
+      // Se não está autenticado ou sessão não existe, não execute nada
+      if (status !== "authenticated" || !session?.user) return;
+
+      // Se a sessão tem erro de refresh token, ignore
+      if (session.error === "RefreshAccessTokenError") return;
+
+      if (
+        status === "authenticated" &&
+        session?.user?.role &&
+        session?.error !== "RefreshAccessTokenError"
+      ) {
         try {
           const userData = {
             id: session.user.id,
@@ -78,7 +91,7 @@ export default function Login() {
     };
 
     handleSessionUpdate();
-  }, [status, session]);
+  }, [session]);
 
   const handleLogin = async () => {
     setIsLoading(true);
