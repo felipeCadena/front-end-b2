@@ -133,7 +133,7 @@ export default function ChatList({ chats, setUser }: ChatListProps) {
   }, [chats, sortOption]);
 
   return (
-    <div className="h-full flex flex-col">
+    <div className="h-screen flex flex-col">
       <div className="px-4 py-6 space-y-4 border-b">
         <MyTextInput
           placeholder="Procurar"

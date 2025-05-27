@@ -123,7 +123,7 @@ export default function ChatMessages({ chat }: ChatMessagesProps) {
   }, []);
 
   return (
-    <div className="h-[100dvh] md:h-[90vh] flex flex-col">
+    <div className="h-[100dvh] flex flex-col">
       <div className="flex items-center p-4">
         <MyIcon
           name="left"
@@ -211,7 +211,7 @@ export default function ChatMessages({ chat }: ChatMessagesProps) {
       </div>
 
       {chat?.session_token ? (
-        <div className="flex items-center gap-3 p-4 mb-2">
+        <div className="flex items-center gap-3 p-4 max-sm:px-4 max-sm:py-6 max-sm:fixed max-sm:bottom-0 max-sm:bg-white">
           <MyTextInput
             type="text"
             placeholder="Digite uma mensagem..."
