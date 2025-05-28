@@ -128,6 +128,13 @@ const formSchema = z
             path: ["creditCard", "ccv"],
           });
         }
+        if (!data.creditCardHolderInfo?.postalCode?.trim()) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "CEP é obrigatório para pagamento com cartão",
+            path: ["creditCardHolderInfo", "postalCode"],
+          });
+        }
       }
     }
   });
