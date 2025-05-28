@@ -74,7 +74,7 @@ const CarouselReview = ({ reviews }: any) => {
               <div className="flex items-center gap-4">
                 <Image
                   alt="avatar"
-                  src={review?.avatar ?? ""}
+                  src={review?.avatar ?? "/user.png"}
                   width={8}
                   height={8}
                   className="w-12 h-12 rounded-full object-cover"

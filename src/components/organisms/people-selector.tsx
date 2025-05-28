@@ -47,9 +47,6 @@ export default function PeopleSelector({
     },
   });
 
-  console.log(schedule);
-  console.log(personsLimit);
-
   // Função para incrementar ou decrementar valores
   const handleChange = (type: string, action: "increase" | "decrease") => {
     if (type === "adult") {

@@ -57,7 +57,10 @@ const ActivitiesOrderSummary = ({
             >
               <Image
                 alt="Imagem Aventura"
-                src={selectActivityImage(adventure) ?? ""}
+                src={
+                  selectActivityImage(adventure) ??
+                  "/images/atividades/terra/terra-5.jpeg"
+                }
                 width={265}
                 height={265}
                 priority
@@ -80,7 +83,7 @@ const ActivitiesOrderSummary = ({
                     <div className="flex gap-2 items-center my-1">
                       <Image
                         alt="foto parceiro"
-                        src={adventure?.partner?.logo?.url}
+                        src={adventure?.partner?.logo?.url ?? "/user.png"}
                         width={40}
                         height={40}
                         className="w-[40px] h-[40px] rounded-full border-2"

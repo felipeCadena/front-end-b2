@@ -409,8 +409,6 @@ export default function Dashboard() {
       ? `${filters.year}-${filters.month}`
       : adminIncome && getLatestWeekKey(adminIncome);
 
-  console.log(getLatestWeekKey(adminIncome));
-
   const incomeData = adminIncome?.[type ?? ""];
 
   const handleFilter = (value: string) => {

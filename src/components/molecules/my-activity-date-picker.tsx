@@ -1,7 +1,14 @@
 "use client";
 
 import * as React from "react";
-import { format, parseISO } from "date-fns";
+import {
+  addHours,
+  format,
+  isAfter,
+  isBefore,
+  parseISO,
+  startOfMonth,
+} from "date-fns";
 import { Popover, PopoverContent, PopoverTrigger } from "../atoms/my-popover";
 import MyButton from "../atoms/my-button";
 import { cn } from "@/utils/cn";
@@ -38,11 +45,11 @@ export function MyActivityDatePicker({
   const [open, setOpen] = useState(false);
   const [initialMonth, setInitialMonth] = useState<Date>(new Date());
 
-  const handleDateSelect = (dates?: Date | undefined) => {
-    if (!dates) return;
+  const handleDateSelect = (date?: Date | undefined) => {
+    if (!date) return;
 
     // Apenas atualiza as datas selecionadas sem formatação
-    setSelectedDates(dates);
+    setSelectedDates(date);
   };
 
   const partnerScheduledDays =
@@ -57,41 +64,54 @@ export function MyActivityDatePicker({
     () => formatRecurrencesToDates(activityRecurrences, "weekly"),
     [activityRecurrences]
   );
-  React.useEffect(() => {
+
+  const getInitialAvailableMonth = ({
+    selectedDate,
+    markedDates,
+    markedDays,
+    hoursBeforeSchedule,
+  }: {
+    selectedDate?: Date;
+    markedDates: Date[];
+    markedDays: Date[];
+    hoursBeforeSchedule?: number;
+  }): Date => {
+    if (selectedDate) return startOfMonth(selectedDate);
+
     const now = new Date();
+    const limitDate = addHours(now, hoursBeforeSchedule ?? 0);
 
-    // Agrupar todas as datas disponíveis
-    const availableDates: Date[] = [
-      ...(partnerSchedules?.map((s) => parseISO(s.date)) || []),
-      ...weeklyRecurrences,
-      ...monthlyRecurrences,
-    ];
+    const allDates = [...markedDates, ...markedDays];
 
-    // Ordenar e filtrar datas no futuro
-    const futureDates = availableDates
-      .filter((d) => d >= now)
+    const validDates = allDates
+      .filter((date) => {
+        const isBeforeLimit = isBefore(date, limitDate);
+        const isMarked =
+          markedDates.some((d) => d.toDateString() === date.toDateString()) ||
+          markedDays.some((d) => d.toDateString() === date.toDateString());
+        return !isBeforeLimit && isMarked;
+      })
       .sort((a, b) => a.getTime() - b.getTime());
 
-    if (futureDates.length === 0) return; // nenhuma data disponível
+    return startOfMonth(validDates[0] ?? now);
+  };
 
-    const currentMonth = now.getMonth();
-    const currentYear = now.getFullYear();
+  const handleOpenChange = (isOpen: boolean) => {
+    setOpen(isOpen);
+    if (!isOpen) return;
 
-    const hasDateThisMonth = futureDates.some(
-      (date) =>
-        date.getMonth() === currentMonth && date.getFullYear() === currentYear
-    );
+    const initial = getInitialAvailableMonth({
+      selectedDate,
+      markedDates: monthlyRecurrences,
+      markedDays: [...weeklyRecurrences, ...partnerScheduledDays],
+      hoursBeforeSchedule: hourBeforeSchedule ?? 0,
+    });
 
-    if (
-      !hasDateThisMonth &&
-      futureDates[0].getTime() !== initialMonth.getTime()
-    ) {
-      setInitialMonth(futureDates[0]);
-    }
-  }, [partnerSchedules, weeklyRecurrences, monthlyRecurrences]);
+    setInitialMonth(initial);
+  };
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
+    <Popover open={open} onOpenChange={handleOpenChange}>
       <PopoverTrigger asChild>
         <MyButton
           variant="date"

@@ -9,15 +9,21 @@ import FifithSection from "@/components/templates/fifth-section";
 import Review from "@/components/templates/third-section/review";
 import { signOut, useSession } from "next-auth/react";
 import { toast } from "react-toastify";
+import { useAuthStore } from "@/store/useAuthStore";
 
 export default function Home() {
   const { data: session } = useSession();
+  const { clearUser } = useAuthStore();
 
   React.useEffect(() => {
-    if (session?.error === "RefreshAccessTokenError") {
+    if (
+      session?.error === "RefreshAccessTokenError" &&
+      !session?.user?.accessToken
+    ) {
       // Logout automático ou redirecionamento
       console.log("Session expired, logging out...");
-      signOut({ callbackUrl: "/login" });
+      clearUser();
+      signOut({ redirect: true, callbackUrl: "/login" });
       toast.error("Sua sessão expirou. Por favor, faça login novamente.");
     }
   }, [session]);

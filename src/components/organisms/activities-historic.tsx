@@ -1,15 +1,15 @@
-'use client';
+"use client";
 
-import Image from 'next/image';
-import React from 'react';
-import MyBadge from '../atoms/my-badge';
-import StarRating from '../molecules/my-stars';
-import MyTypography from '../atoms/my-typography';
-import MyIcon from '../atoms/my-icon';
-import { getData, getHora } from '@/utils/formatters';
-import MyButton from '../atoms/my-button';
-import { useRouter } from 'next/navigation';
-import PATHS from '@/utils/paths';
+import Image from "next/image";
+import React from "react";
+import MyBadge from "../atoms/my-badge";
+import StarRating from "../molecules/my-stars";
+import MyTypography from "../atoms/my-typography";
+import MyIcon from "../atoms/my-icon";
+import { getData, getHora } from "@/utils/formatters";
+import MyButton from "../atoms/my-button";
+import { useRouter } from "next/navigation";
+import PATHS from "@/utils/paths";
 
 export default function ActivitiesHistoric({ activities }: any) {
   const router = useRouter();
@@ -25,8 +25,10 @@ export default function ActivitiesHistoric({ activities }: any) {
             >
               <div className="relative z-10 overflow-hidden min-w-[8rem] min-h-full hover:cursor-pointer rounded-md">
                 <Image
-                  alt="sample_file"
-                  src={activity.image ?? ''}
+                  alt="Imagem da atividade"
+                  src={
+                    activity.image ?? "/images/atividades/terra/terra-5.jpeg"
+                  }
                   width={250}
                   height={300}
                   className="w-[8rem] h-full object-cover"
@@ -46,7 +48,7 @@ export default function ActivitiesHistoric({ activities }: any) {
                 <div className="flex gap-2 items-center my-1">
                   <Image
                     alt="foto parceiro"
-                    src={activity}
+                    src={activity ?? "/user.png"}
                     width={40}
                     height={40}
                     className="rounded-full"
@@ -64,7 +66,7 @@ export default function ActivitiesHistoric({ activities }: any) {
                   {activity.title}
                 </MyTypography>
                 <MyTypography variant="label" className="">
-                  {activity.description.slice(0, 40).concat('...')}
+                  {activity.description.slice(0, 40).concat("...")}
                 </MyTypography>
               </div>
             </div>
@@ -81,11 +83,11 @@ export default function ActivitiesHistoric({ activities }: any) {
                     weight="regular"
                     className="ml-3"
                   >
-                    {getData(activity.reserva.timestamp)} -{' '}
-                    {getHora(activity.reserva.timestamp)}{' '}
-                    {+getHora(activity.reserva.timestamp).split(':')[0] > 12
-                      ? 'tarde'
-                      : 'manhã'}
+                    {getData(activity.reserva.timestamp)} -{" "}
+                    {getHora(activity.reserva.timestamp)}{" "}
+                    {+getHora(activity.reserva.timestamp).split(":")[0] > 12
+                      ? "tarde"
+                      : "manhã"}
                   </MyTypography>
                 </div>
 
@@ -112,8 +114,8 @@ export default function ActivitiesHistoric({ activities }: any) {
                     weight="regular"
                     className="ml-3"
                   >
-                    {activity.reserva.pessoas} adultos x{' '}
-                    {new Intl.NumberFormat('pt-BR', {
+                    {activity.reserva.pessoas} adultos x{" "}
+                    {new Intl.NumberFormat("pt-BR", {
                       minimumFractionDigits: 2,
                       maximumFractionDigits: 2,
                     }).format(
@@ -131,9 +133,9 @@ export default function ActivitiesHistoric({ activities }: any) {
                     Total:
                   </MyTypography>
                   <MyTypography variant="body" weight="bold" className="">
-                    {activity.reserva.total.toLocaleString('pt-BR', {
-                      style: 'currency',
-                      currency: 'BRL',
+                    {activity.reserva.total.toLocaleString("pt-BR", {
+                      style: "currency",
+                      currency: "BRL",
                     })}
                   </MyTypography>
                 </div>

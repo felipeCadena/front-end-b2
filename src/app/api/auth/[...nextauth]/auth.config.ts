@@ -187,8 +187,6 @@ export const authOptions: NextAuthOptions = {
               ]);
         }
 
-        console.log("google id_token: " + user?.accessToken);
-
         return true;
       } catch (error) {
         console.error("Erro no login por rede social:", error);
@@ -207,16 +205,16 @@ export const authOptions: NextAuthOptions = {
         token.defaultPath = user.defaultPath;
         token.expiresAt = user.expiresAt;
         token.loginSocial = user.loginSocial;
-        token.partnerId = user?.partner?.id;
-        token.partnerName = user?.partner?.fantasyName;
-        token.partnerIsActive = user?.partner?.isActive;
+        token.partnerId = user.partnerId;
+        token.partnerName = user.partnerName;
+        token.partnerIsActive = user.partnerIsActive;
 
         return token;
       }
 
       const now = Date.now();
 
-      if (now > token.expiresAt && token?.refreshToken) {
+      if (token?.expiresAt && now > token.expiresAt && token?.refreshToken) {
         // console.log("token if expirado " + token?.refreshToken);
         try {
           const dataAuth = await authService.refreshToken(token?.refreshToken);

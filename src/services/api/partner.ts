@@ -344,7 +344,6 @@ export const partnerService = {
   },
 
   async listPartnerSchedules(params?: MyScheduleParams) {
-    console.log(params);
     try {
       const response = await api.get(
         `/ordersAdventures/orderSchedule/partner`,

@@ -1,19 +1,19 @@
-'use client';
+"use client";
 
-import Loading from '@/app/loading';
-import { album } from '@/common/constants/mock';
-import MyButton from '@/components/atoms/my-button';
-import MyIcon from '@/components/atoms/my-icon';
-import MyTypography from '@/components/atoms/my-typography';
-import { schedules } from '@/services/api/schedules';
-import { getData } from '@/utils/formatters';
-import PATHS from '@/utils/paths';
-import downloadImagesAsZip from '@/utils/zipPhotos';
-import { useQuery } from '@tanstack/react-query';
-import Image from 'next/image';
-import { useParams, useRouter } from 'next/navigation';
-import React from 'react';
-import handleDownloadImage from '@/utils/downloadImage';
+import Loading from "@/app/loading";
+import { album } from "@/common/constants/mock";
+import MyButton from "@/components/atoms/my-button";
+import MyIcon from "@/components/atoms/my-icon";
+import MyTypography from "@/components/atoms/my-typography";
+import { schedules } from "@/services/api/schedules";
+import { getData } from "@/utils/formatters";
+import PATHS from "@/utils/paths";
+import downloadImagesAsZip from "@/utils/zipPhotos";
+import { useQuery } from "@tanstack/react-query";
+import Image from "next/image";
+import { useParams, useRouter } from "next/navigation";
+import React from "react";
+import handleDownloadImage from "@/utils/downloadImage";
 
 export default function Galeria() {
   const { id } = useParams();
@@ -22,17 +22,17 @@ export default function Galeria() {
   const [loadingRedirect, setLoadingRedirect] = React.useState(true);
 
   const { data: activity } = useQuery({
-    queryKey: ['activity_schedule'],
+    queryKey: ["activity_schedule"],
     queryFn: () => schedules.getScheduleById(id as string),
   });
 
   const { data: activityPhotos = [], isLoading: isLoadingPhotos } = useQuery({
-    queryKey: ['activity_photos'],
+    queryKey: ["activity_photos"],
     queryFn: async () => await schedules.getScheduleMedias(id as string),
   });
 
   const handleFetchPhotos = async (id: string, downloadAll?: boolean) => {
-    if (downloadAll && id !== '') {
+    if (downloadAll && id !== "") {
       if (activityPhotos.length === 0) {
         return;
       }
@@ -40,7 +40,7 @@ export default function Galeria() {
         setLoading(true);
         await downloadImagesAsZip(activityPhotos);
       } catch (error) {
-        console.error('Erro ao baixar imagens', error);
+        console.error("Erro ao baixar imagens", error);
       } finally {
         setLoading(false);
       }
@@ -82,13 +82,13 @@ export default function Galeria() {
           {activity?.title}
         </MyTypography>
         <MyTypography variant="body-big" weight="bold">
-          Data: {getData(activity?.datetime ?? '', true)}
+          Data: {getData(activity?.datetime ?? "", true)}
         </MyTypography>
 
         <div className="flex gap-2 items-center">
           <Image
             alt="foto parceiro"
-            src={activity?.adventure?.partner?.logo.url ?? ''}
+            src={activity?.adventure?.partner?.logo.url ?? "/user.png"}
             width={40}
             height={40}
             className="rounded-full"
@@ -107,7 +107,7 @@ export default function Galeria() {
           className="col-span-2 my-4"
           rightIcon={<MyIcon name="download" className="" />}
           isLoading={loading}
-          onClick={() => handleFetchPhotos(activity?.id ?? '', true)}
+          onClick={() => handleFetchPhotos(activity?.id ?? "", true)}
         >
           Baixar todas as imagens
         </MyButton>
@@ -119,8 +119,8 @@ export default function Galeria() {
           activityPhotos.map((media, index) => (
             <div key={index} className="flex justify-center relative">
               <Image
-                src={media.url}
-                alt={media.title ?? 'foto'}
+                src={media.url ?? ""}
+                alt={media.title ?? "foto"}
                 width={150}
                 height={150}
                 className="w-40 h-40 rounded-lg object-cover"
@@ -129,7 +129,7 @@ export default function Galeria() {
                 name="download-green"
                 className="absolute top-2 right-2 bg-white p-2 rounded-lg group-hover:opacity-100 transition-opacity duration-300 cursor-pointer"
                 onClick={() =>
-                  handleDownloadImage(media.url, media?.title ?? '')
+                  handleDownloadImage(media.url, media?.title ?? "")
                 }
               />
             </div>

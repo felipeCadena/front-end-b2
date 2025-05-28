@@ -43,7 +43,7 @@ const MobileActivityPhotosCard = ({
         <div className="flex gap-2 items-center">
           <Image
             alt="foto parceiro"
-            src={activity?.adventure?.partner?.logo?.url}
+            src={activity?.adventure?.partner?.logo?.url ?? "/user.png"}
             width={40}
             height={40}
             className="rounded-full"
@@ -86,7 +86,7 @@ const MobileActivityPhotosCard = ({
             >
               <div className="relative transition-all duration-300">
                 <Image
-                  src={image?.url}
+                  src={image?.url ?? "/images/atividades/terra/terra-5.jpeg"}
                   alt={activity.adventure.title}
                   width={300}
                   height={300}

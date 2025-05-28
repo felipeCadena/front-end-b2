@@ -11,6 +11,7 @@ import {
   findAvailableVacancies,
   getPartnerAvailableSchedules,
   getWeeklyRecurrenceTime,
+  removeCanceledRecurrenceTimes,
 } from "@/utils/formatters";
 
 export type Recurrence = {
@@ -59,9 +60,15 @@ const ActivityDatePicker = ({
 
   const groupedRecurrences = agruparRecorrencias(activityRecurrence);
 
-  const selectedDateTimes = getWeeklyRecurrenceTime(
+  const rawSelectedDateTimes = getWeeklyRecurrenceTime(
     selectedDate,
     groupedRecurrences
+  );
+
+  const selectedDateTimes = removeCanceledRecurrenceTimes(
+    selectedDate,
+    rawSelectedDateTimes,
+    activity?.schedules
   );
 
   const availablePartnerSchedules = getPartnerAvailableSchedules(activity);
