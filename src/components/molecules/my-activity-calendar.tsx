@@ -5,7 +5,14 @@ import { DayPicker } from "react-day-picker";
 import type { DayPickerProps } from "react-day-picker";
 import { cn } from "@/utils/cn";
 import { ptBR } from "react-day-picker/locale";
-import { addHours, format, isBefore, startOfDay, startOfMonth } from "date-fns";
+import {
+  addHours,
+  format,
+  isAfter,
+  isBefore,
+  startOfDay,
+  startOfMonth,
+} from "date-fns";
 import MyIcon from "../atoms/my-icon";
 import { before } from "node:test";
 
@@ -53,6 +60,23 @@ export function MyActivityCalendar({
     onSelect(date);
   };
 
+  const now = new Date();
+  const allAvailableDates = [...markedDates, ...markedDays].filter((d) =>
+    isAfter(d, now)
+  );
+  const sortedAvailableDates = allAvailableDates.sort(
+    (a, b) => a.getTime() - b.getTime()
+  );
+  const firstAvailableMonth = sortedAvailableDates.length
+    ? startOfMonth(sortedAvailableDates[0])
+    : startOfMonth(now);
+
+  React.useEffect(() => {
+    if (initialMonth) {
+      setStartMonth(initialMonth);
+    }
+  }, [initialMonth]);
+
   return (
     <div>
       <DayPicker
@@ -63,7 +87,6 @@ export function MyActivityCalendar({
         className={cn("md:flex md:justify-center", className)}
         ISOWeek={true}
         locale={ptBR}
-        startMonth={startOfMonth(startMonth)}
         disabled={(date) => {
           const limitDate = addHours(new Date(), hoursBeforeSchedule);
 
@@ -106,8 +129,13 @@ export function MyActivityCalendar({
             "rounded-full text-primary-600 relative md:after:top-1/3 md:after:left-20",
           selected: "bg-primary-600 text-white font-bold ",
         }}
+        startMonth={firstAvailableMonth}
+        endMonth={undefined}
         month={initialMonth}
-        onMonthChange={onMonthChange}
+        onMonthChange={(month) => {
+          setStartMonth(month);
+          onMonthChange?.(month);
+        }}
         styles={{
           months: { display: "flex", justifyContent: "center", width: "100%" },
           day: { width: "40px", height: "40px" },

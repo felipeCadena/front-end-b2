@@ -115,37 +115,20 @@ export default function ChatMessages({ chat }: ChatMessagesProps) {
   };
 
   const scrollToBottom = () => {
-    const timeout = setTimeout(() => {
-      messageRef.current?.scrollIntoView({
-        behavior: "smooth",
-        block: "end",
-      });
-    }, 300); // Pequeno delay garante que os elementos renderizaram
-
-    return () => clearTimeout(timeout);
-  };
-
-  useEffect(() => {
-    if (window && window.innerWidth < 768) {
-      scrollToBottom();
-    }
-    if (!messages || messages.length === 0) return;
-
-    const isIOS =
-      navigator &&
-      /iP(ad|hone|od).+Version\/[\d.]+.*Safari/i.test(navigator.userAgent);
-
-    console.log(isIOS, "iOS detected");
-
-    if (isIOS) {
-      const timeout = setTimeout(() => {
+    requestAnimationFrame(() => {
+      setTimeout(() => {
         messageRef.current?.scrollIntoView({
           behavior: "smooth",
           block: "end",
         });
-      }, 300); // Pequeno delay garante que os elementos renderizaram
+      }, 150); // tempo menor que 300ms para evitar delay excessivo
+    });
+  };
 
-      return () => clearTimeout(timeout);
+  useEffect(() => {
+    if (!messages || messages.length === 0) return;
+    if (window && window.innerWidth < 768) {
+      scrollToBottom();
     }
   }, [messages]);
 

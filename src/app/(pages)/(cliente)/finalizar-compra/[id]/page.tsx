@@ -19,8 +19,6 @@ const Finalizar = () => {
     }, 1300);
   };
 
-  console.log(paymentResponse);
-
   return (
     <section className="px-4 mb-8">
       <div className="w-60% flex flex-col justify-center items-center">

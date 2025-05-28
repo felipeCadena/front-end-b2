@@ -109,6 +109,12 @@ export default function FullActivitiesHistoric({
         queryClient.invalidateQueries({
           queryKey: ["schedules"],
         });
+        setCancelOrder(null);
+        setShowModal(false);
+        setIsOffCancelLimit(false);
+        setTimeout(() => {
+          setShowCanceledModal(true);
+        }, 500);
       } catch (error) {
         if (error instanceof AxiosError) {
           if (error.status === 400) {
@@ -116,13 +122,6 @@ export default function FullActivitiesHistoric({
             toast.error(error.response?.data.message);
           }
         }
-      } finally {
-        setCancelOrder(null);
-        setShowModal(false);
-        setIsOffCancelLimit(false);
-        setTimeout(() => {
-          setShowCanceledModal(true);
-        }, 500);
       }
     }
   };
@@ -181,7 +180,9 @@ export default function FullActivitiesHistoric({
                     <div className="flex gap-2 items-center">
                       <Image
                         alt="foto parceiro"
-                        src={activity?.adventure?.partner?.logo?.url}
+                        src={
+                          activity?.adventure?.partner?.logo?.url ?? "/user.png"
+                        }
                         width={40}
                         height={40}
                         className="w-[40px] h-[40px] rounded-full object-cover border-2"

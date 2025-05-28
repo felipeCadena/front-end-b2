@@ -804,56 +804,41 @@ export const formatInstallmentOptions = (
 export const getPartnerAvailableSchedules = (
   activity: Adventure | undefined
 ) => {
-  if (activity) {
-    const partnerSchedules = activity.schedules?.reduce(
-      (acc, schedule) => {
-        if (schedule.isAvailable && !schedule.isCanceled) {
-          // formata a data para UTC-3
-          const forceStringDate = String(schedule.datetime);
-          const localDateTime = new Date(schedule.datetime);
-          const localHours = localDateTime
-            .getHours()
-            .toString()
-            .padStart(2, "0");
-          const localMinutes = localDateTime
-            .getMinutes()
-            .toString()
-            .padStart(2, "0");
+  if (!activity?.schedules) return [];
 
-          const availableScheduleDateTime = `${localHours}:${localMinutes}`;
+  const partnerSchedules = activity.schedules.reduce(
+    (acc, schedule) => {
+      if (schedule.isAvailable && !schedule.isCanceled) {
+        // Formata data e horário
+        const scheduleDate = schedule.datetime.slice(0, 10); // YYYY-MM-DD
+        const localDateTime = new Date(schedule.datetime);
+        const hours = localDateTime.getHours().toString().padStart(2, "0");
+        const minutes = localDateTime.getMinutes().toString().padStart(2, "0");
+        const timeString = `${hours}:${minutes}`;
 
-          const availableScheduleDate = forceStringDate.slice(0, 10);
+        // Busca dia no acumulador
+        let dayEntry = acc.find((entry) => entry.date === scheduleDate);
 
-          const formattedSchedule = {
-            date: availableScheduleDate,
-            time: [availableScheduleDateTime],
+        if (!dayEntry) {
+          // Se não existe dia, cria novo
+          dayEntry = {
+            date: scheduleDate,
+            time: [timeString],
           };
-
-          const existingAvailableSchedule = acc.find(
-            (sch) => sch.date === formattedSchedule.date
-          );
-
-          if (!existingAvailableSchedule) {
-            acc.push(formattedSchedule);
+          acc.push(dayEntry);
+        } else {
+          // Se existe, adiciona horário, se ainda não tiver
+          if (!dayEntry.time.includes(timeString)) {
+            dayEntry.time.push(timeString);
           }
-
-          const alreadyScheduledTime = existingAvailableSchedule?.time.find(
-            (time) => availableScheduleDateTime === time
-          );
-
-          if (!alreadyScheduledTime) {
-            existingAvailableSchedule?.time.push(availableScheduleDateTime);
-          }
-
-          return acc;
         }
-        return acc;
-      },
-      [] as { date: string; time: string[] }[]
-    );
+      }
+      return acc;
+    },
+    [] as { date: string; time: string[] }[]
+  );
 
-    return partnerSchedules;
-  }
+  return partnerSchedules;
 };
 
 export const addPartnerScheduledTimeToSelectedDateTime = (
@@ -947,4 +932,28 @@ export const findAvailableVacancies = (
     return qtdLimitPersons;
   }
   return qtdLimitPersons;
+};
+
+export const removeCanceledRecurrenceTimes = (
+  selectedDate: Date | undefined,
+  recurrenceTimes: string[],
+  schedules: Adventure["schedules"]
+): string[] => {
+  if (!selectedDate || !schedules || !recurrenceTimes?.length)
+    return recurrenceTimes;
+
+  const selectedDateISO = selectedDate.toISOString().slice(0, 10); // '2025-06-03'
+
+  const canceledTimes = schedules
+    .filter((sch) => {
+      const scheduleDate = new Date(sch.datetime).toISOString().slice(0, 10);
+      const scheduleTime = new Date(sch.datetime).toTimeString().slice(0, 5); // 'HH:MM'
+
+      return (
+        scheduleDate === selectedDateISO && (!sch.isAvailable || sch.isCanceled)
+      );
+    })
+    .map((sch) => new Date(sch.datetime).toTimeString().slice(0, 5));
+
+  return recurrenceTimes.filter((time) => !canceledTimes.includes(time));
 };

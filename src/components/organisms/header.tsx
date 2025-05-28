@@ -17,11 +17,12 @@ import { users } from "@/services/api/users";
 import { useAuthStore } from "@/store/useAuthStore";
 import User from "../atoms/my-icon/elements/user";
 import MyButton from "../atoms/my-button";
+import { sideBarClient } from "@/common/constants/sideBar";
 
 export default function Header() {
   const router = useRouter();
   const pathname = usePathname();
-  const { sideBarActive } = useLogin();
+  const { sideBarActive, setSideBarActive } = useLogin();
   const { setUser } = useAuthStore();
   const { data: session, status } = useSession();
 
@@ -81,12 +82,14 @@ export default function Header() {
       <div className="flex-shrink-0 md:flex md:items-center md:gap-6 ">
         <div className="flex gap-2 items-center">
           <LanguageDropdown />
-          <button
-            onClick={() => router.push(PATHS.login)}
-            className="md:hidden flex items-center font-semibold gap-1 px-2 py-1 text-white bg-black rounded-full shadow-md"
-          >
-            <User fill="#fff" />
-          </button>
+          {!session?.user && status === "unauthenticated" && (
+            <button
+              onClick={() => router.push(PATHS.login)}
+              className="md:hidden flex items-center font-semibold gap-1 px-2 py-1 text-white bg-black rounded-full shadow-md"
+            >
+              <User fill="#fff" />
+            </button>
+          )}
         </div>
 
         <div className="max-sm:hidden">

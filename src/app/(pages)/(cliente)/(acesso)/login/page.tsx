@@ -29,8 +29,11 @@ export default function Login() {
   const { email, password, error, setEmail, setPassword, clearError } =
     useLogin();
 
+  const didHandleRef = React.useRef(false);
+
   useEffect(() => {
     const handleSessionUpdate = async () => {
+      if (didHandleRef.current) return;
       // Se a sessão ainda está carregando, não faça nada
       if (status === "loading") return;
 
@@ -45,6 +48,8 @@ export default function Login() {
         session?.user?.role &&
         session?.error !== "RefreshAccessTokenError"
       ) {
+        didHandleRef.current = true;
+
         try {
           const userData = {
             id: session.user.id,

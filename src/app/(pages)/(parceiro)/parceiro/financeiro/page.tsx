@@ -299,8 +299,6 @@ export default function Dashboard() {
     (item) => item?.value && item?.value > 0
   );
 
-  console.log(incomeData);
-
   const handleFilter = (value: string) => {
     setTypeGroup(value);
   };
