@@ -1,7 +1,14 @@
 "use client";
 
 import * as React from "react";
-import { format, parseISO } from "date-fns";
+import {
+  addHours,
+  format,
+  isAfter,
+  isBefore,
+  parseISO,
+  startOfMonth,
+} from "date-fns";
 import { Popover, PopoverContent, PopoverTrigger } from "../atoms/my-popover";
 import MyButton from "../atoms/my-button";
 import { cn } from "@/utils/cn";
@@ -25,6 +32,7 @@ type MyActivityDatePickerProps = {
       }[]
     | undefined;
   activityRecurrences: Recurrence[];
+  availableHoursByDate?: Record<string, string[]>;
 };
 
 export function MyActivityDatePicker({
@@ -34,31 +42,78 @@ export function MyActivityDatePicker({
   partnerSchedules,
   activityRecurrences,
   setSelectedDates,
+  availableHoursByDate,
 }: MyActivityDatePickerProps) {
   const [open, setOpen] = useState(false);
+  const [initialMonth, setInitialMonth] = useState<Date>(new Date());
 
-  const handleDateSelect = (dates?: Date | undefined) => {
-    if (!dates) return;
+  const handleDateSelect = (date?: Date | undefined) => {
+    if (!date) return;
 
     // Apenas atualiza as datas selecionadas sem formatação
-    setSelectedDates(dates);
+    setSelectedDates(date);
   };
 
   const partnerScheduledDays =
     partnerSchedules?.map((sch) => parseISO(sch.date)) ?? [];
 
-  const monthlyRecurrences = formatRecurrencesToDates(
-    activityRecurrences,
-    "monthly"
+  const monthlyRecurrences = React.useMemo(
+    () => formatRecurrencesToDates(activityRecurrences, "monthly"),
+    [activityRecurrences]
   );
 
-  const weeklyRecurrences = formatRecurrencesToDates(
-    activityRecurrences,
-    "weekly"
+  const weeklyRecurrences = React.useMemo(
+    () => formatRecurrencesToDates(activityRecurrences, "weekly"),
+    [activityRecurrences]
   );
+
+  const getInitialAvailableMonth = ({
+    selectedDate,
+    markedDates,
+    markedDays,
+    hoursBeforeSchedule,
+  }: {
+    selectedDate?: Date;
+    markedDates: Date[];
+    markedDays: Date[];
+    hoursBeforeSchedule?: number;
+  }): Date => {
+    if (selectedDate) return startOfMonth(selectedDate);
+
+    const now = new Date();
+    const limitDate = addHours(now, hoursBeforeSchedule ?? 0);
+
+    const allDates = [...markedDates, ...markedDays];
+
+    const validDates = allDates
+      .filter((date) => {
+        const isBeforeLimit = isBefore(date, limitDate);
+        const isMarked =
+          markedDates.some((d) => d.toDateString() === date.toDateString()) ||
+          markedDays.some((d) => d.toDateString() === date.toDateString());
+        return !isBeforeLimit && isMarked;
+      })
+      .sort((a, b) => a.getTime() - b.getTime());
+
+    return startOfMonth(validDates[0] ?? now);
+  };
+
+  const handleOpenChange = (isOpen: boolean) => {
+    setOpen(isOpen);
+    if (!isOpen) return;
+
+    const initial = getInitialAvailableMonth({
+      selectedDate,
+      markedDates: monthlyRecurrences,
+      markedDays: [...weeklyRecurrences, ...partnerScheduledDays],
+      hoursBeforeSchedule: hourBeforeSchedule ?? 0,
+    });
+
+    setInitialMonth(initial);
+  };
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
+    <Popover open={open} onOpenChange={handleOpenChange}>
       <PopoverTrigger asChild>
         <MyButton
           variant="date"
@@ -111,6 +166,9 @@ export function MyActivityDatePicker({
           markedDates={monthlyRecurrences}
           markedDays={[...weeklyRecurrences, ...partnerScheduledDays]}
           hoursBeforeSchedule={hourBeforeSchedule}
+          initialMonth={initialMonth}
+          onMonthChange={setInitialMonth}
+          availableHoursByDate={availableHoursByDate}
         />
         <MyButton
           variant="default"

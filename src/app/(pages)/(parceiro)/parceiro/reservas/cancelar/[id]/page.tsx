@@ -40,7 +40,9 @@ export default function CancelarAtividade() {
     queryFn: () => schedules.getScheduleById(id as string),
   });
 
-  const hasClient = parterSchedules?.ordersScheduleAdventure;
+  const hasClient =
+    parterSchedules?.qntConfirmedPersons &&
+    parterSchedules?.qntConfirmedPersons > 0;
   const handleCancel = async () => {
     try {
       await partnerService.cancelSchedule(
@@ -50,13 +52,15 @@ export default function CancelarAtividade() {
       );
 
       router.push(`${PATHS["reservas-parceiro"]}?openModal=true`);
+      setIsModalOpen(false);
     } catch (error) {
       console.error("Error canceling schedule:", error);
       toast.error("Erro ao cancelar a atividade. Tente novamente mais tarde.");
     } finally {
-      setIsModalOpen(false);
     }
   };
+
+  console.log(hasClient);
 
   return (
     <main className="min-h-screen">

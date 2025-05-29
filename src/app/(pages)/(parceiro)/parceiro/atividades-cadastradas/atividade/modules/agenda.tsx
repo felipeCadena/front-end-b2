@@ -19,8 +19,12 @@ export default function Agenda({ formData, setFormData, onClose }: ModalProps) {
     }));
 
     try {
-      await partnerService.createMoreSchedule(formData.id, body);
+      const response = await partnerService.createMoreSchedule(
+        formData.id,
+        body
+      );
       queryClient.invalidateQueries({ queryKey: ["activity"] });
+      return response;
     } catch (error) {
       console.error("Error creating schedule:", error);
       toast.error("Erro ao criar horário!");
@@ -32,13 +36,14 @@ export default function Agenda({ formData, setFormData, onClose }: ModalProps) {
     justificativa?: string
   ) => {
     try {
-      await partnerService.cancelSchedule(
+      const response = await partnerService.cancelSchedule(
         scheduleId,
         formData.id,
         justificativa
       );
 
       queryClient.invalidateQueries({ queryKey: ["activity"] });
+      return response;
     } catch (error) {
       console.error("Error creating schedule:", error);
       toast.error("Erro ao cancelar horário!");
@@ -54,9 +59,10 @@ export default function Agenda({ formData, setFormData, onClose }: ModalProps) {
         partnerService.cancelSchedule(scheduleId, formData.id, justificativa)
       );
 
-      await Promise.all(allSchedules);
+      const response = await Promise.all(allSchedules);
 
       queryClient.invalidateQueries({ queryKey: ["activity"] });
+      return response;
     } catch (error) {
       console.error("Error creating schedule:", error);
       toast.error("Erro ao cancelar todos os horário!");

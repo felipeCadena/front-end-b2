@@ -41,15 +41,15 @@ interface SchedulesByDate {
 type CalendarProps = {
   duration: string;
   schedules?: Schedule[];
-  onCreateSchedule: (datetimes: string[]) => Promise<void>;
+  onCreateSchedule: (datetimes: string[]) => Promise<any>;
   onCancelSchedule: (
     scheduleId: string,
     justificativa?: string
-  ) => Promise<void>;
+  ) => Promise<any>;
   onCancelAllSchedules: (
     chedulesId: string[],
     justificativa?: string
-  ) => Promise<void>;
+  ) => Promise<any>;
   className?: string;
 } & Omit<DayPickerProps, "mode" | "selected" | "onSelect">;
 
@@ -177,8 +177,11 @@ function CalendarAvailability({
     const formattedSchedules = formatScheduleTimes(selectedDate, newTimesOnly);
 
     try {
-      await onCreateSchedule(formattedSchedules);
-      setSelectedTimes([]); // limpa a seleção
+      const response = await onCreateSchedule(formattedSchedules);
+
+      if (response) {
+        setSelectedTimes([]);
+      }
     } catch (error) {
       console.log("Erro ao criar horários");
     } finally {
@@ -195,16 +198,14 @@ function CalendarAvailability({
 
     // Verifica se tem cliente agendado
 
-    try {
-      await onCancelSchedule(id, justificativa);
+    const response = await onCancelSchedule(id, justificativa);
+
+    if (response) {
       setIsModalCancelOpen(true);
-    } catch (error) {
-      console.log("Erro ao cancelar horário");
-    } finally {
-      setIsLoadingCancel(false);
       setHasClient(false);
       setSelectedJustificativa("");
     }
+    setIsLoadingCancel(false);
   };
 
   const handleCloseModal = () => {
@@ -220,13 +221,15 @@ function CalendarAvailability({
     setIsLoadingAllCancel(true);
 
     try {
-      await onCancelAllSchedules(ids, selectedJustificativa);
-      setCancelAllSchedules(false);
-      setConfirmCancelAll(true);
+      const response = await onCancelAllSchedules(ids, selectedJustificativa);
+      if (response) {
+        setCancelAllSchedules(false);
+        setConfirmCancelAll(true);
+      }
     } catch (error) {
       console.log("Erro ao cancelar horários");
-    } finally {
       setIsLoadingAllCancel(false);
+    } finally {
     }
   };
 

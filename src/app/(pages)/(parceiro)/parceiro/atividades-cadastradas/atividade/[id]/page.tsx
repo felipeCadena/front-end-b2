@@ -17,6 +17,7 @@ import {
   getDifficultyDescription,
   getDifficultyDescriptionResume,
   handleNameActivity,
+  sortImagesByDefaultFirst,
 } from "@/utils/formatters";
 import {
   ActivityEditMenu,
@@ -395,9 +396,8 @@ export default function Atividade() {
         </div>
         <div className="max-sm:hidden grid grid-cols-4 grid-rows-2 gap-4">
           {activity?.images?.length &&
-            activity.images
+            sortImagesByDefaultFirst(activity.images)
               .slice(0, 5)
-              .sort((a, b) => (b.isDefault ? 1 : 0) - (a.isDefault ? 1 : 0))
               .map((image, index) => (
                 <Image
                   key={index}
@@ -405,7 +405,7 @@ export default function Atividade() {
                   alt="fotos da atividade"
                   width={300}
                   height={300}
-                  className={`h-full w-ful max-h-[27rem] rounded-lg object-cover ${index === 0 ? "col-span-2 row-span-2 w-full h-[27rem]" : "h-[12rem] max-h-[12rem]"}`}
+                  className={`w-full max-h-[25rem] rounded-lg object-cover ${index === 0 ? "col-span-2 row-span-2 h-[25rem]" : "h-[12rem] max-h-[12rem]"}`}
                 />
               ))}
         </div>
@@ -445,25 +445,30 @@ export default function Atividade() {
         </div>
       </div>
 
-      <div className="mx-6">
+      <div className="mx-6 mt-4">
         <div className="md:grid md:grid-cols-2 md:gap-8">
           {formattedItemsIncluded().length > 0 && (
-            <div
-              className={cn(
-                "grid grid-cols-2 md:grid-cols-3 gap-x-8 gap-y-4 my-10"
-              )}
-            >
-              {formattedItemsIncluded().map((item) => (
-                <div key={item.label} className="flex items-center gap-2">
-                  <MyIcon
-                    name={item.icon as IconsMapTypes}
-                    className="p-2 bg-primary-900 rounded-md text-white"
-                  />
-                  <MyTypography variant="body" weight="bold">
-                    {item.label}
-                  </MyTypography>
-                </div>
-              ))}
+            <div>
+              <MyTypography variant="body-big" weight="semibold">
+                Está incluso:
+              </MyTypography>
+              <div
+                className={cn(
+                  "grid grid-cols-2 md:grid-cols-3 gap-x-8 gap-y-4 mt-4 mb-8"
+                )}
+              >
+                {formattedItemsIncluded().map((item) => (
+                  <div key={item.label} className="flex items-center gap-2">
+                    <MyIcon
+                      name={item.icon as IconsMapTypes}
+                      className="p-2 bg-primary-900 rounded-md text-white"
+                    />
+                    <MyTypography variant="body" weight="bold">
+                      {item.label}
+                    </MyTypography>
+                  </div>
+                ))}
+              </div>
             </div>
           )}
 

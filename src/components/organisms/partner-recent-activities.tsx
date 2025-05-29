@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import { cn } from '@/utils/cn';
-import React, { useState } from 'react';
-import ModalClient from './modal-client';
-import Pessoas from '../atoms/my-icon/elements/pessoas';
-import { PartnerSchedule } from '@/services/api/admin';
-import RecentActivityCard from './recent-activity-card';
+import { cn } from "@/utils/cn";
+import React, { useState } from "react";
+import ModalClient from "./modal-client";
+import Pessoas from "../atoms/my-icon/elements/pessoas";
+import { PartnerSchedule } from "@/services/api/admin";
+import RecentActivityCard from "./recent-activity-card";
 
 type PartnerRecentActivitiesProps = {
   recentActivities: PartnerSchedule[];
@@ -34,12 +34,13 @@ export default function PartnerRecentActivities({
         />
         <div
           className={cn(
-            'grid grid-cols-1 md:grid-cols-3 gap-5',
-            admin && 'md:grid-cols-2'
+            "grid grid-cols-1 md:grid-cols-3 gap-5",
+            admin && "md:grid-cols-2"
           )}
         >
           {recentActivities.map((recentAct, index) => (
             <RecentActivityCard
+              key={index}
               index={index}
               recentActivity={recentAct}
               setShowModal={setShowModal}

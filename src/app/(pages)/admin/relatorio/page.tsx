@@ -19,31 +19,22 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/molecules/my-table";
-import { getData, getHora, getYearsArray } from "@/utils/formatters";
+import { getYearsArray } from "@/utils/formatters";
 import MyIcon from "@/components/atoms/my-icon";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
-import { partnerService } from "@/services/api/partner";
 import { endOfMonth, format, parse, startOfMonth } from "date-fns";
 import { adminService } from "@/services/api/admin";
 import { Pagination } from "@/components/molecules/pagination";
+import Download from "@/components/atoms/my-icon/elements/download";
+import { toast } from "react-toastify";
+import MySpinner from "@/components/atoms/my-spinner";
 
 export default function RelatorioAdmin() {
   const router = useRouter();
   const [page, setPage] = React.useState(1);
-
-  const [selectedDate, setSelectedDate] = React.useState<Date>(new Date());
-
-  const startOfSelectedMonth = format(
-    startOfMonth(selectedDate),
-    "yyyy-MM-dd'T'00:00:00"
-  );
-
-  const endOfSelectedMonth = format(
-    endOfMonth(selectedDate),
-    "yyyy-MM-dd'T'23:59:59"
-  );
+  const [downloading, setDownloading] = React.useState(false);
 
   const currentMonthKey = format(new Date(), "MM");
 
@@ -61,12 +52,18 @@ export default function RelatorioAdmin() {
   }, [filters?.month, filters.year]);
 
   const startDate = React.useMemo(() => {
+    if (filters.month === "00") {
+      return `${filters.year}-01-01T00:00:00`;
+    }
     return format(startOfMonth(selectedMonthDate), "yyyy-MM-dd'T'00:00:00");
-  }, [selectedMonthDate]);
+  }, [filters.year, filters.month, selectedMonthDate]);
 
   const endDate = React.useMemo(() => {
+    if (filters.month === "00") {
+      return `${filters.year}-12-31T23:59:59`;
+    }
     return format(endOfMonth(selectedMonthDate), "yyyy-MM-dd'T'23:59:59");
-  }, [selectedMonthDate]);
+  }, [filters.year, filters.month, selectedMonthDate]);
 
   const { data: allOrders, isLoading } = useQuery({
     queryKey: ["listOrders", page, filters],
@@ -123,6 +120,36 @@ export default function RelatorioAdmin() {
     });
   });
 
+  const handleDownload = async () => {
+    setDownloading(true);
+    try {
+      const report = await adminService.downloadReport({
+        startsAt: startDate,
+        endsAt: endDate,
+      });
+
+      const blob = new Blob([report], {
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      });
+
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `relatorio-${startDate}-a-${endDate}.xlsx`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+
+      toast.success("Relatório baixado com sucesso!");
+    } catch (error) {
+      console.error("Error downloading report:", error);
+      toast.error("Erro ao baixar o relatório. Tente novamente mais tarde.");
+    } finally {
+      setDownloading(false);
+    }
+  };
+
   return (
     <section className="max-w-screen-xl mx-auto py-2 md:py-8 px-4 overflow-hidden">
       {/* Header */}
@@ -145,7 +172,7 @@ export default function RelatorioAdmin() {
           </MyTypography>
         </div>
       </div>
-      <div className="flex justify-end w-full mb-4">
+      <div className="flex items-center justify-end w-full mb-4">
         <div className="flex gap-2 ">
           <MySelect
             value={filters?.year}
@@ -176,6 +203,7 @@ export default function RelatorioAdmin() {
               <SelectValue placeholder="Mês" />
             </SelectTrigger>
             <SelectContent className="rounded-lg">
+              <SelectItem value="00">Ano Inteiro</SelectItem>
               <SelectItem value="01">Janeiro</SelectItem>
               <SelectItem value="02">Fevereiro</SelectItem>
               <SelectItem value="03">Março</SelectItem>
@@ -190,6 +218,17 @@ export default function RelatorioAdmin() {
               <SelectItem value="12">Dezembro</SelectItem>
             </SelectContent>
           </MySelect>
+
+          <div
+            className="cursor-pointer h-8 w-8 flex items-center justify-center"
+            onClick={handleDownload}
+          >
+            {downloading ? (
+              <MySpinner className="h-6 w-6" />
+            ) : (
+              <Download fill="#8DC63F" width="24" height="24" />
+            )}
+          </div>
         </div>
       </div>
 

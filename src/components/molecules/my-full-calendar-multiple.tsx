@@ -33,8 +33,6 @@ function MyFullCalendarMultiple({
   const currentMonth = new Date(now.getFullYear(), now.getMonth(), 1);
   const [visibleMonth, setVisibleMonth] = React.useState<Date>(currentMonth);
 
-  console.log("currentMonth", currentMonth);
-
   React.useEffect(() => {
     const checkScreenSize = () => {
       setIsDesktop(window.innerWidth >= 768);

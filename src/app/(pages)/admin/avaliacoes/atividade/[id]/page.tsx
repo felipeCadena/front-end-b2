@@ -189,6 +189,7 @@ export default function Atividade() {
       await adminService.approveOrRejectAdventure(id, body);
       toast.success("Atividade rejeitada com sucesso!");
       queryClient.invalidateQueries({ queryKey: ["activity"] });
+      setRefusalMsg("");
     } catch (err: unknown) {
       if (err instanceof AxiosError) {
         const message =

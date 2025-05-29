@@ -80,7 +80,9 @@ export default function FullActivitiesHistoricMobile({
                   <div className="flex gap-2 items-center my-1">
                     <Image
                       alt="foto parceiro"
-                      src={activity?.adventure?.partner?.logo?.url}
+                      src={
+                        activity?.adventure?.partner?.logo?.url ?? "/user.png"
+                      }
                       width={40}
                       height={40}
                       className="rounded-full w-[25px] h-[25px]"

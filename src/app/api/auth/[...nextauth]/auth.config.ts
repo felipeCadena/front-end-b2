@@ -145,7 +145,6 @@ export const authOptions: NextAuthOptions = {
             (user.role = decodedToken.role);
           user.expiresIn = response.expires_in;
           user.expiresAt = expiresAt;
-          user.image = decodedToken.image;
           (user.partnerId = decodedToken?.partner?.id),
             (user.partnerName = decodedToken?.partner?.fantasyName),
             (user.partnerIsActive = decodedToken?.partner?.isActive),
@@ -179,7 +178,6 @@ export const authOptions: NextAuthOptions = {
             (user.role = decodedToken.role);
           user.expiresIn = response.expires_in;
           user.expiresAt = expiresAt;
-          user.image = decodedToken.image;
           (user.partnerId = decodedToken?.partner?.id),
             (user.partnerName = decodedToken?.partner?.fantasyName),
             (user.partnerIsActive = decodedToken?.partner?.isActive),
@@ -205,19 +203,18 @@ export const authOptions: NextAuthOptions = {
         token.id = user.id;
         token.email = user.email;
         token.defaultPath = user.defaultPath;
-        token.image = user.image ?? "";
         token.expiresAt = user.expiresAt;
         token.loginSocial = user.loginSocial;
-        token.partnerId = user?.partner?.id;
-        token.partnerName = user?.partner?.fantasyName;
-        token.partnerIsActive = user?.partner?.isActive;
+        token.partnerId = user.partnerId;
+        token.partnerName = user.partnerName;
+        token.partnerIsActive = user.partnerIsActive;
 
         return token;
       }
 
       const now = Date.now();
 
-      if (now > token.expiresAt && token?.refreshToken) {
+      if (token?.expiresAt && now > token.expiresAt && token?.refreshToken) {
         // console.log("token if expirado " + token?.refreshToken);
         try {
           const dataAuth = await authService.refreshToken(token?.refreshToken);
@@ -239,10 +236,9 @@ export const authOptions: NextAuthOptions = {
         } catch (err) {
           console.error("Erro ao renovar token:", (err as any)?.response?.data);
           return {
-            ...token,
+            // ...token,
             error: "RefreshAccessTokenError", // <- chave para verificar no frontend
           };
-          // return {};
         }
       }
 
@@ -253,20 +249,22 @@ export const authOptions: NextAuthOptions = {
 
       if (token?.error) {
         session.error = "RefreshAccessTokenError";
-      }
-
-      if (token) {
-        session.user.accessToken = token?.accessToken;
-        session.user.refreshToken = token?.refreshToken;
-        session.user.role = token?.role;
-        session.user.id = token?.id;
-        session.user.defaultPath = token?.defaultPath;
-        session.user.expiresIn = token?.expiresIn;
-        session.user.email = token?.email;
-        session.user.expiresAt = token?.expiresAt;
-        session.partnerId = token?.partner?.id;
-        session.partnerName = token?.partner?.fantasyName;
-        session.partnerIsActive = token?.partner?.isActive;
+        session.user = null;
+      } else if (token) {
+        session.user = {
+          accessToken: token.accessToken,
+          refreshToken: token.refreshToken,
+          role: token.role,
+          id: token.id,
+          defaultPath: token.defaultPath,
+          expiresIn: token.expiresIn,
+          email: token.email,
+          expiresAt: token.expiresAt,
+        };
+        // você pode adicionar os dados do parceiro diretamente na session
+        session.partnerId = token.partnerId;
+        session.partnerName = token.partnerName;
+        session.partnerIsActive = token.partnerIsActive;
       }
 
       return session;

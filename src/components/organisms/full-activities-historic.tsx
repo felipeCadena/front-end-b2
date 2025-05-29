@@ -62,6 +62,7 @@ export default function FullActivitiesHistoric({
   const [showModal, setShowModal] = useState(false);
   const [showCanceledModal, setShowCanceledModal] = useState(false);
   const [isOffCancelLimit, setIsOffCancelLimit] = useState(false);
+  const [paid, setPaid] = useState(false);
   const [cancelOrder, setCancelOrder] = useState<CancelSchedule | null>(null);
   const queryClient = useQueryClient();
 
@@ -75,7 +76,10 @@ export default function FullActivitiesHistoric({
 
     const isOffLimit = todayPlusHours > scheduleDateTime;
 
+    const notPaid = activity.personsIsAccounted;
+
     setIsOffCancelLimit(isOffLimit);
+    setPaid(notPaid);
   };
 
   const handleModal = (activity: CustomerSchedule) => {
@@ -109,6 +113,12 @@ export default function FullActivitiesHistoric({
         queryClient.invalidateQueries({
           queryKey: ["schedules"],
         });
+        setCancelOrder(null);
+        setShowModal(false);
+        setIsOffCancelLimit(false);
+        setTimeout(() => {
+          setShowCanceledModal(true);
+        }, 500);
       } catch (error) {
         if (error instanceof AxiosError) {
           if (error.status === 400) {
@@ -116,13 +126,6 @@ export default function FullActivitiesHistoric({
             toast.error(error.response?.data.message);
           }
         }
-      } finally {
-        setCancelOrder(null);
-        setShowModal(false);
-        setIsOffCancelLimit(false);
-        setTimeout(() => {
-          setShowCanceledModal(true);
-        }, 500);
       }
     }
   };
@@ -133,6 +136,9 @@ export default function FullActivitiesHistoric({
     }
   };
 
+  console.log(isOffCancelLimit);
+  console.log(paid);
+
   return (
     <section className="md:max-w-screen-custom">
       {activities && activities.length > 0 ? (
@@ -140,8 +146,9 @@ export default function FullActivitiesHistoric({
           <div
             className={cn(
               "flex items-center gap-4 mt-20 mb-20 w-full",
-              activity?.adventureStatus.includes("cancelado") &&
-                "opacity-60 pointer-events-none"
+              activity?.adventureStatus.includes("cancelado") ||
+                (activity?.schedule?.isCanceled &&
+                  "opacity-60 pointer-events-none")
             )}
             key={index}
           >
@@ -181,7 +188,9 @@ export default function FullActivitiesHistoric({
                     <div className="flex gap-2 items-center">
                       <Image
                         alt="foto parceiro"
-                        src={activity?.adventure?.partner?.logo?.url}
+                        src={
+                          activity?.adventure?.partner?.logo?.url ?? "/user.png"
+                        }
                         width={40}
                         height={40}
                         className="w-[40px] h-[40px] rounded-full object-cover border-2"
@@ -211,14 +220,15 @@ export default function FullActivitiesHistoric({
                   </MyTypography>
                 </div>
 
-                {activity?.adventureStatus.includes("cancelado") && (
-                  <MyBadge
-                    variant="error"
-                    className="p-1 h-6 rounded-lg text-nowrap"
-                  >
-                    Atividade cancelada
-                  </MyBadge>
-                )}
+                {activity?.adventureStatus.includes("cancelado") ||
+                  (activity?.schedule?.isCanceled && (
+                    <MyBadge
+                      variant="error"
+                      className="p-1 h-6 rounded-lg text-nowrap"
+                    >
+                      Atividade cancelada
+                    </MyBadge>
+                  ))}
 
                 {isActivityDone &&
                   !activity?.adventureStatus.includes("cancelado") && (
@@ -392,13 +402,13 @@ export default function FullActivitiesHistoric({
                     Total:
                   </MyTypography>
                   <MyTypography variant="body" weight="bold" className="">
-                    {Number(activity.orderAdventure.totalCost).toLocaleString(
-                      "pt-BR",
-                      {
-                        style: "currency",
-                        currency: "BRL",
-                      }
-                    )}
+                    {(
+                      Number(activity?.adventureFinalPrice) +
+                      Number(activity?.totalGatewayFee)
+                    ).toLocaleString("pt-BR", {
+                      style: "currency",
+                      currency: "BRL",
+                    })}
                   </MyTypography>
                 </div>
               </div>
@@ -448,7 +458,9 @@ export default function FullActivitiesHistoric({
         subtitle={
           isOffCancelLimit
             ? "Atividade cancelada!"
-            : "Atividade cancelada! Em breve o seu estorno estará disponível na mesma forma de pagamento realizada."
+            : !paid
+              ? "Essa atividade não foi paga. Portanto, foi cancelada com sucesso e não há reembolso!"
+              : "Atividade cancelada! Em breve o seu estorno estará disponível na mesma forma de pagamento realizada."
         }
         buttonTitle="Voltar"
         iconName="warning"

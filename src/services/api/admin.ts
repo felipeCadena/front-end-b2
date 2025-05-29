@@ -382,6 +382,24 @@ export const adminService = {
     }
   },
 
+  async downloadReport(params?: {
+    startsAt?: string;
+    endsAt?: string;
+    limit?: number;
+    skip?: number;
+  }) {
+    try {
+      const response = await api.get("/admin/report", {
+        params,
+        responseType: "blob",
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error download report:", error);
+      throw error;
+    }
+  },
+
   async listOrders(params?: {
     startsAt?: string;
     endsAt?: string;

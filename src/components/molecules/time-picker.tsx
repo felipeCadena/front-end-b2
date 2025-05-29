@@ -25,8 +25,6 @@ export default function TimePickerModal({
   className,
 }: TimePickerModalProps) {
   const [open, setOpen] = useState(false);
-  const [initialTime, setInitialTime] = useState("");
-
   const timeRef = useRef<HTMLDivElement>(null);
 
   // Scroll para a seleção atual quando o popover abre

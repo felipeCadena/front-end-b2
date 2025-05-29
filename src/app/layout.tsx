@@ -36,6 +36,7 @@ export default function RootLayout({
           name="facebook-domain-verification"
           content="zqjcoi9kslkxzreeg9w2vchootdjwg"
         />
+        <meta property="og:image" content="/logo.png" />
         {!ENV_PRO && <meta name="robots" content="noindex" />}
       </head>
       <body

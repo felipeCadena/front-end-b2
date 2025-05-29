@@ -20,7 +20,7 @@ import { Pagination } from "@/components/molecules/pagination";
 
 export default function Reservas() {
   const router = useRouter();
-  const [date, setDate] = React.useState<Date | null>(new Date());
+  const [date, setDate] = React.useState<Date | null>(null);
   const [dates, setDates] = React.useState<Date[]>([]);
   const [page, setPage] = React.useState(1);
 
@@ -56,6 +56,10 @@ export default function Reservas() {
       ? selectedScheduleActivities
       : parterSchedules?.data;
 
+  console.log("renderActivities", renderActivities);
+  console.log("selectedScheduleActivities", selectedScheduleActivities);
+  console.log("parterSchedules?.data", parterSchedules?.data);
+
   return (
     <main className="my-6">
       <div className="px-4 flex items-center justify-between md:my-12">
@@ -82,17 +86,6 @@ export default function Reservas() {
           >
             Nova atividade
           </MyButton>
-
-          {/* <MyButton
-            variant="red"
-            borderRadius="squared"
-            size="md"
-            leftIcon={<Hide iconColor="#FF7272" />}
-            onClick={() => router.push(PATHS["atividades-ocultas"])}
-            className="w-1/4"
-          >
-            Ocultas
-          </MyButton> */}
         </div>
       </div>
       <div className="relative px-2">
@@ -110,17 +103,19 @@ export default function Reservas() {
 
       <div className="h-1 w-1/3 mx-auto bg-gray-200 rounded-xl my-6" />
 
-      <div className="flex justify-end max-sm:justify-center max-sm:gap-4 max-sm:px-4 mb-2">
-        <MyButton
-          variant="outline-neutral"
-          borderRadius="squared"
-          size="lg"
-          className="max-sm:w-full"
-          onClick={() => setDate(null)}
-        >
-          Mostrar todas as datas
-        </MyButton>
-      </div>
+      {date && (
+        <div className="flex justify-end max-sm:justify-center max-sm:gap-4 max-sm:px-4 mb-2">
+          <MyButton
+            variant="outline-neutral"
+            borderRadius="squared"
+            size="lg"
+            className="max-sm:w-full"
+            onClick={() => setDate(null)}
+          >
+            Mostrar todas as datas
+          </MyButton>
+        </div>
+      )}
 
       <div className="md:hidden w-full flex justify-center gap-4 px-4">
         <MyButton

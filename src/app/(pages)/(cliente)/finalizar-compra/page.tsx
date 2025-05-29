@@ -28,8 +28,10 @@ import {
   formatCpfCnpj,
   formatInstallmentOptions,
   formatPhoneNumber,
+  formatPhoneNumberDDI,
 } from "@/utils/formatters";
 import { useSession } from "next-auth/react";
+import CartConflictCheckerWithModal from "@/components/organisms/modal-cart-conflit";
 
 const formSchema = z
   .object({
@@ -126,6 +128,14 @@ const formSchema = z
             code: z.ZodIssueCode.custom,
             message: "CCV é obrigatório",
             path: ["creditCard", "ccv"],
+          });
+        }
+
+        if (!data.creditCardHolderInfo?.postalCode?.trim()) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "CEP é obrigatório para pagamento com cartão",
+            path: ["creditCardHolderInfo", "postalCode"],
           });
         }
       }
@@ -263,9 +273,9 @@ export default function FinalizarCompra() {
           ...paymentDefaultValues.creditCardHolderInfo,
           name: loggedUser.name,
           email: loggedUser.email,
-          phone: loggedUser.phone,
+          phone: formatPhoneNumberDDI(loggedUser.phone),
           cpfCnpj: formatCpfCnpj(loggedUser.cpf),
-          mobilePhone: formatPhoneNumber(loggedUser.phone),
+          mobilePhone: formatPhoneNumberDDI(loggedUser.phone),
         },
         adventures: purchaseOrder,
       });
@@ -407,6 +417,7 @@ export default function FinalizarCompra() {
 
   return (
     <section className="px-4 mb-8">
+      <CartConflictCheckerWithModal cart={userCart?.cart ?? []} />
       <div className="flex gap-4 items-center max-sm:hidden">
         <MyIcon
           name="voltar-black"

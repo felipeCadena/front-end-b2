@@ -38,7 +38,7 @@ const Layout = ({ children }: { children: ReactNode }) => {
             className={`relative overflow-hidden ${item.span} ${item.padding ?? ""}`}
           >
             <Image
-              src={item.src}
+              src={item.src ?? "/images/atividades/terra/terra-5.jpeg"}
               alt={`Imagem ${index}`}
               fill
               quality={90}

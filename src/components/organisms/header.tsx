@@ -16,11 +16,13 @@ import { useQuery } from "@tanstack/react-query";
 import { users } from "@/services/api/users";
 import { useAuthStore } from "@/store/useAuthStore";
 import User from "../atoms/my-icon/elements/user";
+import MyButton from "../atoms/my-button";
+import { sideBarClient } from "@/common/constants/sideBar";
 
 export default function Header() {
   const router = useRouter();
   const pathname = usePathname();
-  const { sideBarActive } = useLogin();
+  const { sideBarActive, setSideBarActive } = useLogin();
   const { setUser } = useAuthStore();
   const { data: session, status } = useSession();
 
@@ -80,28 +82,33 @@ export default function Header() {
       <div className="flex-shrink-0 md:flex md:items-center md:gap-6 ">
         <div className="flex gap-2 items-center">
           <LanguageDropdown />
-          <button
-            onClick={() => router.push(PATHS.login)}
-            className="md:hidden flex items-center font-semibold gap-1 px-2 py-1 text-white bg-black rounded-full shadow-md"
-          >
-            <User fill="#fff" />
-          </button>
+          {!session?.user && status === "unauthenticated" && (
+            <button
+              onClick={() => router.push(PATHS.login)}
+              className="md:hidden flex items-center font-semibold gap-1 px-2 py-1 text-white bg-black rounded-full shadow-md"
+            >
+              <User fill="#fff" />
+            </button>
+          )}
         </div>
 
         <div className="max-sm:hidden">
           {session?.user && status === "authenticated" ? (
             <SideBarModal sideBar={sideBarActive}>
-              <div className="flex items-center gap-1 cursor-pointer">
+              <MyButton
+                variant="text"
+                className="flex items-center gap-1 cursor-pointer focus-visible:outline-none focus-visible:ring-0"
+              >
                 <MyIcon name="chevron-down" />
                 <Image
-                  key={fetchUser?.photo?.updatedAt}
-                  src={`${isPhotoAvailable ? `${fetchUser?.photo?.url}?v=${new Date(fetchUser?.photo?.updatedAt ?? Date.now()).getTime()}` : "/user.png"}`}
+                  key={fetchUser?.photo?.updatedAt ?? "foto do usuario"}
+                  src={`${isPhotoAvailable ? `${fetchUser?.photo?.url}?v=${fetchUser?.photo?.updatedAt}` : "/user.png"}`}
                   alt="Avatar"
                   width={50}
                   height={50}
                   className="rounded-full w-14 h-14 object-cover"
                 />
-              </div>
+              </MyButton>
             </SideBarModal>
           ) : (
             <button

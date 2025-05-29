@@ -57,9 +57,9 @@ export default function SidebarMenu({
 
   const handleLogout = async () => {
     try {
-      await authService.logout(session?.user.refreshToken ?? "");
-      await signOut({ callbackUrl: "/" });
       clearUser();
+      await authService.logout(session?.user.refreshToken ?? "");
+      signOut({ callbackUrl: "/" });
     } catch (error) {
       console.error("Error during logout:", error);
       toast.error("Erro ao fazer logout. Tente novamente.");
@@ -118,7 +118,7 @@ export default function SidebarMenu({
                     notifications?.messagesUnred > 0
                       ? "bg-red-400"
                       : "bg-slate-300",
-                    notifications?.messagesUnred > 10 && "h-[1.2rem] w-[1.3rem]"
+                    notifications?.messagesUnred > 10 && "h-[1.2rem] w-[1.8rem]"
                   )}
                 >
                   {notifications?.messagesUnred}
