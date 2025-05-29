@@ -10,6 +10,8 @@ import {
   format,
   isAfter,
   isBefore,
+  isSameDay,
+  parseISO,
   startOfDay,
   startOfMonth,
 } from "date-fns";
@@ -25,6 +27,7 @@ type CalendarProps = {
   className?: string;
   initialMonth?: Date;
   onMonthChange?: (month: Date) => void;
+  availableHoursByDate?: Record<string, string[]>; // Assuming this is a map of date strings to available hours
 } & Omit<DayPickerProps, "mode" | "selected" | "onSelect">;
 
 export function MyActivityCalendar({
@@ -38,6 +41,7 @@ export function MyActivityCalendar({
   className,
   initialMonth,
   onMonthChange,
+  availableHoursByDate,
   ...props
 }: CalendarProps) {
   const [isDesktop, setIsDesktop] = React.useState<boolean>(false);
@@ -77,6 +81,10 @@ export function MyActivityCalendar({
     }
   }, [initialMonth]);
 
+  const enabledDates =
+    availableHoursByDate &&
+    Object.keys(availableHoursByDate).map((d) => parseISO(`${d}T00:00:00`));
+
   return (
     <div>
       <DayPicker
@@ -87,20 +95,7 @@ export function MyActivityCalendar({
         className={cn("md:flex md:justify-center", className)}
         ISOWeek={true}
         locale={ptBR}
-        disabled={(date) => {
-          const limitDate = addHours(new Date(), hoursBeforeSchedule);
-
-          const isBeforeLimit = isBefore(date, limitDate);
-
-          const isMarkedDate = markedDates.some(
-            (thisDate) => thisDate.toDateString() === date.toDateString()
-          );
-          const isMarkedDay = markedDays?.some(
-            (thisDay) => thisDay.toDateString() === date.toDateString()
-          );
-
-          return isBeforeLimit || !(isMarkedDay || isMarkedDate);
-        }}
+        disabled={(date) => !enabledDates?.some((d) => isSameDay(d, date))}
         formatters={{
           formatWeekdayName: (weekday) => {
             const fullName = weekday.toLocaleDateString("pt-BR", {

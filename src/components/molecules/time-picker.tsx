@@ -60,6 +60,7 @@ export default function TimePickerModal({
   //   }
   // }, [availableActivityTimes, selectedTime]);
 
+  console.log(availableActivityTimes);
   const handleOpen = () => {
     if (availableActivityTimes.length === 0) {
       toast.error("Selecione uma data antes de escolher o horário");

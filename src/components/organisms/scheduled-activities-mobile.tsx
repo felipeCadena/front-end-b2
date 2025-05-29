@@ -109,6 +109,9 @@ export default function ScheduledActivitiesMobile({
     }
   };
 
+  console.log(isOffCancelLimit);
+  console.log(paid);
+
   return (
     <section className="">
       {activities &&
