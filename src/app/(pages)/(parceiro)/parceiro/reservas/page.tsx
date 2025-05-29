@@ -114,17 +114,19 @@ export default function Reservas() {
 
       <div className="h-1 w-1/3 mx-auto bg-gray-200 rounded-xl my-6" />
 
-      <div className="flex justify-end max-sm:justify-center max-sm:gap-4 max-sm:px-4 mb-2">
-        <MyButton
-          variant="outline-neutral"
-          borderRadius="squared"
-          size="lg"
-          className="max-sm:w-full"
-          onClick={() => setDate(null)}
-        >
-          Mostrar todas as datas
-        </MyButton>
-      </div>
+      {date && (
+        <div className="flex justify-end max-sm:justify-center max-sm:gap-4 max-sm:px-4 mb-2">
+          <MyButton
+            variant="outline-neutral"
+            borderRadius="squared"
+            size="lg"
+            className="max-sm:w-full"
+            onClick={() => setDate(null)}
+          >
+            Mostrar todas as datas
+          </MyButton>
+        </div>
+      )}
 
       <div className="md:hidden w-full flex justify-center gap-4 px-4">
         <MyButton

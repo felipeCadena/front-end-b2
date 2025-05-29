@@ -118,9 +118,10 @@ export default function ScheduledActivitiesMobile({
         activities.map((activity, index: number) => (
           <div
             className={cn(
-              "flex flex-col gap-4 px-2 my-8",
-              activity?.adventureStatus.includes("cancelado") &&
-                "opacity-60 pointer-events-none"
+              "flex flex-col gap-4 px-2 my-12",
+              activity?.adventureStatus.includes("cancelado") ||
+                (activity?.schedule?.isCanceled &&
+                  "opacity-60 pointer-events-none")
             )}
             key={index}
           >
@@ -133,7 +134,7 @@ export default function ScheduledActivitiesMobile({
               </div>
               <div className="flex justify-center gap-2 max-h-[9rem]">
                 <div
-                  className="relative z-10 overflow-hidden min-w-[110px] min-h-[7rem] hover:cursor-pointer rounded-md"
+                  className="relative z-10 overflow-hidden min-w-[100px] min-h-[7rem] hover:cursor-pointer rounded-md"
                   onClick={() =>
                     router.push(
                       PATHS.visualizarAtividade(activity?.adventure?.id)
@@ -145,7 +146,7 @@ export default function ScheduledActivitiesMobile({
                     src={getDefaultImage(activity)}
                     width={250}
                     height={300}
-                    className="w-[110px] h-full object-cover"
+                    className="w-[100px] h-full object-cover"
                   />
                 </div>
                 <div className="flex flex-col gap-1 justify-start">
@@ -158,15 +159,6 @@ export default function ScheduledActivitiesMobile({
                         {handleNameActivity(activity?.adventure?.typeAdventure)}
                       </MyBadge>
 
-                      {/* {activity?.adventureStatus ===
-                        "cancelado_pelo_cliente" && (
-                        <MyBadge
-                          className="font-medium text-nowrap p-1 rounded-lg"
-                          variant="error"
-                        >
-                          Cancelada
-                        </MyBadge>
-                      )} */}
                       {withOptions && (
                         <div className="cursor-pointer z-20">
                           <PopupCancelActivity
@@ -183,26 +175,39 @@ export default function ScheduledActivitiesMobile({
                   </div>
 
                   {!activity?.personsIsAccounted ? (
-                    <MyBadge variant="error" className="h-6 rounded-lg ">
-                      Pendente de pagamento
-                    </MyBadge>
+                    <div>
+                      <MyBadge variant="error" className="rounded-lg">
+                        Pendente de pagamento
+                      </MyBadge>
+                    </div>
                   ) : (
                     !activity?.partnerConfirmed && (
-                      <MyBadge variant="info" className="h-6 rounded-lg ">
-                        Pendente de confirmação
-                      </MyBadge>
+                      <div>
+                        <MyBadge variant="info" className="rounded-lg">
+                          Pendente de confirmação
+                        </MyBadge>
+                      </div>
                     )
                   )}
+                  {activity?.adventureStatus.includes("cancelad") ||
+                    (activity?.schedule?.isCanceled && (
+                      <div>
+                        <MyBadge className="h-6 rounded-lg" variant="error">
+                          Cancelada
+                        </MyBadge>
+                      </div>
+                    ))}
                   <MyTypography variant="subtitle3" weight="bold" className="">
                     {activity?.adventure?.title.length > 20
-                      ? activity?.adventure?.title.slice(0, 20).trim() + "..."
+                      ? activity?.adventure?.title.slice(0, 14).trim() + "..."
                       : activity?.adventure?.title}
                   </MyTypography>
                   <MyTypography variant="label" className="pr-2">
                     {!activity?.personsIsAccounted ||
-                    !activity?.partnerConfirmed
+                    !activity?.partnerConfirmed ||
+                    activity?.schedule?.isCanceled
                       ? activity.adventure.description
-                          .slice(0, 35)
+                          .slice(0, 30)
                           .concat("...")
                       : activity.adventure.description
                           .slice(0, 60)
