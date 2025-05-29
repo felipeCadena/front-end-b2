@@ -25,8 +25,6 @@ export default function TimePickerModal({
   className,
 }: TimePickerModalProps) {
   const [open, setOpen] = useState(false);
-  const [initialTime, setInitialTime] = useState("");
-
   const timeRef = useRef<HTMLDivElement>(null);
 
   // Scroll para a seleção atual quando o popover abre
@@ -60,7 +58,6 @@ export default function TimePickerModal({
   //   }
   // }, [availableActivityTimes, selectedTime]);
 
-  console.log(availableActivityTimes);
   const handleOpen = () => {
     if (availableActivityTimes.length === 0) {
       toast.error("Selecione uma data antes de escolher o horário");
