@@ -146,8 +146,9 @@ export default function FullActivitiesHistoric({
           <div
             className={cn(
               "flex items-center gap-4 mt-20 mb-20 w-full",
-              activity?.adventureStatus.includes("cancelado") &&
-                "opacity-60 pointer-events-none"
+              activity?.adventureStatus.includes("cancelado") ||
+                (activity?.schedule?.isCanceled &&
+                  "opacity-60 pointer-events-none")
             )}
             key={index}
           >
@@ -219,14 +220,15 @@ export default function FullActivitiesHistoric({
                   </MyTypography>
                 </div>
 
-                {activity?.adventureStatus.includes("cancelado") && (
-                  <MyBadge
-                    variant="error"
-                    className="p-1 h-6 rounded-lg text-nowrap"
-                  >
-                    Atividade cancelada
-                  </MyBadge>
-                )}
+                {activity?.adventureStatus.includes("cancelado") ||
+                  (activity?.schedule?.isCanceled && (
+                    <MyBadge
+                      variant="error"
+                      className="p-1 h-6 rounded-lg text-nowrap"
+                    >
+                      Atividade cancelada
+                    </MyBadge>
+                  ))}
 
                 {isActivityDone &&
                   !activity?.adventureStatus.includes("cancelado") && (

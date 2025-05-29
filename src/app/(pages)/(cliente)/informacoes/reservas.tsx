@@ -10,6 +10,7 @@ import MyTypography from "@/components/atoms/my-typography";
 import ScheduledActivitiesMobile from "@/components/organisms/scheduled-activities-mobile";
 import { chatService } from "@/services/api/chats";
 import { Pagination } from "@/components/molecules/pagination";
+import MyButton from "@/components/atoms/my-button";
 
 export default function Reservas() {
   const [date, setDate] = React.useState<Date>();
@@ -62,6 +63,20 @@ export default function Reservas() {
         locale={ptBR}
         className="capitalize"
       />
+
+      {date && (
+        <div className="flex justify-end mt-6">
+          <MyButton
+            variant="outline-neutral"
+            borderRadius="squared"
+            size="lg"
+            className="max-sm:w-full"
+            onClick={() => setDate(undefined)}
+          >
+            Mostrar todas as datas
+          </MyButton>
+        </div>
+      )}
 
       {renderActivities && renderActivities.length > 0 ? (
         <>
