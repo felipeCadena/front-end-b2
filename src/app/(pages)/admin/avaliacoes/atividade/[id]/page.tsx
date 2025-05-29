@@ -15,6 +15,7 @@ import {
   getDifficultyDescription,
   getDifficultyDescriptionResume,
   handleNameActivity,
+  sortImagesByDefaultFirst,
 } from "@/utils/formatters";
 import PATHS from "@/utils/paths";
 import { toast } from "react-toastify";
@@ -334,9 +335,8 @@ export default function Atividade() {
         </div>
         <div className="max-sm:hidden grid grid-cols-4 grid-rows-2 gap-4">
           {activity?.images?.length &&
-            activity.images
+            sortImagesByDefaultFirst(activity.images)
               .slice(0, 5)
-              .sort((a, b) => (b.isDefault ? 1 : 0) - (a.isDefault ? 1 : 0))
               .map((image, index) => (
                 <Image
                   key={index}
@@ -344,7 +344,7 @@ export default function Atividade() {
                   alt="fotos da atividade"
                   width={300}
                   height={300}
-                  className={`h-full w-ful max-h-[27rem] rounded-lg object-cover ${index === 0 ? "col-span-2 row-span-2 w-full h-[27rem]" : "h-[12rem] max-h-[12rem]"}`}
+                  className={`w-full max-h-[25rem] rounded-lg object-cover ${index === 0 ? "col-span-2 row-span-2 h-[25rem]" : "h-[12rem] max-h-[12rem]"}`}
                 />
               ))}
         </div>
