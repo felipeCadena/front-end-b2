@@ -1,26 +1,26 @@
-'use client';
+"use client";
 
-import Loading from '@/app/loading';
-import MyIcon from '@/components/atoms/my-icon';
-import MyTypography from '@/components/atoms/my-typography';
-import { Pagination } from '@/components/molecules/pagination';
-import PartnerApprovalCard from '@/components/molecules/partner-approval';
-import { adminService } from '@/services/api/admin';
-import { useQuery } from '@tanstack/react-query';
-import { useRouter } from 'next/navigation';
-import React, { useState } from 'react';
+import Loading from "@/app/loading";
+import MyIcon from "@/components/atoms/my-icon";
+import MyTypography from "@/components/atoms/my-typography";
+import { Pagination } from "@/components/molecules/pagination";
+import PartnerApprovalCard from "@/components/molecules/partner-approval";
+import { adminService } from "@/services/api/admin";
+import { useQuery } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
+import React, { useState } from "react";
 
 export default function ParceiroCadastrados() {
   const router = useRouter();
   const [page, setPage] = useState(1);
 
-  const { data: allPartners = [], isLoading } = useQuery({
-    queryKey: ['allPartners', page],
+  const { data: allPartners, isLoading } = useQuery({
+    queryKey: ["allPartners", page],
     queryFn: () =>
       adminService.searchPartners({
-        limit: 18,
-        orderBy: 'createdAt asc',
-        skip: page * 18 - 18,
+        limit: 15,
+        orderBy: "createdAt asc",
+        skip: page * 15 - 15,
       }),
   });
 
@@ -69,14 +69,14 @@ export default function ParceiroCadastrados() {
       ) : (
         <>
           <div className="space-y-4 md:grid md:grid-cols-3 md:gap-4 md:items-end">
-            {allPartners.length > 0 ? (
+            {allPartners && allPartners.length > 0 ? (
               allPartners.map((partner: any) => (
                 <PartnerApprovalCard
                   key={partner?.id}
-                  name={partner?.companyName ?? 'Nome do Parceiro'}
+                  name={partner?.companyName ?? "Nome do Parceiro"}
                   activitiesCount={partner?._count?.adventures}
                   rating={partner?.averageRating}
-                  avatar={partner?.logo?.url ?? '/user.png'}
+                  avatar={partner?.logo?.url ?? "/user.png"}
                   onClick={() =>
                     router.push(`/admin/parceiros-cadastrados/${partner?.id}`)
                   }
@@ -90,12 +90,14 @@ export default function ParceiroCadastrados() {
               </div>
             )}
           </div>
-          <Pagination
-            limit={18}
-            data={allPartners}
-            page={page}
-            setPage={setPage}
-          />
+          {allPartners && (
+            <Pagination
+              limit={15}
+              data={allPartners}
+              page={page}
+              setPage={setPage}
+            />
+          )}
         </>
       )}
     </main>

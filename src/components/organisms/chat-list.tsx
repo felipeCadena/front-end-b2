@@ -19,6 +19,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../atoms/my-select";
+import { useSession } from "next-auth/react";
+import PopupActivity from "./popup-activity";
+import { Popover, PopoverContent, PopoverTrigger } from "../atoms/my-popover";
+import { chatService } from "@/services/api/chats";
+import { toast } from "react-toastify";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface ChatMessage {
   datetime: string;
@@ -70,6 +76,14 @@ export default function ChatList({ chats, setUser }: ChatListProps) {
   const [sortOption, setSortOption] = React.useState<"active" | "unread">(
     "unread"
   );
+  const [openPopoverId, setOpenPopoverId] = React.useState<string | null>(null);
+
+  const { data: session } = useSession();
+
+  const queryClient = useQueryClient();
+
+  const isAdmin =
+    session?.user?.role === "admin" || session?.user?.role === "superadmin";
 
   const [mobile, setMobile] = React.useState<boolean>(false);
   const { setChat } = useChat();
@@ -112,6 +126,30 @@ export default function ChatList({ chats, setUser }: ChatListProps) {
       setMobile(isMobile);
     }
   }, []);
+
+  const handleDeleteChat = async (chatId: string) => {
+    try {
+      await chatService.deleteChat(chatId);
+      queryClient.invalidateQueries({ queryKey: ["chat"] });
+      console.log(`Excluir chat com ID: ${chatId}`);
+      setSelectedChatId(null); // Limpar o chat selecionado após a exclusão
+      setUser(""); // Limpar o usuário após a exclusão
+      setChat({
+        userToName: "",
+        id: "",
+        session_token: "",
+        userToPhoto: "",
+        userToId: "",
+      }); // Limpar o chat no estado global
+      // Atualizar a lista de chats após a exclusão
+      toast.success("Chat excluído com sucesso!");
+    } catch (error) {
+      toast.error("Erro ao excluir o chat. Tente novamente.");
+      console.error("Erro ao excluir o chat:", error);
+    } finally {
+      setOpenPopoverId(null);
+    }
+  };
 
   const sortedChats = React.useMemo(() => {
     if (!chats) return [];
@@ -192,7 +230,7 @@ export default function ChatList({ chats, setUser }: ChatListProps) {
             <div
               key={chat?.id}
               className={cn(
-                "flex items-center p-4 hover:bg-gray-50 cursor-pointer rounded-lg mr-1 border-b",
+                "flex items-center p-4 hover:bg-gray-50 cursor-pointer rounded-lg mr-1 border-b relative min-h-[6rem]",
                 selectedChatId === chat?.id && "bg-[#2DADE4]/20"
               )}
               onClick={() => handleChatClick(chat)}
@@ -244,6 +282,35 @@ export default function ChatList({ chats, setUser }: ChatListProps) {
               </div>
               {chat?.lastMessage && !chat?.lastMessage?.isRead && (
                 <div className="w-3 h-3 bg-[#2DADE4] rounded-full" />
+              )}
+
+              {isAdmin && (
+                <div className="absolute top-1 right-3 cursor-pointer z-20">
+                  <Popover
+                    open={openPopoverId === chat.id}
+                    onOpenChange={(open) =>
+                      setOpenPopoverId(open ? chat.id : null)
+                    }
+                  >
+                    <PopoverTrigger>
+                      <MyIcon name="options" className="cursor-pointer p-1" />
+                    </PopoverTrigger>
+                    <PopoverContent
+                      className="z-50 md:w-[8rem] p-2 bg-white rounded-lg shadow-lg border border-gray-200"
+                      align="end"
+                      sideOffset={4}
+                    >
+                      <MyButton
+                        variant="text-muted"
+                        leftIcon={<MyIcon name="trash" />}
+                        onClick={() => handleDeleteChat(chat?.id)}
+                        className="w-full px-3 py-2 text-red-500 hover:bg-gray-100 rounded-md transition-colors justify-start"
+                      >
+                        Excluir
+                      </MyButton>
+                    </PopoverContent>
+                  </Popover>
+                </div>
               )}
             </div>
           ))}
