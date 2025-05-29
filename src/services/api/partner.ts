@@ -362,11 +362,11 @@ export const partnerService = {
     justification?: string
   ): Promise<any> => {
     try {
-      await api.post(
+      const response = await api.post(
         `/schedules/cancel/${orderScheduleId}/adventure/${adventureId}`,
-        { justificationCancel: justification }
+        { justificationCancel: justification ?? undefined }
       );
-      return true;
+      return response?.data;
     } catch (error) {
       console.error("Error canceling schedule:", error);
       throw error;
@@ -386,7 +386,7 @@ export const partnerService = {
       return response.data;
     } catch (error) {
       console.error("Error fetching partner income:", error);
-      return null;
+      throw error;
     }
   },
 
@@ -404,7 +404,7 @@ export const partnerService = {
       return response.data;
     } catch (error) {
       console.error("Error fetching partner income:", error);
-      return null;
+      throw error;
     }
   },
 
@@ -419,7 +419,7 @@ export const partnerService = {
       return data;
     } catch (error) {
       console.error("Error fetching adventures:", error);
-      return null;
+      throw error;
     }
   },
 };

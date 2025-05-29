@@ -942,18 +942,32 @@ export const removeCanceledRecurrenceTimes = (
   if (!selectedDate || !schedules || !recurrenceTimes?.length)
     return recurrenceTimes;
 
-  const selectedDateISO = selectedDate.toISOString().slice(0, 10); // '2025-06-03'
+  const selectedDateISO = selectedDate.toISOString().slice(0, 10);
 
   const canceledTimes = schedules
     .filter((sch) => {
       const scheduleDate = new Date(sch.datetime).toISOString().slice(0, 10);
-      const scheduleTime = new Date(sch.datetime).toTimeString().slice(0, 5); // 'HH:MM'
-
+      const scheduleTime = new Date(sch.datetime).toTimeString().slice(0, 5);
       return (
         scheduleDate === selectedDateISO && (!sch.isAvailable || sch.isCanceled)
       );
     })
     .map((sch) => new Date(sch.datetime).toTimeString().slice(0, 5));
 
-  return recurrenceTimes.filter((time) => !canceledTimes.includes(time));
+  // 1. Remover horários cancelados
+  const filtered = recurrenceTimes.filter(
+    (time) => !canceledTimes.includes(time)
+  );
+
+  // 2. Se TODOS os horários foram cancelados, considera a data como indisponível
+  const totalTimes = recurrenceTimes.length;
+  const totalCanceled = recurrenceTimes.filter((time) =>
+    canceledTimes.includes(time)
+  ).length;
+
+  if (totalCanceled === totalTimes) {
+    return [];
+  }
+
+  return filtered;
 };

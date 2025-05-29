@@ -32,6 +32,7 @@ type MyActivityDatePickerProps = {
       }[]
     | undefined;
   activityRecurrences: Recurrence[];
+  availableHoursByDate?: Record<string, string[]>;
 };
 
 export function MyActivityDatePicker({
@@ -41,6 +42,7 @@ export function MyActivityDatePicker({
   partnerSchedules,
   activityRecurrences,
   setSelectedDates,
+  availableHoursByDate,
 }: MyActivityDatePickerProps) {
   const [open, setOpen] = useState(false);
   const [initialMonth, setInitialMonth] = useState<Date>(new Date());
@@ -166,6 +168,7 @@ export function MyActivityDatePicker({
           hoursBeforeSchedule={hourBeforeSchedule}
           initialMonth={initialMonth}
           onMonthChange={setInitialMonth}
+          availableHoursByDate={availableHoursByDate}
         />
         <MyButton
           variant="default"
