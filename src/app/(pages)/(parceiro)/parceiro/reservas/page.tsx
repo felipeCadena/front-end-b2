@@ -86,17 +86,6 @@ export default function Reservas() {
           >
             Nova atividade
           </MyButton>
-
-          {/* <MyButton
-            variant="red"
-            borderRadius="squared"
-            size="md"
-            leftIcon={<Hide iconColor="#FF7272" />}
-            onClick={() => router.push(PATHS["atividades-ocultas"])}
-            className="w-1/4"
-          >
-            Ocultas
-          </MyButton> */}
         </div>
       </div>
       <div className="relative px-2">
