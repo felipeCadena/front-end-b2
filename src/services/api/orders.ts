@@ -84,6 +84,7 @@ export interface CustomerSchedule {
   totalTaxes: string;
   updatedAt: string;
   ratings?: Ratings[];
+  totalGatewayFee?: string;
 }
 
 interface ActivityOrder {

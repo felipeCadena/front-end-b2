@@ -9,6 +9,7 @@ import {
 } from "./adventures";
 import { clearObject } from "@/utils/clear-object";
 import { DateOption } from "@/store/useAdventureStore";
+import { tr } from "react-day-picker/locale";
 
 export interface CreateUserPartner {
   name: string;
@@ -368,7 +369,7 @@ export const partnerService = {
       return true;
     } catch (error) {
       console.error("Error canceling schedule:", error);
-      return false;
+      throw error;
     }
   },
 

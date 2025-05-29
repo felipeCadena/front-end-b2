@@ -10,6 +10,7 @@ import {
   getData,
   getHora,
   handleNameActivity,
+  isPastActivity,
   isWithinChatWindow,
 } from "@/utils/formatters";
 import MyButton from "../atoms/my-button";
@@ -62,7 +63,7 @@ export default function PartnerActivitiesHistoric({
 
   const calculateTotalCost = (ordersScheduleAdventure: any) => {
     const totalCost = ordersScheduleAdventure?.reduce(
-      (acc: number, order: any) => acc + Number(order.adventureFinalPrice),
+      (acc: number, order: any) => acc + Number(order.partnerValue),
       0
     );
     return new Intl.NumberFormat("pt-BR", {
@@ -78,8 +79,8 @@ export default function PartnerActivitiesHistoric({
     );
   };
 
-  const handleChat = () => {
-    router.push(`/chat`);
+  const handleChat = (id: string) => {
+    router.push(`/chat?scheduleId=${id}`);
   };
 
   return (
@@ -231,8 +232,10 @@ export default function PartnerActivitiesHistoric({
                       reservation
                       chat={isWithinChatWindow(activity?.datetime)}
                       onDuplicar={() => console.log("Duplicar")}
-                      onChat={() => handleChat()}
+                      onChat={() => handleChat(activity?.id)}
                       onCancelar={() => handleCancel(activity?.id)}
+                      activityCanceled={activity?.isCanceled}
+                      pastActivity={isPastActivity(activity?.datetime)}
                       onEditar={() => handleEdit(activity.id)}
                       onOcultar={() => console.log("Ocultar")}
                       onExcluir={() => console.log("Excluir")}
@@ -316,7 +319,7 @@ export default function PartnerActivitiesHistoric({
                     weight="bold"
                     className="text-right"
                   >
-                    Total:
+                    Seu ganho:
                   </MyTypography>
                   <MyTypography variant="body" weight="bold" className="">
                     {activity?.ordersScheduleAdventure &&

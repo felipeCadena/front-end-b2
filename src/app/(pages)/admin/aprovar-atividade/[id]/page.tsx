@@ -425,7 +425,7 @@ export default function AprovarAtividade() {
         <div className="md:grid md:grid-cols-2 md:gap-8">
           {formattedItemsIncluded().length > 0 && (
             <div>
-              <MyTypography variant="subtitle4" weight="bold" className="">
+              <MyTypography variant="body-big" weight="semibold">
                 Está incluso:
               </MyTypography>
               <div

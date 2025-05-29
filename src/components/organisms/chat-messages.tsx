@@ -96,6 +96,13 @@ export default function ChatMessages({ chat }: ChatMessagesProps) {
     }
   };
 
+  const scrollToBottom = () => {
+    requestAnimationFrame(() => {
+      setTimeout(() => {
+        messageRef.current?.scrollTo({ top: 0, behavior: "smooth" });
+      }, 150);
+    });
+  };
   const handleSendMessage = async (message: string) => {
     try {
       await chatService.sendMessage(
@@ -114,22 +121,13 @@ export default function ChatMessages({ chat }: ChatMessagesProps) {
     }
   };
 
-  const scrollToBottom = () => {
-    requestAnimationFrame(() => {
-      setTimeout(() => {
-        messageRef.current?.scrollIntoView({
-          behavior: "smooth",
-          block: "end",
-        });
-      }, 150); // tempo menor que 300ms para evitar delay excessivo
-    });
-  };
-
   useEffect(() => {
     if (!messages || messages.length === 0) return;
-    if (window && window.innerWidth < 768) {
+    const timeout = setTimeout(() => {
       scrollToBottom();
-    }
+    }, 200);
+
+    return () => clearTimeout(timeout);
   }, [messages]);
 
   return (
@@ -159,7 +157,10 @@ export default function ChatMessages({ chat }: ChatMessagesProps) {
         {/* <Options width="20" height="5" /> */}
       </div>
 
-      <div className="flex-1 flex flex-col-reverse overflow-y-auto scrollbar-thin p-4 gap-2 pb-[90px]">
+      <div
+        ref={messageRef}
+        className="flex-1 flex flex-col-reverse overflow-y-auto scrollbar-thin p-4 gap-2 pb-[90px]"
+      >
         {messages &&
           messages?.map((message: any, index: number) => (
             <div
@@ -270,7 +271,7 @@ export default function ChatMessages({ chat }: ChatMessagesProps) {
       ) : (
         <p className="text-gray-400 text-center text-xl my-4">Chat encerrado</p>
       )}
-      <div ref={messageRef} />
+      {/* <div ref={messageRef} /> */}
     </div>
   );
 }

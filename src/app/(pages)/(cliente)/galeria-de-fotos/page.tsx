@@ -15,10 +15,15 @@ export default function GaleriaDeFotos() {
 
   const { data: activities = [], isLoading } = useQuery({
     queryKey: ["activities"],
-    queryFn: () =>
-      ordersAdventuresService.getCustomerSchedules({
+    queryFn: async () => {
+      const medias = await ordersAdventuresService.getCustomerSchedules({
         adventureStatus: "realizado",
-      }),
+      });
+      const filteredMedias = medias.filter(
+        (act) => act.schedule.dateMediasPosted
+      );
+      return filteredMedias;
+    },
   });
 
   return isLoading ? (
@@ -39,11 +44,9 @@ export default function GaleriaDeFotos() {
       </div>
 
       {activities && activities.length > 0 ? (
-        activities
-          ?.filter((act) => act.schedule.dateMediasPosted)
-          .map((activity, index: number) => (
-            <MobileActivityPhotosCard activity={activity} key={index} />
-          ))
+        activities.map((activity, index: number) => (
+          <MobileActivityPhotosCard activity={activity} key={index} />
+        ))
       ) : (
         <div className="w-full flex justify-center items-center h-[30vh]">
           <MyTypography variant="subtitle3" weight="bold">

@@ -22,8 +22,13 @@ export default function Chat() {
   const { chat, setChat } = useChat();
 
   const { data: chats } = useQuery({
-    queryKey: ["chats", user],
-    queryFn: () => chatService.getMyChats({ name: user, limit: 50 }),
+    queryKey: ["chats", user, params?.scheduleId],
+    queryFn: () =>
+      chatService.getMyChats({
+        name: user ?? undefined,
+        limit: 50,
+        scheduleId: params?.scheduleId ?? undefined,
+      }),
     refetchInterval: 5000,
   });
 
