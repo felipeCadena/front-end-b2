@@ -95,7 +95,10 @@ export function MyActivityCalendar({
         className={cn("md:flex md:justify-center", className)}
         ISOWeek={true}
         locale={ptBR}
-        disabled={(date) => !enabledDates?.some((d) => isSameDay(d, date))}
+        disabled={(date) =>
+          !enabledDates?.some((d) => isSameDay(d, date)) ||
+          isBefore(date, addHours(now, hoursBeforeSchedule))
+        }
         formatters={{
           formatWeekdayName: (weekday) => {
             const fullName = weekday.toLocaleDateString("pt-BR", {

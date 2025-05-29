@@ -17,6 +17,14 @@ import { partnerService } from "@/services/api/partner";
 import PartnerHistoricMobile from "@/components/organisms/partner-historic-mobile";
 import Image from "next/image";
 import { Pagination } from "@/components/molecules/pagination";
+import { isCancel } from "axios";
+import {
+  MySelect,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/atoms/my-select";
 
 export default function Reservas() {
   const router = useRouter();
@@ -24,15 +32,21 @@ export default function Reservas() {
   const [dates, setDates] = React.useState<Date[]>([]);
   const [page, setPage] = React.useState(1);
 
+  const [params, setParams] = React.useState({
+    isCanceled: false,
+    isAvailable: true,
+  });
+
   const { handleClose, isModalOpen } = useAlert();
 
   const { data: parterSchedules, isLoading } = useQuery({
-    queryKey: ["parterSchedules", date, page],
+    queryKey: ["parterSchedules", date, page, params],
     queryFn: () =>
       partnerService.getMySchedules({
         limit: 50,
         skip: page * 50 - 50,
         qntConfirmedPersons: "> 0",
+        ...params,
       }),
   });
 
@@ -55,10 +69,6 @@ export default function Reservas() {
     selectedScheduleActivities && selectedScheduleActivities?.length > 0
       ? selectedScheduleActivities
       : parterSchedules?.data;
-
-  console.log("renderActivities", renderActivities);
-  console.log("selectedScheduleActivities", selectedScheduleActivities);
-  console.log("parterSchedules?.data", parterSchedules?.data);
 
   return (
     <main className="my-6">
@@ -139,6 +149,28 @@ export default function Reservas() {
         >
           Ocultas
         </MyButton> */}
+      </div>
+
+      <div className="my-4 mx-4 w-1/3 md:w-1/6 ml-auto">
+        <MySelect
+          className="text-base text-black"
+          value={params.isCanceled ? "cancelado" : "agendado"}
+          onValueChange={(value) =>
+            setParams({
+              ...params,
+              isCanceled: value === "cancelado",
+              isAvailable: value === "agendado",
+            })
+          }
+        >
+          <SelectTrigger className="rounded-2xl text-[#848A9C] text-xs">
+            <SelectValue placeholder="Selecione" />
+          </SelectTrigger>
+          <SelectContent className="rounded-lg">
+            <SelectItem value="agendado">Agendado</SelectItem>
+            <SelectItem value="cancelado">Cancelado</SelectItem>
+          </SelectContent>
+        </MySelect>
       </div>
 
       <ModalAlert
