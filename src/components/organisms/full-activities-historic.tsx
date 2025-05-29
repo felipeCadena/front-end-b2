@@ -62,6 +62,7 @@ export default function FullActivitiesHistoric({
   const [showModal, setShowModal] = useState(false);
   const [showCanceledModal, setShowCanceledModal] = useState(false);
   const [isOffCancelLimit, setIsOffCancelLimit] = useState(false);
+  const [paid, setPaid] = useState(false);
   const [cancelOrder, setCancelOrder] = useState<CancelSchedule | null>(null);
   const queryClient = useQueryClient();
 
@@ -75,7 +76,10 @@ export default function FullActivitiesHistoric({
 
     const isOffLimit = todayPlusHours > scheduleDateTime;
 
+    const notPaid = activity.personsIsAccounted;
+
     setIsOffCancelLimit(isOffLimit);
+    setPaid(notPaid);
   };
 
   const handleModal = (activity: CustomerSchedule) => {
@@ -131,6 +135,8 @@ export default function FullActivitiesHistoric({
       router.push(PATHS.visualizarFotos(activity?.scheduleId));
     }
   };
+
+  console.log(isOffCancelLimit);
 
   return (
     <section className="md:max-w-screen-custom">
@@ -393,13 +399,13 @@ export default function FullActivitiesHistoric({
                     Total:
                   </MyTypography>
                   <MyTypography variant="body" weight="bold" className="">
-                    {Number(activity.orderAdventure.totalCost).toLocaleString(
-                      "pt-BR",
-                      {
-                        style: "currency",
-                        currency: "BRL",
-                      }
-                    )}
+                    {(
+                      Number(activity?.adventureFinalPrice) +
+                      Number(activity?.totalGatewayFee)
+                    ).toLocaleString("pt-BR", {
+                      style: "currency",
+                      currency: "BRL",
+                    })}
                   </MyTypography>
                 </div>
               </div>
@@ -449,7 +455,9 @@ export default function FullActivitiesHistoric({
         subtitle={
           isOffCancelLimit
             ? "Atividade cancelada!"
-            : "Atividade cancelada! Em breve o seu estorno estará disponível na mesma forma de pagamento realizada."
+            : !paid
+              ? "Essa atividade não foi paga. Portanto, foi cancelada com sucesso e não há reembolso!"
+              : "Atividade cancelada! Em breve o seu estorno estará disponível na mesma forma de pagamento realizada."
         }
         buttonTitle="Voltar"
         iconName="warning"

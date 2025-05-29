@@ -16,10 +16,7 @@ export default function Home() {
   const { clearUser } = useAuthStore();
 
   React.useEffect(() => {
-    if (
-      session?.error === "RefreshAccessTokenError" &&
-      !session?.user?.accessToken
-    ) {
+    if (session?.error === "RefreshAccessTokenError" && !session?.user) {
       // Logout automático ou redirecionamento
       console.log("Session expired, logging out...");
       clearUser();

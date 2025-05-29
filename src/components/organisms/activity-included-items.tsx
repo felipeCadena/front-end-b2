@@ -16,7 +16,7 @@ const ActivityIncludedItems = ({
 }: ActivityIncludedItemsProps) => {
   return (
     <div className="mb-4 md:mb-0 space-y-4">
-      <MyTypography variant="subtitle4" weight="bold" className="">
+      <MyTypography variant="body-big" weight="semibold">
         Está incluso:
       </MyTypography>
 

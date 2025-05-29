@@ -31,7 +31,7 @@ export async function middleware(req: NextRequest) {
   // Se não tiver token, redireciona
   if (!token) {
     const redirectUrl = req.nextUrl.clone();
-    redirectUrl.pathname = "/";
+    redirectUrl.pathname = "/login";
 
     return NextResponse.redirect(redirectUrl);
   }
@@ -49,7 +49,7 @@ export async function middleware(req: NextRequest) {
     (isCustomer && role !== "customer")
   ) {
     const redirectUrl = req.nextUrl.clone();
-    redirectUrl.pathname = "/";
+    redirectUrl.pathname = "/login";
 
     return NextResponse.redirect(redirectUrl);
   }

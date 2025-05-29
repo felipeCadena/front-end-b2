@@ -96,6 +96,7 @@ export default function ChatList({ chats, setUser }: ChatListProps) {
   useEffect(() => {
     if (debounce) {
       setUser(debounce.trim());
+      clear();
     } else {
       setUser("");
     }

@@ -20,7 +20,7 @@ import { Pagination } from "@/components/molecules/pagination";
 
 export default function Reservas() {
   const router = useRouter();
-  const [date, setDate] = React.useState<Date | null>(new Date());
+  const [date, setDate] = React.useState<Date | null>(null);
   const [dates, setDates] = React.useState<Date[]>([]);
   const [page, setPage] = React.useState(1);
 
@@ -55,6 +55,10 @@ export default function Reservas() {
     selectedScheduleActivities && selectedScheduleActivities?.length > 0
       ? selectedScheduleActivities
       : parterSchedules?.data;
+
+  console.log("renderActivities", renderActivities);
+  console.log("selectedScheduleActivities", selectedScheduleActivities);
+  console.log("parterSchedules?.data", parterSchedules?.data);
 
   return (
     <main className="my-6">

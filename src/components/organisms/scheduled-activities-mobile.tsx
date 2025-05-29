@@ -24,6 +24,7 @@ import { cn } from "@/utils/cn";
 import { useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { toast } from "react-toastify";
+import { addHours } from "date-fns";
 
 type FullActivitiesHistoricProps = {
   activities: CustomerSchedule[] | undefined;
@@ -44,6 +45,8 @@ export default function ScheduledActivitiesMobile({
   const [showCanceledModal, setShowCanceledModal] = useState(false);
   const [cancelOrder, setCancelOrder] = useState<CancelSchedule | null>(null);
   const queryClient = useQueryClient();
+  const [isOffCancelLimit, setIsOffCancelLimit] = useState(false);
+  const [paid, setPaid] = useState(false);
 
   const handleModal = (
     orderAdventuresId: string,
@@ -51,6 +54,22 @@ export default function ScheduledActivitiesMobile({
   ) => {
     setShowModal(true);
     setCancelOrder({ orderAdventuresId, orderScheduleAdventureId });
+  };
+
+  const handleFindCancelLimit = (activity: CustomerSchedule) => {
+    const today = new Date();
+    const hoursBeforeCancellation = activity.adventure.hoursBeforeCancellation;
+
+    const todayPlusHours = addHours(today, hoursBeforeCancellation).getTime();
+
+    const scheduleDateTime = new Date(activity.schedule.datetime).getTime();
+
+    const isOffLimit = todayPlusHours > scheduleDateTime;
+
+    const notPaid = activity.personsIsAccounted;
+
+    setIsOffCancelLimit(isOffLimit);
+    setPaid(notPaid);
   };
 
   const handleClose = () => {
@@ -193,7 +212,11 @@ export default function ScheduledActivitiesMobile({
         ))}
       <MyCancelScheduleModal
         title="Cancelamento de atividade"
-        subtitle="Tem certeza que deseja cancelar essa atividade? Não será possível remarcar na mesma data ou reembolsar o valor pago."
+        subtitle={
+          isOffCancelLimit
+            ? "O limite para cancelamento com reembolso foi ultrapassado! Tem certeza que ainda assim deseja cancelar essa atividade? Não será possível reembolsar o valor pago."
+            : "Tem certeza que deseja cancelar essa atividade?"
+        }
         buttonTitle="Cancelar atividade"
         iconName="cancel"
         open={showModal}
@@ -202,7 +225,13 @@ export default function ScheduledActivitiesMobile({
       />
       <MyCancelScheduleModal
         title="Atividade cancelada"
-        subtitle="A atividade já foi cancelada e em breve seu estorno estará disponível na mesma forma de pagamento realizada."
+        subtitle={
+          isOffCancelLimit
+            ? "Atividade cancelada!"
+            : !paid
+              ? "Essa atividade não foi paga. Portanto, foi cancelada com sucesso e não há reembolso!"
+              : "Atividade cancelada! Em breve o seu estorno estará disponível na mesma forma de pagamento realizada."
+        }
         buttonTitle="Voltar"
         iconName="warning"
         open={showCanceledModal}

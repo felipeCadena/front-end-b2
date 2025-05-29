@@ -22,6 +22,8 @@ interface PopupAtividadesProps {
   onCustomer: () => void;
   reservation?: boolean;
   chat?: boolean;
+  pastActivity?: boolean;
+  activityCanceled?: boolean;
 }
 
 const PopupActivity: React.FC<PopupAtividadesProps> = ({
@@ -34,6 +36,8 @@ const PopupActivity: React.FC<PopupAtividadesProps> = ({
   onCustomer,
   reservation = false,
   chat = false,
+  pastActivity = false,
+  activityCanceled = false,
 }) => {
   return (
     <Popover>
@@ -66,14 +70,16 @@ const PopupActivity: React.FC<PopupAtividadesProps> = ({
             </MyButton>
           )}
 
-          <MyButton
-            variant="text-muted"
-            leftIcon={<MyIcon name="small-cancel" />}
-            onClick={onCancelar}
-            className="px-3 py-2 hover:bg-gray-100 rounded-md transition-colors w-full justify-start"
-          >
-            Cancelar
-          </MyButton>
+          {!pastActivity && !activityCanceled && (
+            <MyButton
+              variant="text-muted"
+              leftIcon={<MyIcon name="small-cancel" />}
+              onClick={onCancelar}
+              className="px-3 py-2 hover:bg-gray-100 rounded-md transition-colors w-full justify-start"
+            >
+              Cancelar
+            </MyButton>
+          )}
 
           {!reservation && (
             <>

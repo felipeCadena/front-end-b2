@@ -54,6 +54,7 @@ export default function Reservas() {
   return (
     <section className="relative px-2 mb-6">
       <MyFullScheduleCalendar
+        preventPastNavigation
         mode="single"
         bookedDates={gatherDates ?? []}
         selected={date}

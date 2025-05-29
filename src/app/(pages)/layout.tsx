@@ -30,10 +30,7 @@ const Layout = ({ children }: { children: JSX.Element | ReactNode }) => {
   ];
 
   useEffect(() => {
-    if (
-      session?.error === "RefreshAccessTokenError" &&
-      !session?.user?.accessToken
-    ) {
+    if (session?.error === "RefreshAccessTokenError" && !session?.user) {
       // Logout automático ou redirecionamento
       console.log("Session expired, logging out...");
       clearUser();
