@@ -20,7 +20,7 @@ export default function Home() {
     if (session?.error === "RefreshAccessTokenError" && !session?.user) {
       console.log("Session expired, logging out...");
       clearUser();
-      signOut({ redirect: true, callbackUrl: "/login?refresh=true" });
+      signOut({ redirect: true, callbackUrl: "/login" });
       toast.error("Sua sessão expirou. Por favor, faça login novamente.");
     }
   }, [session]);

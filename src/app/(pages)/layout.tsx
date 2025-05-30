@@ -20,7 +20,6 @@ const Layout = ({ children }: { children: JSX.Element | ReactNode }) => {
   const pathname = usePathname();
   const { data: session } = useSession();
   const { clearUser } = useAuthStore();
-  const { params } = useSearchQueryService();
 
   const fullWidthPages = [
     "/login",
@@ -35,7 +34,7 @@ const Layout = ({ children }: { children: JSX.Element | ReactNode }) => {
     if (
       session?.error === "RefreshAccessTokenError" &&
       !session?.user &&
-      !params?.refresh
+      !fullWidthPages.includes(pathname)
     ) {
       // Logout automático ou redirecionamento
       console.log("Session expired, logging out...");
