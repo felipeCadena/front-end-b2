@@ -8,6 +8,7 @@ import "../globals.css";
 import { signOut, useSession } from "next-auth/react";
 import { toast } from "react-toastify";
 import { useAuthStore } from "@/store/useAuthStore";
+import useSearchQueryService from "@/services/use-search-query-service";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -19,6 +20,7 @@ const Layout = ({ children }: { children: JSX.Element | ReactNode }) => {
   const pathname = usePathname();
   const { data: session } = useSession();
   const { clearUser } = useAuthStore();
+  const { params } = useSearchQueryService();
 
   const fullWidthPages = [
     "/login",
@@ -30,7 +32,11 @@ const Layout = ({ children }: { children: JSX.Element | ReactNode }) => {
   ];
 
   useEffect(() => {
-    if (session?.error === "RefreshAccessTokenError" && !session?.user) {
+    if (
+      session?.error === "RefreshAccessTokenError" &&
+      !session?.user &&
+      !params?.refresh
+    ) {
       // Logout automático ou redirecionamento
       console.log("Session expired, logging out...");
       clearUser();

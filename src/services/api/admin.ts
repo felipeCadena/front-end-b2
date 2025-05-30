@@ -406,6 +406,7 @@ export const adminService = {
     limit?: number;
     typeAdventure?: string;
     skip?: number;
+    paymentStatus?: string;
   }) {
     try {
       const response = await api.get("/ordersAdventures/search", { params });
