@@ -167,6 +167,7 @@ export default function AdminWeb() {
       toast.success(paid?.message ?? "Pagamento realizado com sucesso!");
     } catch (err: unknown) {
       if (err instanceof AxiosError) {
+        console.log(err.response?.data?.message);
         const message =
           err.response?.data?.message == "string"
             ? err.response?.data?.message

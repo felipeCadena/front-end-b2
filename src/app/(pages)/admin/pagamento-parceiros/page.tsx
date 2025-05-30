@@ -13,11 +13,12 @@ import {
 } from "@/components/atoms/my-select";
 import PartnerPaymentCard from "@/components/molecules/partner-payment";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { endOfMonth, format, startOfMonth } from "date-fns";
+import { endOfMonth, format, parse, startOfMonth } from "date-fns";
 import { adminService } from "@/services/api/admin";
 import { toast } from "react-toastify";
 import { AxiosError } from "axios";
 import Image from "next/image";
+import { getYearsArray } from "@/utils/formatters";
 
 type PartnerPayment = {
   partnerFantasyName: string;
@@ -33,25 +34,75 @@ export default function PagamentosParceiros() {
   const queryClient = useQueryClient();
   const [loading, setLoading] = React.useState(false);
 
-  const [filter, setFilter] = React.useState("month"); // month or year
-
   const now = new Date();
   const currentMonthKey = format(new Date(), "MM");
+  const currentYear = format(new Date(), "yyyy");
 
-  const startsAt = format(startOfMonth(now), "yyyy-MM-dd'T'00:00:00");
-  const endsAt = format(endOfMonth(now), "yyyy-MM-dd'T'00:00:00");
+  const [filters, setFilters] = React.useState({
+    year: currentYear,
+    month: currentMonthKey,
+  });
+
+  const [filtersPending, setFiltersPending] = React.useState({
+    year: currentYear,
+    month: currentMonthKey,
+  });
+
+  const selectedMonthDate = React.useMemo(() => {
+    return parse(
+      `${filters.year}-${filters.month}-01`,
+      "yyyy-MM-dd",
+      new Date()
+    );
+  }, [filters?.month, filters.year]);
+
+  const startsAt = React.useMemo(() => {
+    if (filters.month === "00") {
+      return `${filters.year}-01-01T00:00:00`;
+    }
+    return format(startOfMonth(selectedMonthDate), "yyyy-MM-dd'T'00:00:00");
+  }, [filters.year, filters.month, selectedMonthDate]);
+
+  const endsAt = React.useMemo(() => {
+    if (filters.month === "00") {
+      return `${filters.year}-12-31T23:59:59`;
+    }
+    return format(endOfMonth(selectedMonthDate), "yyyy-MM-dd'T'23:59:59");
+  }, [filters.year, filters.month, selectedMonthDate]);
+
+  const selectedMonthDatePending = React.useMemo(() => {
+    return parse(
+      `${filtersPending.year}-${filtersPending.month}-01`,
+      "yyyy-MM-dd",
+      new Date()
+    );
+  }, [filtersPending?.month, filtersPending.year]);
+
+  const startsAtPending = React.useMemo(() => {
+    return format(
+      startOfMonth(selectedMonthDatePending),
+      "yyyy-MM-dd'T'00:00:00"
+    );
+  }, [filtersPending.year, filtersPending.month, selectedMonthDatePending]);
+
+  const endsAtPending = React.useMemo(() => {
+    return format(
+      endOfMonth(selectedMonthDatePending),
+      "yyyy-MM-dd'T'23:59:59"
+    );
+  }, [filtersPending.year, filtersPending.month, selectedMonthDatePending]);
 
   const { data: pending, isLoading } = useQuery({
-    queryKey: ["pendingPayments"],
+    queryKey: ["pendingPayments", filtersPending],
     queryFn: () =>
       adminService.listPendingPaidPartners({
-        startsAt,
-        endsAt,
+        startsAt: startsAtPending,
+        endsAt: endsAtPending,
       }),
   });
 
   const { data: paid, isLoading: isLoadingPaid } = useQuery({
-    queryKey: ["paidPayments"],
+    queryKey: ["paidPayments", filters],
     queryFn: () =>
       adminService.listPendingPaidPartners({
         startsAt,
@@ -59,6 +110,14 @@ export default function PagamentosParceiros() {
         partnerIsPaid: true,
       }),
   });
+
+  const handleMonthChange = (value: string) => {
+    setFilters((prev) => ({ ...prev, month: value }));
+  };
+
+  const handleMonthPendingChange = (value: string) => {
+    setFiltersPending((prev) => ({ ...prev, month: value }));
+  };
 
   async function payPartner(token: string) {
     if (!token) {
@@ -146,24 +205,56 @@ export default function PagamentosParceiros() {
             >
               Pagos
             </MyTypography>
-            {/* <div className="ml-auto">
-              <MySelect
-                //   value={}
-                //   onValueChange={}
-                value="Mensal"
-              >
-                <SelectTrigger className="rounded-2xl text-[#848A9C] text-xs">
-                  <SelectValue placeholder="Mensal" />
-                </SelectTrigger>
-                <SelectContent className="rounded-lg">
-                  <SelectItem value="Mensal">Mensal</SelectItem>
-                  <SelectItem value="Semanal">Semanal</SelectItem>
-                </SelectContent>
-              </MySelect>
-            </div> */}
           </div>
 
           <div className="space-y-3">
+            <div className="flex items-center justify-end w-full mb-4">
+              <div className="flex gap-2 ">
+                <MySelect
+                  value={filters?.year}
+                  onValueChange={(value) => {
+                    setFilters((prev) => ({
+                      ...prev,
+                      year: value,
+                    }));
+                  }}
+                >
+                  <SelectTrigger className="rounded-2xl w-[150px] text-[#848A9C] text-xs">
+                    <SelectValue placeholder="Setembro" />
+                  </SelectTrigger>
+                  <SelectContent className="rounded-lg">
+                    {getYearsArray().map((year) => (
+                      <SelectItem key={year} value={year}>
+                        {year}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </MySelect>
+
+                <MySelect
+                  value={filters?.month}
+                  onValueChange={(value) => handleMonthChange(value)}
+                >
+                  <SelectTrigger className="rounded-2xl w-[150px] text-[#848A9C] text-xs">
+                    <SelectValue placeholder="Mês" />
+                  </SelectTrigger>
+                  <SelectContent className="rounded-lg">
+                    <SelectItem value="01">Janeiro</SelectItem>
+                    <SelectItem value="02">Fevereiro</SelectItem>
+                    <SelectItem value="03">Março</SelectItem>
+                    <SelectItem value="04">Abril</SelectItem>
+                    <SelectItem value="05">Maio</SelectItem>
+                    <SelectItem value="06">Junho</SelectItem>
+                    <SelectItem value="07">Julho</SelectItem>
+                    <SelectItem value="08">Agosto</SelectItem>
+                    <SelectItem value="09">Setembro</SelectItem>
+                    <SelectItem value="10">Outubro</SelectItem>
+                    <SelectItem value="11">Novembro</SelectItem>
+                    <SelectItem value="12">Dezembro</SelectItem>
+                  </SelectContent>
+                </MySelect>
+              </div>
+            </div>
             {paid?.total_orders == 0 && !isLoadingPaid ? (
               <div className="flex items-center justify-center h-[100px]">
                 <MyTypography variant="subtitle4" weight="bold">
@@ -171,17 +262,19 @@ export default function PagamentosParceiros() {
                 </MyTypography>
               </div>
             ) : (
-              paidPartners.map((payment: any) => (
-                <PartnerPaymentCard
-                  key={payment?.ordersSchedules}
-                  name={payment?.partnerFantasyName}
-                  amount={payment?.total_value_paid}
-                  avatar={payment?.partnerLogo}
-                  status={hasTotalValuePaid(payment) ? "paid" : "pending"}
-                  loading={loading}
-                  onPay={() => payPartner(payment?.token_for_pay)}
-                />
-              ))
+              <div>
+                {paidPartners.map((payment: any) => (
+                  <PartnerPaymentCard
+                    key={payment?.ordersSchedules}
+                    name={payment?.partnerFantasyName}
+                    amount={payment?.total_value_paid}
+                    avatar={payment?.partnerLogo}
+                    status={hasTotalValuePaid(payment) ? "paid" : "pending"}
+                    loading={loading}
+                    onPay={() => payPartner(payment?.token_for_pay)}
+                  />
+                ))}
+              </div>
             )}
           </div>
         </div>
@@ -196,20 +289,56 @@ export default function PagamentosParceiros() {
             >
               Aguardando Pagamento
             </MyTypography>
-            {/* <div className="ml-auto">
-              <MySelect value="Mensal">
-                <SelectTrigger className="rounded-2xl text-[#848A9C] text-xs">
-                  <SelectValue placeholder="Mensal" />
-                </SelectTrigger>
-                <SelectContent className="rounded-lg">
-                  <SelectItem value="Mensal">Mensal</SelectItem>
-                  <SelectItem value="Semanal">Semanal</SelectItem>
-                </SelectContent>
-              </MySelect>
-            </div> */}
           </div>
 
           <div className="space-y-3">
+            <div className="flex items-center justify-end w-full mb-4">
+              <div className="flex gap-2 ">
+                <MySelect
+                  value={filtersPending?.year}
+                  onValueChange={(value) => {
+                    setFiltersPending((prev) => ({
+                      ...prev,
+                      year: value,
+                    }));
+                  }}
+                >
+                  <SelectTrigger className="rounded-2xl w-[150px] text-[#848A9C] text-xs">
+                    <SelectValue placeholder="Setembro" />
+                  </SelectTrigger>
+                  <SelectContent className="rounded-lg">
+                    {getYearsArray().map((year) => (
+                      <SelectItem key={year} value={year}>
+                        {year}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </MySelect>
+
+                <MySelect
+                  value={filtersPending?.month}
+                  onValueChange={(value) => handleMonthPendingChange(value)}
+                >
+                  <SelectTrigger className="rounded-2xl w-[150px] text-[#848A9C] text-xs">
+                    <SelectValue placeholder="Mês" />
+                  </SelectTrigger>
+                  <SelectContent className="rounded-lg">
+                    <SelectItem value="01">Janeiro</SelectItem>
+                    <SelectItem value="02">Fevereiro</SelectItem>
+                    <SelectItem value="03">Março</SelectItem>
+                    <SelectItem value="04">Abril</SelectItem>
+                    <SelectItem value="05">Maio</SelectItem>
+                    <SelectItem value="06">Junho</SelectItem>
+                    <SelectItem value="07">Julho</SelectItem>
+                    <SelectItem value="08">Agosto</SelectItem>
+                    <SelectItem value="09">Setembro</SelectItem>
+                    <SelectItem value="10">Outubro</SelectItem>
+                    <SelectItem value="11">Novembro</SelectItem>
+                    <SelectItem value="12">Dezembro</SelectItem>
+                  </SelectContent>
+                </MySelect>
+              </div>
+            </div>
             {pending?.total_orders == 0 && !isLoading ? (
               <div className="flex items-center justify-center h-[250px]">
                 <MyTypography variant="subtitle4" weight="bold">
@@ -217,17 +346,19 @@ export default function PagamentosParceiros() {
                 </MyTypography>
               </div>
             ) : (
-              pendingPartners.map((payment: any) => (
-                <PartnerPaymentCard
-                  key={payment?.ordersSchedules}
-                  name={payment?.partnerFantasyName}
-                  amount={payment?.total_value_pending}
-                  avatar={payment?.partnerLogo}
-                  status={hasTotalValuePaid(payment) ? "paid" : "pending"}
-                  loading={loading}
-                  onPay={() => payPartner(payment?.token_for_pay)}
-                />
-              ))
+              <div>
+                {pendingPartners.map((payment: any) => (
+                  <PartnerPaymentCard
+                    key={payment?.ordersSchedules}
+                    name={payment?.partnerFantasyName}
+                    amount={payment?.total_value_pending}
+                    avatar={payment?.partnerLogo}
+                    status={hasTotalValuePaid(payment) ? "paid" : "pending"}
+                    loading={loading}
+                    onPay={() => payPartner(payment?.token_for_pay)}
+                  />
+                ))}
+              </div>
             )}
           </div>
         </div>

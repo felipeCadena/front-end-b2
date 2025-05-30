@@ -37,9 +37,10 @@ export default function RelatorioAdmin() {
   const [downloading, setDownloading] = React.useState(false);
 
   const currentMonthKey = format(new Date(), "MM");
+  const currentYear = format(new Date(), "yyyy");
 
   const [filters, setFilters] = React.useState({
-    year: "2025",
+    year: currentYear,
     month: currentMonthKey,
   });
 
@@ -73,8 +74,29 @@ export default function RelatorioAdmin() {
         endsAt: endDate,
         limit: 100,
         skip: page * 100 - 100,
+        // paymentStatus: "CONFIRMED",
       }),
   });
+
+  const formattedStatus = {
+    CONFIRMED: "Confirmado",
+    PENDING: "Pendente",
+    REFUNDED: "Reembolsado",
+    OVERDUE: "Atrasado",
+    RECEIVED: "Recebido na conta",
+    RECEIVED_IN_CASH: "Recebido em Dinheiro",
+    REPROVED_BY_RISK_ANALYSIS: "Reprovado por Análise de Risco",
+    CREDIT_CARD_CAPTURE_REFUSED: "Captura de Cartão Recusada",
+    REFUND_REQUESTED: "Reembolso Solicitado",
+    PARTIALLY_REFUNDED: "Parcialmente Reembolsado",
+    REFUND_IN_PROGRESS: "Reembolso em Andamento",
+    CHARGEBACK_REQUESTED: "Chargeback Solicitado",
+    CHARGEBACK_DISPUTE: "Disputa de Chargeback",
+    AWAITING_CHARGEBACK_REVERSAL: "Aguardando Reversão de Chargeback",
+    DUNNING_REQUESTED: "Dunning Solicitado",
+    DUNNING_RECEIVED: "Dunning Recebido",
+    AWAITING_RISK_ANALYSIS: "Aguardando Análise de Risco",
+  };
 
   const handleMonthChange = (value: string) => {
     setFilters((prev) => ({ ...prev, month: value }));
@@ -112,6 +134,7 @@ export default function RelatorioAdmin() {
         partnerLogo,
         pedidoId: pedido.id,
         qntAgendas: items.length,
+        status: pedido?.paymentStatus,
         totalPartner: partnerValueTotal,
         taxs: taxs,
         totalB2: b2ValueTotal,
@@ -237,7 +260,8 @@ export default function RelatorioAdmin() {
           <TableRow className="text-xs md:text-sm font-semibold">
             <TableHead className="text-center">Parceiro</TableHead>
             <TableHead className="text-center">Pedido</TableHead>
-            <TableHead className="text-center">Agenda por pedido</TableHead>
+            <TableHead className="text-center">Atividades por pedido</TableHead>
+            <TableHead className="text-center">Status</TableHead>
             <TableHead className="text-center">Total B2</TableHead>
             <TableHead className="text-center">Total Parceiro</TableHead>
             <TableHead className="text-center">Total das taxas</TableHead>
@@ -288,6 +312,16 @@ export default function RelatorioAdmin() {
 
                 <TableCell>
                   <MyTypography variant="body">{row.qntAgendas}</MyTypography>
+                </TableCell>
+
+                <TableCell>
+                  <MyTypography variant="body">
+                    {
+                      formattedStatus[
+                        row.status as keyof typeof formattedStatus
+                      ]
+                    }
+                  </MyTypography>
                 </TableCell>
 
                 <TableCell>
