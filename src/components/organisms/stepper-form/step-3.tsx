@@ -5,7 +5,7 @@ import MyIcon from "@/components/atoms/my-icon";
 import MyTextInput from "@/components/atoms/my-text-input";
 import MyTypography from "@/components/atoms/my-typography";
 import { useStepperStore } from "@/store/useStepperStore";
-import { formatCNPJ, formatCpfCnpj } from "@/utils/formatters";
+import { formatCpfCnpj } from "@/utils/formatters";
 import React, { useEffect } from "react";
 import { toast } from "react-toastify";
 
@@ -71,6 +71,11 @@ export default function Sobre({
             placeholder="Digite o CNPJ ou CPF"
             className="mt-2"
           />
+          {/* <MultiSelectLanguages
+            state={{ languages: languages ?? [""] }}
+            setState={setStepData}
+            step={3}
+          /> */}
         </div>
       </section>
       <div className="flex justify-between items-center w-full max-w-3xl mx-auto p-4">
