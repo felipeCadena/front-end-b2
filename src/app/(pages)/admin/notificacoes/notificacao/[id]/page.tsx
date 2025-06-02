@@ -26,7 +26,6 @@ export default function Notificacao() {
 
   useEffect(() => {
     queryClient.invalidateQueries({ queryKey: ["unread_notifications"] });
-    queryClient.invalidateQueries({ queryKey: ["unread_admin_notifications"] });
   }, [notification]);
 
   return isLoading ? (

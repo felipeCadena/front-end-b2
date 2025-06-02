@@ -40,7 +40,7 @@ export default function FullActivitiesHistoricMobile({
     }
   };
   return (
-    <section className="">
+    <section className="overflow-x-hidden">
       {activities &&
         activities.map((activity, index: number) => (
           <div className={cn("flex flex-col gap-4 mt-8 mb-16")} key={index}>
@@ -67,7 +67,7 @@ export default function FullActivitiesHistoricMobile({
                 <div>
                   <div className="flex items-center justify-between gap-1 mb-1 mr-4">
                     <MyBadge
-                      className="font-medium text-nowrap p-1"
+                      className={cn("text-nowrap p-1")}
                       variant="outline"
                     >
                       {handleNameActivity(activity?.adventure?.typeAdventure)}
@@ -187,25 +187,28 @@ export default function FullActivitiesHistoricMobile({
               </div>
             </div>
 
-            <div
-              className={cn(
-                "p-3 mt-2 bg-[#F1F0F587] border border-primary-600/30 border-opacity-80 rounded-lg shadow-sm hover:bg-gray-100 relative",
-                activity?.adventureStatus.includes("cancelado") &&
-                  "opacity-60 pointer-events-none"
-              )}
-              onClick={() => handlePhotos(activity)}
-            >
-              <div className="absolute inset-y-0 left-0 w-3 bg-primary-900 rounded-l-lg"></div>
+            {!activity?.schedule?.isCanceled &&
+              !activity?.adventureStatus.includes("cancelado") && (
+                <div
+                  className={cn(
+                    "p-3 mt-2 bg-[#F1F0F587] border border-primary-600/30 border-opacity-80 rounded-lg shadow-sm hover:bg-gray-100 relative",
+                    activity?.adventureStatus.includes("cancelado") &&
+                      "opacity-60 pointer-events-none"
+                  )}
+                  onClick={() => handlePhotos(activity)}
+                >
+                  <div className="absolute inset-y-0 left-0 w-3 bg-primary-900 rounded-l-lg"></div>
 
-              <div className="flex items-center gap-2 ml-4">
-                <MyIcon name="camera" />
-                <MyTypography variant="subtitle3" weight="bold">
-                  {activity?.schedule?.dateMediasPosted
-                    ? "Fotos dessa atividade"
-                    : "Fotos ainda não disponíveis"}
-                </MyTypography>
-              </div>
-            </div>
+                  <div className="flex items-center gap-2 ml-4">
+                    <MyIcon name="camera" />
+                    <MyTypography variant="subtitle3" weight="bold">
+                      {activity?.schedule?.dateMediasPosted
+                        ? "Fotos dessa atividade"
+                        : "Fotos ainda não disponíveis"}
+                    </MyTypography>
+                  </div>
+                </div>
+              )}
 
             {!activity?.adventureStatus.includes("cancelado") && (
               <div className="flex gap-2">
