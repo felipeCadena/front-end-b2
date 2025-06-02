@@ -43,8 +43,7 @@ export default function Historico() {
 
   return (
     <section className="w-full mb-6">
-      <div className="mx-4 space-y-8">
-        <div className="md:hidden">{/* <SearchActivity /> */}</div>
+      <div className="px-2 space-y-8">
         <ActivitiesFilter
           selected={selected}
           setSelected={setSelected}
