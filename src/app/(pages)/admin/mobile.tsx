@@ -213,7 +213,7 @@ export default function AdminMobile() {
           {pendingPayments?.total_orders == 0 && !isLoading ? (
             <div className="flex items-center justify-center h-[250px]">
               <MyTypography variant="subtitle4" weight="bold">
-                Não há pagamentos pendentes
+                Não há pagamentos pendentes neste mês
               </MyTypography>
             </div>
           ) : (
