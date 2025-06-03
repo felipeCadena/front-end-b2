@@ -256,7 +256,7 @@ export default function PagamentosParceiros() {
               </div>
             </div>
             {paid?.total_orders == 0 && !isLoadingPaid ? (
-              <div className="flex items-center justify-center h-[100px]">
+              <div className="flex items-center justify-center h-[250px]">
                 <MyTypography variant="subtitle4" weight="bold">
                   Não há pagamentos realizados.
                 </MyTypography>
