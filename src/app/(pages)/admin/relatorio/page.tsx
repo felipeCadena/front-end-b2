@@ -208,15 +208,15 @@ export default function RelatorioAdmin() {
           </MyTypography>
         </div>
       </div>
-      <div className="flex items-center justify-end w-full mb-4">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="flex items-center justify-center md:justify-end w-full mb-4">
+        <div className="grid grid-cols-3 md:grid-cols-4 gap-4">
           <MySelect
             value={status}
             onValueChange={(value) => {
               handleFilterStatus(value);
             }}
           >
-            <SelectTrigger className="rounded-2xl w-[150px] text-[#848A9C] text-xs">
+            <SelectTrigger className="rounded-2xl  text-[#848A9C] text-xs">
               <SelectValue placeholder="Selecione o status" />
             </SelectTrigger>
             <SelectContent className="rounded-lg">
@@ -241,7 +241,7 @@ export default function RelatorioAdmin() {
               }));
             }}
           >
-            <SelectTrigger className="rounded-2xl w-[150px] text-[#848A9C] text-xs">
+            <SelectTrigger className="rounded-2xl  text-[#848A9C] text-xs">
               <SelectValue placeholder="Selecione o ano" />
             </SelectTrigger>
             <SelectContent className="rounded-lg">
@@ -257,7 +257,7 @@ export default function RelatorioAdmin() {
             value={filters?.month}
             onValueChange={(value) => handleMonthChange(value)}
           >
-            <SelectTrigger className="rounded-2xl w-[150px] text-[#848A9C] text-xs">
+            <SelectTrigger className="rounded-2xl  text-[#848A9C] text-xs">
               <SelectValue placeholder="Mês" />
             </SelectTrigger>
             <SelectContent className="rounded-lg">
@@ -278,7 +278,7 @@ export default function RelatorioAdmin() {
           </MySelect>
 
           <div
-            className="cursor-pointer h-8 w-full md:w-8 flex items-center justify-center"
+            className="cursor-pointer h-8 w-full md:w-8 flex items-center justify-end max-sm:col-span-3"
             onClick={handleDownload}
           >
             {downloading ? (
