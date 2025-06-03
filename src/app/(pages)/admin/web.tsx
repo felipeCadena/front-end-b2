@@ -167,6 +167,7 @@ export default function AdminWeb() {
       toast.success(paid?.message ?? "Pagamento realizado com sucesso!");
     } catch (err: unknown) {
       if (err instanceof AxiosError) {
+        console.log(err.response?.data?.message);
         const message =
           err.response?.data?.message == "string"
             ? err.response?.data?.message
@@ -265,7 +266,7 @@ export default function AdminWeb() {
               {pendingPayments?.total_orders == 0 && !isLoading ? (
                 <div className="flex items-center justify-center h-[250px]">
                   <MyTypography variant="subtitle4" weight="bold">
-                    Não há pagamentos pendentes
+                    Não há pagamentos pendentes neste mês
                   </MyTypography>
                 </div>
               ) : (

@@ -61,10 +61,10 @@ export default function RejectModal({
 
         <MyTextarea
           placeholder="Escreva aqui o motivo da recusa"
+          className="resize-y"
           value={refusalMsg}
           onChange={(e) => setRefusalMsg?.(e.target.value)}
-          rows={4}
-          maxLength={200}
+          rows={12}
         />
 
         <DialogClose asChild className="absolute top-4 right-4 cursor-pointer">

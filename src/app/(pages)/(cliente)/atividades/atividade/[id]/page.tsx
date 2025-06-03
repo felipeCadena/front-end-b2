@@ -265,7 +265,7 @@ export default function Atividade() {
         <MyIcon
           name="voltar-black"
           className="absolute z-20 top-8 left-8 md:hidden hover:cursor-pointer"
-          onClick={() => router.back()}
+          onClick={() => router.push(PATHS.atividades)}
         />
 
         <div className="md:hidden">

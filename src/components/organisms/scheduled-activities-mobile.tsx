@@ -48,14 +48,6 @@ export default function ScheduledActivitiesMobile({
   const [isOffCancelLimit, setIsOffCancelLimit] = useState(false);
   const [paid, setPaid] = useState(false);
 
-  const handleModal = (
-    orderAdventuresId: string,
-    orderScheduleAdventureId: string
-  ) => {
-    setShowModal(true);
-    setCancelOrder({ orderAdventuresId, orderScheduleAdventureId });
-  };
-
   const handleFindCancelLimit = (activity: CustomerSchedule) => {
     const today = new Date();
     const hoursBeforeCancellation = activity.adventure.hoursBeforeCancellation;
@@ -70,6 +62,14 @@ export default function ScheduledActivitiesMobile({
 
     setIsOffCancelLimit(isOffLimit);
     setPaid(notPaid);
+  };
+
+  const handleModal = (activity: CustomerSchedule) => {
+    const orderAdventuresId = String(activity.orderAdventureId);
+    const orderScheduleAdventureId = activity.id;
+    setShowModal(true);
+    setCancelOrder({ orderAdventuresId, orderScheduleAdventureId });
+    handleFindCancelLimit(activity);
   };
 
   const handleClose = () => {
@@ -92,6 +92,9 @@ export default function ScheduledActivitiesMobile({
         queryClient.invalidateQueries({
           queryKey: ["schedules"],
         });
+        setCancelOrder(null);
+        setShowModal(false);
+        setShowCanceledModal(true);
       } catch (error) {
         if (error instanceof AxiosError) {
           if (error.status === 400) {
@@ -99,18 +102,9 @@ export default function ScheduledActivitiesMobile({
             toast.error(error.response?.data.message);
           }
         }
-      } finally {
-        setCancelOrder(null);
-        setShowModal(false);
-        setTimeout(() => {
-          setShowCanceledModal(true);
-        }, 500);
       }
     }
   };
-
-  console.log(isOffCancelLimit);
-  console.log(paid);
 
   return (
     <section className="">
@@ -162,12 +156,7 @@ export default function ScheduledActivitiesMobile({
                       {withOptions && (
                         <div className="cursor-pointer z-20">
                           <PopupCancelActivity
-                            onCancelar={() =>
-                              handleModal(
-                                String(activity.orderAdventureId),
-                                activity.id
-                              )
-                            }
+                            onCancelar={() => handleModal(activity)}
                           />
                         </div>
                       )}
@@ -221,9 +210,11 @@ export default function ScheduledActivitiesMobile({
       <MyCancelScheduleModal
         title="Cancelamento de atividade"
         subtitle={
-          isOffCancelLimit
-            ? "O limite para cancelamento com reembolso foi ultrapassado! Tem certeza que ainda assim deseja cancelar essa atividade? Não será possível reembolsar o valor pago."
-            : "Tem certeza que deseja cancelar essa atividade?"
+          !paid
+            ? "Tem certeza que deseja cancelar essa atividade?"
+            : isOffCancelLimit
+              ? "O limite para cancelamento com reembolso foi ultrapassado! Tem certeza que ainda assim deseja cancelar essa atividade? Não será possível reembolsar o valor pago."
+              : "Tem certeza que deseja cancelar essa atividade?"
         }
         buttonTitle="Cancelar atividade"
         iconName="cancel"
@@ -234,10 +225,10 @@ export default function ScheduledActivitiesMobile({
       <MyCancelScheduleModal
         title="Atividade cancelada"
         subtitle={
-          isOffCancelLimit
-            ? "Atividade cancelada!"
-            : !paid
-              ? "Essa atividade não foi paga. Portanto, foi cancelada com sucesso e não há reembolso!"
+          !paid
+            ? "Essa atividade não foi paga. Portanto, foi cancelada com sucesso e não há reembolso!"
+            : isOffCancelLimit
+              ? "Atividade cancelada com sucesso!"
               : "Atividade cancelada! Em breve o seu estorno estará disponível na mesma forma de pagamento realizada."
         }
         buttonTitle="Voltar"

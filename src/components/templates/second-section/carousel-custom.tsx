@@ -120,7 +120,7 @@ export default function CarouselCustom({
         ref={ref}
         className={cn(
           "overflow-x-scroll flex gap-2 max-sm:no-scrollbar my-8 md:my-4 ml-2 max-sm:mr-5 md:mx-5 md:last:mb-16 md:scrollbar-thin snap-x snap-mandatory ",
-          !home && "gap-4 md:gap-0"
+          !home && "gap-4"
         )}
         {...events}
       >

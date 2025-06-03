@@ -93,13 +93,11 @@ export default function FullActivitiesHistoric({
   const handleClose = () => {
     setCancelOrder(null);
     setShowModal(false);
-    setIsOffCancelLimit(false);
   };
 
   const handleCloseSecondModal = () => {
     setCancelOrder(null);
     setShowCanceledModal(false);
-    setIsOffCancelLimit(false);
   };
 
   const handleCancelSchedule = async () => {
@@ -115,10 +113,7 @@ export default function FullActivitiesHistoric({
         });
         setCancelOrder(null);
         setShowModal(false);
-        setIsOffCancelLimit(false);
-        setTimeout(() => {
-          setShowCanceledModal(true);
-        }, 500);
+        setShowCanceledModal(true);
       } catch (error) {
         if (error instanceof AxiosError) {
           if (error.status === 400) {
@@ -136,8 +131,8 @@ export default function FullActivitiesHistoric({
     }
   };
 
-  console.log(isOffCancelLimit);
   console.log(paid);
+  console.log(isOffCancelLimit);
 
   return (
     <section className="md:max-w-screen-custom">
@@ -146,16 +141,18 @@ export default function FullActivitiesHistoric({
           <div
             className={cn(
               "flex items-center gap-4 mt-20 mb-20 w-full",
-              activity?.adventureStatus.includes("cancelado") ||
-                (activity?.schedule?.isCanceled &&
-                  "opacity-60 pointer-events-none")
+              activity?.adventureStatus.includes("cancelad") &&
+                "opacity-60 pointer-events-none"
             )}
             key={index}
           >
             <div
               className={cn(
                 `relative z-10 flex-shrink-0 overflow-hidden w-[265px] hover:cursor-pointer rounded-md`,
-                isActivityDone ? "h-[265px]" : "h-[200px]"
+                isActivityDone &&
+                  !activity?.adventureStatus.includes("cancelad")
+                  ? "h-[265px]"
+                  : "h-[200px]"
               )}
             >
               <Image
@@ -167,7 +164,13 @@ export default function FullActivitiesHistoric({
                 }
                 width={250}
                 height={300}
-                className={`object-cover w-[265px] ${isActivityDone ? "h-[265px]" : "h-[200px]"}`}
+                className={cn(
+                  "object-cover w-[265px]",
+                  isActivityDone &&
+                    !activity?.adventureStatus.includes("cancelad")
+                    ? "h-[265px]"
+                    : "h-[200px]"
+                )}
                 onClick={() =>
                   router.push(PATHS.visualizarAtividade(activity.adventure.id))
                 }
@@ -176,7 +179,7 @@ export default function FullActivitiesHistoric({
 
             <div className="w-full space-y-2 max-h-[265px]">
               <div className="w-full flex justify-between mb-4 relative">
-                <div className="flex flex-col gap-2 cursor-pointer">
+                <div className={cn("flex flex-col gap-2 cursor-pointer")}>
                   <div className="flex min-w-[391px] items-center gap-4">
                     <MyBadge className="font-medium p-1" variant="outline">
                       {handleNameActivity(activity?.adventure?.typeAdventure)}
@@ -413,24 +416,28 @@ export default function FullActivitiesHistoric({
                 </div>
               </div>
 
-              {isActivityDone && (
-                <div
-                  onClick={() => handlePhotos(activity)}
-                  className="cursor-pointer flex justify-between items-center p-4 bg-[#F1F0F587] border border-primary-600/30 md:bg-primary-900 border-opacity-80 rounded-lg shadow-sm relative"
-                >
-                  <div className="absolute inset-y-0 left-0 w-3 bg-primary-900 rounded-l-lg"></div>
+              {isActivityDone &&
+                !activity?.schedule?.isCanceled &&
+                !activity?.adventureStatus.includes("cancelado") && (
+                  <div
+                    onClick={() => handlePhotos(activity)}
+                    className={cn(
+                      "cursor-pointer flex justify-between items-center p-4 bg-[#F1F0F587] border border-primary-600/30 md:bg-primary-900 border-opacity-80 rounded-lg shadow-sm relative"
+                    )}
+                  >
+                    <div className="absolute inset-y-0 left-0 w-3 bg-primary-900 rounded-l-lg"></div>
 
-                  <div className="flex items-center gap-1 ml-4">
-                    <MyIcon name="camera" />
-                    <MyTypography variant="subtitle3" weight="bold">
-                      {activity?.schedule?.dateMediasPosted
-                        ? "Fotos dessa atividade"
-                        : "Fotos ainda não disponíveis"}
-                    </MyTypography>
+                    <div className="flex items-center gap-1 ml-4">
+                      <MyIcon name="camera" />
+                      <MyTypography variant="subtitle3" weight="bold">
+                        {activity?.schedule?.dateMediasPosted
+                          ? "Fotos dessa atividade"
+                          : "Fotos ainda não disponíveis"}
+                      </MyTypography>
+                    </div>
+                    <MyIcon name="seta" />
                   </div>
-                  <MyIcon name="seta" />
-                </div>
-              )}
+                )}
             </div>
           </div>
         ))
@@ -443,9 +450,11 @@ export default function FullActivitiesHistoric({
       <MyCancelScheduleModal
         title="Cancelamento de atividade"
         subtitle={
-          isOffCancelLimit
-            ? "O limite para cancelamento com reembolso foi ultrapassado! Tem certeza que ainda assim deseja cancelar essa atividade? Não será possível reembolsar o valor pago."
-            : "Tem certeza que deseja cancelar essa atividade?"
+          !paid
+            ? "Tem certeza que deseja cancelar essa atividade?"
+            : isOffCancelLimit
+              ? "O limite para cancelamento com reembolso foi ultrapassado! Tem certeza que ainda assim deseja cancelar essa atividade? Não será possível reembolsar o valor pago."
+              : "Tem certeza que deseja cancelar essa atividade?"
         }
         buttonTitle="Cancelar atividade"
         iconName="cancel"
@@ -456,10 +465,10 @@ export default function FullActivitiesHistoric({
       <MyCancelScheduleModal
         title="Atividade cancelada"
         subtitle={
-          isOffCancelLimit
-            ? "Atividade cancelada!"
-            : !paid
-              ? "Essa atividade não foi paga. Portanto, foi cancelada com sucesso e não há reembolso!"
+          !paid
+            ? "Essa atividade não foi paga. Portanto, foi cancelada com sucesso e não há reembolso!"
+            : isOffCancelLimit
+              ? "Atividade cancelada com sucesso!"
               : "Atividade cancelada! Em breve o seu estorno estará disponível na mesma forma de pagamento realizada."
         }
         buttonTitle="Voltar"

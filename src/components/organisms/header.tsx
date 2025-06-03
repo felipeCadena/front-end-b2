@@ -52,7 +52,6 @@ export default function Header() {
       pathname === PATHS["cadastro-parceiro"] ||
       pathname === PATHS["informacoes-atividades"] ||
       pathname === PATHS["cadastro-atividade"]
-      // pathname.includes("editar")
     );
   };
 
@@ -82,7 +81,7 @@ export default function Header() {
       <div className="flex-shrink-0 md:flex md:items-center md:gap-6 ">
         <div className="flex gap-2 items-center">
           <LanguageDropdown />
-          {!session?.user && status === "unauthenticated" && (
+          {!session?.user?.accessToken && status === "unauthenticated" && (
             <button
               onClick={() => router.push(PATHS.login)}
               className="md:hidden flex items-center font-semibold gap-1 px-2 py-1 text-white bg-black rounded-full shadow-md"
@@ -93,7 +92,7 @@ export default function Header() {
         </div>
 
         <div className="max-sm:hidden">
-          {session?.user && status === "authenticated" ? (
+          {session?.user?.accessToken && status === "authenticated" ? (
             <SideBarModal sideBar={sideBarActive}>
               <MyButton
                 variant="text"

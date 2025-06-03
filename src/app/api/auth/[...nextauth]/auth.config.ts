@@ -169,7 +169,7 @@ export const authOptions: NextAuthOptions = {
           // Calcula o timestamp exato de expiração
           const expiresAt = Date.now() + response.expires_in * 1000;
 
-          // console.log("response google: " + response?.refresh_token);
+          console.log("response google: " + response?.refresh_token);
 
           (user.email = decodedToken.email),
             (user.name = decodedToken.name),

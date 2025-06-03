@@ -35,11 +35,15 @@ export default function RelatorioAdmin() {
   const router = useRouter();
   const [page, setPage] = React.useState(1);
   const [downloading, setDownloading] = React.useState(false);
+  const [status, setStatus] = React.useState("todos");
+  const [allOrders, setAllOrders] = React.useState<any[]>([]);
+  const [originalAllOrders, setOriginalAllOrders] = React.useState<any[]>([]);
 
   const currentMonthKey = format(new Date(), "MM");
+  const currentYear = format(new Date(), "yyyy");
 
   const [filters, setFilters] = React.useState({
-    year: "2025",
+    year: currentYear,
     month: currentMonthKey,
   });
 
@@ -65,16 +69,47 @@ export default function RelatorioAdmin() {
     return format(endOfMonth(selectedMonthDate), "yyyy-MM-dd'T'23:59:59");
   }, [filters.year, filters.month, selectedMonthDate]);
 
-  const { data: allOrders, isLoading } = useQuery({
+  const { data: listOrders, isLoading } = useQuery({
     queryKey: ["listOrders", page, filters],
-    queryFn: () =>
-      adminService.listOrders({
+    queryFn: async () => {
+      const orders = await adminService.listOrders({
         startsAt: startDate,
         endsAt: endDate,
         limit: 100,
         skip: page * 100 - 100,
-      }),
+      });
+      setAllOrders(orders);
+      setOriginalAllOrders(orders);
+      return orders;
+    },
   });
+
+  const CONFIRMED = [
+    "CONFIRMED",
+    "RECEIVED",
+    "RECEIVED_IN_CASH",
+    "PARTIALLY_REFUNDED",
+  ];
+
+  const handleFilterStatus = (status: string) => {
+    setStatus(status);
+
+    if (status === "confirmado") {
+      const filteredOrders = originalAllOrders.filter((order) =>
+        CONFIRMED.includes(order.paymentStatus)
+      );
+      setAllOrders(filteredOrders);
+      return;
+    } else if (status === "pendente") {
+      const filteredOrders = originalAllOrders.filter(
+        (order) => !CONFIRMED.includes(order.paymentStatus)
+      );
+      setAllOrders(filteredOrders);
+      return;
+    } else {
+      setAllOrders(originalAllOrders);
+    }
+  };
 
   const handleMonthChange = (value: string) => {
     setFilters((prev) => ({ ...prev, month: value }));
@@ -112,6 +147,7 @@ export default function RelatorioAdmin() {
         partnerLogo,
         pedidoId: pedido.id,
         qntAgendas: items.length,
+        status: pedido?.paymentStatus,
         totalPartner: partnerValueTotal,
         taxs: taxs,
         totalB2: b2ValueTotal,
@@ -172,8 +208,30 @@ export default function RelatorioAdmin() {
           </MyTypography>
         </div>
       </div>
-      <div className="flex items-center justify-end w-full mb-4">
-        <div className="flex gap-2 ">
+      <div className="flex items-center justify-center md:justify-end w-full mb-4">
+        <div className="grid grid-cols-3 md:grid-cols-4 gap-4">
+          <MySelect
+            value={status}
+            onValueChange={(value) => {
+              handleFilterStatus(value);
+            }}
+          >
+            <SelectTrigger className="rounded-2xl  text-[#848A9C] text-xs">
+              <SelectValue placeholder="Selecione o status" />
+            </SelectTrigger>
+            <SelectContent className="rounded-lg">
+              <SelectItem key="todos" value="todos">
+                Todos
+              </SelectItem>
+              <SelectItem key="confirmado" value="confirmado">
+                Confirmado
+              </SelectItem>
+              <SelectItem key="pendente" value="pendente">
+                Pendente
+              </SelectItem>
+            </SelectContent>
+          </MySelect>
+
           <MySelect
             value={filters?.year}
             onValueChange={(value) => {
@@ -183,8 +241,8 @@ export default function RelatorioAdmin() {
               }));
             }}
           >
-            <SelectTrigger className="rounded-2xl w-[150px] text-[#848A9C] text-xs">
-              <SelectValue placeholder="Setembro" />
+            <SelectTrigger className="rounded-2xl  text-[#848A9C] text-xs">
+              <SelectValue placeholder="Selecione o ano" />
             </SelectTrigger>
             <SelectContent className="rounded-lg">
               {getYearsArray().map((year) => (
@@ -199,7 +257,7 @@ export default function RelatorioAdmin() {
             value={filters?.month}
             onValueChange={(value) => handleMonthChange(value)}
           >
-            <SelectTrigger className="rounded-2xl w-[150px] text-[#848A9C] text-xs">
+            <SelectTrigger className="rounded-2xl  text-[#848A9C] text-xs">
               <SelectValue placeholder="Mês" />
             </SelectTrigger>
             <SelectContent className="rounded-lg">
@@ -220,7 +278,7 @@ export default function RelatorioAdmin() {
           </MySelect>
 
           <div
-            className="cursor-pointer h-8 w-8 flex items-center justify-center"
+            className="cursor-pointer h-8 w-full md:w-8 flex items-center justify-end max-sm:col-span-3"
             onClick={handleDownload}
           >
             {downloading ? (
@@ -237,7 +295,8 @@ export default function RelatorioAdmin() {
           <TableRow className="text-xs md:text-sm font-semibold">
             <TableHead className="text-center">Parceiro</TableHead>
             <TableHead className="text-center">Pedido</TableHead>
-            <TableHead className="text-center">Agenda por pedido</TableHead>
+            <TableHead className="text-center">Atividades por pedido</TableHead>
+            <TableHead className="text-center">Status</TableHead>
             <TableHead className="text-center">Total B2</TableHead>
             <TableHead className="text-center">Total Parceiro</TableHead>
             <TableHead className="text-center">Total das taxas</TableHead>
@@ -288,6 +347,12 @@ export default function RelatorioAdmin() {
 
                 <TableCell>
                   <MyTypography variant="body">{row.qntAgendas}</MyTypography>
+                </TableCell>
+
+                <TableCell>
+                  <MyTypography variant="body">
+                    {CONFIRMED.includes(row.status) ? "Confirmado" : "Pendente"}
+                  </MyTypography>
                 </TableCell>
 
                 <TableCell>
