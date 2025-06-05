@@ -236,7 +236,7 @@ export const authOptions: NextAuthOptions = {
         } catch (err) {
           console.error("Erro ao renovar token:", (err as any)?.response?.data);
           return {
-            // ...token,
+            ...token,
             error: "RefreshAccessTokenError", // <- chave para verificar no frontend
           };
         }
@@ -277,7 +277,6 @@ export const authOptions: NextAuthOptions = {
     signIn: "/login",
     error: "/login",
     signOut: "/",
-    // verifyRequest: "/",
   },
   session: {
     strategy: "jwt",

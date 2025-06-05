@@ -39,7 +39,7 @@ const Layout = ({ children }: { children: JSX.Element | ReactNode }) => {
       // Logout automático ou redirecionamento
       console.log("Session expired, logging out...");
       clearUser();
-      signOut({ redirect: true, callbackUrl: "/login" });
+      signOut();
       toast.error("Sua sessão expirou. Por favor, faça login novamente.");
     }
   }, [session]);
