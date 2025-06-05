@@ -18,6 +18,21 @@ const isPathMatch = (path: string, publicPaths: string[]) => {
 export async function middleware(req: NextRequest) {
   const token = await getToken({ req });
 
+  NextResponse.next().headers.set(
+    "Content-Security-Policy",
+    "default-src 'self'"
+  );
+  NextResponse.next().headers.set("X-Frame-Options", "SAMEORIGIN");
+  NextResponse.next().headers.set("X-Content-Type-Options", "nosniff");
+  NextResponse.next().headers.set(
+    "Referrer-Policy",
+    "no-referrer-when-downgrade"
+  );
+  NextResponse.next().headers.set(
+    "Permissions-Policy",
+    "geolocation=(), microphone=(), camera=()"
+  );
+
   const { pathname } = req.nextUrl;
 
   const isPublic = isPathMatch(pathname, PATHS_CONFIG.public);

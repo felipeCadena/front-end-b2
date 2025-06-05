@@ -113,10 +113,6 @@ export default function AdminMobile() {
         )
       );
     }
-
-    // if (value === "todos") {
-    //   setActivitiesNotAprovved(allActivities);
-    // }
   };
 
   function hasTotalValuePaid(partner: Record<string, any>): boolean {

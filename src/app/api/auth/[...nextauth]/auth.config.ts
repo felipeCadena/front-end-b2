@@ -236,7 +236,7 @@ export const authOptions: NextAuthOptions = {
         } catch (err) {
           console.error("Erro ao renovar token:", (err as any)?.response?.data);
           return {
-            // ...token,
+            ...token,
             error: "RefreshAccessTokenError", // <- chave para verificar no frontend
           };
         }
