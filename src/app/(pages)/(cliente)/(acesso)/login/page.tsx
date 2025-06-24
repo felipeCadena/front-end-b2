@@ -66,9 +66,9 @@ export default function Login() {
           });
 
           if (params?.redirect) {
-            toast.success("Login realizado com sucesso!");
             console.log("Redirecionando para:", params.redirect);
             router.push(params.redirect);
+            toast.success("Login realizado com sucesso!");
             return;
           }
 
@@ -85,14 +85,16 @@ export default function Login() {
             DEFAULT_ROLE_PATHS[mappedRole as keyof typeof DEFAULT_ROLE_PATHS];
 
           if (defaultPath) {
-            toast.success("Login realizado com sucesso!");
             console.log("Redirecionando para:", defaultPath);
             router.push(defaultPath);
+            toast.success("Login realizado com sucesso!");
           }
         } catch (error) {
           console.error("Erro ao processar sessão:", error);
         }
       }
+
+      setIsLoading(false);
     };
 
     handleSessionUpdate();
@@ -114,9 +116,10 @@ export default function Login() {
     } catch (err) {
       console.error("Erro no login:", err);
       toast.error("Erro ao fazer login");
-    } finally {
-      setIsLoading(false);
     }
+    // finally {
+    //   setIsLoading(false);
+    // }
   };
 
   return (

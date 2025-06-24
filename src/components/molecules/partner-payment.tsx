@@ -8,6 +8,7 @@ interface PartnerPaymentCardProps {
   name: string;
   amount: number;
   avatar: string;
+  payday: number;
   onPay: () => void;
   status?: string;
   loading?: boolean;
@@ -17,6 +18,7 @@ export default function PartnerPaymentCard({
   name,
   amount,
   avatar,
+  payday,
   onPay,
   status,
   loading,
@@ -42,6 +44,13 @@ export default function PartnerPaymentCard({
             className="text-gray-600"
           >
             R$ {amount && amount.toFixed(2)}
+          </MyTypography>
+          <MyTypography
+            variant="label"
+            weight="semibold"
+            className="text-gray-600"
+          >
+            Pagamento: {payday}
           </MyTypography>
         </div>
       </div>

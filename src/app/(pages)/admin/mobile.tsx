@@ -10,7 +10,7 @@ import PartnerApprovalCard from "@/components/molecules/partner-approval";
 import ActivityStatusCard from "@/components/molecules/activity-status";
 import PATHS from "@/utils/paths";
 import SearchActivity from "@/components/organisms/search-activity";
-import { endOfMonth, format, startOfMonth } from "date-fns";
+import { endOfMonth, format, startOfMonth, subMonths } from "date-fns";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { adminService } from "@/services/api/admin";
 import { toast } from "react-toastify";
@@ -58,10 +58,12 @@ export default function AdminMobile() {
   >([]);
 
   const now = new Date();
+  const previousMonth = subMonths(now, 1);
+
   const currentMonthKey = format(new Date(), "MM");
 
-  const startsAt = format(startOfMonth(now), "yyyy-MM-dd'T'00:00:00");
-  const endsAt = format(endOfMonth(now), "yyyy-MM-dd'T'00:00:00");
+  const startsAt = format(startOfMonth(previousMonth), "yyyy-MM-dd'T'00:00:00");
+  const endsAt = format(endOfMonth(previousMonth), "yyyy-MM-dd'T'00:00:00");
 
   const { data: pendingPayments, isLoading } = useQuery({
     queryKey: ["pendingPayments"],
@@ -213,19 +215,25 @@ export default function AdminMobile() {
               </MyTypography>
             </div>
           ) : (
-            Object.values(pendingPayments?.partners ?? {}).map(
-              (payment: any) => (
+            !isLoading &&
+            pendingPayments.partners &&
+            Object.values(pendingPayments.partners)
+              .sort((a: any, b: any) => {
+                const order = [5, 10, 15];
+                return order.indexOf(a.payday) - order.indexOf(b.payday);
+              })
+              .map((payment: any) => (
                 <PartnerPaymentCard
                   key={payment?.ordersSchedules}
                   name={payment?.partnerFantasyName}
                   amount={payment?.total_value_pending}
                   avatar={payment?.partnerLogo}
+                  payday={payment?.payday}
                   status={hasTotalValuePaid(payment) ? "paid" : "pending"}
                   loading={loading}
                   onPay={() => payPartner(payment?.token_for_pay)}
                 />
-              )
-            )
+              ))
           )}
         </div>
         <MyButton
