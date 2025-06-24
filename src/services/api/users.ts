@@ -1,8 +1,28 @@
 import { api } from "@/libs/api";
-const axios = require("axios");
+import axios from "axios";
+
+export type LoggedUser = {
+  cpf: string;
+  email: string;
+  id: string;
+  name: string;
+  phone: string;
+  photo: {
+    mimetype: string;
+    url: string;
+    updatedAt?: string;
+  };
+  logo?: {
+    mimetype: string;
+    url: string;
+    updatedAt?: string;
+  };
+  role: string;
+  updatedAt?: string;
+};
 
 export const users = {
-  getUserLogged: async () => {
+  getUserLogged: async (): Promise<LoggedUser> => {
     try {
       const response = await api.get("/users");
       return response.data;
@@ -11,12 +31,9 @@ export const users = {
       throw error;
     }
   },
-  updatePassword: async (body: {
-    confirmPassword: string;
-    password: string;
-  }) => {
+  updatePassword: async (body: { password: string }) => {
     try {
-      const response = await api.put("/users/password", body);
+      const response = await api.patch("/users", body);
       return response.data;
     } catch (error) {
       console.error("Error updating password:", error);
@@ -50,7 +67,7 @@ export const users = {
         }
       );
 
-      const { url } = await fetch(response.data.uploadUrl, {
+      const otherRES = await fetch(response.data.uploadUrl, {
         method: "PUT",
         body: body.file,
         headers: {
@@ -62,8 +79,10 @@ export const users = {
         }
         return res;
       });
-      console.log(url);
-      return url;
+
+      // antes era colocado no retorno da função a url que volta de otherRes, alterei para a url que volta de response.
+
+      return response.data.url;
     } catch (error) {
       console.error("Error uploading media:", error);
       throw error;
@@ -76,6 +95,35 @@ export const users = {
     } catch (error) {
       console.error("Error deleting media:", error);
       throw error;
+    }
+  },
+  getIP: async () => {
+    try {
+      const { data } = await axios.get("https://api.ipify.org?format=json");
+
+      return data.ip;
+    } catch (error) {
+      console.error("Failed to fetch IP address", error);
+      throw error;
+    }
+  },
+  getStateFromIP: async (): Promise<string | null> => {
+    try {
+      const { data: ipData } = await axios.get(
+        "https://api.ipify.org?format=json"
+      );
+
+      const { data } = await axios.get(`https://ipwho.is/${ipData.ip}`);
+
+      if (data.success) {
+        return data.city;
+      } else {
+        console.warn("Erro na geolocalização:", data.message);
+        return null;
+      }
+    } catch (error) {
+      console.error("Erro ao buscar estado por IP:", error);
+      return null;
     }
   },
 };

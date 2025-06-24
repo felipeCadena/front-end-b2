@@ -1,97 +1,28 @@
 "use client";
 
-import MyButton from "@/components/atoms/my-button";
+import Loading from "@/app/loading";
 import MyIcon from "@/components/atoms/my-icon";
 import MyTypography from "@/components/atoms/my-typography";
+import { Pagination } from "@/components/molecules/pagination";
 import PartnerApprovalCard from "@/components/molecules/partner-approval";
+import { adminService } from "@/services/api/admin";
+import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useState } from "react";
 
 export default function ParceiroCadastrados() {
   const router = useRouter();
+  const [page, setPage] = useState(1);
 
-  const newPartners = [
-    {
-      id: 1,
-      name: "Vitória Batista",
-      activitiesCount: 0,
-      avatar: "/images/avatar1.png",
-      isNew: true,
-    },
-    {
-      id: 2,
-      name: "Vera Oliveira",
-      activitiesCount: 0,
-      avatar: "/images/avatar1.png",
-      isNew: true,
-    },
-    {
-      id: 3,
-      name: "Bruna Almeida",
-      activitiesCount: 0,
-      avatar: "/images/avatar1.png",
-      isNew: true,
-    },
-  ];
-
-  const partnes = [
-    {
-      id: 4,
-      name: "Luis Otávio Menezes",
-      activitiesCount: 20,
-      avatar: "/images/avatar3.png",
-      isNew: false,
-      star: 5,
-    },
-    {
-      id: 5,
-      name: "Vitória Batista",
-      activitiesCount: 15,
-      avatar: "/images/avatar1.png",
-      isNew: false,
-      star: 4,
-    },
-    {
-      id: 6,
-      name: "Vitória Batista",
-      activitiesCount: 5,
-      avatar: "/images/avatar1.png",
-      isNew: false,
-      star: 3,
-    },
-    {
-      id: 7,
-      name: "Vitória Batista",
-      activitiesCount: 13,
-      avatar: "/images/avatar1.png",
-      isNew: false,
-      star: 1,
-    },
-    {
-      id: 8,
-      name: "Vitória Batista",
-      activitiesCount: 15,
-      avatar: "/images/avatar1.png",
-      isNew: false,
-      star: 4,
-    },
-    {
-      id: 9,
-      name: "Vitória Batista",
-      activitiesCount: 5,
-      avatar: "/images/avatar1.png",
-      isNew: false,
-      star: 3,
-    },
-    {
-      id: 10,
-      name: "Vitória Batista",
-      activitiesCount: 13,
-      avatar: "/images/avatar1.png",
-      isNew: false,
-      star: 5,
-    },
-  ];
+  const { data: allPartners, isLoading } = useQuery({
+    queryKey: ["allPartners", page],
+    queryFn: () =>
+      adminService.searchPartners({
+        limit: 15,
+        orderBy: "createdAt asc",
+        skip: page * 15 - 15,
+      }),
+  });
 
   return (
     <main className="px-4 space-y-4 md:my-8">
@@ -106,61 +37,69 @@ export default function ParceiroCadastrados() {
         </MyTypography>
       </div>
 
-      <div className="space-y-4 md:grid md:grid-cols-3 md:gap-4 md:items-end">
-        {newPartners.map(
-          (partner: {
-            id: React.Key | null | undefined;
-            name: string;
-            activitiesCount: number;
-            avatar: string;
-            isNew: boolean | undefined;
-          }) => (
+      {/* <div className="space-y-4 md:grid md:grid-cols-3 md:gap-4 md:items-end">
+        {newPartnersData &&
+          newPartnersData?.map((newPartnersData: any) => (
             <PartnerApprovalCard
-              key={partner.id}
-              name={partner.name}
-              activitiesCount={partner.activitiesCount}
-              avatar={partner.avatar}
-              isNew={partner.isNew}
+              key={newPartnersData?.id}
+              name={newPartnersData?.companyName}
+              activitiesCount={newPartnersData?._count?.adventures}
+              avatar={newPartnersData?.user?.url ?? "/user.png"}
+              isNew={!newPartnersData?.isActive}
               onClick={() =>
-                router.push(`/admin/parceiros-cadastrados/${partner.id}`)
+                router.push(
+                  `/admin/parceiros-cadastrados/${newPartnersData?.id}`
+                )
               }
             />
-          )
-        )}
-
-        <MyButton
-          variant="partner"
-          className="w-full col-span-1"
-          borderRadius="squared"
-          size="lg"
-        >
-          Aprovar todos
-        </MyButton>
+          ))}
       </div>
-      <div className="space-y-4 md:grid md:grid-cols-3 md:gap-4 md:items-end">
-        {partnes.map(
-          (partner: {
-            id: React.Key | null | undefined;
-            name: string;
-            activitiesCount: number;
-            avatar: string;
-            isNew: boolean | undefined;
-            star: number;
-          }) => (
-            <PartnerApprovalCard
-              key={partner.id}
-              rating={partner.star}
-              name={partner.name}
-              activitiesCount={partner.activitiesCount}
-              avatar={partner.avatar}
-              isNew={partner.isNew}
-              onClick={() =>
-                router.push(`/admin/parceiros-cadastrados/${partner.id}`)
-              }
+      <MyButton
+        variant="partner"
+        className="w-full md:w-1/4"
+        borderRadius="squared"
+        size="lg"
+      >
+        Aprovar todos
+      </MyButton> */}
+      {isLoading ? (
+        <div className="h-[30vh] my-16">
+          <Loading height="[30vh]" />
+        </div>
+      ) : (
+        <>
+          <div className="space-y-4 md:grid md:grid-cols-3 md:gap-4 md:items-end">
+            {allPartners && allPartners.length > 0 ? (
+              allPartners.map((partner: any) => (
+                <PartnerApprovalCard
+                  key={partner?.id}
+                  name={partner?.companyName ?? "Nome do Parceiro"}
+                  activitiesCount={partner?._count?.adventures}
+                  rating={partner?.averageRating}
+                  avatar={partner?.logo?.url ?? "/user.png"}
+                  onClick={() =>
+                    router.push(`/admin/parceiros-cadastrados/${partner?.id}`)
+                  }
+                />
+              ))
+            ) : (
+              <div>
+                <MyTypography weight="bold" variant="subtitle3">
+                  Não há parceiros cadastrados
+                </MyTypography>
+              </div>
+            )}
+          </div>
+          {allPartners && (
+            <Pagination
+              limit={15}
+              data={allPartners}
+              page={page}
+              setPage={setPage}
             />
-          )
-        )}
-      </div>
+          )}
+        </>
+      )}
     </main>
   );
 }

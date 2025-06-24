@@ -1,17 +1,49 @@
 "use client";
 
-import { notifications } from "@/common/constants/mock";
+import Loading from "@/app/loading";
 import MyButton from "@/components/atoms/my-button";
 import MyIcon from "@/components/atoms/my-icon";
 import MyTypography from "@/components/atoms/my-typography";
+import { Pagination } from "@/components/molecules/pagination";
+import { adminService } from "@/services/api/admin";
+import useNotifications from "@/store/useNotifications";
+
 import { cn } from "@/utils/cn";
-import { formatDate, getData, getHora, isDateInPast } from "@/utils/formatters";
+import { formatDate, getHora } from "@/utils/formatters";
 import PATHS from "@/utils/paths";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 export default function Notificacoes() {
   const router = useRouter();
+  const queryClient = useQueryClient();
+  const [page, setPage] = useState(1);
+
+  const { notifications, setStoreNotifications } = useNotifications();
+
+  const session = useSession();
+
+  useQuery({
+    queryKey: ["adminNotifications", page],
+    enabled: !!session.data?.user?.id,
+    queryFn: async () => {
+      const userNotifications = await adminService.listNotifications({
+        limit: 12,
+        skip: page * 12 - 12,
+      });
+      setStoreNotifications(userNotifications);
+
+      return userNotifications;
+    },
+  });
+
+  useEffect(() => {
+    queryClient.invalidateQueries({
+      queryKey: ["adminNotifications"],
+    });
+  }, []);
 
   const getMonthName = (timestamp: string) => {
     const months = [
@@ -36,7 +68,7 @@ export default function Notificacoes() {
   const groupedNotifications = notifications.reduce<
     Record<string, typeof notifications>
   >((acc, notification) => {
-    const monthYear = getMonthName(notification.timestamp); // Exemplo: "Fevereiro"
+    const monthYear = getMonthName(notification.createdAt); // Exemplo: "Fevereiro"
 
     if (!acc[monthYear]) {
       acc[monthYear] = [];
@@ -51,7 +83,7 @@ export default function Notificacoes() {
       <div className="flex gap-4 items-center my-6">
         <MyIcon
           name="voltar-black"
-          className=""
+          className="hover:cursor-pointer z-30"
           onClick={() => router.back()}
         />
         <MyTypography variant="subtitle1" weight="bold" className="">
@@ -59,87 +91,110 @@ export default function Notificacoes() {
         </MyTypography>
       </div>
 
-      <div className="my-12">
-        {Object.entries(groupedNotifications).map(([month, notifications]) => (
-          <div key={month} className="space-y-4 my-6">
-            <MyTypography
-              variant="body-big"
-              weight="semibold"
-              lightness={500}
-              className="max-sm:hidden"
-            >
-              {month}
-            </MyTypography>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-x-4 gap-y-6">
-              {notifications.map((notification, index) => (
-                <div
-                  key={notification.id}
-                  className={cn(
-                    "w-full flex flex-col gap-2 px-3 py-2 bg-[#F1F0F5] rounded-lg shadow-sm hover:bg-gray-100 relative cursor-pointer",
-                    notification.status == "realizada" && "opacity-70"
-                  )}
-                  onClick={() =>
-                    router.push(PATHS.visualizarNotificacao(notification.id))
-                  }
-                >
-                  <div
-                    className={cn(
-                      "absolute inset-y-0 left-0 w-2 rounded-l-lg",
-                      notification.status == "cancelada"
-                        ? "bg-[#FF7272] opacity-50"
-                        : notification.status == "pendente"
-                          ? "bg-primary-900"
-                          : "bg-[#D6D6D6]"
-                    )}
-                  />
-
-                  <div className="flex items-center justify-between w-full">
-                    <MyTypography
-                      variant="notification"
-                      weight="semibold"
-                      className="ml-1 mt-1 flex gap-2 items-center"
-                    >
-                      {formatDate(notification.timestamp) == "Agora pouco" && (
-                        <MyIcon name="now" />
-                      )}
-                      {formatDate(notification.timestamp)}
-                      {formatDate(notification.timestamp) != "Agora pouco" &&
-                        ` - ${getHora(notification.timestamp)}`}
-                    </MyTypography>
-                    {formatDate(notification.timestamp) == "Agora pouco" && (
-                      <MyButton
-                        className="ml-1"
-                        borderRadius="squared"
-                        size="sm"
-                        variant="default"
-                      >
-                        Novo
-                      </MyButton>
-                    )}
-                  </div>
-
+      {notifications.length === 0 ? (
+        <div className="w-full h-[30vh] flex justify-center items-center">
+          <p>Você não possui notificações.</p>
+        </div>
+      ) : (
+        <>
+          <div className="my-12 min-h-[300px] md:min-h-[505px]">
+            {Object.entries(groupedNotifications).map(
+              ([month, notifications]) => (
+                <div key={month} className="space-y-4 my-6">
                   <MyTypography
-                    variant="label"
+                    variant="body-big"
                     weight="semibold"
-                    className="ml-1"
+                    lightness={500}
+                    className="max-sm:hidden"
                   >
-                    {index < 9 ? `0${index + 1}` : index} - {notification.title}
+                    {month}
                   </MyTypography>
-                  <MyTypography
-                    variant="notification"
-                    weight="regular"
-                    className="ml-1 flex justify-between"
-                  >
-                    {notification.description.slice(0, 30) + "..."}
-                    <MyIcon name={notification.read ? "read" : "unread"} />
-                  </MyTypography>
+
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-x-4 gap-y-6">
+                    {notifications.map((notification, index) => (
+                      <div
+                        key={index}
+                        className={cn(
+                          "w-full flex flex-col gap-2 px-3 py-2 bg-[#F1F0F5] rounded-lg shadow-sm hover:bg-gray-100 relative cursor-pointer"
+                        )}
+                        onClick={() =>
+                          router.push(
+                            PATHS.visualizarNotificacaoAdmin(notification.id)
+                          )
+                        }
+                      >
+                        <div
+                          className={`absolute inset-y-0 left-0 w-2 rounded-l-lg bg-[${notification.color}]`}
+                          style={{ backgroundColor: notification.color }}
+                        />
+
+                        <div className="flex items-center justify-between w-full">
+                          <MyTypography
+                            variant="notification"
+                            weight="semibold"
+                            className="ml-1 mt-1 flex gap-2 items-center"
+                          >
+                            {formatDate(notification.createdAt) ==
+                              "Agora pouco" && <MyIcon name="now" />}
+                            {formatDate(notification.createdAt)}
+                            {formatDate(notification.createdAt) !=
+                              "Agora pouco" &&
+                              ` - ${getHora(notification.createdAt)}`}
+                          </MyTypography>
+                          {formatDate(notification.createdAt) ==
+                            "Agora pouco" && (
+                            <MyButton
+                              className="ml-1"
+                              borderRadius="squared"
+                              size="sm"
+                              variant="default"
+                            >
+                              Novo
+                            </MyButton>
+                          )}
+                        </div>
+
+                        <MyTypography
+                          variant="label"
+                          weight="semibold"
+                          className="ml-1 flex justify-between items-center"
+                        >
+                          {page * 12 - 12 + index < 9
+                            ? `0${page * 12 - 12 + index + 1}`
+                            : page * 12 - 12 + index + 1}{" "}
+                          -{" "}
+                          {notification?.title?.length > 33
+                            ? notification.title.slice(0, 33) + "..."
+                            : notification.title}
+                        </MyTypography>
+
+                        <MyTypography
+                          variant="notification"
+                          weight="regular"
+                          className="ml-1 flex justify-between"
+                        >
+                          {notification.text?.slice(0, 40) + "..."}
+                          <MyIcon
+                            name={notification.isRead ? "read" : "unread"}
+                          />
+                        </MyTypography>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              ))}
-            </div>
+              )
+            )}
           </div>
-        ))}
-      </div>
+          <div className="flex w-full justify-center items-center my-16">
+            <Pagination
+              setPage={setPage}
+              page={page}
+              limit={12}
+              data={notifications}
+            />
+          </div>
+        </>
+      )}
     </section>
   );
 }

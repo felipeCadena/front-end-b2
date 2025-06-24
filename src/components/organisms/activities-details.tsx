@@ -7,22 +7,31 @@ import MyBadge from "../atoms/my-badge";
 import StarRating from "../molecules/my-stars";
 import MyTypography from "../atoms/my-typography";
 import { cn } from "@/utils/cn";
-import { getData, isDateInPast } from "@/utils/formatters";
+import {
+  getData,
+  handleNameActivity,
+  isDateInPast,
+  selectActivityImage,
+} from "@/utils/formatters";
 import MyButton from "../atoms/my-button";
 import { useRouter } from "next/navigation";
 import PATHS from "@/utils/paths";
+import { Adventure } from "@/services/api/adventures";
+import { ActivityCardSkeleton } from "./activities-skeleton";
+
+type ActivitiesDetailsProps = {
+  activities: Adventure[];
+  withDate?: boolean;
+  type?: string;
+  lowRating?: boolean;
+};
 
 export default function ActivitiesDetails({
   activities,
   withDate = false,
   type,
   lowRating = false,
-}: {
-  activities: any;
-  withDate?: boolean;
-  type?: string;
-  lowRating?: boolean;
-}) {
+}: ActivitiesDetailsProps) {
   const router = useRouter();
 
   const handleActivity = (id: string) => {
@@ -36,111 +45,114 @@ export default function ActivitiesDetails({
   };
 
   return (
-    <section className={cn(withDate && "mx-4")}>
-      {activities.map((activity: any, index: number) => (
-        <div key={index} className={cn("flex flex-col")}>
-          <div
-            onClick={() => handleActivity(activity.id)}
-            className={cn(
-              "flex max-sm:max-h-[120px] max-sm:justify-around gap-2 cursor-pointer my-2",
-              withDate && "my-8 relative",
-              activity.stars <= 2 && "max-sm:max-h-[160px]"
-            )}
-          >
-            {withDate && (
-              <MyIcon
-                name="options"
-                className="absolute top-0 right-0 cursor-pointer"
-              />
-            )}
-            {withDate && (
-              <div
-                className={cn(
-                  "flex flex-col items-center justify-center",
-                  isDateInPast(activity.reserva.timestamp) && "opacity-70"
-                )}
-              >
-                {isDateInPast(activity.reserva.timestamp) ? (
-                  <MyIcon name="calendar-opacity" />
-                ) : (
-                  <MyIcon name="calendar" />
-                )}
-                <MyTypography
-                  variant="body"
-                  weight="semibold"
+    <section className={cn("", withDate && "py-4")}>
+      <div className="grid gap-4 grid-cols-1 md:grid-cols-3">
+        {activities && activities.length > 0
+          ? activities.map((adventure: Adventure, index: number) => {
+              const date = adventure?.schedules?.[index].datetime; // substitua se for dinâmico
+              const isPast = date ? isDateInPast(date) : null;
+
+              return (
+                <div
+                  key={index}
                   className={cn(
-                    "text-primary-600",
-                    isDateInPast(activity.reserva.timestamp) && "text-[#c0c0c0]"
+                    "flex flex-col rounded-xl bg-white h-full",
+                    !adventure?.onSite &&
+                      adventure?.adminApproved &&
+                      "opacity-50"
                   )}
                 >
-                  {getData(activity.reserva.timestamp)}
-                </MyTypography>
-              </div>
-            )}
-            <div
-              className={cn(
-                "relative z-10 overflow-hidden w-[6.625rem] h-[6.625rem] hover:cursor-pointer rounded-md flex-shrink-0",
-                withDate ? "w-[7.5rem] h-[7.5rem]" : "w-[6.625rem] h-[6.625rem]"
-              )}
-            >
-              <Image
-                alt="imagem atividade"
-                src={activity.image ?? ""}
-                width={250}
-                height={300}
-                className={cn(
-                  "object-cover",
-                  withDate
-                    ? "w-[7.5rem] h-[7.5rem]"
-                    : "w-[6.625rem] h-[6.625rem]"
-                )}
-              />
-            </div>
-            <div className="relative">
-              <div className="flex gap-1 justify-between mb-1 mr-4">
-                <MyBadge
-                  className="font-medium flex-shrink-0"
-                  variant="outline"
-                >
-                  {activity.tag}
-                </MyBadge>
+                  <div
+                    onClick={() => handleActivity(adventure.id.toString())}
+                    className="flex gap-2 cursor-pointer"
+                  >
+                    {/* Imagem */}
+                    <div className="relative w-[7rem] h-[7rem] overflow-hidden rounded-md flex-shrink-0">
+                      <Image
+                        alt="imagem atividade"
+                        src={
+                          selectActivityImage(adventure) ??
+                          "/images/atividades/paraquedas.webp"
+                        }
+                        width={250}
+                        height={250}
+                        className="object-cover w-full h-full"
+                      />
+                    </div>
 
-                {!withDate && <StarRating rating={activity.stars} />}
-              </div>
+                    {/* Conteúdo */}
+                    <div className="flex flex-col justify-between flex-grow min-w-0">
+                      <div className="flex items-center justify-between mb-1">
+                        <MyBadge
+                          variant="outline"
+                          className="w-fit font-medium text-nowrap p-1"
+                        >
+                          {handleNameActivity(adventure?.typeAdventure)}
+                        </MyBadge>
+                        {!withDate && (
+                          <StarRating rating={adventure?.averageRating} />
+                        )}
+                      </div>
+                      {/* <div>
+                        {!adventure?.onSite && adventure?.adminApproved && (
+                          <MyBadge variant="error" className="rounded-md">
+                            Desativada
+                          </MyBadge>
+                        )}
+                      </div> */}
 
-              <MyTypography
-                variant="subtitle3"
-                weight="bold"
-                className={cn(withDate ? "mt-4" : "mt-2")}
-              >
-                {activity.title}
-              </MyTypography>
-              <MyTypography variant="label" className={cn(withDate && "w-1/2")}>
-                {withDate
-                  ? activity.description.slice(0, 30).concat("...")
-                  : activity.description.slice(0, 50).concat("...")}
-              </MyTypography>
-              <MyIcon
-                name="shared-muted"
-                className={cn(
-                  "absolute z-50 right-0 top-1/2 cursor-pointer",
-                  !withDate && "hidden"
-                )}
-              />
-            </div>
-          </div>
-          {lowRating && activity.stars <= 2 && (
-            <MyButton
-              variant="black-border"
-              borderRadius="squared"
-              size="lg"
-              className="w-full mt-3 mb-5 font-bold text-[1rem]"
-            >
-              Falar com o parceiro
-            </MyButton>
-          )}
-        </div>
-      ))}
+                      <MyTypography
+                        variant="body-big"
+                        weight="bold"
+                        className="line-clamp-1"
+                      >
+                        {adventure?.title}
+                      </MyTypography>
+
+                      <MyTypography
+                        variant="notification"
+                        className="line-clamp-2 text-muted-foreground"
+                      >
+                        {adventure?.description}
+                      </MyTypography>
+
+                      {withDate && date && (
+                        <div className="flex items-center gap-2 mt-2 text-sm">
+                          <MyIcon
+                            name={isPast ? "calendar-opacity" : "calendar"}
+                            className={cn(isPast && "text-[#c0c0c0]")}
+                          />
+                          <MyTypography
+                            variant="notification"
+                            className={cn(
+                              isPast ? "text-[#c0c0c0]" : "text-primary-600"
+                            )}
+                          >
+                            {getData(date)}
+                          </MyTypography>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Botão para lowRating */}
+                  {lowRating && adventure?.averageRating <= 2 && (
+                    <MyButton
+                      variant="black-border"
+                      borderRadius="squared"
+                      size="lg"
+                      className="w-full mt-4 font-bold text-[1rem]"
+                    >
+                      Falar com o parceiro
+                    </MyButton>
+                  )}
+                </div>
+              );
+            })
+          : Array.from({ length: 4 }).map((_, index) => (
+              <ActivityCardSkeleton key={index} />
+            ))}
+      </div>
     </section>
   );
 }

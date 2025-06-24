@@ -44,12 +44,12 @@ export default function PartnerApprovalCard({
         <div className="flex items-center justify-between gap-2 w-full">
           <div className="relative w-10 h-10 flex-shrink-0">
             <Image
-              src={avatar}
+              src={avatar ?? "/user.png"}
               alt={name}
               fill
               className="rounded-full object-cover"
             />
-            <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-white" />
+            {/* <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-white" /> */}
           </div>
 
           <div className="flex-1 min-w-0">
@@ -58,25 +58,25 @@ export default function PartnerApprovalCard({
               weight="semibold"
               className="whitespace-nowrap"
             >
-              {name}
+              {name ?? "Nome do Parceiro"}
             </MyTypography>
             <MyTypography variant="body-big" lightness={500}>
               {activitiesCount} Atividades
             </MyTypography>
           </div>
 
-          {rating && rating > 0 && (
+          {typeof rating === "number" && (
             <div className="flex-shrink-0">
               <StarRating rating={rating} />
             </div>
           )}
         </div>
 
-        {isNew && (
+        {/* {isNew && (
           <MyButton borderRadius="squared" size="sm" className="text-sm p-2">
             Novo
           </MyButton>
-        )}
+        )} */}
       </div>
 
       {withButton && (

@@ -1,36 +1,92 @@
-"use client"
+"use client";
 
-import MyTextInput from '@/components/atoms/my-text-input'
-import GoogleMaps from '@/components/organisms/google-maps'
-import React from 'react'
+import MyTextInput from "@/components/atoms/my-text-input";
+import MyTypography from "@/components/atoms/my-typography";
+import GoogleMaps from "@/components/organisms/google-maps";
+import React from "react";
+import AutocompleteCombobox from "../google-autocomplete";
+import { useAdventureStore } from "@/store/useAdventureStore";
+
+interface AddressData {
+  addressStreet: string;
+  addressPostalCode: string;
+  addressNumber: string;
+  addressComplement: string;
+  addressNeighborhood: string;
+  addressCity: string;
+  addressState: string;
+  addressCountry: string;
+}
+
+interface LocationData {
+  address: string;
+  completeAddress: AddressData;
+  coordinates: {
+    lat: number;
+    lng: number;
+  } | null;
+}
 
 export default function Step4() {
-  const locations = [
-    {
-      name: "Monte Cristo Redentor",
-      city: "Rio de Janeiro",
-      coords: { lat: -22.9519, lng: -43.2105 },
-    },
-    {
-      name: "Praia de Copacabana",
-      city: "Rio de Janeiro",
-      coords: { lat: -22.9711, lng: -43.1822 },
-    },
-    {
-      name: "Praia de Ipanema",
-      city: "Rio de Janeiro",
-      coords: { lat: -22.9839, lng: -43.2045 },
-    },
-  ];
+  const { setAdventureData, pointRefAddress, coordinates, address } =
+    useAdventureStore();
+
+  const handleLocationSelected = (locationData: LocationData) => {
+    if (locationData.coordinates) {
+      // Atualiza o store com o endereço
+      setAdventureData({
+        address: locationData.address,
+        addressStreet: locationData.completeAddress.addressStreet,
+        coordinates: {
+          lat: locationData.coordinates.lat,
+          lng: locationData.coordinates.lng,
+        },
+        addressPostalCode: locationData.completeAddress.addressPostalCode,
+        addressNumber: locationData.completeAddress.addressNumber,
+        addressNeighborhood: locationData.completeAddress.addressNeighborhood,
+        addressCity: locationData.completeAddress.addressCity,
+        addressState: locationData.completeAddress.addressState,
+      });
+    }
+  };
+
+  React.useEffect(() => {
+    if (window) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }, []);
 
   return (
-    <section>
-      <MyTextInput classNameLabel="text-base text-black" label="Local" placeholder="Rio de Janeiro, Cristo Redentor" className="mt-2" />
+    <section className="space-y-4">
+      <div className="">
+        <MyTypography variant="subtitle4" weight="bold" className="mb-2">
+          Local
+        </MyTypography>
+        <AutocompleteCombobox
+          formData={address}
+          setFormData={setAdventureData}
+          onLocationSelected={handleLocationSelected}
+        />
+      </div>
+      <MyTextInput
+        label="Ponto de referência"
+        placeholder="Próximo ao centro"
+        classNameLabel="text-base text-black"
+        className="mt-2"
+        onChange={(e) =>
+          setAdventureData({
+            pointRefAddress: e.target.value,
+          })
+        }
+        value={pointRefAddress}
+      />
 
-      <MyTextInput classNameLabel="text-base text-black" label="Ponto de referência" placeholder="Ao lado da Cinelândia" className="mt-2" />
-
-      <GoogleMaps location={{ lat: -22.9519, lng: -43.2105 }}/>
-
+      <GoogleMaps
+        location={{
+          lat: coordinates?.lat ?? -22.9519,
+          lng: coordinates?.lng ?? -43.2105,
+        }}
+      />
     </section>
-  )
+  );
 }

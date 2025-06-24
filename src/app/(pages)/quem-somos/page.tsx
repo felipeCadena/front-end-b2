@@ -1,18 +1,28 @@
 "use client";
 
+import MyIcon from "@/components/atoms/my-icon";
 import MyTypography from "@/components/atoms/my-typography";
-import SearchActivity from "@/components/organisms/search-activity";
+import PATHS from "@/utils/paths";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import React from "react";
 
 export default function QuemSomos() {
+  const router = useRouter();
   return (
     <section className="my-8 space-y-8 md:space-y-12 md:max-w-4xl md:mx-auto">
       <div className="max-sm:mx-4 space-y-8">
         <div className="space-y-6">
-          <MyTypography variant="heading2" weight="bold" className="">
-            Quem Somos
-          </MyTypography>
+          <div className="flex gap-1 items-center">
+            <MyIcon
+              name="voltar-black"
+              className="cursor-pointer"
+              onClick={() => router.push(PATHS.initial)}
+            />
+            <MyTypography variant="heading2" weight="bold" className="">
+              Quem somos
+            </MyTypography>
+          </div>
           <MyTypography variant="body-big" className="text-justify">
             Nascida no Rio de Janeiro, a B2 Adventure é o resultado do espírito
             aventureiro e desportista de sua idealizadora, que sempre gostou de
@@ -26,7 +36,7 @@ export default function QuemSomos() {
           </MyTypography>
 
           <MyTypography variant="body-big" className="text-justify">
-            Nosso foco é permitir que os clientes desfrutem o que a de mais
+            Nosso foco é permitir que os clientes desfrutem o que há de mais
             incrível em cada lugar desse mundão.
           </MyTypography>
 

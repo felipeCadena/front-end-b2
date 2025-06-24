@@ -22,9 +22,7 @@ export default function Informacoes() {
 
   return (
     <section className="">
-      <div className="max-sm:hidden md:my-10">
-        <SearchActivity />
-      </div>
+      <div className="max-sm:hidden md:my-10">{/* <SearchActivity /> */}</div>
 
       {tab && (
         <MyTabs

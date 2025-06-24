@@ -1,5 +1,30 @@
 import { api } from "@/libs/api";
 
+interface ChatMessage {
+  datetime: string;
+  chatId: string;
+  text: string;
+  mediaId: string | null;
+  sendedFromUserId: string;
+  toUserId: string;
+  isRead: boolean;
+}
+
+interface ChatType {
+  id: string;
+  openIn: string | null;
+  closeIn: string | null;
+  type: "admin" | string; // substitua por outros tipos possíveis se houver
+  orderAdventureId: string | null;
+  userToId: string;
+  userToName: string;
+  userToPhoto: string;
+  session_token: string;
+  lastMessage?: ChatMessage | null;
+  userToLastOnline?: string;
+  orderScheduleAdventure?: any | null; // substitua "any" pela tipagem correta se souber
+}
+
 export const chatService = {
   getMyChats: async (params?: Record<string, any>) => {
     try {
@@ -11,8 +36,13 @@ export const chatService = {
     }
   },
 
-  sendMessage: async (id: string, body: { text: string }) => {
+  sendMessage: async (
+    id: string,
+    body: { text: string },
+    session_token: string
+  ) => {
     try {
+      api.defaults.headers.common["session_token"] = session_token;
       const response = await api.post(`/chats/${id}/send-message`, body);
       return response.data;
     } catch (error) {
@@ -33,10 +63,28 @@ export const chatService = {
 
   sendMedia: async (
     id: string,
+    file: Blob | Buffer,
+    session_token: string,
     body: { text: string; media: { mimetype: string; filename: string } }
   ) => {
     try {
+      api.defaults.headers.common["session_token"] = session_token;
+
       const response = await api.post(`/chats/${id}/send-media`, body);
+
+      await fetch(response.data.uploadUrl, {
+        method: "PUT",
+        body: file,
+        headers: {
+          "Content-Type": body.media.mimetype,
+        },
+      }).then((res) => {
+        if (!res.ok) {
+          console.log("Failed to upload media", res);
+        }
+        return res;
+      });
+
       return response.data;
     } catch (error) {
       console.error("Error sending media:", error);
@@ -44,9 +92,14 @@ export const chatService = {
     }
   },
 
-  listMessages: async (id: string) => {
+  listMessages: async (
+    id: string,
+    session_token: string,
+    params?: { orderBy?: string; datetime?: string }
+  ) => {
     try {
-      const response = await api.get(`/chats/${id}/messages`);
+      api.defaults.headers.common["session_token"] = session_token;
+      const response = await api.get(`/chats/${id}/messages`, { params });
       return response.data;
     } catch (error) {
       console.error("Error listing messages:", error);

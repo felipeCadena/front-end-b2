@@ -19,6 +19,7 @@ function MyCalendar({
       showOutsideDays={showOutsideDays}
       className={cn("p-1", className)}
       ISOWeek={true}
+      disabled={{ before: new Date() }}
       classNames={{
         button_next: "absolute right-4 top-5",
         button_previous: "absolute left-4 top-5",
@@ -34,8 +35,7 @@ function MyCalendar({
         nav_button_next: "absolute right-4",
         table: "w-full border-collapse space-y-1",
         head_row: "flex",
-        head_cell:
-          "text-[#929292] rounded-md w-8 font-normal text-[0.8rem]",
+        head_cell: "text-[#929292] rounded-md w-8 font-normal text-[0.8rem]",
         row: "flex w-full mt-2",
         cell: cn(
           "relative p-0 text-center text-sm focus-within:relative focus-within:z-20 [&:has([aria-selected])]:bg-accent [&:has([aria-selected].day-outside)]:bg-accent/50 [&:has([aria-selected].day-range-end)]:rounded-r-md",
@@ -63,13 +63,14 @@ function MyCalendar({
       }}
       components={{
         PreviousMonthButton: ({ className, ...props }) => (
-          <MyIcon name="left" className={cn("h-4 w-4", className)} />
+          <span {...props}>
+            <MyIcon name="left" className={cn("h-4 w-4", className)} />
+          </span>
         ),
         NextMonthButton: ({ className, ...props }) => (
-          <MyIcon
-            name="right"
-            className={cn("h-4 w-4", className)}
-          />
+          <span {...props}>
+            <MyIcon name="right" className={cn("h-4 w-4", className)} />
+          </span>
         ),
       }}
       {...props}

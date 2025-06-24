@@ -1,15 +1,17 @@
-import { Adventure, adventures } from "@/services/api/adventures";
-import { create } from "zustand";
+import { Adventure, adventures } from '@/services/api/adventures';
+import { create } from 'zustand';
 
 interface AdventureStore {
   adventures: Adventure[];
+  searchedAdventures: string;
   setAdventures: (adventures: Adventure[]) => void;
+  setSearchedAdventures: (searchParams: string) => void;
 }
 
-const useAdventures = create<AdventureStore>((set, get) => {
+const useAdventures = create<AdventureStore>((set) => {
   const initializeAdventures = async () => {
     const fetchedAdventures = await adventures.getAdventures();
-    set({ adventures: fetchedAdventures.data });
+    set({ adventures: fetchedAdventures, searchedAdventures: '' });
   };
 
   // Initialize adventures when the store is created
@@ -17,7 +19,10 @@ const useAdventures = create<AdventureStore>((set, get) => {
 
   return {
     adventures: [],
+    searchedAdventures: '',
     setAdventures: (adventures: Adventure[]) => set({ adventures }),
+    setSearchedAdventures: (searchParams: string) =>
+      set({ searchedAdventures: searchParams }),
   };
 });
 

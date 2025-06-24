@@ -30,7 +30,7 @@ const CarouselReview = ({ reviews }: any) => {
 
   const showRightShadow =
     ref.current &&
-    ref.current.scrollWidth > ref.current.clientWidth + scrollPosition + 1;
+    ref.current?.scrollWidth > ref.current?.clientWidth + scrollPosition + 1;
 
   return (
     <div className="relative my-8 md:ml-6 max-sm:px-4">
@@ -74,10 +74,10 @@ const CarouselReview = ({ reviews }: any) => {
               <div className="flex items-center gap-4">
                 <Image
                   alt="avatar"
-                  src={review?.avatar ?? ""}
+                  src={review?.avatar ?? "/user.png"}
                   width={8}
                   height={8}
-                  className="w-12 h-12 rounded-full object-contain"
+                  className="w-12 h-12 rounded-full object-cover"
                 />
                 <MyTypography
                   variant="body-big"

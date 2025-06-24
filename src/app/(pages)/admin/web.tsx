@@ -3,79 +3,248 @@
 import { MyTabs, TabsList, TabsTrigger } from "@/components/molecules/my-tabs";
 import { TabsContent } from "@radix-ui/react-tabs";
 import React from "react";
-import SearchActivity from "@/components/organisms/search-activity";
 import PartnerPaymentCard from "@/components/molecules/partner-payment";
 import MyTypography from "@/components/atoms/my-typography";
 import PartnerApprovalCard from "@/components/molecules/partner-approval";
-import MyButton from "@/components/atoms/my-button";
 import { useRouter } from "next/navigation";
 import ActivityStatusCard from "@/components/molecules/activity-status";
+import { adminService } from "@/services/api/admin";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { endOfMonth, format, startOfMonth, subMonths } from "date-fns";
+import { toast } from "react-toastify";
+import { AxiosError } from "axios";
+import {
+  MySelect,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/atoms/my-select";
+import Loading from "@/components/molecules/loading";
+import Image from "next/image";
+import { Pagination } from "@/components/molecules/pagination";
+import { Adventure } from "@/services/api/adventures";
+
+type CustomError = {
+  error: boolean;
+  message: string;
+};
+
+const monthLabels = [
+  "Jan",
+  "Fev",
+  "Mar",
+  "Abr",
+  "Mai",
+  "Jun",
+  "Jul",
+  "Ago",
+  "Set",
+  "Out",
+  "Nov",
+  "Dez",
+];
+
+// Mapeamento de meses abreviados para completos
+const monthFullNames: Record<string, string> = {
+  Jan: "Janeiro",
+  Fev: "Fevereiro",
+  Mar: "Março",
+  Abr: "Abril",
+  Mai: "Maio",
+  Jun: "Junho",
+  Jul: "Julho",
+  Ago: "Agosto",
+  Set: "Setembro",
+  Out: "Outubro",
+  Nov: "Novembro",
+  Dez: "Dezembro",
+};
+
+// Tipando a função getFullMonthName
+function getFullMonthName(monthAbbreviation: string): string {
+  return monthFullNames[monthAbbreviation] || monthAbbreviation;
+}
 
 export default function AdminWeb() {
   const router = useRouter();
+  const queryClient = useQueryClient();
+  const [loadingItem, setLoadingItem] = React.useState<{
+    id: number;
+  } | null>(null);
 
-  const payments = [
-    {
-      id: 1,
-      name: "Luciana Bianco",
-      amount: 1200,
-      avatar: "/images/avatar1.png",
-      status: "pending",
-    },
-    {
-      id: 2,
-      name: "Patricia Nogue",
-      amount: 1200,
-      avatar: "/images/avatar2.png",
-      status: "paid",
-    },
-    {
-      id: 3,
-      name: "Patricia Nogue",
-      amount: 1200,
-      avatar: "/images/avatar2.png",
-      status: "paid",
-    },
-    {
-      id: 4,
-      name: "Patricia Nogue",
-      amount: 1200,
-      avatar: "/images/avatar2.png",
-      status: "pending",
-    },
-  ];
+  const [loading, setLoading] = React.useState(false);
 
-  const newPartners = [
-    {
-      id: 1,
-      name: "Luis Otávio Menezes",
-      activitiesCount: 2,
-      avatar: "/images/avatar3.png",
-      isNew: true,
+  const [filter, setFilter] = React.useState("pendente");
+  const [tab, setTab] = React.useState("pagamento");
+
+  const [page, setPage] = React.useState(1);
+  const [pageActivities, setPageActivities] = React.useState(1);
+  const [refusalMsg, setRefusalMsg] = React.useState("");
+
+  const [allActivities, setAllActivities] = React.useState<Adventure[]>([]);
+  const [activitiesNotAprovved, setActivitiesNotAprovved] = React.useState<
+    Adventure[]
+  >([]);
+
+  const now = new Date();
+  const previousMonth = subMonths(now, 1);
+  const currentMonthKey = format(new Date(), "MM");
+
+  const startsAt = format(startOfMonth(previousMonth), "yyyy-MM-dd'T'00:00:00");
+  const endsAt = format(endOfMonth(previousMonth), "yyyy-MM-dd'T'00:00:00");
+
+  const { data: pendingPayments, isLoading } = useQuery({
+    queryKey: ["pendingPayments", page],
+    enabled: tab == "pagamento",
+    queryFn: () =>
+      adminService.listPendingPaidPartners({
+        startsAt,
+        endsAt,
+        limit: 12,
+        skip: page * 12 - 12,
+      }),
+  });
+
+  const { isLoading: activitiesLoading } = useQuery({
+    queryKey: ["activitiesNotAprooved", pageActivities],
+    enabled: tab == "atividades",
+    queryFn: async () => {
+      const adventures = await adminService.searchAdventures({
+        adminApproved: false,
+        limit: 12,
+        skip: pageActivities * 12 - 12,
+      });
+      setAllActivities(adventures);
+      setActivitiesNotAprovved(
+        adventures.filter(
+          (activity) =>
+            !activity.refusalMsg || activity.refusalMsg.trim() === ""
+        )
+      );
+      return adventures;
     },
-    {
-      id: 2,
-      name: "Vitória Batista",
-      activitiesCount: 1,
-      avatar: "/images/avatar1.png",
-      isNew: false,
-    },
-  ];
+  });
+
+  const handleFilter = (value: string) => {
+    setFilter(value);
+    if (value === "pendente") {
+      setActivitiesNotAprovved(
+        allActivities.filter(
+          (activity) =>
+            !activity.refusalMsg || activity.refusalMsg.trim() === ""
+        )
+      );
+    }
+
+    if (value === "recusado") {
+      setActivitiesNotAprovved(
+        allActivities.filter(
+          (activity) =>
+            activity.refusalMsg && activity.refusalMsg.trim().length > 0
+        )
+      );
+    }
+
+    // if (value === "todos") {
+    //   setActivitiesNotAprovved(allActivities);
+    // }
+  };
+
+  function hasTotalValuePaid(partner: Record<string, any>): boolean {
+    return "total_value_paid" in partner;
+  }
+
+  async function payPartner(token: string) {
+    if (!token) {
+      toast.error("Token inválido ou inexistente.");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const paid = await adminService.payPartner(token);
+      queryClient.invalidateQueries({ queryKey: ["pendingPayments"] });
+      toast.success(paid?.message ?? "Pagamento realizado com sucesso!");
+    } catch (err: unknown) {
+      if (err instanceof AxiosError) {
+        console.log(err.response?.data?.message);
+        const message =
+          err.response?.data?.message == "string"
+            ? err.response?.data?.message
+            : "Erro ao realizar pagamento.";
+        toast.error(`${message}`);
+      } else {
+        toast.error("Erro desconhecido ao realizar pagamento.");
+      }
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  const onApproveActivity = async (id: number) => {
+    setLoadingItem({ id });
+    const body = {
+      adminApproved: true,
+      onSite: true,
+      refusalMsg: "",
+    };
+    try {
+      await adminService.approveOrRejectAdventure(id, body);
+      toast.success("Atividade aprovada com sucesso!");
+      queryClient.invalidateQueries({ queryKey: ["activitiesNotAprooved"] });
+    } catch (err: unknown) {
+      if (err instanceof AxiosError) {
+        const message =
+          err.response?.data?.message == "string"
+            ? err.response?.data?.message
+            : "Erro ao aprovar atividade.";
+        toast.error(`${message}`);
+      } else {
+        toast.error("Erro desconhecido ao aprovar atividade.");
+      }
+    } finally {
+      setLoadingItem(null);
+    }
+  };
+
+  const onRejectActivity = async (id: number) => {
+    setLoadingItem({ id });
+
+    const body = {
+      adminApproved: false,
+      onSite: false,
+      refusalMsg,
+    };
+    try {
+      await adminService.approveOrRejectAdventure(id, body);
+      toast.success("Atividade rejeitada com sucesso!");
+      queryClient.invalidateQueries({ queryKey: ["activitiesNotAprooved"] });
+      setRefusalMsg("");
+    } catch (err: unknown) {
+      if (err instanceof AxiosError) {
+        const message =
+          err.response?.data?.message == "string"
+            ? err.response?.data?.message
+            : "Erro ao rejeitar atividade.";
+        toast.error(`${message}`);
+      } else {
+        toast.error("Erro desconhecido ao rejeitar atividade.");
+      }
+    } finally {
+      setLoadingItem(null);
+    }
+  };
 
   return (
     <main>
-      <div className="max-sm:hidden md:my-10">
-        <SearchActivity />
-      </div>
+      <div className="max-sm:hidden md:my-10">{/* <SearchActivity /> */}</div>
 
       {
-        <MyTabs defaultValue="pagamento" className="mb-10">
-          <TabsList className="mb-10 grid grid-cols-3">
+        <MyTabs value={tab} onValueChange={setTab} className="mb-10">
+          <TabsList className="mb-10 grid grid-cols-2">
             <TabsTrigger value="pagamento" className="">
               Pagamento de parceiros
-            </TabsTrigger>
-            <TabsTrigger value="parceiros">
-              Aprovação de novos parceiros
             </TabsTrigger>
             <TabsTrigger value="atividades">
               Aprovação de atividades
@@ -83,119 +252,116 @@ export default function AdminWeb() {
           </TabsList>
           <TabsContent value="pagamento">
             <div className="space-y-3 max-w-4xl mx-auto">
-              <MyTypography variant="subtitle3" weight="bold" className="my-4">
-                Pagamentos de Parceiros
-              </MyTypography>
-              {payments.map((payment) => (
-                <PartnerPaymentCard
-                  key={payment.id}
-                  name={payment.name}
-                  amount={payment.amount}
-                  avatar={payment.avatar}
-                  status={payment.status}
-                  onPay={() => console.log(`Pagar ${payment.name}`)}
-                />
-              ))}
-            </div>
-          </TabsContent>
-          <TabsContent value="parceiros">
-            <div className="space-y-10 max-w-4xl mx-auto">
-              <div>
-                <MyTypography
-                  variant="subtitle3"
-                  weight="bold"
-                  className="mb-4"
-                >
-                  Aprovar novos parceiros
-                </MyTypography>
-                <div className="space-y-3">
-                  {newPartners.map((partner) => (
-                    <PartnerApprovalCard
-                      key={partner.id}
-                      name={partner.name}
-                      activitiesCount={partner.activitiesCount}
-                      withButton
-                      avatar={partner.avatar}
-                      isNew={partner.isNew}
-                      onClick={() =>
-                        router.push(`/admin/parceiros/${partner.id}`)
-                      }
-                    />
-                  ))}
+              {isLoading && (
+                <div className="flex items-center justify-center h-[250px]">
+                  <Image
+                    src="/logo.png"
+                    alt="B2 Adventure Logo"
+                    width={250}
+                    height={250}
+                    className="object-contain animate-pulse"
+                  />
                 </div>
-              </div>
+              )}
 
-              <div>
-                <MyTypography
-                  variant="subtitle3"
-                  weight="bold"
-                  className="mb-4"
-                >
-                  Alteração de dados cadastrais
-                </MyTypography>
-                <div className="space-y-3">
-                  {newPartners.map((partner) => (
-                    <PartnerApprovalCard
-                      key={partner.id}
-                      name={partner.name}
-                      activitiesCount={partner.activitiesCount}
-                      avatar={partner.avatar}
-                      withButton
-                      isNew={partner.isNew}
-                      onClick={() =>
-                        router.push(
-                          `/admin/parceiros-cadastrados/${partner.id}`
-                        )
-                      }
-                    />
-                  ))}
+              {pendingPayments?.total_orders == 0 && !isLoading ? (
+                <div className="flex items-center justify-center h-[250px]">
+                  <MyTypography variant="subtitle4" weight="bold">
+                    Não há pagamentos pendentes neste mês
+                  </MyTypography>
                 </div>
-              </div>
+              ) : (
+                <div className="min-h-[20vh]">
+                  {pendingPayments?.partners &&
+                    Object.values(pendingPayments.partners)
+                      .sort((a: any, b: any) => {
+                        const order = [5, 10, 15];
+                        return (
+                          order.indexOf(a.payday) - order.indexOf(b.payday)
+                        );
+                      })
+                      .map((payment: any) => (
+                        <PartnerPaymentCard
+                          key={payment?.ordersSchedules}
+                          name={payment?.partnerFantasyName}
+                          amount={payment?.total_value_pending}
+                          avatar={payment?.partnerLogo}
+                          payday={payment?.payday}
+                          status={
+                            hasTotalValuePaid(payment) ? "paid" : "pending"
+                          }
+                          loading={loading}
+                          onPay={() => payPartner(payment?.token_for_pay)}
+                        />
+                      ))}
+                </div>
+              )}
             </div>
+            {!isLoading &&
+              pendingPayments?.partners &&
+              Object.values(pendingPayments?.partners).length > 1 && (
+                <div className="flex w-full justify-center items-center my-16">
+                  <Pagination
+                    page={page}
+                    setPage={setPage}
+                    limit={12}
+                    data={Object.values(pendingPayments?.partners ?? {})}
+                  />
+                </div>
+              )}
           </TabsContent>
           <TabsContent value="atividades">
             <div className="space-y-10 max-w-5xl mx-auto">
-              {/* Nova Atividade */}
-              <ActivityStatusCard
-                type="new"
-                activity={{
-                  title: "Escalada Cristo - RJ",
-                  description:
-                    "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-                  image: "/images/atividades/ar/ar-1.jpeg",
-                  category: "Atividades Terrestres",
-                }}
-                user={{
-                  name: "Sara Nogueria",
-                  avatar: "/images/avatar1.png",
-                  timestamp: "Solicitado ontem às 16:27",
-                }}
-                onApprove={() => console.log("Aprovar")}
-                onReject={() => console.log("Rejeitar")}
-              />
+              {activitiesLoading && (
+                <div className="flex items-center justify-center h-[250px]">
+                  <Image
+                    src="/logo.png"
+                    alt="B2 Adventure Logo"
+                    width={250}
+                    height={250}
+                    className="object-contain animate-pulse"
+                  />
+                </div>
+              )}
 
-              {/* Atividade Pendente */}
-              <ActivityStatusCard
-                type="pending"
-                activity={{
-                  title: "Escalada Cristo - RJ",
-                  description:
-                    "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-                  image: "/images/atividades/terra/terra-1.jpeg",
-                  category: "Atividades Terrestres",
-                }}
-                user={{
-                  name: "Cliente: Luciana Bianco",
-                  avatar: "/images/avatar3.png",
-                  timestamp: "Marcada em 03/10/2024 às 10:40 da manhã",
-                }}
-                partner={{
-                  name: "Luis Otavio Menezes",
-                  avatar: "/images/avatar2.png",
-                  status: "Não confirmado.",
-                }}
-                onNotify={() => console.log("Notificar")}
-              />
+              <div className="ml-auto w-1/3 md:w-1/6">
+                <MySelect
+                  className="text-base text-black"
+                  value={filter}
+                  onValueChange={(value) => handleFilter(value)}
+                >
+                  <SelectTrigger className="rounded-2xl text-[#848A9C] text-xs">
+                    <SelectValue placeholder="Selecione" />
+                  </SelectTrigger>
+                  <SelectContent className="rounded-lg">
+                    {/* <SelectItem value="todos">Todos</SelectItem> */}
+                    <SelectItem value="pendente">Pendente</SelectItem>
+                    <SelectItem value="recusado">Recusado</SelectItem>
+                  </SelectContent>
+                </MySelect>
+              </div>
+
+              {!activitiesLoading &&
+              activitiesNotAprovved &&
+              activitiesNotAprovved?.length > 0
+                ? activitiesNotAprovved?.map((activity) => (
+                    <ActivityStatusCard
+                      isLoading={loadingItem?.id === activity.id}
+                      key={activity.id}
+                      refusalMsg={refusalMsg}
+                      setRefusalMsg={setRefusalMsg}
+                      activity={activity}
+                      onApprove={() => onApproveActivity(activity?.id)}
+                      onReject={() => onRejectActivity(activity?.id)}
+                    />
+                  ))
+                : !activitiesLoading && (
+                    <div className="flex items-center justify-center h-[250px]">
+                      <MyTypography variant="subtitle4" weight="bold">
+                        Não há atividades pendentes
+                      </MyTypography>
+                    </div>
+                  )}
             </div>
           </TabsContent>
         </MyTabs>

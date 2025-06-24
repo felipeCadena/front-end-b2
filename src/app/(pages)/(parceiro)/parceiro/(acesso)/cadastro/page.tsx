@@ -5,15 +5,64 @@ import MyIcon from "@/components/atoms/my-icon";
 import MyLogo from "@/components/atoms/my-logo";
 import MyTextInput from "@/components/atoms/my-text-input";
 import MyTypography from "@/components/atoms/my-typography";
+import { useStepperStore } from "@/store/useStepperStore";
+import {
+  formatCPF,
+  formatPhoneNumber,
+  formatPhoneNumberDDI,
+} from "@/utils/formatters";
 import PATHS from "@/utils/paths";
 import { useRouter } from "next/navigation";
 import React from "react";
+import { toast } from "react-toastify";
 
 export default function CadastroParceiro() {
   const [visibility, setVisibility] = React.useState(false);
-  const [password, setPassword] = React.useState("");
-  const [confirmPassword, setConfirmPassword] = React.useState("");
+  const [visibilityConfirm, setVisibilityConfirm] = React.useState(false);
+
   const router = useRouter();
+
+  const { setStepData, name, email, phone, password, confirmPassword, cpf } =
+    useStepperStore();
+
+  const handleNextStep = () => {
+    if (!name || !email || !phone || !password || !confirmPassword || !cpf) {
+      toast.error("Todos os campos são obrigatórios!");
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      toast.error("As senhas não coincidem!");
+      return;
+    }
+
+    if (password.length < 8) {
+      toast.error("A senha deve ter no mínimo 8 caracteres.");
+      return;
+    }
+
+    if (!/[A-Z]/.test(password)) {
+      toast.error("A senha deve conter pelo menos uma letra maiúscula.");
+      return;
+    }
+    if (!/[\W_]/.test(password)) {
+      toast.error(
+        "A senha deve conter pelo menos um caractere especial e um número."
+      );
+      return;
+    }
+
+    setStepData(2, {
+      cpf,
+      name,
+      email,
+      phone,
+      password,
+      confirmPassword,
+    });
+
+    router.push(PATHS["sobre-a-empresa"]);
+  };
 
   return (
     <section className="flex flex-col bg-white md:my-12 rounded-lg max-w-3xl m-auto w-full">
@@ -28,7 +77,7 @@ export default function CadastroParceiro() {
           <MyIcon
             name="voltar"
             className="absolute top-1/3 left-0 md:hidden"
-            onClick={() => router.push(PATHS.initial)}
+            onClick={() => router.back()}
           />
         </div>
         <div className="space-y-2">
@@ -42,48 +91,70 @@ export default function CadastroParceiro() {
 
         <div className="space-y-2">
           <MyTextInput
+            onChange={(e) => setStepData(2, { name: e.target.value })}
+            value={name}
+            name="user.name"
             label="Nome Completo"
             placeholder="Nome Completo"
             className="mt-2"
           />
           <MyTextInput
+            onChange={(e) => setStepData(2, { email: e.target.value })}
+            value={email}
             type="email"
             label="E-mail"
-            placeholder="b2adventure@gmail.com"
+            placeholder="Digite seu e-mail"
             className="mt-2"
           />
           <MyTextInput
+            onChange={(e) => setStepData(2, { cpf: formatCPF(e.target.value) })}
+            value={cpf}
+            type="cpf"
+            label="CPF"
+            placeholder="Digite seu CPF"
+            className="mt-2"
+          />
+          <MyTextInput
+            onChange={(e) =>
+              setStepData(2, { phone: formatPhoneNumberDDI(e.target.value) })
+            }
+            value={phone}
             label="Celular"
-            placeholder="+XX (XX) XXXXX-XXXX"
+            placeholder="+00 (00) 00000-0000"
             className="mt-2"
           />
           <MyTextInput
+            onChange={(e) => setStepData(2, { password: e.target.value })}
+            value={password}
             label="Senha"
             placeholder="******"
             type={visibility ? "text" : "password"}
             rightIcon={
               <MyIcon
-                name={visibility ? "hide" : "eye"}
-                className="mr-4 mt-2 cursor-pointer"
+                name={visibility ? "eye" : "hide"}
+                className="mr-4 mt-7 cursor-pointer"
                 onClick={() => setVisibility((prev) => !prev)}
               />
             }
             className="mt-2"
-            onChange={(e) => setPassword(e.target.value)}
           />
+
           <MyTextInput
+            onChange={(e) =>
+              setStepData(2, { confirmPassword: e.target.value })
+            }
+            value={confirmPassword}
             label="Confirmar Senha"
             placeholder="******"
-            type={visibility ? "text" : "password"}
+            type={visibilityConfirm ? "text" : "password"}
             rightIcon={
               <MyIcon
-                name={visibility ? "hide" : "eye"}
-                className="mr-4 mt-2 cursor-pointer"
-                onClick={() => setVisibility((prev) => !prev)}
+                name={visibilityConfirm ? "eye" : "hide"}
+                className="mr-4 mt-7 cursor-pointer"
+                onClick={() => setVisibilityConfirm((prev) => !prev)}
               />
             }
             className="mt-2"
-            onChange={(e) => setConfirmPassword(e.target.value)}
           />
         </div>
 
@@ -93,7 +164,7 @@ export default function CadastroParceiro() {
             variant="default"
             borderRadius="squared"
             size="md"
-            onClick={() => router.push(PATHS["sobre-a-empresa"])}
+            onClick={handleNextStep}
           >
             Cadastrar Conta
           </MyButton>

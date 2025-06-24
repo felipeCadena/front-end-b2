@@ -1,12 +1,13 @@
 "use client";
 
+import { AdventureImage } from "@/services/api/adventures";
 import { cn } from "@/utils/cn";
 import Image from "next/image";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 
 type CarouselImagesProps = {
-  images: string[];
+  images: AdventureImage[];
   rounded?: boolean;
 };
 
@@ -51,24 +52,26 @@ export default function CarouselImages({
           );
         }}
       >
-        {images.map((image: any, index: number) => (
-          <div
-            key={index}
-            className={cn(
-              "relative z-10 overflow-hidden w-full md:min-h-[25rem]"
-            )}
-          >
-            <Image
-              alt="Imagens de atividades"
-              src={image ?? ""}
-              width={250}
-              height={300}
+        {images
+          ?.sort((a, b) => (b.isDefault ? 1 : 0) - (a.isDefault ? 1 : 0))
+          ?.map((image: any, index: number) => (
+            <div
+              key={index}
               className={cn(
-                "w-full object-cover h-[21.87rem] md:min-h-[25rem]"
+                "relative z-10 overflow-hidden w-full md:min-h-[25rem]"
               )}
-            />
-          </div>
-        ))}
+            >
+              <Image
+                alt="Imagens de atividades"
+                src={`${image.url ?? "/images/atividades/ar/ar-1.jpeg"}?v=${image?.updatedAt}`}
+                width={250}
+                height={300}
+                className={cn(
+                  "w-full object-cover h-[21.87rem] md:min-h-[25rem]"
+                )}
+              />
+            </div>
+          ))}
       </Carousel>
     </div>
   );

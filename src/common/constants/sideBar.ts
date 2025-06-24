@@ -115,7 +115,7 @@ export const sideBarClient: any[] = [
 export const sideBarPartnet: any[] = [
   {
     label: "Perfil",
-    link: "/perfil",
+    link: "/parceiro/perfil",
     icon: "perfil",
     web: false,
     menu: true,
@@ -135,7 +135,7 @@ export const sideBarPartnet: any[] = [
   },
   {
     label: "Notificações",
-    link: "/notificacoes",
+    link: "/parceiro/notificacoes",
     icon: "notificacoes",
     web: true,
   },
@@ -158,6 +158,13 @@ export const sideBarPartnet: any[] = [
     link: "/parceiro/financeiro",
     icon: "pie",
     web: true,
+    menu: true,
+  },
+  {
+    label: "Pagamentos",
+    link: "/parceiro/pagamentos",
+    icon: "coins",
+    web: false,
     menu: true,
   },
   {
@@ -211,7 +218,7 @@ export const sideBarAdmin: any[] = [
     menu: true,
   },
   {
-    label: "Parceiros Cadastradaos",
+    label: "Parceiros Cadastrados",
     link: "/admin/parceiros-cadastrados",
     icon: "parceiros",
     web: false,
@@ -227,6 +234,13 @@ export const sideBarAdmin: any[] = [
     label: "Financeiro",
     link: "/admin/financeiro",
     icon: "pie",
+    web: false,
+    menu: true,
+  },
+  {
+    label: "Relátorio",
+    link: "/admin/relatorio",
+    icon: "coins",
     web: false,
     menu: true,
   },

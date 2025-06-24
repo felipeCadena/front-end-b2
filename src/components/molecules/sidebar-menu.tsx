@@ -1,7 +1,6 @@
 "use client";
 
 import { useAuthStore } from "@/store/useAuthStore";
-import { notifications } from "@/common/constants/mock";
 import {
   sideBarAdmin,
   sideBarClient,
@@ -15,11 +14,17 @@ import {
 } from "@/components/molecules/my-toggle-group";
 import { cn } from "@/utils/cn";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect } from "react";
 import { authService } from "@/services/api/auth";
-import useLogin from "@/app/(pages)/(cliente)/(acesso)/login/login-store";
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
+import useLogin from "@/store/useLogin";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useCart } from "@/store/useCart";
+import { notificationsService } from "@/services/api/notifications";
+import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
+import { adminService } from "@/services/api/admin";
+import { users } from "@/services/api/users";
 
 export default function SidebarMenu({
   closeSidebar,
@@ -27,12 +32,16 @@ export default function SidebarMenu({
   closeSidebar: () => void;
 }) {
   const { user, clearUser } = useAuthStore();
+  const queryClient = useQueryClient();
   const { data: session } = useSession();
   const { setSideBarActive, sideBarActive } = useLogin();
+
+  const userId = session?.user?.id ?? "";
 
   useEffect(() => {
     switch (session?.user?.role) {
       case "admin":
+      case "superadmin":
         setSideBarActive(sideBarAdmin);
         break;
       case "partner":
@@ -46,15 +55,31 @@ export default function SidebarMenu({
     }
   }, [user, session]);
 
-  const handleLogout = () => {
-    authService.logout();
-    clearUser();
+  const handleLogout = async () => {
+    try {
+      clearUser();
+      await authService.logout(session?.user.refreshToken ?? "");
+      signOut({ callbackUrl: "/" });
+    } catch (error) {
+      console.error("Error during logout:", error);
+      toast.error("Erro ao fazer logout. Tente novamente.");
+    }
   };
 
   const handleCloseSidebar = (event: React.MouseEvent) => {
     event.stopPropagation();
     closeSidebar();
   };
+
+  const { getCartSize } = useCart();
+
+  const cartSize = getCartSize(userId ?? "");
+
+  const { data: notifications = { messagesUnred: 0 } } = useQuery({
+    queryKey: ["unread_notifications"],
+    queryFn: () => notificationsService.countUnreadNotifications(),
+    enabled: !!session?.user?.id,
+  });
 
   return (
     <div className="relative">
@@ -72,25 +97,37 @@ export default function SidebarMenu({
             <Link
               href={`${item.link}${item.tab ? `?tab=${item.tab}` : ""}`}
               className={cn("flex justify-between")}
-              onClick={(e) => {
+              onClick={async (e) => {
                 handleCloseSidebar(e);
-                item.label === "Sair" && handleLogout();
+
+                if (item.label === "Sair") {
+                  e.preventDefault(); // Impede a navegação automática
+                  await handleLogout(); // Executa o logout corretamente
+                }
               }}
             >
-              <div className="flex gap-1 items-center">
+              <div className="flex gap-1 items-center relative">
                 <MyIcon name={item.icon} />
                 {item.label}
               </div>
 
               {item.label === "Notificações" && (
-                <span className="flex items-center justify-center bg-red-400 h-[1.1rem] w-[1.1rem] rounded-full text-white text-xs font-bold">
-                  {notifications?.length ?? 0}
+                <span
+                  className={cn(
+                    `flex items-center justify-center h-[1.1rem] w-[1.1rem] rounded-full text-white text-xs font-bold`,
+                    notifications?.messagesUnred > 0
+                      ? "bg-red-400"
+                      : "bg-slate-300",
+                    notifications?.messagesUnred > 10 && "h-[1.2rem] w-[1.8rem]"
+                  )}
+                >
+                  {notifications?.messagesUnred}
                 </span>
               )}
 
               {item.label === "Carrinho de Compras" && (
                 <span className="flex items-center justify-center bg-primary-600 h-[1.1rem] w-[1.1rem] rounded-full text-white text-xs font-bold">
-                  1
+                  {cartSize ?? 0}
                 </span>
               )}
             </Link>

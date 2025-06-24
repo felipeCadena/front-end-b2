@@ -4,6 +4,8 @@ import MyTextInput from "@/components/atoms/my-text-input";
 import MyTextarea from "@/components/atoms/my-textarea";
 import MyTypography from "@/components/atoms/my-typography";
 import ActivitiesFilter from "@/components/organisms/activities-filter";
+import { TypeAdventure, useAdventureStore } from "@/store/useAdventureStore";
+import { capitalizeFirstLetter } from "@/utils/formatters";
 import React from "react";
 
 export default function Step1({
@@ -13,6 +15,21 @@ export default function Step1({
   edit?: boolean;
   initialData?: any;
 }) {
+  const { setAdventureData, typeAdventure, description, title } =
+    useAdventureStore();
+
+  const handleSelectType = (value: TypeAdventure) => {
+    setAdventureData({
+      typeAdventure: value,
+    });
+  };
+
+  React.useEffect(() => {
+    if (window) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }, []);
+
   return (
     <section className="">
       <MyTypography variant="heading2" weight="bold">
@@ -24,20 +41,44 @@ export default function Step1({
           : "Preencha os dados da sua primeira atividade"}
       </MyTypography>
 
-      <ActivitiesFilter withText={false} />
-
-      <MyTextInput
-        label="Nome da atividade"
-        placeholder="Nome da atividade"
-        className="mt-2"
+      <ActivitiesFilter
+        withText={false}
+        setSelected={handleSelectType}
+        selected={typeAdventure}
       />
 
-      <MyTextarea
-        placeholder="Lorem ipsum dolor sit amet, consectetur di..."
-        label="Descrição da atividade"
-        classNameLabel="text-black text-base font-bold mt-3"
-        rows={5}
-      />
+      <div className="space-y-4">
+        <MyTextInput
+          value={title}
+          onChange={(e) =>
+            setAdventureData({ title: capitalizeFirstLetter(e.target.value) })
+          }
+          label="Nome da atividade"
+          placeholder="Nome da atividade"
+          className="mt-2"
+        />
+
+        <div className="w-full">
+          <MyTextarea
+            value={description}
+            onChange={(e) => {
+              setAdventureData({
+                description: e.target.value,
+              });
+            }}
+            label="Descrição da atividade"
+            placeholder="Fale sobre a atividade e destaque o que só você oferece para torná-la incrível."
+            classNameLabel="text-black text-base font-bold"
+            rows={5}
+            maxLength={2000}
+            className="resize-y" // permite redimensionar verticalmente
+          />
+
+          <div className="text-sm text-gray-400 text-right mt-1">
+            {description.length} / 2000 caracteres
+          </div>
+        </div>
+      </div>
     </section>
   );
 }

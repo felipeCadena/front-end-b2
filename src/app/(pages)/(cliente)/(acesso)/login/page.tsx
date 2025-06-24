@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 
 import MyButton from "@/components/atoms/my-button";
 import MyIcon from "@/components/atoms/my-icon";
@@ -9,79 +9,117 @@ import MyTextInput from "@/components/atoms/my-text-input";
 import MyTypography from "@/components/atoms/my-typography";
 import PATHS, { DEFAULT_ROLE_PATHS } from "@/utils/paths";
 import { useRouter } from "next/navigation";
-import useLogin from "./login-store";
 import { toast } from "react-toastify";
 import { useAuthStore } from "@/store/useAuthStore";
 import GoogleLoginButton from "@/components/molecules/google-login-button";
-import { getSession, signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import FacebookLoginButton from "@/components/molecules/facebook-login-button";
+import useLogin from "@/store/useLogin";
+import useSearchQueryService from "@/services/use-search-query-service";
 
 export default function Login() {
   const router = useRouter();
   const { setUser } = useAuthStore();
   const [isLoading, setIsLoading] = React.useState(false);
+  const { data: session, status } = useSession();
+  const { params } = useSearchQueryService();
 
   const [visibility, setVisibility] = React.useState(false);
 
   const { email, password, error, setEmail, setPassword, clearError } =
     useLogin();
 
+  const didHandleRef = React.useRef(false);
+
+  useEffect(() => {
+    const handleSessionUpdate = async () => {
+      if (didHandleRef.current) return;
+      // Se a sessão ainda está carregando, não faça nada
+      if (status === "loading") return;
+
+      // Se não está autenticado ou sessão não existe, não execute nada
+      if (status !== "authenticated" || !session?.user) return;
+
+      // Se a sessão tem erro de refresh token, ignore
+      if (session.error === "RefreshAccessTokenError") return;
+
+      if (
+        status === "authenticated" &&
+        session?.user?.role &&
+        session?.error !== "RefreshAccessTokenError"
+      ) {
+        didHandleRef.current = true;
+
+        try {
+          const userData = {
+            id: session.user.id,
+            name: session.user.name ?? "",
+            email: session.user.email ?? "",
+            role: session.user.role.toLowerCase(),
+          };
+
+          setUser({
+            id: session.user.id!, // Garante que id não é undefined
+            name: userData.name,
+            email: userData.email,
+            role: userData.role,
+          });
+
+          if (params?.redirect) {
+            console.log("Redirecionando para:", params.redirect);
+            router.push(params.redirect);
+            toast.success("Login realizado com sucesso!");
+            return;
+          }
+
+          const userRole = session.user.role.toLowerCase();
+          const roleMapping = {
+            superadmin: "admin",
+            admin: "admin",
+            partner: "partner",
+            customer: "customer",
+          };
+
+          const mappedRole = roleMapping[userRole as keyof typeof roleMapping];
+          const defaultPath =
+            DEFAULT_ROLE_PATHS[mappedRole as keyof typeof DEFAULT_ROLE_PATHS];
+
+          if (defaultPath) {
+            console.log("Redirecionando para:", defaultPath);
+            router.push(defaultPath);
+            toast.success("Login realizado com sucesso!");
+          }
+        } catch (error) {
+          console.error("Erro ao processar sessão:", error);
+        }
+      }
+
+      setIsLoading(false);
+    };
+
+    handleSessionUpdate();
+  }, [session]);
+
   const handleLogin = async () => {
     setIsLoading(true);
     const credentials = { email, password };
     try {
-      await signIn("credentials", {
+      const response = await signIn("credentials", {
         ...credentials,
-        callbackUrl: "/admin",
+        redirect: false,
       });
 
-      // Busca a sessão atualizada
-      const session = await getSession();
-
-      if (!session?.user?.role) {
-        console.log("Erro ao obter dados do usuário");
+      if (response?.status === 401) {
+        toast.error("E-mail ou senha inválidos.");
         return;
       }
-
-      const userRole = session.user.role.toLowerCase() ?? "";
-
-      // Atualiza o user no store global
-      setUser({
-        id: session.user.id ?? "",
-        name: session.user.name ?? "",
-        email: session.user.email ?? "",
-        role: userRole,
-      });
-
-      const roleMapping = {
-        superadmin: "admin",
-        admin: "admin",
-        partner: "partner",
-        customer: "customer",
-      };
-
-      const mappedRole = roleMapping[userRole as keyof typeof roleMapping];
-
-      // Verifica se existe um caminho padrão para a role
-      const defaultPath =
-        DEFAULT_ROLE_PATHS[mappedRole as keyof typeof DEFAULT_ROLE_PATHS];
-
-      if (!defaultPath) {
-        console.error("Caminho não encontrado para role:", mappedRole);
-        toast.error("Erro no redirecionamento");
-        return;
-      }
-
-      router.push(defaultPath);
-      router.refresh();
-
-      toast.success("Login realizado com sucesso!");
     } catch (err) {
       console.error("Erro no login:", err);
-      toast.error(error || "Erro ao fazer login");
-    } finally {
-      setIsLoading(false);
+      toast.error("Erro ao fazer login");
     }
+    // finally {
+    //   setIsLoading(false);
+    // }
   };
 
   return (
@@ -109,7 +147,7 @@ export default function Login() {
           <MyTextInput
             label="E-mail"
             noHintText
-            placeholder="b2adventure@gmail.com"
+            placeholder="Digite seu e-mail"
             value={email}
             onChange={(e) => {
               clearError();
@@ -126,8 +164,8 @@ export default function Login() {
             type={visibility ? "text" : "password"}
             rightIcon={
               <MyIcon
-                name={visibility ? "hide" : "eye"}
-                className="mr-4 mt-2 cursor-pointer"
+                name={visibility ? "eye" : "hide"}
+                className="mr-4 mt-6 cursor-pointer"
                 onClick={() => setVisibility((prev) => !prev)}
               />
             }
@@ -148,14 +186,14 @@ export default function Login() {
         <div className="flex flex-col">
           <MyButton
             variant="text"
-            className="mt-4"
+            className="p-0  underline"
             onClick={() => router.push(PATHS["esqueci-minha-senha"])}
           >
             Esqueci minha senha
           </MyButton>
 
           <MyButton
-            className="mt-8"
+            className="mt-8 "
             variant="default"
             borderRadius="squared"
             size="md"
@@ -168,8 +206,25 @@ export default function Login() {
           <GoogleLoginButton />
 
           <FacebookLoginButton />
+          <div className="text-center mt-4">
+            <MyTypography
+              variant="label"
+              weight="regular"
+              className="text-[#5F5C6B]"
+            >
+              Deseja ser um parceiro? Clique{" "}
+              <MyButton
+                variant="text"
+                className="p-0 underline"
+                onClick={() => router.push(PATHS.parceiro)}
+              >
+                aqui
+              </MyButton>
+              .
+            </MyTypography>
+          </div>
 
-          <div className="text-center mt-12">
+          <div className="text-center mt-4">
             <MyTypography
               variant="label"
               weight="regular"

@@ -25,7 +25,7 @@ export default function Step5() {
       />
 
       <MyTextarea
-        placeholder="Lorem ipsum dolor sit amet, consectetur di..."
+        placeholder="Fale sobre a atividade e destaque o que só você oferece para torná-la incrível."
         label="Descrição da atividade"
         classNameLabel="text-black text-base font-bold mt-3"
         rows={5}

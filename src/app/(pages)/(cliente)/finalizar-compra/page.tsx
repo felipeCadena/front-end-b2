@@ -1,65 +1,427 @@
 "use client";
 
-import { activities } from "@/common/constants/mock";
 import MyButton from "@/components/atoms/my-button";
 import MyCheckbox from "@/components/atoms/my-checkbox";
 import MyIcon, { IconsMapTypes } from "@/components/atoms/my-icon";
-import Pix from "@/components/atoms/my-icon/elements/pix";
-import {
-  MySelect,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/atoms/my-select";
-import MyTextInput from "@/components/atoms/my-text-input";
 import MyTypography from "@/components/atoms/my-typography";
-import { MyDatePicker } from "@/components/molecules/my-date-picker";
-import TimePickerModal from "@/components/molecules/time-picker";
-import ActivitiesDetails from "@/components/organisms/activities-details";
-import { Card } from "@/components/organisms/card";
-import PeopleSelector from "@/components/organisms/people-selector";
-import ShoppingDetails from "@/components/organisms/shopping-details";
+import ActivitiesOrderSummary from "@/components/organisms/activities-order-summary";
+import CardPaymentOption from "@/components/organisms/card-payment-option";
+import PreOrderForm from "@/components/organisms/pre-order-form";
+import { useCart } from "@/store/useCart";
 import { cn } from "@/utils/cn";
 import PATHS from "@/utils/paths";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { MyForm } from "@/components/atoms/my-form";
+import { ordersAdventuresService } from "@/services/api/orders";
+import { toast } from "react-toastify";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { users } from "@/services/api/users";
+import { AxiosError } from "axios";
+import MySpinner from "@/components/atoms/my-spinner";
+import { useFinishPayment } from "@/store/useFinishPayment";
+import ModalAlert from "@/components/molecules/modal-alert";
+import {
+  formatCpfCnpj,
+  formatInstallmentOptions,
+  formatPhoneNumber,
+  formatPhoneNumberDDI,
+} from "@/utils/formatters";
+import { useSession } from "next-auth/react";
+import CartConflictCheckerWithModal from "@/components/organisms/modal-cart-conflit";
+
+const formSchema = z
+  .object({
+    paymentMethod: z.string().optional(),
+    installmentCount: z.string().optional(),
+    creditCard: z
+      .object({
+        holderName: z.string().trim().optional(),
+        number: z.string().trim().optional(),
+        expiryMonth: z.string().optional(),
+        expiryYear: z.string().optional(),
+        ccv: z.string().optional(),
+      })
+      .optional(),
+    creditCardHolderInfo: z
+      .object({
+        name: z.string().min(1, { message: "Nome obrigatório." }).trim(),
+        email: z.string().email("E-mail inválido!").trim(),
+        cpfCnpj: z.string().min(11, {
+          message: "Por favor insira um CPF válido",
+        }),
+        postalCode: z.string(),
+        addressNumber: z.string().optional(),
+        addressComplement: z.string().nullable().optional(),
+        phone: z
+          .string()
+          .optional()
+          .nullable()
+          .transform((v) => v ?? ""),
+        mobilePhone: z
+          .string()
+          .min(1, { message: "Telefone obrigatório" })
+          .optional(),
+      })
+      .optional(),
+    adventures: z
+      .array(
+        z.object({
+          adventureId: z.number(),
+          scheduleDate: z.date(),
+          qntAdults: z.number(),
+          qntChildren: z.number(),
+          qntBabies: z.number(),
+        })
+      )
+      .optional(),
+  })
+  .superRefine((data, ctx) => {
+    if (data.paymentMethod === "CREDIT_CARD") {
+      // Validação dos campos obrigatórios do cartão
+      if (!data.creditCard) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Dados do cartão são obrigatórios para pagamento com cartão",
+          path: ["creditCard"],
+        });
+      } else {
+        if (
+          !data.creditCard.holderName ||
+          data.creditCard.holderName.trim() === ""
+        ) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "Nome do titular é obrigatório",
+            path: ["creditCard", "holderName"],
+          });
+        }
+        if (
+          !data.creditCard.number ||
+          data.creditCard.number.trim().length < 16
+        ) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "Número do cartão inválido",
+            path: ["creditCard", "number"],
+          });
+        }
+        if (!data.creditCard.expiryMonth) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "Mês é obrigatório",
+            path: ["creditCard", "expiryMonth"],
+          });
+        }
+        if (!data.creditCard.expiryYear) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "Ano é obrigatório",
+            path: ["creditCard", "expiryYear"],
+          });
+        }
+        if (!data.creditCard.ccv || data.creditCard.ccv.trim().length < 3) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "CCV é obrigatório",
+            path: ["creditCard", "ccv"],
+          });
+        }
+
+        if (!data.creditCardHolderInfo?.postalCode?.trim()) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "CEP é obrigatório para pagamento com cartão",
+            path: ["creditCardHolderInfo", "postalCode"],
+          });
+        }
+      }
+    }
+  });
+
+const paymentDefaultValues = {
+  paymentMethod: "PIX",
+  installmentCount: "1",
+  creditCard: {
+    holderName: "",
+    number: "",
+    expiryMonth: "",
+    expiryYear: "",
+    ccv: "",
+  },
+  creditCardHolderInfo: {
+    name: "",
+    email: "",
+    cpfCnpj: "",
+    postalCode: "",
+    addressNumber: "000",
+    addressComplement: null,
+    phone: "4738010919",
+    mobilePhone: "",
+  },
+};
+
+export type PurchaseOrderFormData = z.infer<typeof formSchema>;
 
 export default function FinalizarCompra() {
   const router = useRouter();
-  const [selectedPayment, setSelectedPayment] = useState<string>("");
-  const [value, setValue] = React.useState<string>("");
-  const [selectedDates, setSelectedDates] = React.useState<Date[]>([]); // Estado para armazenar as datas selecionadas
+  const [selectedPayment, setSelectedPayment] = useState<string>("PIX");
+  const [isLoading, setIsLoading] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isReadyToPay, setIsReadyToPay] = useState(false);
+  const [isPaymentMadeWithCard, setIsPaymentMadeWithCard] = useState(false);
+  const { addToPaymentStore } = useFinishPayment();
+  const queryClient = useQueryClient();
+  const instamentsAvailable =
+    process.env.NEXT_PUBLIC_B2_ENABLED_INSTALLMENT_PAY ?? 1;
+  const { data: session } = useSession();
+  const userId = session?.user?.id ?? "";
 
-  const activity = activities.filter((activity) =>
-    activity.title.includes("Atividade 2")
-  );
+  const handleCardPaymentModal = () => {
+    router.push(PATHS.agenda);
+  };
 
-  const activityDetails = activities.find((activity) =>
-    activity.title.includes("Atividade 1")
-  );
+  const handleClosePaymentModal = () => {
+    setIsPaymentMadeWithCard(false);
+    router.push(PATHS.atividades);
+  };
 
-  const payments: { name: string; icon: IconsMapTypes }[] = [
+  const handleModal = () => {
+    setIsModalOpen((prev) => !prev);
+  };
+
+  const { carts, clearCart } = useCart();
+
+  const { data: loggedUser } = useQuery({
+    queryKey: ["logged_user"],
+    queryFn: () => users.getUserLogged(),
+  });
+
+  const { data: userIP = "" } = useQuery({
+    queryKey: ["user_ip_address"],
+    queryFn: () => users.getIP(),
+  });
+
+  const userCart = carts.find((cart) => cart.userId === userId);
+
+  const purchaseOrder = userCart?.cart.map((item) => {
+    if (item) {
+      const [hour, minute] = item.schedule.scheduleTime.split(":");
+      const scheduleDate = new Date(item.schedule.scheduleDate as Date);
+      scheduleDate.setHours(Number(hour));
+      scheduleDate.setMinutes(Number(minute));
+
+      const formatOrder = {
+        adventureId: item.adventure.id,
+        scheduleDate,
+        qntAdults: item.schedule.qntAdults,
+        qntChildren: item.schedule.qntChildren,
+        qntBabies: item.schedule.qntBabies,
+      };
+      return formatOrder;
+    }
+  });
+
+  useQuery({
+    queryKey: [purchaseOrder],
+    queryFn: () => {
+      if (
+        Number(instamentsAvailable) > 1 &&
+        purchaseOrder &&
+        purchaseOrder?.length > 1
+      ) {
+        setIsModalOpen(true);
+      }
+      return purchaseOrder ?? [];
+    },
+  });
+
+  const payments: { name: string; label: string; icon: IconsMapTypes }[] = [
     {
-      name: "Pix",
+      name: "PIX",
+      label: "Pix",
       icon: "pix",
     },
     {
-      name: "Boleto",
+      name: "BOLETO",
+      label: "Boleto",
       icon: "boleto",
     },
     {
-      name: "Cartão de crédito",
+      name: "CREDIT_CARD",
+      label: "Cartão de crédito",
       icon: "card",
     },
   ];
 
+  const form = useForm<PurchaseOrderFormData>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      ...paymentDefaultValues,
+      paymentMethod: selectedPayment,
+    },
+  });
+
+  useEffect(() => {
+    if (purchaseOrder && loggedUser) {
+      form.reset({
+        ...paymentDefaultValues,
+        creditCardHolderInfo: {
+          ...paymentDefaultValues.creditCardHolderInfo,
+          name: loggedUser.name,
+          email: loggedUser.email,
+          phone: formatPhoneNumberDDI(loggedUser.phone),
+          cpfCnpj: formatCpfCnpj(loggedUser.cpf),
+          mobilePhone: formatPhoneNumberDDI(loggedUser.phone),
+        },
+        adventures: purchaseOrder,
+      });
+    }
+  }, [userId, purchaseOrder?.length, loggedUser]);
+
+  const handleSubmit = async (formData: PurchaseOrderFormData) => {
+    setIsLoading(true);
+    const formattedOrder = {
+      ...formData,
+      installmentCount: Number(formData.installmentCount),
+      creditCard: {
+        ...formData.creditCard,
+        number: formData.creditCard?.number?.replaceAll(" ", ""),
+      },
+      creditCardHolderInfo: {
+        ...formData.creditCardHolderInfo,
+        cpfCnpj: formData.creditCardHolderInfo?.cpfCnpj
+          .replaceAll("-", "")
+          .replaceAll("/", "")
+          .replaceAll(".", "")
+          .replaceAll(" ", ""),
+        postalCode: formData.creditCardHolderInfo?.postalCode.replaceAll(
+          ".",
+          ""
+        ),
+        phone: formData.creditCardHolderInfo?.mobilePhone?.replace(/\D/g, ""),
+        mobilePhone: formData.creditCardHolderInfo?.mobilePhone?.replace(
+          /\D/g,
+          ""
+        ),
+      },
+    };
+
+    try {
+      if (selectedPayment === "BOLETO" || selectedPayment === "PIX") {
+        const { data } = await ordersAdventuresService.create(
+          formattedOrder,
+          userIP
+        );
+        queryClient.invalidateQueries({
+          queryKey: ["unread_notifications"],
+        });
+        if (selectedPayment === "PIX") {
+          addToPaymentStore({
+            id: data.db.id,
+            paymentMethod: data.db.paymentMethod,
+            paymentStatus: data.db.paymentStatus,
+            bankSlipUrl: data.db.bankSlipUrl,
+            dueDate: data.db.dueDate,
+            pixDueDate: data.pixResponse.expirationDate,
+            qrCode: data.pixResponse.encodedImage,
+            pixCopyPaste: data.pixResponse.payload,
+            total: budget["BOLETO_PIX"].orderFinalPrice ?? 0,
+          });
+        }
+        if (selectedPayment === "BOLETO") {
+          addToPaymentStore({
+            id: data.db.id,
+            paymentMethod: data.db.paymentMethod,
+            paymentStatus: data.db.paymentStatus,
+            bankSlipUrl: data.db.bankSlipUrl,
+            dueDate: data.db.dueDate,
+            total: budget["BOLETO_PIX"].orderFinalPrice ?? 0,
+          });
+        }
+        clearCart(userId);
+        toast.success("Pedido enviado com sucesso!");
+        router.push(`/finalizar-compra/${data.db.id}`);
+        return data;
+      }
+
+      if (
+        selectedPayment === "CREDIT_CARD" &&
+        formattedOrder.creditCard.number &&
+        formattedOrder.creditCard.number.length < 16
+      ) {
+        toast.error("Número do cartão inválido.");
+        return;
+      }
+
+      await ordersAdventuresService.create(formattedOrder, userIP);
+      setIsPaymentMadeWithCard(true);
+      clearCart(userId);
+      queryClient.invalidateQueries({
+        queryKey: ["unread_notifications"],
+      });
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        if (error.status === 401) {
+          toast.error("Token inválido ou expirado. Faça login novamente.");
+          console.error(error);
+          return;
+        } else {
+          toast.error(error.response?.data.message);
+          console.error(error);
+          return;
+        }
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleSelectPaymentOption = (paymentName: string) => {
+    setSelectedPayment(paymentName);
+    form.setValue("paymentMethod", paymentName);
+  };
+
+  const orderBudget = userCart?.cart.map((item) => {
+    if (item) {
+      const formatOrder = {
+        adventureId: item.adventure.id,
+        qntAdults: item.schedule.qntAdults,
+        qntChildren: item.schedule.qntChildren,
+        qntBabies: item.schedule.qntBabies,
+      };
+      return formatOrder;
+    }
+  });
+
+  const { data: budget } = useQuery({
+    queryKey: ["budget", orderBudget],
+    queryFn: () =>
+      ordersAdventuresService.createBudget({ adventures: orderBudget }, userIP),
+    enabled: Boolean(userIP) && Boolean(orderBudget?.length),
+  });
+
+  const activityPrice =
+    userCart &&
+    userCart.cart.map(
+      (act) =>
+        Number(act.schedule.pricePerAdult) * act.schedule.qntAdults +
+        Number(act.schedule.pricePerChildren) * act.schedule.qntChildren
+    );
+
+  const totalPrice =
+    activityPrice && activityPrice.reduce((acc, price) => acc + price, 0);
+
   return (
-    <section className="px-4">
+    <section className="px-4 mb-8">
+      <CartConflictCheckerWithModal cart={userCart?.cart ?? []} />
       <div className="flex gap-4 items-center max-sm:hidden">
         <MyIcon
           name="voltar-black"
-          className="-ml-2"
+          className="-ml-2 cursor-pointer"
           onClick={() => router.back()}
         />
         <MyTypography variant="subtitle1" weight="bold" className="">
@@ -78,26 +440,19 @@ export default function FinalizarCompra() {
         </MyTypography>
       </div>
 
-      <div className="max-sm:hidden md:grid md:grid-cols-3 md:gap-2">
-        <div className="px-6 ">
-          <ActivitiesDetails activities={activity} />
-          <div className="max-sm:border-t-[1px] max-sm:border-gray-400/30 md:mt-16">
-            <MyTypography variant="subtitle3" weight="bold" className="my-4">
-              Escolha o dia e horário para realizar a atividade.
-            </MyTypography>
-            <div className="border space-y-6 border-gray-300 rounded-lg py-8 md:space-y-10 md:py-9 px-5 mt-8">
-              <MyDatePicker
-                selectedDates={selectedDates}
-                setSelectedDates={setSelectedDates}
-              />
-              <TimePickerModal />
-              <PeopleSelector />
+      <div className="max-sm:hidden md:flex md:flex-col md:gap-2">
+        {userCart &&
+          (userCart.cart.length > 0 ? (
+            <ActivitiesOrderSummary activities={userCart?.cart ?? []} />
+          ) : (
+            <div className="flex justify-center w-full my-20">
+              <MyTypography weight="bold" variant="heading3">
+                Seu carrinho está vazio
+              </MyTypography>
             </div>
-          </div>
-        </div>
+          ))}
 
         <div className="col-span-2 space-y-16">
-          <ShoppingDetails activityDetails={activityDetails} />
           <div className="flex gap-4 items-center end">
             <MyButton
               variant="outline-neutral"
@@ -107,8 +462,11 @@ export default function FinalizarCompra() {
               leftIcon={<MyIcon name="add" />}
               onClick={() => router.push(PATHS.atividades)}
             >
-              Adicionar mais atividades
+              {userCart && userCart.cart.length > 0
+                ? "Adicionar mais atividades"
+                : "Adicionar atividades"}
             </MyButton>
+
             <MyButton
               variant="default"
               borderRadius="squared"
@@ -119,166 +477,194 @@ export default function FinalizarCompra() {
               Finalizar Pedido
             </MyButton>
 
-            <MyButton
-              variant="default"
-              borderRadius="squared"
-              size="lg"
-              className="max-sm:hidden w-full max-sm:mt-6"
-              // onClick={() => router.push(PATHS["finalizar-compra"])}
-            >
-              Ir para o pagamento
-            </MyButton>
-          </div>
-        </div>
-      </div>
-
-      <div className="md:my-16">
-        <MyTypography
-          variant="subtitle2"
-          weight="bold"
-          className="mb-4 hidden md:block"
-        >
-          Método de pagamento
-        </MyTypography>
-
-        <div
-          className={cn(
-            "md:grid md:items-center",
-            selectedPayment?.includes("Cartão")
-              ? "md:grid-cols-3 md:gap-6"
-              : "md:grid-cols-2 md:gap-8"
-          )}
-        >
-          <div className={cn("flex flex-col space-y-8 mt-4")}>
-            {payments.map((payment) => (
-              <MyButton
-                key={payment.name}
-                variant="payment"
-                borderRadius="squared"
-                className={cn(
-                  "flex justify-between",
-                  selectedPayment === payment.name &&
-                    "bg-primary-900 opacity-100 border border-primary-600"
-                )}
-                size="md"
-                value={selectedPayment}
-                rightIcon={<MyIcon name={payment.icon} />}
-                onClick={() => setSelectedPayment(payment.name)}
-              >
-                {payment.name}
-              </MyButton>
-            ))}
-          </div>
-
-          {selectedPayment?.includes("Cartão") ? (
-            <div className="max-sm:mt-8 md:flex md:flex-row-reverse md:items-center md:gap-8 md:col-span-2">
-              <Card />
-
-              <div className="max-sm:mt-4 space-y-4 md:w-[90%]">
-                <MyTextInput
-                  label="Nome impresso no cartão"
-                  placeholder="Seu nome"
-                  className="mt-2"
-                  noHintText
-                />
-
-                <MyTextInput
-                  label="Número do cartão"
-                  placeholder="XXXX XXXX XXXX XXXX"
-                  className="mt-2"
-                  noHintText
-                  rightIcon={<MyIcon name="master" className="-ml-4 mt-5" />}
-                />
-
-                <MySelect value={value} onValueChange={setValue}>
-                  <SelectTrigger className="py-6">
-                    <SelectValue placeholder="Selecione o número de parcelas" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {Array.from({ length: 4 }, (_, i) => (
-                      <SelectItem key={i} value={String(i + 1)}>
-                        {i + 1}x
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </MySelect>
-
-                <div className="flex gap-4">
-                  <MyTextInput
-                    label="Vencimento"
-                    placeholder="XX/XXXX"
-                    className="mt-1"
-                    noHintText
-                  />
-
-                  <MyTextInput
-                    label="Código"
-                    placeholder="XXX"
-                    className="mt-1"
-                    noHintText
-                  />
-                </div>
-              </div>
-            </div>
-          ) : (
-            selectedPayment && (
-              <div className="space-y-4 max-sm:my-10 md:w-full">
-                <MyTextInput
-                  label="Nome Completo"
-                  placeholder="Seu nome"
-                  className="mt-2"
-                  noHintText
-                />
-
-                <MyTextInput
-                  label="E-mail"
-                  placeholder="b2adventure@gmail.com"
-                  className="mt-2"
-                  noHintText
-                />
-                <div className="flex max-sm:flex-col gap-4 md:mt-4">
-                  <MyTextInput
-                    label="Telefone"
-                    placeholder="(XX) XXXXX-XXXX"
-                    className="mt-2"
-                    noHintText
-                  />
-
-                  <MyTextInput
-                    label="CPF"
-                    placeholder="XXX.XXX.XXX-XX"
-                    className="mt-2"
-                    noHintText
-                  />
-                </div>
-              </div>
-            )
-          )}
-          {selectedPayment && (
-            <div
-              className={cn(
-                "mt-6 md:mt-4 col-start-2",
-                selectedPayment === "Cartão de crédito" &&
-                  "md:col-span-2 md:col-start-2"
-              )}
-            >
-              <MyCheckbox
-                className=""
-                label="Salvar os dados para a próxima compra"
-              />
+            {userCart && userCart.cart.length > 0 && (
               <MyButton
                 variant="default"
                 borderRadius="squared"
                 size="lg"
-                className="my-4 w-full"
-                onClick={() => {}}
+                className="max-sm:hidden w-full max-sm:mt-6"
+                onClick={() => setIsReadyToPay((prev) => !prev)}
               >
-                Finalizar compra
+                Ir para o pagamento
               </MyButton>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </div>
+
+      {isReadyToPay && (
+        <div className="md:my-16">
+          <MyTypography
+            variant="subtitle2"
+            weight="bold"
+            className="mb-4 hidden md:block"
+          >
+            Informações de pagamento
+          </MyTypography>
+
+          <MyForm {...form}>
+            <form
+              onSubmit={form.handleSubmit(handleSubmit)}
+              className={cn("md:flex md:flex-col md:w-full")}
+            >
+              <PreOrderForm form={form} />
+              <div className="my-4">
+                <MyTypography variant="subtitle4" weight="bold">
+                  Selecione o método de pagamento:
+                </MyTypography>
+              </div>
+              <div className={cn("flex gap-4 mb-4")}>
+                {payments.map((payment) => (
+                  <MyButton
+                    key={payment.name}
+                    variant="payment"
+                    type="button"
+                    borderRadius="squared"
+                    className={cn(
+                      "flex justify-between md:max-w-[200px]",
+                      selectedPayment === payment.name &&
+                        "bg-primary-900 opacity-100 border border-primary-600"
+                    )}
+                    size="md"
+                    value={selectedPayment}
+                    rightIcon={<MyIcon name={payment.icon} />}
+                    onClick={() => handleSelectPaymentOption(payment.name)}
+                  >
+                    {payment.label}
+                  </MyButton>
+                ))}
+              </div>
+
+              {selectedPayment === "CREDIT_CARD" && budget && (
+                <CardPaymentOption
+                  userCart={userCart ? userCart.cart : []}
+                  form={form}
+                  budget={budget}
+                />
+              )}
+
+              {/* Resumo dos valores */}
+              {budget && selectedPayment !== "CREDIT_CARD" && (
+                <div className="mt-4 w-full md:w-[42%]">
+                  <div className="flex justify-between items-center">
+                    <MyTypography
+                      variant="subtitle3"
+                      weight="bold"
+                      className="text-sm md:text-md"
+                    >
+                      Total original:
+                    </MyTypography>
+                    <MyTypography
+                      variant="heading2"
+                      weight="bold"
+                      className="text-lg md:text-xl"
+                    >
+                      {Number(totalPrice).toLocaleString("pt-BR", {
+                        style: "currency",
+                        currency: "BRL",
+                      })}
+                    </MyTypography>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <MyTypography
+                      variant="subtitle3"
+                      weight="regular"
+                      className="text-sm md:text-md"
+                    >
+                      Taxas de serviço:
+                    </MyTypography>
+                    <MyTypography
+                      variant="heading3"
+                      weight="regular"
+                      className="text-lg md:text-xl"
+                    >
+                      {budget["BOLETO_PIX"]?.totalGatewayFee.toLocaleString(
+                        "pt-BR",
+                        {
+                          style: "currency",
+                          currency: "BRL",
+                        }
+                      )}
+                    </MyTypography>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <MyTypography
+                      variant="subtitle3"
+                      weight="bold"
+                      className="text-sm md:text-md"
+                    >
+                      Total geral:
+                    </MyTypography>
+                    <MyTypography
+                      variant="heading2"
+                      weight="extrabold"
+                      className="text-primary-600 text-lg md:text-xl"
+                    >
+                      {budget["BOLETO_PIX"]?.orderFinalPrice.toLocaleString(
+                        "pt-BR",
+                        {
+                          style: "currency",
+                          currency: "BRL",
+                        }
+                      )}
+                    </MyTypography>
+                  </div>
+                </div>
+              )}
+
+              {selectedPayment && (
+                <div
+                  className={cn(
+                    "mt-6 md:mt-4 col-start-2",
+                    selectedPayment === "CREDIT_CARD" &&
+                      "md:col-span-2 md:col-start-2"
+                  )}
+                >
+                  {isLoading ? (
+                    <MyButton
+                      variant="default"
+                      borderRadius="squared"
+                      size="lg"
+                      type="button"
+                      className="my-4 w-full flex justify-center items-center"
+                    >
+                      <MySpinner />
+                    </MyButton>
+                  ) : (
+                    <MyButton
+                      variant="default"
+                      borderRadius="squared"
+                      size="lg"
+                      type="submit"
+                      className="my-4 w-full"
+                    >
+                      Finalizar compra
+                    </MyButton>
+                  )}
+                </div>
+              )}
+            </form>
+          </MyForm>
+        </div>
+      )}
+      <ModalAlert
+        open={isPaymentMadeWithCard}
+        onClose={handleClosePaymentModal}
+        onAction={handleCardPaymentModal}
+        button="Ver na agenda"
+        title="Atividade agendada"
+        descrition="Parabéns! Sua atividade foi agendada com nosso parceiro e ja estamos cuidando de tudo, enquanto isso já vai se preparando para uma experiência inesquecível!"
+        iconName="sucess"
+      />
+      <ModalAlert
+        open={isModalOpen}
+        onClose={handleModal}
+        onAction={handleModal}
+        button="Fechar"
+        title="Atenção!"
+        descrition="Não será aceito parcelamento para pagamento de mais de uma atividade."
+        iconName="warning"
+      />
     </section>
   );
 }

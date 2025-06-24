@@ -13,6 +13,7 @@ type ComboxType = {
   grid?: boolean;
   selected: string[]; // Mantemos os números como string
   setSelected: (values: string[]) => void; // Atualiza os números selecionados
+  duration?: string;
 };
 
 export default function MultiSelect({
@@ -21,8 +22,10 @@ export default function MultiSelect({
   grid,
   selected,
   setSelected,
+  duration,
 }: ComboxType) {
   const [open, setOpen] = React.useState(false);
+  const [disabledTimes, setDisabledTimes] = React.useState<string[]>([]);
 
   // Mapeamento para exibir os nomes dos dias corretamente
   const daysMap: Record<string, string> = {
@@ -35,13 +38,49 @@ export default function MultiSelect({
     "0": "Domingo",
   };
 
+  function parseDuration(duration?: string): number {
+    if (!duration) return 0;
+    return parseFloat(duration.split(":")[0]);
+  }
+
   // Alternar seleção do item
   const toggleSelection = (value: string) => {
-    setSelected(
-      selected.includes(value)
-        ? selected.filter((item) => item !== value) // Remove se já estiver selecionado
-        : [...selected, value] // Adiciona se não estiver selecionado
-    );
+    let updated: string[];
+
+    if (selected.includes(value)) {
+      // Remove se já estiver selecionado
+      updated = selected.filter((item) => item !== value);
+    } else {
+      // Adiciona se não estiver selecionado
+      updated = [...selected, value];
+    }
+
+    setSelected(updated);
+
+    // === Aqui começa o cálculo das horas a desabilitar ===
+    const dur = parseDuration(duration); // ex: "2h" → 2
+
+    const blocked = new Set<string>();
+
+    updated.forEach((val) => {
+      const [hourStr, minuteStr] = val.split(":");
+      const startHour = parseInt(hourStr, 10);
+      const minute = parseInt(minuteStr, 10);
+
+      for (let i = 1; i < dur; i++) {
+        const nextHour = startHour + i;
+        if (nextHour < 24) {
+          const nextTime = `${String(nextHour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`;
+          blocked.add(nextTime);
+        }
+      }
+    });
+
+    // Agora você pode usar esse array para aplicar estilos
+    const disabledArray = Array.from(blocked);
+    // console.log("Horas desabilitadas:", disabledArray);
+    // Salve em estado se quiser, por exemplo:
+    setDisabledTimes(disabledArray);
   };
 
   return (
@@ -54,12 +93,18 @@ export default function MultiSelect({
           className="w-full justify-between border border-gray-300"
         >
           {grid ? (
-            selected
-              .map((val) => options.find((o) => o.value === val)?.label)
-              .join(", ")
-              .slice(0, 30)
-              .concat("...")
-          ) : selected.length > 0 ? (
+            selected?.length > 0 ? (
+              selected
+                .map((val) => options.find((o) => o.value === val)?.label)
+                .join(", ")
+                .slice(0, 30)
+                .concat("...")
+            ) : (
+              <span className="text-neutral-400">
+                {placeholder ?? "Selecione"}
+              </span>
+            )
+          ) : selected?.length > 0 ? (
             selected
               .map((val) => daysMap[val])
               .join(", ")
@@ -76,37 +121,58 @@ export default function MultiSelect({
       <PopoverContent className="w-full p-0">
         <Command>
           <CommandGroup>
-            {grid ? (
-              <div className={cn("grid grid-cols-4 gap-4 p-4")}>
-                {options.map((option) => (
+            <div className="flex flex-col justify-center">
+              <p className="text-center mt-2 font-semibold">
+                Horários Disponíveis
+              </p>
+              {grid ? (
+                <div className={cn("grid grid-cols-4 gap-4 p-4")}>
+                  {options.map((option) => (
+                    <CommandItem
+                      key={option.value}
+                      onSelect={() => toggleSelection(option.value)}
+                      className={cn(
+                        "flex items-center justify-center p-2 border rounded-md cursor-pointer",
+                        selected?.includes(option.value) &&
+                          "bg-primary-600 text-white",
+                        disabledTimes &&
+                          disabledTimes.includes(option.value) &&
+                          "opacity-50 cursor-not-allowed pointer-events-none"
+                      )}
+                    >
+                      {option.label}
+                    </CommandItem>
+                  ))}
+                </div>
+              ) : (
+                options.map((option) => (
                   <CommandItem
                     key={option.value}
                     onSelect={() => toggleSelection(option.value)}
                     className={cn(
-                      "flex items-center justify-center p-2 border rounded-md cursor-pointer",
-                      selected.includes(option.value) &&
-                        "bg-primary-600 text-white"
+                      "flex justify-center",
+                      selected?.includes(option.value) &&
+                        "bg-primary-600 text-white",
+
+                      disabledTimes &&
+                        disabledTimes.includes(option.value) &&
+                        "opacity-50 cursor-not-allowed"
                     )}
                   >
-                    {option.label}
+                    {daysMap[option.value]}
                   </CommandItem>
-                ))}
-              </div>
-            ) : (
-              options.map((option) => (
-                <CommandItem
-                  key={option.value}
-                  onSelect={() => toggleSelection(option.value)}
-                  className={cn(
-                    "flex justify-center",
-                    selected.includes(option.value) &&
-                      "bg-primary-600 text-white"
-                  )}
-                >
-                  {daysMap[option.value]}
-                </CommandItem>
-              ))
-            )}
+                ))
+              )}
+              <MyButton
+                variant="default"
+                borderRadius="squared"
+                size="md"
+                className="my-2 w-1/6 mx-auto"
+                onClick={() => setOpen(false)}
+              >
+                Ok
+              </MyButton>
+            </div>
           </CommandGroup>
         </Command>
       </PopoverContent>

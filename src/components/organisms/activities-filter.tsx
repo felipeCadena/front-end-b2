@@ -8,6 +8,10 @@ import { usePathname } from "next/navigation";
 import { useDebounce } from "@/hooks/useDebounce";
 import { useQuery } from "@tanstack/react-query";
 import { adventures } from "@/services/api/adventures";
+import { TypeAdventure } from "@/store/useAdventureStore";
+import Mar from "../atoms/my-icon/elements/mar";
+import Ar from "../atoms/my-icon/elements/ar";
+import Terra from "../atoms/my-icon/elements/terra";
 
 type ActivitiesFilterProps = {
   withText?: boolean;
@@ -15,7 +19,7 @@ type ActivitiesFilterProps = {
   small?: boolean;
   admin?: boolean;
   selected?: "ar" | "terra" | "mar" | "";
-  setSelected?: (value: "ar" | "terra" | "mar") => void;
+  setSelected?: (value: "ar" | "terra" | "mar" | "") => void;
 };
 
 export default function ActivitiesFilter({
@@ -50,20 +54,31 @@ export default function ActivitiesFilter({
     },
   ];
 
-  // const { data: filterAdventure } = useQuery({
-  //   queryKey: ["user", selected],
-  //   queryFn: () => adventures.filterAdventures({ typeAdventure: selected }),
-  // });
+  const handleFilterClick = (
+    e: React.MouseEvent<HTMLButtonElement>,
+    filter: TypeAdventure
+  ) => {
+    e.preventDefault(); // Previne o comportamento padrão
+    e.stopPropagation(); // Impede a propagação do evento
+
+    if (filter === selected) {
+      // Se o filtro clicado já está selecionado, resetar seleção (mostrar todos)
+      setSelected("");
+    } else {
+      // Caso contrário, aplicar o filtro normalmente
+      setSelected(filter);
+    }
+  };
 
   return (
     <section
       className={cn(
         "flex flex-col justify-around gap-2 mx-auto",
-        withText ? "mt-12 md:my-12" : "my-6"
+        withText ? "mt-6 md:my-12" : "my-6"
       )}
     >
       {withText && pathname == "/" ? (
-        <div className="md:hidden">
+        <div className="md:hidden mx-4">
           <MyTypography variant="heading2" weight="semibold">
             Como você quer se aventurar?
           </MyTypography>
@@ -83,7 +98,7 @@ export default function ActivitiesFilter({
       )}
 
       {admin && (
-        <MyTypography variant="subtitle2" weight="bold">
+        <MyTypography variant="subtitle2" weight="bold" className="mx-6">
           Qual tipo de parceria quer ver?
         </MyTypography>
       )}
@@ -109,15 +124,24 @@ export default function ActivitiesFilter({
             variant="outline-muted"
             size="md"
             className={cn(
-              "flex max-sm:flex-col gap-1 items-center rounded-md max-sm:w-[6.5rem] max-sm:h-[6.5rem] md:py-8 md:w-1/2 md:border-2 md:border-black md:text-nowrap",
+              "flex max-sm:flex-col gap-1 items-center rounded-md max-sm:w-[6.8rem] max-sm:h-[6.5rem] md:py-8 md:w-1/2 border-2 border-black md:text-nowrap",
               item.name === selected &&
-                "border border-black bg-[#E5E4E9] opacity-100",
+                "text-white border-2 border-gray-300 bg-primary-600 opacity-80",
               small && "md:flex-col md:w-[10rem] md:h-[5rem]"
             )}
-            onClick={() => setSelected(item.name)}
+            onClick={(e) => handleFilterClick(e, item.name)}
           >
-            <MyIcon name={item.icon as IconsMapTypes} />
-            <span className="px-4">{item.title}</span>
+            {/* <MyIcon name={item.icon as IconsMapTypes} /> */}
+            {item.icon === "mar" ? (
+              <Mar fill={item.name === selected ? "#fff" : "#1E1E1E"} />
+            ) : item.icon === "ar" ? (
+              <Ar fill={item.name === selected ? "#fff" : "#1E1E1E"} />
+            ) : (
+              <Terra fill={item.name === selected ? "#fff" : "#1E1E1E"} />
+            )}
+            <span className="text-center text-sm leading-tight break-words px-1">
+              {item.title}
+            </span>
           </MyButton>
         ))}
       </div>

@@ -1,5 +1,7 @@
 import { api } from "@/libs/api";
-import { getSession, signIn, signOut } from "next-auth/react";
+import axios from "axios";
+import { getSession } from "next-auth/react";
+import { toast } from "react-toastify";
 
 export interface TokenResponse {
   access_token: string;
@@ -56,43 +58,47 @@ export const authService = {
 
   // Reset de senha
   resetPassword: async (password: string, refreshToken: string) => {
-    await api.post(`/auth/reset-password${refreshToken}`, { password });
+    await api.post(`/auth/reset-password/${refreshToken}`, { password });
   },
 
   // Refresh do token
-  refreshToken: async (): Promise<TokenResponse> => {
+  refreshToken: async (token: string): Promise<TokenResponse> => {
     try {
-      const session = await getSession();
-      if (!session?.user?.refreshToken) {
-        throw new Error("No refresh token available");
-      }
-
-      const response = await api.post<TokenResponse>("/auth/refresh", {
-        refresh_token: session.user.refreshToken,
-      });
-
-      // Atualiza a sessão com os novos tokens
-      await signIn("credentials", {
-        ...response.data,
-        redirect: false,
-      });
+      // api.defaults.headers.common.Authorization = `Bearer ${token}`;
+      // console.log("endpoint: " + token);
+      // const response = await api.post("/auth/refresh");
+      const response = await axios.post<TokenResponse>(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/refresh`,
+        {}, // corpo vazio
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       return response.data;
     } catch (error) {
-      console.error("Erro no refresh:", error);
       throw error;
     }
   },
 
   // Logout
-  logout: async () => {
+  logout: async (token: string) => {
     try {
-      await api.post("/auth/logout");
+      // api.defaults.headers.common.Authorization = `Bearer ${token}`;
+      // await api.post("/auth/logout");
+      await axios.post(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/logout`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
     } catch (error) {
       console.error("Erro no logout:", error);
-    } finally {
-      // Limpa a sessão do NextAuth
-      await signOut({ redirect: false });
     }
   },
 
@@ -110,6 +116,7 @@ export const authService = {
     return {
       access_token: session.user.accessToken,
       refresh_token: session.user.refreshToken,
+      expiresAt: session.user.expiresAt,
     };
   },
 };

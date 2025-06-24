@@ -9,16 +9,38 @@ import { useQuery } from "@tanstack/react-query";
 import { adventures } from "@/services/api/adventures";
 import { useDebounce } from "@/hooks/useDebounce";
 
-export default function SearchActivity({ className }: { className?: string }) {
+export default function SearchActivity({
+  className,
+  setFormData,
+}: {
+  className?: string;
+  setFormData: (adventures: any) => void;
+}) {
   const [chips, setChips] = React.useState<string[]>([]);
   const [search, setSearch] = React.useState("");
 
   const debouncedValue = useDebounce(search, 700);
 
   const { data: filterAdventure } = useQuery({
-    queryKey: ["user", debouncedValue],
-    queryFn: () => adventures.filterAdventures({ city: debouncedValue }),
+    queryKey: ["filterAdventure", debouncedValue],
+    queryFn: async () => {
+      const search = await adventures.filterAdventures({ q: debouncedValue });
+
+      if (search?.length === 0) {
+        const city = await adventures.filterAdventures({
+          city: debouncedValue,
+        });
+        return city;
+      }
+      return search;
+    },
+    enabled: Boolean(debouncedValue),
   });
+
+  const handleSearch = () => {
+    setFormData(filterAdventure ?? []);
+    setSearch("");
+  };
 
   return (
     <section className={cn("mt-2 md:w-2/3 md:mx-auto max-sm:px-4", className)}>
@@ -32,12 +54,17 @@ export default function SearchActivity({ className }: { className?: string }) {
         onChange={(e) => setSearch(e.target.value)}
         rightIcon={
           <>
-            <MyIcon name="search" className="mr-4 md:hidden" />
+            <MyIcon
+              name="search"
+              className="mr-4 md:hidden"
+              onClick={handleSearch}
+            />
             <MyButton
               variant="default"
               size="md"
               borderRadius="squared"
               className="mr-24 max-sm:hidden"
+              onClick={handleSearch}
             >
               Pesquisar
             </MyButton>

@@ -1,12 +1,141 @@
 import { api } from "@/libs/api";
+import { toast } from "react-toastify";
+
+interface Schedule {
+  adventureId: number;
+  createdAt: string;
+  dateMediasPosted: any;
+  datetime: string;
+  id: string;
+  isAvailable: boolean;
+  isCanceled: boolean;
+  justificationCancel: string | null;
+  qntConfirmedPersons: number;
+  qntLimitPersons: number;
+  updatedAt: string;
+  medias: [
+    {
+      url: string;
+    },
+  ];
+  _count: {
+    medias: number;
+  };
+}
+
+interface AdventureOrderSummary {
+  hoursBeforeSchedule: number;
+  hoursBeforeCancellation: number;
+  description: string;
+  averageRating: number;
+  id: number;
+  images: [
+    {
+      url: string;
+    },
+  ];
+  partner: {
+    businessEmail: string;
+    fantasyName: string;
+    logo: {
+      url: string;
+    };
+  };
+  title: string;
+  typeAdventure: string;
+  duration?: string;
+}
+
+interface OrderAdventure {
+  id: number;
+  orderId: string;
+  paymentStatus: string;
+  totalCost: string;
+}
+
+interface Ratings {
+  comment: string;
+  createdAt: string;
+  id: number;
+  rating: number;
+}
+
+export interface CustomerSchedule {
+  adventure: AdventureOrderSummary;
+  adventureFinalPrice: string;
+  adventureId: number;
+  adventureStatus: string;
+  b2AdventureValue: string;
+  b2Percentage: number;
+  createdAt: string;
+  id: string;
+  orderAdventure: OrderAdventure;
+  orderAdventureId: number;
+  partnerConfirmed: boolean;
+  partnerIsPaid: boolean;
+  partnerValue: string;
+  personsIsAccounted: boolean;
+  qntAdults: number;
+  qntBabies: number;
+  qntChildren: number;
+  schedule: Schedule;
+  scheduleId: string;
+  taxesPercentage: number;
+  totalTaxes: string;
+  updatedAt: string;
+  ratings?: Ratings[];
+  totalGatewayFee?: string;
+}
+
+interface ActivityOrder {
+  bankSlipUrl: string | null;
+  createdAt: string;
+  customer: { name: string };
+  customerUserId: string;
+  discount: string | null;
+  dueDate: string;
+  id: number;
+  installmentCount: number;
+  invoiceUrl: string;
+  lastDigitsCreditCard: string;
+  orderId: string;
+  ordersScheduleAdventure: [];
+  paymentMethod: string;
+  paymentStatus: string;
+  pixCode: string | null;
+  protocolId: string;
+  totalCost: string;
+  updatedAt: string;
+}
+
+interface ParamsActivityOrder {
+  adventureId?: string;
+  adventureStatus?: string;
+  orderId?: string;
+  paymentStatus?: string;
+  startDate?: string;
+  limit?: number;
+  skip?: number;
+}
 
 export const ordersAdventuresService = {
-  getAll: async () => {
+  getAll: async (): Promise<ActivityOrder[]> => {
     try {
-      const response = await api.get("/ordersAdventures");
+      const response = await api.get("/ordersAdventures?limit=50");
       return response.data;
     } catch (error) {
       console.error("Error fetching all orders:", error);
+      throw error;
+    }
+  },
+
+  createBudget: async (data: any, userIP: string) => {
+    try {
+      api.defaults.headers.common["x-user-ip"] = userIP;
+      const response = await api.post("/ordersAdventures/budget", data);
+      return response.data;
+    } catch (error) {
+      console.error("Error get budget:", error);
       throw error;
     }
   },
@@ -21,10 +150,11 @@ export const ordersAdventuresService = {
     }
   },
 
-  create: async (data: any) => {
+  create: async (data: any, userIP: string) => {
     try {
+      api.defaults.headers.common["x-user-ip"] = userIP;
       const response = await api.post("/ordersAdventures", data);
-      return response.data;
+      return response;
     } catch (error) {
       console.error("Error creating order:", error);
       throw error;
@@ -41,17 +171,17 @@ export const ordersAdventuresService = {
     }
   },
   partnerConfirmSchedule: async (
-    id: string,
+    scheduleId: string,
     orderScheduleAdventureId: string
   ) => {
     try {
       const response = await api.post(
-        `/ordersAdventures/${id}/orderSchedule/${orderScheduleAdventureId}/confirm`
+        `/ordersAdventures/${scheduleId}/orderSchedule/${orderScheduleAdventureId}/confirm`
       );
       return response.data;
     } catch (error) {
       console.error(
-        `Error confirming schedule for order ID ${id} and schedule ID ${orderScheduleAdventureId}:`,
+        `Error confirming schedule for order ID ${scheduleId} and schedule ID ${orderScheduleAdventureId}:`,
         error
       );
       throw error;
@@ -76,18 +206,31 @@ export const ordersAdventuresService = {
     }
   },
 
-  getCustomerSchedules: async (startDate: string) => {
+  getCustomerSchedules: async (
+    params?: ParamsActivityOrder
+  ): Promise<CustomerSchedule[]> => {
     try {
       const response = await api.get(`/ordersAdventures/orderSchedule`, {
-        params: { startDate },
+        params,
       });
       return response.data;
     } catch (error) {
       console.error(
-        `Error fetching customer schedules with startDate ${startDate}:`,
+        `Error fetching customer schedules with startDate ${params?.startDate}:`,
         error
       );
       throw error;
+    }
+  },
+
+  getCustomerSchedulesById: async (
+    id: string
+  ): Promise<CustomerSchedule | undefined> => {
+    try {
+      const response = await api.get(`/ordersAdventures/orderSchedule/${id}`);
+      return response.data;
+    } catch (error) {
+      console.error(`Error fetching schedules by ID: ${id}`, error);
     }
   },
 
@@ -101,7 +244,7 @@ export const ordersAdventuresService = {
         `/ordersAdventures/${id}/orderSchedule/${orderScheduleAdventureId}/rating`,
         ratingData
       );
-      return response.data;
+      return response;
     } catch (error) {
       console.error(
         `Error rating adventure for order ID ${id} and schedule ID ${orderScheduleAdventureId}:`,
@@ -122,6 +265,7 @@ export const ordersAdventuresService = {
         `Error canceling schedule for order ID ${id} and schedule ID ${orderScheduleAdventureId}:`,
         error
       );
+      toast.error("Erro ao cancelar a atividade. Tente novamente mais tarde.");
       throw error;
     }
   },

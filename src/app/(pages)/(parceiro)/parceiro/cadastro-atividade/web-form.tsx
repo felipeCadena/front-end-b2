@@ -6,7 +6,7 @@ import MyTextInput from "@/components/atoms/my-text-input";
 import MyTypography from "@/components/atoms/my-typography";
 import ActivitiesFilter from "@/components/organisms/activities-filter";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 import {
   MySelect,
   SelectContent,
@@ -21,145 +21,364 @@ import {
   hours,
 } from "@/common/constants/constants";
 import MultiSelect from "@/components/molecules/combobox";
-import { MyDatePicker } from "@/components/molecules/my-date-picker";
-import TimePickerModal from "@/components/molecules/time-picker";
 import GoogleMaps from "@/components/organisms/google-maps";
 import { Dropzone } from "@/components/molecules/drop-zone";
 import Image from "next/image";
 import PATHS from "@/utils/paths";
 import { cn } from "@/utils/cn";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { FormProvider, useForm } from "react-hook-form";
-import ControlledTextInput from "@/components/molecules/controlled-text-input";
-import ControlledTextarea from "@/components/molecules/controlled-textarea";
-import ControlledSelect from "@/components/molecules/controlled-select";
 import { format } from "date-fns";
-import { ptBR } from "date-fns/locale/pt-BR";
+import {
+  DateOption,
+  Recurrence,
+  TypeAdventure,
+  useAdventureStore,
+} from "@/store/useAdventureStore";
+import MyTextarea from "@/components/atoms/my-textarea";
+import {
+  capitalizeFirstLetter,
+  convertToHours,
+  convertToTimeString,
+  formatDuration,
+  getDifficultyDescription,
+  getDifficultyNumber,
+} from "@/utils/formatters";
+import AutocompleteCombobox from "@/components/organisms/google-autocomplete";
+import { toast } from "react-toastify";
+import { MySingleDatePicker } from "@/components/molecules/my-single-date-picker";
+import Duration from "@/components/molecules/duration";
 
-const formSchema = z.object({
-  title: z.string(),
-  addressStreet: z.string(),
-  addressPostalCode: z.string(),
-  addressNumber: z.string(),
-  addressComplement: z.string().optional(),
-  addressNeighborhood: z.string(),
-  addressCity: z.string(),
-  addressState: z.string(),
-  addressCountry: z.string(),
-  coordinates: z.string(),
-  pointRefAddress: z.string(),
-  description: z.string(),
-  itemsIncluded: z.array(z.string()),
-  duration: z.string(),
-  priceAdult: z.number(),
-  priceChildren: z.number(),
-  transportIncluded: z.boolean(),
-  picturesIncluded: z.boolean(),
-  typeAdventure: z.enum(["terra", "ar", "mar"]),
-  personsLimit: z.number(),
-  partnerId: z.string().optional(),
-  isInGroup: z.boolean(),
-  isChildrenAllowed: z.boolean(),
-  difficult: z.number().min(1).max(5),
-  daysBeforeSchedule: z.number(),
-  daysBeforeCancellation: z.number(),
-  isRepeatable: z.boolean(),
-  recurrences: z
-    .array(
-      z.object({
-        recurrenceWeekly: z.string().optional(),
-        recurrenceMonthly: z.string().optional(),
-        recurrenceHour: z.string(),
-      })
-    )
-    .optional(),
-});
+interface AddressData {
+  addressStreet: string;
+  addressPostalCode: string;
+  addressNumber: string;
+  addressComplement: string;
+  addressNeighborhood: string;
+  addressCity: string;
+  addressState: string;
+  addressCountry: string;
+}
 
-export default function WebForm({ type }: { type?: string }) {
+interface LocationData {
+  address: string;
+  completeAddress: AddressData;
+  coordinates: {
+    lat: number;
+    lng: number;
+  } | null;
+}
+
+export default function WebForm({
+  type,
+  handleBack,
+  handleNext,
+}: {
+  type?: string;
+  handleBack?: () => void;
+  handleNext?: () => void;
+}) {
   const router = useRouter();
-  const [files, setFiles] = React.useState<File[] | null>(null);
+  const {
+    setAdventureData,
+    typeAdventure,
+    description,
+    title,
+    hoursBeforeCancellation,
+    hoursBeforeSchedule,
+    selectionBlocks,
+    addSelectionBlock,
+    removeSelectionBlock,
+    updateSelectionBlock,
+    difficult,
+    duration,
+    pointRefAddress,
+    transportIncluded,
+    picturesIncluded,
+    waterIncluded,
+    foodIncluded,
+    fuelIncluded,
+    tempImages,
+    coordinates,
+    address,
+    isRepeatable,
+    transportAddress,
+    recurrences,
+    availableDates,
+    addTempImage,
+  } = useAdventureStore();
+
   const inputRef = React.useRef<HTMLInputElement>(null);
 
-  const [selected, setSelected] = useState<"ar" | "terra" | "mar">("ar");
-  const [recurrenceWeekly, setRecurrenceWeekly] = useState<string[]>([]);
-  const [recurrenceHour, setRecurrenceHour] = useState<string[]>([]);
-
-  const [dates, setDates] = useState<Date[]>([]);
-  const [formattedDates, setFormattedDates] = useState<string>("");
-
-  // Função para formatar datas ao atualizar o estado
-  const handleDateChange = (dates: Date[]) => {
-    setDates(dates); // Atualiza o estado das datas selecionadas
-
-    // Converte para o formato de string esperado pelo backend
-    const formatted = dates
-      .map((d) => format(d, "dd/MM", { locale: ptBR }))
-      .join(",");
-    setFormattedDates(formatted);
+  // Atualiza as datas para um bloco específico
+  const handleDateChange = (blockId: number, dates: Date[]) => {
+    updateSelectionBlock(blockId, "dates", dates);
   };
 
-  const methods = useForm<z.infer<typeof formSchema>>({
-    defaultValues: {
-      title: "",
-      addressStreet: "",
-      addressPostalCode: "",
-      addressNumber: "",
-      addressComplement: "",
-      addressNeighborhood: "",
-      addressCity: "",
-      addressState: "",
-      addressCountry: "",
-      coordinates: "",
-      pointRefAddress: "",
-      description: "",
-      itemsIncluded: [],
-      duration: "",
-      priceAdult: 0,
-      priceChildren: 0,
-      transportIncluded: false,
-      picturesIncluded: false,
-      typeAdventure: selected,
-      personsLimit: 0,
-      partnerId: "",
-      isInGroup: false,
-      isChildrenAllowed: false,
-      difficult: 1,
-      daysBeforeSchedule: 0,
-      daysBeforeCancellation: 0,
-      isRepeatable: false,
-      recurrences: [
-        {
-          recurrenceWeekly: "",
-          recurrenceMonthly: "",
-          recurrenceHour: "",
-        },
-      ],
-    },
-    resolver: zodResolver(formSchema),
-  });
+  // Função para formatar os dados antes de salvar
+  const formatRecurrences = (): Recurrence[] => {
+    const formattedRecurrences: Recurrence[] = [];
 
-  const { control, handleSubmit, reset, watch } = methods;
+    selectionBlocks.forEach((block) => {
+      // Cria uma recorrência por bloco
+      if (block.recurrenceHour.length > 0) {
+        const recurrence: Recurrence = {
+          recurrenceHour: block.recurrenceHour.join(","),
+        };
 
-  const [selections, setSelections] = useState([{ id: Date.now() }]);
+        // Adiciona dias da semana se existirem
+        if (block.recurrenceWeekly.length > 0) {
+          recurrence.recurrenceWeekly = block.recurrenceWeekly
+            .map((day) => daysOfWeek.findIndex((d) => d.value === day) + 1)
+            .filter((index) => index !== -1)
+            .sort((a, b) => a - b)
+            .join(",");
+        }
 
-  const addSelection = () => {
-    setSelections([...selections, { id: Date.now() }]);
+        // Adiciona dias do mês se existirem
+        // if (block.dates.length > 0) {
+        //   recurrence.recurrenceMonthly = block.dates
+        //     .map((date) => format(date, "dd"))
+        //     .map((day) => parseInt(day))
+        //     .sort((a, b) => a - b)
+        //     .join(",");
+        // }
+
+        // Só adiciona a recorrência se tiver pelo menos um tipo de recorrência
+        if (recurrence.recurrenceWeekly) {
+          formattedRecurrences.push(recurrence);
+        }
+      }
+    });
+
+    return formattedRecurrences;
   };
 
-  const removeSelection = (id: number) => {
-    setSelections(selections.filter((item) => item.id !== id));
+  const formatAvailableDates = (): DateOption[] => {
+    const availableDates: DateOption[] = [];
+
+    selectionBlocks.forEach((block) => {
+      block.dates.forEach((date) => {
+        block.recurrenceHour.forEach((hourStr) => {
+          const [hour, minute] = hourStr.split(":").map(Number);
+
+          const newDate = new Date(date);
+          newDate.setHours(hour);
+          newDate.setMinutes(minute);
+          newDate.setSeconds(0);
+          newDate.setMilliseconds(0);
+
+          availableDates.push({
+            datetime: `${format(newDate, "yyyy-MM-dd'T'HH:mm:ss")}-03:00`,
+            isAvailable: true,
+          });
+        });
+      });
+    });
+
+    return availableDates;
   };
+
+  useEffect(() => {
+    if (isRepeatable) {
+      const formattedRecurrences = formatRecurrences();
+
+      setAdventureData({
+        recurrences: formattedRecurrences,
+        availableDates: [],
+      });
+    } else {
+      const formattedDates = formatAvailableDates();
+
+      setAdventureData({
+        recurrences: [],
+        availableDates: formattedDates,
+      });
+    }
+  }, [selectionBlocks, isRepeatable]);
 
   const handleClickUpload = () => {
     inputRef.current?.click();
   };
 
-  const onSubmit = (payload: any) => {};
+  const handleNextStep = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+
+    if (
+      !typeAdventure ||
+      !title ||
+      !description ||
+      !hoursBeforeCancellation ||
+      !hoursBeforeSchedule
+    ) {
+      toast.error("Preencha todos os campos.");
+      return;
+    }
+    if (!difficult) {
+      toast.error("Preencha todos os campos.");
+      return;
+    }
+
+    const someDate = selectionBlocks.some(
+      (date) =>
+        (date.dates.length || date.recurrenceWeekly.length) &&
+        date.recurrenceHour.length
+    );
+
+    if (duration === "00:00") {
+      toast.error("A duração não pode ser 0.");
+      return;
+    }
+    if (!someDate) {
+      toast.error(
+        "Em calendário da atividade, é necessário selecionar o dia da semana ou dias específicos. Os horários são obrigatórios."
+      );
+      return;
+    }
+
+    if (!address || !pointRefAddress) {
+      toast.error("Preencha o endereço e o ponto de referência.");
+      return;
+    }
+
+    if (tempImages.length < 5) {
+      toast.error("São necessárias 5 imagens.");
+      return;
+    }
+
+    if (tempImages.length > 5) {
+      toast.error(
+        "São permitidas no máximo 5 imagens. Exclua até ter 5 imagens."
+      );
+      return;
+    }
+
+    if (transportIncluded && !transportAddress) {
+      toast.error("Preencha o local de saída e retorno.");
+      return;
+    }
+
+    handleNext && handleNext();
+  };
+
+  const handleBackStep = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    handleBack && handleBack();
+  };
+
+  const handleSelectType = (value: TypeAdventure) => {
+    setAdventureData({
+      typeAdventure: value,
+    });
+  };
+
+  const handleAddSelectionBlock = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    addSelectionBlock();
+  };
+
+  const handleLocationSelected = (locationData: LocationData) => {
+    console.log("Location Data Received:", locationData);
+
+    if (locationData.coordinates) {
+      // Atualiza o store com o endereço
+      setAdventureData({
+        address: locationData.address,
+        addressStreet: locationData.completeAddress.addressStreet,
+        coordinates: {
+          lat: locationData.coordinates.lat,
+          lng: locationData.coordinates.lng,
+        },
+        addressPostalCode: locationData.completeAddress.addressPostalCode,
+        addressNumber: locationData.completeAddress.addressNumber,
+        addressNeighborhood: locationData.completeAddress.addressNeighborhood,
+        addressCity: locationData.completeAddress.addressCity,
+        addressState: locationData.completeAddress.addressState,
+      });
+    }
+  };
+
+  const handleImages = (fileList: FileList) => {
+    const files = Array.from(fileList);
+    for (const file of files) {
+      addTempImage(file); // Usa o método do store que já converte para base64 e salva como string
+    }
+  };
+
+  // Somente para o cadastro isolado de atividade
+  const handleNextStepRegister = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (
+      !typeAdventure ||
+      !title ||
+      !description ||
+      !hoursBeforeCancellation ||
+      !hoursBeforeSchedule
+    ) {
+      toast.error("Preencha todos os campos.");
+      return;
+    }
+    if (!difficult) {
+      toast.error("Preencha todos os campos.");
+      return;
+    }
+
+    const someDate = selectionBlocks.some(
+      (date) =>
+        (date.dates.length || date.recurrenceWeekly.length) &&
+        date.recurrenceHour.length
+    );
+
+    if (duration === "00:00") {
+      toast.error("A duração não pode ser 0.");
+      return;
+    }
+    if (!someDate) {
+      toast.error(
+        "Em calendário da atividade, é necessário selecionar o dia da semana ou dias específicos. Os horários são obrigatórios."
+      );
+      return;
+    }
+
+    if (!address || !pointRefAddress) {
+      toast.error("Preencha o endereço e o ponto de referência.");
+      return;
+    }
+    if (tempImages.length < 5) {
+      toast.error("São necessárias 5 imagens.");
+      return;
+    }
+    if (tempImages.length > 5) {
+      toast.error(
+        "São permitidas no máximo 5 imagens. Exclua até ter 5 imagens."
+      );
+      return;
+    }
+
+    if (transportIncluded && !transportAddress) {
+      toast.error("Preencha o local de saída e retorno.");
+      return;
+    }
+
+    router.push(PATHS["informacoes-atividades"]);
+  };
+
+  useEffect(() => {
+    if (window) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }, []);
+
+  const goBack = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    router.back();
+  };
 
   return (
     <main className="space-y-10 my-6">
-      <FormProvider {...methods}>
+      <form>
         <div>
           <MyTypography variant="heading2" weight="bold" className="mb-2">
             Cadastre a sua atividade
@@ -174,33 +393,56 @@ export default function WebForm({ type }: { type?: string }) {
           </MyTypography>
         </div>
 
-        <ActivitiesFilter setSelected={setSelected} selected={selected} />
+        <ActivitiesFilter
+          setSelected={handleSelectType}
+          selected={typeAdventure}
+        />
 
         <div className="border-2  border-gray-300 rounded-lg p-8">
           <div className="space-y-6">
-            <ControlledTextInput
-              control={control}
-              name="title"
+            <MyTextInput
+              value={title}
+              onChange={(e) =>
+                setAdventureData({
+                  title: capitalizeFirstLetter(e.target.value),
+                })
+              }
               label="Nome da atividade"
               placeholder="Nome da atividade"
               className="mt-2"
             />
 
-            <ControlledTextarea
-              control={control}
-              name="description"
-              label="Descrição da atividade"
-              placeholder="Lorem ipsum dolor sit amet, consectetur di..."
-              classNameLabel="text-black text-base font-bold"
-              rows={5}
-            />
+            <div className="w-full">
+              <MyTextarea
+                value={description}
+                onChange={(e) => {
+                  setAdventureData({
+                    description: e.target.value,
+                  });
+                }}
+                label="Descrição da atividade"
+                placeholder="Fale sobre a atividade e destaque o que só você oferece para torná-la incrível."
+                classNameLabel="text-black text-base font-bold"
+                rows={5}
+                maxLength={2000}
+                className="resize-y" // permite redimensionar verticalmente
+              />
+
+              <div className="text-sm text-gray-4 text-right mt-1">
+                {description.length} / 2000 caracteres
+              </div>
+            </div>
 
             <div className="grid grid-cols-2 gap-8">
-              <ControlledSelect
-                control={control}
-                name="daysBeforeSchedule"
+              <MySelect
                 label="Antecedência de Agendamento"
                 className="text-base text-black"
+                value={String(convertToTimeString(hoursBeforeSchedule))}
+                onValueChange={(value) =>
+                  setAdventureData({
+                    hoursBeforeSchedule: convertToHours(value),
+                  })
+                }
               >
                 <SelectTrigger className="py-6 my-1">
                   <SelectValue placeholder="Selecione o número de dias" />
@@ -212,13 +454,18 @@ export default function WebForm({ type }: { type?: string }) {
                     </SelectItem>
                   ))}
                 </SelectContent>
-              </ControlledSelect>
+              </MySelect>
 
-              <ControlledSelect
-                control={control}
+              <MySelect
                 name="daysBeforeCancellation"
                 label="Antecedência de Cancelamento"
                 className="text-base text-black"
+                value={String(convertToTimeString(hoursBeforeCancellation))}
+                onValueChange={(value) =>
+                  setAdventureData({
+                    hoursBeforeCancellation: convertToHours(value),
+                  })
+                }
               >
                 <SelectTrigger className="py-6 my-1">
                   <SelectValue placeholder="Selecione o número de dias" />
@@ -230,67 +477,21 @@ export default function WebForm({ type }: { type?: string }) {
                     </SelectItem>
                   ))}
                 </SelectContent>
-              </ControlledSelect>
+              </MySelect>
             </div>
           </div>
+
           <div className="space-y-10 mt-6">
-            <div>
-              <MyTypography variant="subtitle3" weight="bold" className="mb-3">
-                Repetir a atividade
-              </MyTypography>
-
-              <div className="space-y-4 flex flex-col items-center">
-                {selections.map((item, index) => (
-                  <div
-                    key={item.id}
-                    className="w-full border px-6 first:py-4 py-8 rounded-lg space-y-4 relative"
-                  >
-                    <MultiSelect
-                      placeholder="Selecione dias da semana"
-                      options={daysOfWeek}
-                      selected={recurrenceWeekly}
-                      setSelected={setRecurrenceWeekly}
-                    />
-                    <MyDatePicker
-                      withlabel="Selecione dias específicos"
-                      selectedDates={dates}
-                      setSelectedDates={handleDateChange}
-                    />
-                    <MultiSelect
-                      grid
-                      placeholder="Selecione os horários"
-                      options={hours}
-                      selected={recurrenceHour}
-                      setSelected={setRecurrenceHour}
-                    />
-
-                    {index > 0 && (
-                      <MyIcon
-                        name="subtracao"
-                        title="Remover"
-                        className="absolute -top-3 right-1"
-                        onClick={() => removeSelection(item.id)}
-                      />
-                    )}
-                  </div>
-                ))}
-
-                <MyButton
-                  variant="secondary"
-                  borderRadius="squared"
-                  size="lg"
-                  className="w-1/2 mx-auto"
-                  onClick={addSelection}
-                  leftIcon={<MyIcon name="soma" />}
-                >
-                  Adicionar outro conjunto
-                </MyButton>
-              </div>
-            </div>
             <div className="grid grid-cols-2 items-center gap-8">
               <MySelect
                 label="Grau de Dificuldade"
                 className="text-base text-black"
+                value={getDifficultyDescription(difficult) ?? ""}
+                onValueChange={(value) =>
+                  setAdventureData({
+                    difficult: getDifficultyNumber(value) ?? undefined,
+                  })
+                }
               >
                 <SelectTrigger className="py-6 my-1">
                   <SelectValue placeholder="Selecione" />
@@ -306,36 +507,200 @@ export default function WebForm({ type }: { type?: string }) {
 
               <div>
                 <MyTypography
-                  variant="subtitle3"
+                  variant="label"
                   weight="bold"
-                  className="mb-1"
+                  className="mb-1 text-base text-black"
                 >
                   Duração
                 </MyTypography>
-                <TimePickerModal iconColor="black" />
+
+                <Duration
+                  iconColor="black"
+                  selectedTime={duration}
+                  setSelectedTime={(time) =>
+                    setAdventureData({ duration: formatDuration(time) })
+                  }
+                />
               </div>
+            </div>
+
+            <div>
+              {/* <MyTypography variant="subtitle3" weight="bold" className="mb-3">
+                Repetir a atividade
+              </MyTypography> */}
+              <MySelect
+                label="Calendário da atividade"
+                className="text-base text-black"
+                value={isRepeatable == true ? "true" : "false"}
+                onValueChange={(value) =>
+                  setAdventureData({
+                    isRepeatable: value === "true",
+                  })
+                }
+              >
+                <SelectTrigger className="py-6 my-1">
+                  <SelectValue placeholder="Selecione" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="true">Repetir a atividade</SelectItem>
+                  <SelectItem value="false">Datas específicas</SelectItem>
+                </SelectContent>
+              </MySelect>
+
+              {isRepeatable ? (
+                <div className="space-y-8 flex flex-col items-center mt-8">
+                  {selectionBlocks.map((block, index) => (
+                    <div
+                      key={block.id}
+                      className="w-full border px-6 first:py-4 py-8 rounded-lg space-y-4 relative"
+                    >
+                      <MultiSelect
+                        placeholder="Selecione dias da semana"
+                        options={daysOfWeek}
+                        selected={block.recurrenceWeekly}
+                        setSelected={(value) =>
+                          updateSelectionBlock(
+                            block.id,
+                            "recurrenceWeekly",
+                            value
+                          )
+                        }
+                      />
+
+                      <MultiSelect
+                        grid
+                        placeholder="Selecione os horários"
+                        options={hours}
+                        duration={duration}
+                        selected={block.recurrenceHour}
+                        setSelected={(value) =>
+                          updateSelectionBlock(
+                            block.id,
+                            "recurrenceHour",
+                            value
+                          )
+                        }
+                      />
+                      {index > 0 && (
+                        <MyIcon
+                          name="subtracao"
+                          title="Remover"
+                          className="absolute -top-3 right-1"
+                          onClick={() => removeSelectionBlock(block.id)}
+                        />
+                      )}
+                    </div>
+                  ))}
+
+                  <MyButton
+                    variant="secondary"
+                    borderRadius="squared"
+                    size="lg"
+                    className="w-1/2 mx-auto"
+                    onClick={(e) => handleAddSelectionBlock(e)}
+                    leftIcon={<MyIcon name="soma" />}
+                  >
+                    Adicionar outro conjunto
+                  </MyButton>
+                </div>
+              ) : (
+                <div className="space-y-8 flex flex-col items-center mt-8">
+                  {selectionBlocks.map((block, index) => (
+                    <div
+                      key={block.id}
+                      className="w-full border px-6 first:py-4 py-8 rounded-lg space-y-4 relative"
+                    >
+                      {/* <MyDatePicker
+                        withlabel="Selecione dias específicos"
+                        selectedDates={block.dates}
+                        setSelectedDates={(dates) =>
+                          handleDateChange(block.id, dates)
+                        }
+                      /> */}
+
+                      <MySingleDatePicker
+                        withlabel="Selecione dias específicos"
+                        selectedDates={block.dates}
+                        setSelectedDates={(dates) =>
+                          handleDateChange(block.id, dates)
+                        }
+                      />
+
+                      <MultiSelect
+                        grid
+                        placeholder="Selecione os horários"
+                        options={hours}
+                        duration={duration}
+                        selected={block.recurrenceHour}
+                        setSelected={(value) =>
+                          updateSelectionBlock(
+                            block.id,
+                            "recurrenceHour",
+                            value
+                          )
+                        }
+                      />
+                      {index > 0 && (
+                        <MyIcon
+                          name="subtracao"
+                          title="Remover"
+                          className="absolute -top-3 right-1"
+                          onClick={() => removeSelectionBlock(block.id)}
+                        />
+                      )}
+                    </div>
+                  ))}
+
+                  <MyButton
+                    variant="secondary"
+                    borderRadius="squared"
+                    size="lg"
+                    className="w-1/2 mx-auto mt-4"
+                    onClick={(e) => handleAddSelectionBlock(e)}
+                    leftIcon={<MyIcon name="soma" />}
+                  >
+                    Adicionar outro conjunto
+                  </MyButton>
+                </div>
+              )}
             </div>
           </div>
 
           <div className="space-y-6 mt-6 p-6 bg-gray-100 border border-gray-300 rounded-lg">
             <div className="grid grid-cols-2 items-center gap-8">
-              <MyTextInput
-                label="Local"
-                placeholder="Rio de Janeiro, Cristo Redentor"
-                classNameLabel="text-base text-black"
-                className="mt-2"
-              />
-
+              <div className="">
+                <MyTypography
+                  variant="subtitle4"
+                  weight="bold"
+                  className="mb-2"
+                >
+                  Local
+                </MyTypography>
+                <AutocompleteCombobox
+                  onLocationSelected={handleLocationSelected}
+                  formData={address}
+                  setFormData={setAdventureData}
+                />
+              </div>
               <MyTextInput
                 label="Ponto de referência"
                 placeholder="Próximo ao centro"
                 classNameLabel="text-base text-black"
                 className="mt-2"
+                onChange={(e) =>
+                  setAdventureData({
+                    pointRefAddress: e.target.value,
+                  })
+                }
+                value={pointRefAddress}
               />
             </div>
 
             <GoogleMaps
-              location={{ lat: -22.9519, lng: -43.2105 }}
+              location={{
+                lat: coordinates?.lat ?? -22.9519,
+                lng: coordinates?.lng ?? -43.2105,
+              }}
               height="400px"
             />
           </div>
@@ -344,6 +709,82 @@ export default function WebForm({ type }: { type?: string }) {
             <MySelect
               label="Transporte Incluso"
               className="text-base text-black"
+              value={transportIncluded ? "true" : "false"}
+              onValueChange={(value) => {
+                setAdventureData({
+                  transportIncluded: value === "true",
+                });
+              }}
+            >
+              <SelectTrigger className="py-6 my-1">
+                <SelectValue placeholder="Selecione" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="true">Sim</SelectItem>
+                <SelectItem value="false">Não Oferecemos</SelectItem>
+              </SelectContent>
+            </MySelect>
+
+            {transportIncluded && (
+              <MyTextInput
+                value={transportAddress}
+                onChange={(e) =>
+                  setAdventureData({ transportAddress: e.target.value })
+                }
+                placeholder="Local de saída e retorno"
+                label="Local de saída e retorno"
+                className="mt-1"
+                classNameLabel="text-base text-black"
+              />
+            )}
+
+            <MySelect
+              label="Água inclusa"
+              className="text-base text-black"
+              value={waterIncluded ? "true" : "false"}
+              onValueChange={(value) =>
+                setAdventureData({
+                  waterIncluded: value === "true",
+                })
+              }
+            >
+              <SelectTrigger className="py-6 my-1">
+                <SelectValue placeholder="Selecione" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="true">Sim</SelectItem>
+                <SelectItem value="false">Não Oferecemos</SelectItem>
+              </SelectContent>
+            </MySelect>
+
+            <MySelect
+              label="Alimentação inclusa"
+              className="text-base text-black"
+              value={foodIncluded ? "true" : "false"}
+              onValueChange={(value) =>
+                setAdventureData({
+                  foodIncluded: value === "true",
+                })
+              }
+            >
+              <SelectTrigger className="py-6 my-1">
+                <SelectValue placeholder="Selecione" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="true">Sim</SelectItem>
+                <SelectItem value="false">Não Oferecemos</SelectItem>
+              </SelectContent>
+            </MySelect>
+
+            <MySelect
+              label="Combustível incluso"
+              className="text-base text-black"
+              value={fuelIncluded ? "true" : "false"}
+              onValueChange={(value) =>
+                setAdventureData({
+                  fuelIncluded: value === "true",
+                })
+              }
             >
               <SelectTrigger className="py-6 my-1">
                 <SelectValue placeholder="Selecione" />
@@ -357,6 +798,12 @@ export default function WebForm({ type }: { type?: string }) {
             <MySelect
               label="Fotos da atividade inclusa"
               className="text-base text-black"
+              value={picturesIncluded ? "true" : "false"}
+              onValueChange={(value) =>
+                setAdventureData({
+                  picturesIncluded: value === "true",
+                })
+              }
             >
               <SelectTrigger className="py-6 my-1">
                 <SelectValue placeholder="Selecione" />
@@ -373,6 +820,10 @@ export default function WebForm({ type }: { type?: string }) {
             <MyTypography variant="subtitle3" weight="bold" className="mb-1">
               Imagens da Atividade
             </MyTypography>
+            <MyTypography variant="body" weight="medium" className="mb-1">
+              <span className="text-red-500">Atenção:</span> Dê preferência para
+              fotos na horizontal
+            </MyTypography>
             <MyTypography
               variant="body"
               weight="medium"
@@ -384,34 +835,23 @@ export default function WebForm({ type }: { type?: string }) {
 
             <Dropzone
               ref={inputRef}
-              disabled={files?.length == 5}
-              onChange={(fileList) => {
-                fileList &&
-                  setFiles((prev) => {
-                    if (prev) {
-                      return [...prev, ...Array.from(fileList)];
-                    }
-                    return [...Array.from(fileList)];
-                  });
-              }}
+              disabled={tempImages?.length == 5}
+              onChange={(files) => files && handleImages(files)}
               multiple={true}
               accept="jpg, png, image/*"
+              className="h-[12vh]  overflow-hidden"
             >
               <div
-                className="flex cursor-pointer flex-col items-center justify-center gap-y-2"
+                className="flex min-h-[12vh] h-[12vh] cursor-pointer flex-col items-center justify-center gap-y-1"
                 onClick={handleClickUpload}
               >
                 <MyIcon name="upload" />
                 <div className="text-center space-y-2">
-                  <MyTypography variant="body-big" lightness={400}>
-                    Enviar imagens
+                  <MyTypography variant="body" lightness={400}>
+                    Enviar imagens ou arraste os arquivos aqui
                   </MyTypography>
                   <MyTypography lightness={400}>
-                    ou arraste os arquivos aqui
-                  </MyTypography>
-                  <MyTypography lightness={400}>JPG e PNG</MyTypography>
-                  <MyTypography lightness={400}>
-                    Tamanho máximo de cada imagem: 1MB
+                    JPG e PNG. Tamanho máximo de cada imagem: 6MB
                   </MyTypography>
                 </div>
               </div>
@@ -419,25 +859,30 @@ export default function WebForm({ type }: { type?: string }) {
 
             <div className="grid grid-cols-5 gap-4 my-6">
               {Array.from({ length: 5 }).map((_, index) => {
-                const file = files && files[index];
+                const file = tempImages && tempImages[index];
+
+                const isBase64 = typeof file === "string";
+                const imageUrl = isBase64
+                  ? file
+                  : file instanceof File
+                    ? URL.createObjectURL(file)
+                    : "";
+
                 return file ? (
-                  <div key={file.name} className="relative">
+                  <div key={index} className="relative w-full h-[100px] ">
                     <Image
-                      width={100}
-                      height={100}
-                      src={URL.createObjectURL(file)}
-                      alt={file.name}
-                      className="w-full h-[100px] rounded-md object-cover"
+                      fill
+                      src={imageUrl}
+                      alt={`Imagem ${index}`}
+                      className="rounded-md object-cover"
                     />
                     <MyIcon
                       name="x-red"
                       className="absolute top-1 right-1 cursor-pointer bg-white rounded-full"
                       onClick={() =>
-                        setFiles((prev) =>
-                          prev
-                            ? prev.filter((item) => item.name !== file.name)
-                            : []
-                        )
+                        setAdventureData({
+                          tempImages: tempImages.filter((_, i) => i !== index),
+                        })
                       }
                     />
                   </div>
@@ -451,24 +896,71 @@ export default function WebForm({ type }: { type?: string }) {
             </div>
           </div>
 
-          <div
-            className={cn(
-              "flex justify-center mt-12",
-              type === "cadastro" && "hidden"
-            )}
-          >
-            <MyButton
-              size="lg"
-              borderRadius="squared"
-              className="w-1/2"
-              rightIcon={<MyIcon name="seta-direita" />}
-              onClick={() => router.push(PATHS["informacoes-atividades"])}
-            >
-              Próximo Passo
-            </MyButton>
-          </div>
+          {type !== "cadastro" && (
+            <div className={cn("flex justify-center gap-4 mt-12")}>
+              <MyButton
+                variant="default"
+                borderRadius="squared"
+                className="w-1/2"
+                size="lg"
+                onClick={(e) => goBack(e)}
+                leftIcon={<MyIcon name="seta-direita" className="rotate-180" />}
+              >
+                Voltar
+              </MyButton>
+              <MyButton
+                size="lg"
+                borderRadius="squared"
+                className="w-1/2"
+                rightIcon={<MyIcon name="seta-direita" />}
+                onClick={(e) => handleNextStepRegister(e)}
+              >
+                Próximo Passo
+              </MyButton>
+            </div>
+          )}
+
+          {/* <div className="flex justify-between items-center w-full max-w-3xl mx-auto p-4">
+              <MyButton
+                variant="default"
+                borderRadius="squared"
+                onClick={(e) => handleBackStep(e)}
+                leftIcon={<MyIcon name="seta-direita" className="rotate-180" />}
+              >
+                Voltar
+              </MyButton>
+              <MyButton
+                variant="default"
+                borderRadius="squared"
+                onClick={(e) => handleNextStep(e)}
+                rightIcon={<MyIcon name="seta-direita" />}
+              >
+                Próximo
+              </MyButton>
+            </div> */}
+
+          {type === "cadastro" && (
+            <div className="flex justify-between items-center w-full max-w-3xl mx-auto p-4">
+              <MyButton
+                variant="default"
+                borderRadius="squared"
+                onClick={(e) => handleBackStep(e)}
+                leftIcon={<MyIcon name="seta-direita" className="rotate-180" />}
+              >
+                Voltar
+              </MyButton>
+              <MyButton
+                variant="default"
+                borderRadius="squared"
+                onClick={(e) => handleNextStep(e)}
+                rightIcon={<MyIcon name="seta-direita" />}
+              >
+                Próximo
+              </MyButton>
+            </div>
+          )}
         </div>
-      </FormProvider>
+      </form>
     </main>
   );
 }
