@@ -71,7 +71,7 @@ const CarouselActivity = ({
   return (
     <div
       key={activity.id}
-      className="min-w-[80%] md:w-[250px] md:min-w-[250px] flex flex-col gap-1 items-start md:mb-8 whitespace-pre-wrap"
+      className=" md:w-[250px] md:min-w-[250px] flex flex-col gap-1 items-start md:mb-8 whitespace-pre-wrap"
     >
       <div className="relative z-10 overflow-hidden h-[225px] w-full md:w-[250px] hover:cursor-pointer rounded-md">
         <Image
@@ -113,11 +113,13 @@ const CarouselActivity = ({
           )
         )}
       </div>
-      <div className="mt-1 flex gap-2 items-center">
+      <div className="mt-1 flex  gap-2 items-center">
         <MyBadge variant="outline" className="p-1 text-nowrap">
           {handleNameActivity(activity?.typeAdventure)}
         </MyBadge>
-        <StarRating rating={activity?.averageRating} />
+        {activity?.averageRating > 0 && (
+          <StarRating rating={activity?.averageRating} />
+        )}
       </div>
       <div className="flex gap-2 items-center mt-1">
         <Image

@@ -600,6 +600,7 @@ export default function Dashboard() {
                 name={payment?.partnerFantasyName}
                 amount={payment?.total_value_pending}
                 avatar={payment?.partnerLogo}
+                payday={payment?.payday}
                 status={hasTotalValuePaid(payment) ? "paid" : "pending"}
                 loading={loading}
                 onPay={() => payPartner(payment?.token_for_pay)}

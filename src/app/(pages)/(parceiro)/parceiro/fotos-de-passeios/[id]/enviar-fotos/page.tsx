@@ -21,23 +21,24 @@ export default function EnviarFotos() {
 
   const handleSendImages = async (files: File[]) => {
     setIsLoading(true);
+
+    const payload = files.map((file, index) => ({
+      filename: file.name,
+      mimetype: file.type,
+      title: "", // Você pode preencher se quiser
+      description: "", // Você pode preencher se quiser
+      isDefault: index === 0, // primeiro arquivo é default
+      file: file, // aqui mandamos o File direto, que é um Blob
+    }));
     try {
-      const uploadMedias = await schedules.postScheduleMedias(
-        id as string,
-        files.map((file, index) => ({
-          filename: file.name,
-          mimetype: file.type,
-          title: "", // Você pode preencher se quiser
-          description: "", // Você pode preencher se quiser
-          isDefault: index === 0, // primeiro arquivo é default
-          file: file, // aqui mandamos o File direto, que é um Blob
-        }))
-      );
+      await schedules.postScheduleMedias(id as string, payload);
 
       setSendImages(true);
       queryClient.invalidateQueries({ queryKey: ["schedulesMedia"] });
+      queryClient.invalidateQueries({ queryKey: ["schedule"] });
     } catch (error) {
       console.error("Erro ao enviar imagens:", error);
+      toast.error("Erro ao enviar imagens");
     } finally {
       setIsLoading(false);
     }
@@ -46,11 +47,13 @@ export default function EnviarFotos() {
   const { data: schedulesMedia } = useQuery({
     queryKey: ["schedulesMedia"],
     queryFn: () => schedules.listScheduleMedias(id as string),
+    enabled: !!id,
   });
 
   const { data: schedule } = useQuery({
     queryKey: ["schedule"],
     queryFn: () => schedules.getScheduleById(id as string),
+    enabled: !!id,
   });
 
   const handleDeleteMedia = async (mediaId: string) => {
@@ -60,6 +63,7 @@ export default function EnviarFotos() {
 
       // Invalida a query para recarregar as imagens
       queryClient.invalidateQueries({ queryKey: ["schedulesMedia"] });
+      queryClient.invalidateQueries({ queryKey: ["schedule"] });
       toast.success("Imagem excluída com sucesso");
     } catch (error) {
       console.error("Erro ao excluir imagem:", error);

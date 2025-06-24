@@ -60,8 +60,6 @@ export default function CancelarAtividade() {
     }
   };
 
-  console.log(hasClient);
-
   return (
     <main className="min-h-screen">
       {/* Header */}

@@ -13,7 +13,7 @@ import {
 } from "@/components/atoms/my-select";
 import PartnerPaymentCard from "@/components/molecules/partner-payment";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { endOfMonth, format, parse, startOfMonth } from "date-fns";
+import { endOfMonth, format, parse, startOfMonth, subMonths } from "date-fns";
 import { adminService } from "@/services/api/admin";
 import { toast } from "react-toastify";
 import { AxiosError } from "axios";
@@ -35,22 +35,26 @@ export default function PagamentosParceiros() {
   const [loading, setLoading] = React.useState(false);
 
   const now = new Date();
-  const currentMonthKey = format(new Date(), "MM");
-  const currentYear = format(new Date(), "yyyy");
+  const previousMonth = subMonths(now, 1);
+
+  const previousMonthKey = format(previousMonth, "MM");
+  const previousYear = format(previousMonth, "yyyy");
+
+  // const currentMonthKey = format(new Date(), "MM");
+  // const currentYear = format(new Date(), "yyyy");
 
   const [filters, setFilters] = React.useState({
-    year: currentYear,
-    month: currentMonthKey,
+    year: previousYear,
+    month: previousMonthKey,
   });
 
   const [filtersPending, setFiltersPending] = React.useState({
-    year: currentYear,
-    month: currentMonthKey,
+    year: previousYear,
+    month: previousMonthKey,
   });
-
   const selectedMonthDate = React.useMemo(() => {
     return parse(
-      `${filters.year}-${filters.month}-01`,
+      `${filters.year}-${Number(filters.month) - 1}-01`,
       "yyyy-MM-dd",
       new Date()
     );
@@ -78,19 +82,31 @@ export default function PagamentosParceiros() {
     );
   }, [filtersPending?.month, filtersPending.year]);
 
+  // const startsAtPending = React.useMemo(() => {
+  //   return format(
+  //     startOfMonth(selectedMonthDatePending),
+  //     "yyyy-MM-dd'T'00:00:00"
+  //   );
+  // }, [filtersPending.year, filtersPending.month, selectedMonthDatePending]);
+
+  // const endsAtPending = React.useMemo(() => {
+  //   return format(
+  //     endOfMonth(selectedMonthDatePending),
+  //     "yyyy-MM-dd'T'23:59:59"
+  //   );
+  // }, [filtersPending.year, filtersPending.month, selectedMonthDatePending]);
+
+  const previousMonthDate = React.useMemo(() => {
+    return subMonths(selectedMonthDatePending, 1);
+  }, [selectedMonthDatePending]);
+
   const startsAtPending = React.useMemo(() => {
-    return format(
-      startOfMonth(selectedMonthDatePending),
-      "yyyy-MM-dd'T'00:00:00"
-    );
-  }, [filtersPending.year, filtersPending.month, selectedMonthDatePending]);
+    return format(startOfMonth(previousMonthDate), "yyyy-MM-dd'T'00:00:00");
+  }, [previousMonthDate]);
 
   const endsAtPending = React.useMemo(() => {
-    return format(
-      endOfMonth(selectedMonthDatePending),
-      "yyyy-MM-dd'T'23:59:59"
-    );
-  }, [filtersPending.year, filtersPending.month, selectedMonthDatePending]);
+    return format(endOfMonth(previousMonthDate), "yyyy-MM-dd'T'23:59:59");
+  }, [previousMonthDate]);
 
   const { data: pending, isLoading } = useQuery({
     queryKey: ["pendingPayments", filtersPending],
@@ -269,6 +285,7 @@ export default function PagamentosParceiros() {
                     name={payment?.partnerFantasyName}
                     amount={payment?.total_value_paid}
                     avatar={payment?.partnerLogo}
+                    payday={payment?.payday}
                     status={hasTotalValuePaid(payment) ? "paid" : "pending"}
                     loading={loading}
                     onPay={() => payPartner(payment?.token_for_pay)}
@@ -353,6 +370,7 @@ export default function PagamentosParceiros() {
                     name={payment?.partnerFantasyName}
                     amount={payment?.total_value_pending}
                     avatar={payment?.partnerLogo}
+                    payday={payment?.payday}
                     status={hasTotalValuePaid(payment) ? "paid" : "pending"}
                     loading={loading}
                     onPay={() => payPartner(payment?.token_for_pay)}
