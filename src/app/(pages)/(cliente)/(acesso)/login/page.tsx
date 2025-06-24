@@ -67,8 +67,8 @@ export default function Login() {
 
           if (params?.redirect) {
             console.log("Redirecionando para:", params.redirect);
-            router.push(params.redirect);
             toast.success("Login realizado com sucesso!");
+            router.push(params.redirect);
             return;
           }
 
@@ -86,8 +86,8 @@ export default function Login() {
 
           if (defaultPath) {
             console.log("Redirecionando para:", defaultPath);
-            router.push(defaultPath);
             toast.success("Login realizado com sucesso!");
+            router.push(defaultPath);
           }
         } catch (error) {
           console.error("Erro ao processar sessão:", error);
