@@ -24,6 +24,7 @@ import {
   format,
   startOfMonth,
   startOfYear,
+  subMonths,
 } from "date-fns";
 import { useRouter } from "next/navigation";
 import {
@@ -314,9 +315,10 @@ export default function Dashboard() {
   const [loading, setLoading] = React.useState(false);
 
   const now = new Date();
+  const previousMonth = subMonths(now, 1);
 
-  const startsAt = format(startOfMonth(now), "yyyy-MM-dd'T'00:00:00");
-  const endsAt = format(endOfMonth(now), "yyyy-MM-dd'T'00:00:00");
+  const startsAt = format(startOfMonth(previousMonth), "yyyy-MM-dd'T'00:00:00");
+  const endsAt = format(endOfMonth(previousMonth), "yyyy-MM-dd'T'00:00:00");
 
   const { startOfCurrentYear, endOfCurrentYear } = React.useMemo(() => {
     const selectedDate = new Date(Number(year), 0); // Janeiro do ano selecionado

@@ -40,17 +40,17 @@ export default function PagamentosParceiros() {
   const previousMonthKey = format(previousMonth, "MM");
   const previousYear = format(previousMonth, "yyyy");
 
-  // const currentMonthKey = format(new Date(), "MM");
-  // const currentYear = format(new Date(), "yyyy");
+  const currentMonthKey = format(new Date(), "MM");
+  const currentYear = format(new Date(), "yyyy");
 
   const [filters, setFilters] = React.useState({
-    year: previousYear,
-    month: previousMonthKey,
+    year: currentYear,
+    month: currentMonthKey,
   });
 
   const [filtersPending, setFiltersPending] = React.useState({
-    year: previousYear,
-    month: previousMonthKey,
+    year: currentYear,
+    month: currentMonthKey,
   });
   const selectedMonthDate = React.useMemo(() => {
     return parse(
