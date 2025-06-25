@@ -85,8 +85,8 @@ export default function Login() {
             DEFAULT_ROLE_PATHS[mappedRole as keyof typeof DEFAULT_ROLE_PATHS];
 
           if (defaultPath) {
-            console.log("Redirecionando para:", defaultPath);
             toast.success("Login realizado com sucesso!");
+            console.log("Redirecionando para:", defaultPath);
             router.push(defaultPath);
           }
         } catch (error) {
@@ -98,7 +98,7 @@ export default function Login() {
     };
 
     handleSessionUpdate();
-  }, [session]);
+  }, [session, status]);
 
   const handleLogin = async () => {
     setIsLoading(true);
@@ -121,7 +121,6 @@ export default function Login() {
     //   setIsLoading(false);
     // }
   };
-
   return (
     <section className="flex flex-col bg-white rounded-lg max-w-lg m-auto w-full">
       <div className="px-6 md:px-12 md:py-6">
