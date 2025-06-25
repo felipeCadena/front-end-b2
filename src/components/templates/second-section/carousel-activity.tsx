@@ -117,9 +117,8 @@ const CarouselActivity = ({
         <MyBadge variant="outline" className="p-1 text-nowrap">
           {handleNameActivity(activity?.typeAdventure)}
         </MyBadge>
-        {activity?.averageRating > 0 && (
-          <StarRating rating={activity?.averageRating} />
-        )}
+
+        <StarRating rating={activity?.averageRating} />
       </div>
       <div className="flex gap-2 items-center mt-1">
         <Image
