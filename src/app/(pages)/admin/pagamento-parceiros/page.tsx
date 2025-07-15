@@ -27,12 +27,17 @@ type PartnerPayment = {
   token_for_pay: string;
   total_value_paid?: number;
   ordersSchedules?: string;
+  payday?: number;
 };
 
 export default function PagamentosParceiros() {
   const router = useRouter();
   const queryClient = useQueryClient();
   const [loading, setLoading] = React.useState(false);
+  const [selectedPaydayPending, setSelectedPaydayPending] =
+    React.useState<string>("5");
+  const [selectedPaydayPaid, setSelectedPaydayPaid] =
+    React.useState<string>("5");
 
   const now = new Date();
   const previousMonth = subMonths(now, 1);
@@ -184,6 +189,18 @@ export default function PagamentosParceiros() {
 
   const totalPagamentos = paidPartners.length + pendingPartners.length;
 
+  const filteredPendingPartners = React.useMemo(() => {
+    return pendingPartners.filter(
+      (p) => String(p?.payday) === String(selectedPaydayPending)
+    );
+  }, [pendingPartners, selectedPaydayPending]);
+
+  const filteredPaidPartners = React.useMemo(() => {
+    return paidPartners.filter(
+      (p) => String(p?.payday) === String(selectedPaydayPaid)
+    );
+  }, [paidPartners, selectedPaydayPaid]);
+
   return (
     <div className="min-h-screen">
       {/* Header */}
@@ -225,7 +242,22 @@ export default function PagamentosParceiros() {
 
           <div className="space-y-3">
             <div className="flex items-center justify-end w-full mb-4">
-              <div className="flex gap-2 ">
+              <div className="flex gap-2 my-2">
+                <MySelect
+                  value={selectedPaydayPaid}
+                  onValueChange={setSelectedPaydayPaid}
+                  // label="Dia do Pagamento"
+                >
+                  <SelectTrigger className="rounded-2xl w-[100px] md:w-[150px] text-[#848A9C] text-xs">
+                    <SelectValue placeholder="Dia do Pagamento" />
+                  </SelectTrigger>
+                  <SelectContent className="rounded-lg">
+                    <SelectItem value="5">Dia 5</SelectItem>
+                    <SelectItem value="10">Dia 10</SelectItem>
+                    <SelectItem value="15">Dia 15</SelectItem>
+                  </SelectContent>
+                </MySelect>
+
                 <MySelect
                   value={filters?.year}
                   onValueChange={(value) => {
@@ -235,7 +267,7 @@ export default function PagamentosParceiros() {
                     }));
                   }}
                 >
-                  <SelectTrigger className="rounded-2xl w-[150px] text-[#848A9C] text-xs">
+                  <SelectTrigger className="rounded-2xl w-[100px] md:w-[150px] text-[#848A9C] text-xs">
                     <SelectValue placeholder="Setembro" />
                   </SelectTrigger>
                   <SelectContent className="rounded-lg">
@@ -251,7 +283,7 @@ export default function PagamentosParceiros() {
                   value={filters?.month}
                   onValueChange={(value) => handleMonthChange(value)}
                 >
-                  <SelectTrigger className="rounded-2xl w-[150px] text-[#848A9C] text-xs">
+                  <SelectTrigger className="rounded-2xl w-[100px] md:w-[150px] text-[#848A9C] text-xs">
                     <SelectValue placeholder="Mês" />
                   </SelectTrigger>
                   <SelectContent className="rounded-lg">
@@ -272,25 +304,33 @@ export default function PagamentosParceiros() {
               </div>
             </div>
             {paid?.total_orders == 0 && !isLoadingPaid ? (
-              <div className="flex items-center justify-center h-[250px]">
+              <div className="flex text-center items-center justify-center h-[250px]">
                 <MyTypography variant="subtitle4" weight="bold">
                   Não há pagamentos realizados.
                 </MyTypography>
               </div>
             ) : (
               <div>
-                {paidPartners.map((payment: any) => (
-                  <PartnerPaymentCard
-                    key={payment?.ordersSchedules}
-                    name={payment?.partnerFantasyName}
-                    amount={payment?.total_value_paid}
-                    avatar={payment?.partnerLogo}
-                    payday={payment?.payday}
-                    status={hasTotalValuePaid(payment) ? "paid" : "pending"}
-                    loading={loading}
-                    onPay={() => payPartner(payment?.token_for_pay)}
-                  />
-                ))}
+                {filteredPaidPartners.length > 0 ? (
+                  filteredPaidPartners.map((payment: any) => (
+                    <PartnerPaymentCard
+                      key={payment?.ordersSchedules}
+                      name={payment?.partnerFantasyName}
+                      amount={payment?.total_value_paid}
+                      avatar={payment?.partnerLogo}
+                      payday={payment?.payday}
+                      status={hasTotalValuePaid(payment) ? "paid" : "pending"}
+                      loading={loading}
+                      onPay={() => payPartner(payment?.token_for_pay)}
+                    />
+                  ))
+                ) : (
+                  <div className="min-h-[20vh] text-center flex items-center justify-center">
+                    <MyTypography variant="subtitle4" weight="bold">
+                      Não há pagamentos realizados para o dia selecionado
+                    </MyTypography>
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -310,7 +350,22 @@ export default function PagamentosParceiros() {
 
           <div className="space-y-3">
             <div className="flex items-center justify-end w-full mb-4">
-              <div className="flex gap-2 ">
+              <div className="flex gap-2 my-2">
+                <MySelect
+                  value={selectedPaydayPending}
+                  onValueChange={setSelectedPaydayPending}
+                  // label="Dia do Pagamento"
+                >
+                  <SelectTrigger className="rounded-2xl w-[100px] md:w-[150px] text-[#848A9C] text-xs">
+                    <SelectValue placeholder="Dia do Pagamento" />
+                  </SelectTrigger>
+                  <SelectContent className="rounded-lg">
+                    <SelectItem value="5">Dia 5</SelectItem>
+                    <SelectItem value="10">Dia 10</SelectItem>
+                    <SelectItem value="15">Dia 15</SelectItem>
+                  </SelectContent>
+                </MySelect>
+
                 <MySelect
                   value={filtersPending?.year}
                   onValueChange={(value) => {
@@ -320,7 +375,7 @@ export default function PagamentosParceiros() {
                     }));
                   }}
                 >
-                  <SelectTrigger className="rounded-2xl w-[150px] text-[#848A9C] text-xs">
+                  <SelectTrigger className="rounded-2xl w-[100px] md:w-[150px] text-[#848A9C] text-xs">
                     <SelectValue placeholder="Setembro" />
                   </SelectTrigger>
                   <SelectContent className="rounded-lg">
@@ -336,7 +391,7 @@ export default function PagamentosParceiros() {
                   value={filtersPending?.month}
                   onValueChange={(value) => handleMonthPendingChange(value)}
                 >
-                  <SelectTrigger className="rounded-2xl w-[150px] text-[#848A9C] text-xs">
+                  <SelectTrigger className="rounded-2xl w-[100px] md:w-[150px] text-[#848A9C] text-xs">
                     <SelectValue placeholder="Mês" />
                   </SelectTrigger>
                   <SelectContent className="rounded-lg">
@@ -357,25 +412,33 @@ export default function PagamentosParceiros() {
               </div>
             </div>
             {pending?.total_orders == 0 && !isLoading ? (
-              <div className="flex items-center justify-center h-[250px]">
+              <div className="flex text-center items-center justify-center h-[250px]">
                 <MyTypography variant="subtitle4" weight="bold">
                   Não há pagamentos pendentes.
                 </MyTypography>
               </div>
             ) : (
               <div>
-                {pendingPartners.map((payment: any) => (
-                  <PartnerPaymentCard
-                    key={payment?.ordersSchedules}
-                    name={payment?.partnerFantasyName}
-                    amount={payment?.total_value_pending}
-                    avatar={payment?.partnerLogo}
-                    payday={payment?.payday}
-                    status={hasTotalValuePaid(payment) ? "paid" : "pending"}
-                    loading={loading}
-                    onPay={() => payPartner(payment?.token_for_pay)}
-                  />
-                ))}
+                {filteredPendingPartners?.length > 0 ? (
+                  filteredPendingPartners.map((payment: any) => (
+                    <PartnerPaymentCard
+                      key={payment?.ordersSchedules}
+                      name={payment?.partnerFantasyName}
+                      amount={payment?.total_value_pending}
+                      avatar={payment?.partnerLogo}
+                      payday={payment?.payday}
+                      status={hasTotalValuePaid(payment) ? "paid" : "pending"}
+                      loading={loading}
+                      onPay={() => payPartner(payment?.token_for_pay)}
+                    />
+                  ))
+                ) : (
+                  <div className="min-h-[20vh] text-center flex items-center justify-center">
+                    <MyTypography variant="subtitle4" weight="bold">
+                      Não há pagamentos pendentes para o dia selecionado
+                    </MyTypography>
+                  </div>
+                )}
               </div>
             )}
           </div>
