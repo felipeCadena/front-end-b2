@@ -45,13 +45,6 @@ export default function PartnerPaymentCard({
           >
             R$ {amount && amount.toFixed(2)}
           </MyTypography>
-          <MyTypography
-            variant="label"
-            weight="semibold"
-            className="text-gray-600"
-          >
-            Pagamento: {payday}
-          </MyTypography>
         </div>
       </div>
       {status == "paid" ? (

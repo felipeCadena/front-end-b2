@@ -46,6 +46,8 @@ export default function AdminMobile() {
   const [loading, setLoading] = React.useState(false);
   const [filter, setFilter] = React.useState("pendente");
 
+  const [selectedPayday, setSelectedPayday] = React.useState<string>("5");
+
   const [pageActivities, setPageActivities] = React.useState(1);
   const [refusalMsg, setRefusalMsg] = React.useState("");
   const [loadingItem, setLoadingItem] = React.useState<{
@@ -201,6 +203,15 @@ export default function AdminMobile() {
     }
   };
 
+  const filteredPendingPartners = React.useMemo(() => {
+    return (
+      pendingPayments?.partners &&
+      Object.values(pendingPayments?.partners).filter(
+        (p: any) => String(p?.payday) === String(selectedPayday)
+      )
+    );
+  }, [pendingPayments, selectedPayday]);
+
   return (
     <main className=" space-y-8 mt-6">
       <div className="px-4">
@@ -215,25 +226,50 @@ export default function AdminMobile() {
               </MyTypography>
             </div>
           ) : (
-            !isLoading &&
-            pendingPayments.partners &&
-            Object.values(pendingPayments.partners)
-              .sort((a: any, b: any) => {
-                const order = [5, 10, 15];
-                return order.indexOf(a.payday) - order.indexOf(b.payday);
-              })
-              .map((payment: any) => (
-                <PartnerPaymentCard
-                  key={payment?.ordersSchedules}
-                  name={payment?.partnerFantasyName}
-                  amount={payment?.total_value_pending}
-                  avatar={payment?.partnerLogo}
-                  payday={payment?.payday}
-                  status={hasTotalValuePaid(payment) ? "paid" : "pending"}
-                  loading={loading}
-                  onPay={() => payPartner(payment?.token_for_pay)}
-                />
-              ))
+            !isLoading && (
+              <div className="min-h-[20vh]">
+                <div className="w-full flex justify-end mb-4">
+                  <div className="w-auto">
+                    <MySelect
+                      value={selectedPayday}
+                      onValueChange={setSelectedPayday}
+                      label="Dia do Pagamento"
+                    >
+                      <SelectTrigger className="rounded-2xl w-[150px] text-[#848A9C] text-xs">
+                        <SelectValue placeholder="Dia do Pagamento" />
+                      </SelectTrigger>
+                      <SelectContent className="rounded-lg">
+                        <SelectItem value="5">Dia 5</SelectItem>
+                        <SelectItem value="10">Dia 10</SelectItem>
+                        <SelectItem value="15">Dia 15</SelectItem>
+                      </SelectContent>
+                    </MySelect>
+                  </div>
+                </div>
+
+                {filteredPendingPartners &&
+                filteredPendingPartners?.length > 0 ? (
+                  filteredPendingPartners.map((payment: any) => (
+                    <PartnerPaymentCard
+                      key={payment?.ordersSchedules}
+                      name={payment?.partnerFantasyName}
+                      amount={payment?.total_value_pending}
+                      avatar={payment?.partnerLogo}
+                      payday={payment?.payday}
+                      status={hasTotalValuePaid(payment) ? "paid" : "pending"}
+                      loading={loading}
+                      onPay={() => payPartner(payment?.token_for_pay)}
+                    />
+                  ))
+                ) : (
+                  <div className="min-h-[20vh] text-center flex items-center justify-center">
+                    <MyTypography variant="body-big" weight="bold">
+                      Não há pagamentos pendentes para o dia selecionado
+                    </MyTypography>
+                  </div>
+                )}
+              </div>
+            )
           )}
         </div>
         <MyButton
