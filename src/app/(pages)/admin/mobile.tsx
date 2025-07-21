@@ -10,7 +10,7 @@ import PartnerApprovalCard from "@/components/molecules/partner-approval";
 import ActivityStatusCard from "@/components/molecules/activity-status";
 import PATHS from "@/utils/paths";
 import SearchActivity from "@/components/organisms/search-activity";
-import { endOfMonth, format, startOfMonth } from "date-fns";
+import { endOfMonth, format, startOfMonth, subMonths } from "date-fns";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { adminService } from "@/services/api/admin";
 import { toast } from "react-toastify";
@@ -46,6 +46,8 @@ export default function AdminMobile() {
   const [loading, setLoading] = React.useState(false);
   const [filter, setFilter] = React.useState("pendente");
 
+  const [selectedPayday, setSelectedPayday] = React.useState<string>("5");
+
   const [pageActivities, setPageActivities] = React.useState(1);
   const [refusalMsg, setRefusalMsg] = React.useState("");
   const [loadingItem, setLoadingItem] = React.useState<{
@@ -58,10 +60,12 @@ export default function AdminMobile() {
   >([]);
 
   const now = new Date();
+  const previousMonth = subMonths(now, 1);
+
   const currentMonthKey = format(new Date(), "MM");
 
-  const startsAt = format(startOfMonth(now), "yyyy-MM-dd'T'00:00:00");
-  const endsAt = format(endOfMonth(now), "yyyy-MM-dd'T'00:00:00");
+  const startsAt = format(startOfMonth(previousMonth), "yyyy-MM-dd'T'00:00:00");
+  const endsAt = format(endOfMonth(previousMonth), "yyyy-MM-dd'T'00:00:00");
 
   const { data: pendingPayments, isLoading } = useQuery({
     queryKey: ["pendingPayments"],
@@ -199,6 +203,15 @@ export default function AdminMobile() {
     }
   };
 
+  const filteredPendingPartners = React.useMemo(() => {
+    return (
+      pendingPayments?.partners &&
+      Object.values(pendingPayments?.partners).filter(
+        (p: any) => String(p?.payday) === String(selectedPayday)
+      )
+    );
+  }, [pendingPayments, selectedPayday]);
+
   return (
     <main className=" space-y-8 mt-6">
       <div className="px-4">
@@ -213,18 +226,48 @@ export default function AdminMobile() {
               </MyTypography>
             </div>
           ) : (
-            Object.values(pendingPayments?.partners ?? {}).map(
-              (payment: any) => (
-                <PartnerPaymentCard
-                  key={payment?.ordersSchedules}
-                  name={payment?.partnerFantasyName}
-                  amount={payment?.total_value_pending}
-                  avatar={payment?.partnerLogo}
-                  status={hasTotalValuePaid(payment) ? "paid" : "pending"}
-                  loading={loading}
-                  onPay={() => payPartner(payment?.token_for_pay)}
-                />
-              )
+            !isLoading && (
+              <div className="min-h-[20vh]">
+                <div className="ml-auto w-1/3 md:w-1/6">
+                  <MySelect
+                    value={selectedPayday}
+                    onValueChange={setSelectedPayday}
+                    label="Dia do Pagamento"
+                    className="text-[0.8rem]"
+                  >
+                    <SelectTrigger className="rounded-2xl text-[#848A9C] text-xs">
+                      <SelectValue placeholder="Dia do Pagamento" />
+                    </SelectTrigger>
+                    <SelectContent className="rounded-lg">
+                      <SelectItem value="5">Dia 5</SelectItem>
+                      <SelectItem value="10">Dia 10</SelectItem>
+                      <SelectItem value="15">Dia 15</SelectItem>
+                    </SelectContent>
+                  </MySelect>
+                </div>
+
+                {filteredPendingPartners &&
+                filteredPendingPartners?.length > 0 ? (
+                  filteredPendingPartners.map((payment: any) => (
+                    <PartnerPaymentCard
+                      key={payment?.ordersSchedules}
+                      name={payment?.partnerFantasyName}
+                      amount={payment?.total_value_pending}
+                      avatar={payment?.partnerLogo}
+                      payday={payment?.payday}
+                      status={hasTotalValuePaid(payment) ? "paid" : "pending"}
+                      loading={loading}
+                      onPay={() => payPartner(payment?.token_for_pay)}
+                    />
+                  ))
+                ) : (
+                  <div className="min-h-[20vh] text-center flex items-center justify-center">
+                    <MyTypography variant="body-big" weight="bold">
+                      Não há pagamentos pendentes para o dia selecionado
+                    </MyTypography>
+                  </div>
+                )}
+              </div>
             )
           )}
         </div>

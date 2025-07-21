@@ -8,6 +8,7 @@ interface PartnerPaymentCardProps {
   name: string;
   amount: number;
   avatar: string;
+  payday: number;
   onPay: () => void;
   status?: string;
   loading?: boolean;
@@ -17,6 +18,7 @@ export default function PartnerPaymentCard({
   name,
   amount,
   avatar,
+  payday,
   onPay,
   status,
   loading,
