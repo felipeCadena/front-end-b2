@@ -228,23 +228,22 @@ export default function AdminMobile() {
           ) : (
             !isLoading && (
               <div className="min-h-[20vh]">
-                <div className="w-full flex justify-end mb-4">
-                  <div className="w-auto">
-                    <MySelect
-                      value={selectedPayday}
-                      onValueChange={setSelectedPayday}
-                      label="Dia do Pagamento"
-                    >
-                      <SelectTrigger className="rounded-2xl w-[150px] text-[#848A9C] text-xs">
-                        <SelectValue placeholder="Dia do Pagamento" />
-                      </SelectTrigger>
-                      <SelectContent className="rounded-lg">
-                        <SelectItem value="5">Dia 5</SelectItem>
-                        <SelectItem value="10">Dia 10</SelectItem>
-                        <SelectItem value="15">Dia 15</SelectItem>
-                      </SelectContent>
-                    </MySelect>
-                  </div>
+                <div className="ml-auto w-1/3 md:w-1/6">
+                  <MySelect
+                    value={selectedPayday}
+                    onValueChange={setSelectedPayday}
+                    label="Dia do Pagamento"
+                    className="text-[0.8rem]"
+                  >
+                    <SelectTrigger className="rounded-2xl text-[#848A9C] text-xs">
+                      <SelectValue placeholder="Dia do Pagamento" />
+                    </SelectTrigger>
+                    <SelectContent className="rounded-lg">
+                      <SelectItem value="5">Dia 5</SelectItem>
+                      <SelectItem value="10">Dia 10</SelectItem>
+                      <SelectItem value="15">Dia 15</SelectItem>
+                    </SelectContent>
+                  </MySelect>
                 </div>
 
                 {filteredPendingPartners &&
