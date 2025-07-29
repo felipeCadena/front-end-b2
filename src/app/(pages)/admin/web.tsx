@@ -87,7 +87,7 @@ export default function AdminWeb() {
     Adventure[]
   >([]);
 
-  const [selectedPayday, setSelectedPayday] = React.useState<string>("5");
+  const [selectedPayday, setSelectedPayday] = React.useState<string>("0");
 
   const now = new Date();
   const previousMonth = subMonths(now, 1);
@@ -239,10 +239,19 @@ export default function AdminWeb() {
   };
 
   const filteredPendingPartners = React.useMemo(() => {
+    if (selectedPayday === "0")
+      return (
+        pendingPayments?.partners && Object.values(pendingPayments?.partners)
+      );
+
+    const allowedPaydays = ["5", "10", "15"];
+
+    if (!allowedPaydays.includes(selectedPayday)) return [];
+
     return (
       pendingPayments?.partners &&
       Object.values(pendingPayments?.partners).filter(
-        (p: any) => String(p?.payday) === String(selectedPayday)
+        (p: any) => String(p?.payday) === selectedPayday
       )
     );
   }, [pendingPayments, selectedPayday]);
@@ -294,6 +303,7 @@ export default function AdminWeb() {
                           <SelectValue placeholder="Dia do Pagamento" />
                         </SelectTrigger>
                         <SelectContent className="rounded-lg">
+                          <SelectItem value="0">Todos</SelectItem>
                           <SelectItem value="5">Dia 5</SelectItem>
                           <SelectItem value="10">Dia 10</SelectItem>
                           <SelectItem value="15">Dia 15</SelectItem>

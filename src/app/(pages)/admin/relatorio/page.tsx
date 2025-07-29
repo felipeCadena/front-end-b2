@@ -22,7 +22,7 @@ import {
 import { getYearsArray } from "@/utils/formatters";
 import MyIcon from "@/components/atoms/my-icon";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { endOfMonth, format, parse, startOfMonth } from "date-fns";
 import { adminService } from "@/services/api/admin";
@@ -69,20 +69,46 @@ export default function RelatorioAdmin() {
     return format(endOfMonth(selectedMonthDate), "yyyy-MM-dd'T'23:59:59");
   }, [filters.year, filters.month, selectedMonthDate]);
 
-  const { data: listOrders, isLoading } = useQuery({
+  const { data = [], isLoading } = useQuery({
     queryKey: ["listOrders", page, filters],
-    queryFn: async () => {
-      const orders = await adminService.listOrders({
+    queryFn: () =>
+      adminService.listOrders({
         startsAt: startDate,
         endsAt: endDate,
         limit: 100,
         skip: page * 100 - 100,
-      });
-      setAllOrders(orders);
-      setOriginalAllOrders(orders);
-      return orders;
-    },
+      }),
   });
+
+  const filteredOrders = React.useMemo(() => {
+    if (status === "confirmado") {
+      return data.filter((order: any) =>
+        CONFIRMED.includes(order.paymentStatus)
+      );
+    } else if (status === "pendente") {
+      return data.filter(
+        (order: any) => !CONFIRMED.includes(order.paymentStatus)
+      );
+    }
+    return data;
+  }, [data, status]);
+
+  const filterData = () => {
+    if (status === "confirmado") {
+      return data.filter((order: any) =>
+        CONFIRMED.includes(order.paymentStatus)
+      );
+    } else if (status === "pendente") {
+      return data.filter(
+        (order: any) => !CONFIRMED.includes(order.paymentStatus)
+      );
+    }
+    return data;
+  };
+
+  useEffect(() => {
+    const result = filterData();
+  }, [data, status]);
 
   const CONFIRMED = [
     "CONFIRMED",
@@ -115,7 +141,14 @@ export default function RelatorioAdmin() {
     setFilters((prev) => ({ ...prev, month: value }));
   };
 
-  const parsedRows = allOrders?.flatMap((pedido: any) => {
+  function totalAgenda(orders: any) {
+    return orders.reduce(
+      (total: any, order: any) => total + order.qntAdults + order.qntChildren,
+      0
+    );
+  }
+
+  const parsedRows = filteredOrders?.flatMap((pedido: any) => {
     const groupedByPartner: Record<string, any[]> = {};
 
     pedido.ordersScheduleAdventure.forEach((item: any) => {
@@ -139,17 +172,18 @@ export default function RelatorioAdmin() {
       );
 
       const taxs = items.reduce((sum, i) => sum + Number(i.totalTaxes), 0);
-      const geral = partnerValueTotal + b2ValueTotal + taxs;
+      const fee = items.reduce((sum, i) => sum + Number(i.totalGatewayFee), 0);
+      const geral = partnerValueTotal + b2ValueTotal + taxs + fee;
 
       return {
         partnerId,
         partnerName,
         partnerLogo,
-        pedidoId: pedido.id,
-        qntAgendas: items.length,
+        pedidoId: pedido?.ordersScheduleAdventure?.length,
+        qntAgendas: totalAgenda(pedido.ordersScheduleAdventure),
         status: pedido?.paymentStatus,
         totalPartner: partnerValueTotal,
-        taxs: taxs,
+        taxs: taxs + fee,
         totalB2: b2ValueTotal,
         totalGeral: geral,
       };
@@ -295,7 +329,7 @@ export default function RelatorioAdmin() {
           <TableRow className="text-xs md:text-sm font-semibold">
             <TableHead className="text-center">Parceiro</TableHead>
             <TableHead className="text-center">Pedido</TableHead>
-            <TableHead className="text-center">Atividades por pedido</TableHead>
+            <TableHead className="text-center">Agenda por pedido</TableHead>
             <TableHead className="text-center">Status</TableHead>
             <TableHead className="text-center">Total B2</TableHead>
             <TableHead className="text-center">Total Parceiro</TableHead>
@@ -403,14 +437,15 @@ export default function RelatorioAdmin() {
             <TableHead className="text-center">Valores totais</TableHead>
             <TableCell className="text-center text-white">0</TableCell>
             <TableCell className="text-center">
-              {allOrders?.reduce(
+              {filteredOrders?.reduce(
                 (acc: number, lancamento: any) =>
                   acc + Number(lancamento?.ordersScheduleAdventure?.length),
                 0
               )}
             </TableCell>
+            <TableCell className="text-center text-white">0</TableCell>
             <TableCell className="text-center">
-              {allOrders
+              {filteredOrders
                 ?.reduce(
                   (acc: number, lancamento: any) =>
                     acc + Number(lancamento?.b2AdventureTotalValue),
@@ -422,7 +457,7 @@ export default function RelatorioAdmin() {
                 })}
             </TableCell>
             <TableCell className="text-center">
-              {allOrders
+              {filteredOrders
                 ?.reduce(
                   (acc: number, lancamento: any) =>
                     acc + Number(lancamento?.partnersTotalValue),
@@ -434,10 +469,12 @@ export default function RelatorioAdmin() {
                 })}
             </TableCell>
             <TableCell className="text-center">
-              {allOrders
+              {filteredOrders
                 ?.reduce(
                   (acc: number, lancamento: any) =>
-                    acc + Number(lancamento?.totalTaxes),
+                    acc +
+                    Number(lancamento?.totalTaxes) +
+                    Number(lancamento.totalGatewayFee),
                   0
                 )
                 .toLocaleString("pt-BR", {
@@ -446,7 +483,7 @@ export default function RelatorioAdmin() {
                 })}
             </TableCell>
             <TableCell className="text-center">
-              {allOrders
+              {filteredOrders
                 ?.reduce(
                   (acc: number, lancamento: any) =>
                     acc + Number(lancamento?.totalCost),
