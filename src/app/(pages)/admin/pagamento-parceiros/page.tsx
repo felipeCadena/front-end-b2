@@ -35,9 +35,9 @@ export default function PagamentosParceiros() {
   const queryClient = useQueryClient();
   const [loading, setLoading] = React.useState(false);
   const [selectedPaydayPending, setSelectedPaydayPending] =
-    React.useState<string>("5");
+    React.useState<string>("0");
   const [selectedPaydayPaid, setSelectedPaydayPaid] =
-    React.useState<string>("5");
+    React.useState<string>("0");
 
   const now = new Date();
   const previousMonth = subMonths(now, 1);
@@ -178,27 +178,35 @@ export default function PagamentosParceiros() {
     ? Object.values(pending.partners)
     : [];
 
-  const valorTotal =
-    paidPartners.reduce((acc, p) => acc + (p.total_value_paid ?? 0), 0) ??
-    0 +
-      pendingPartners.reduce(
-        (acc, p) => acc + (p.total_value_pending ?? 0),
-        0
-      ) ??
+  const valorTotalPendente =
+    pendingPartners.reduce((acc, p) => acc + (p.total_value_pending ?? 0), 0) ??
     0;
 
-  const totalPagamentos = paidPartners.length + pendingPartners.length;
+  const valorTotalPago =
+    paidPartners.reduce((acc, p) => acc + (p.total_value_paid ?? 0), 0) ?? 0;
+
+  const totalPagamentos = paidPartners.length;
 
   const filteredPendingPartners = React.useMemo(() => {
+    if (selectedPaydayPaid === "0") return pendingPartners;
+
+    const allowedPaydays = ["5", "10", "15"];
+
+    if (!allowedPaydays.includes(selectedPaydayPaid)) return [];
+
     return pendingPartners.filter(
-      (p) => String(p?.payday) === String(selectedPaydayPending)
+      (p) => String(p?.payday) === selectedPaydayPaid
     );
   }, [pendingPartners, selectedPaydayPending]);
 
   const filteredPaidPartners = React.useMemo(() => {
-    return paidPartners.filter(
-      (p) => String(p?.payday) === String(selectedPaydayPaid)
-    );
+    if (selectedPaydayPaid === "0") return paidPartners;
+
+    const allowedPaydays = ["5", "10", "15"];
+
+    if (!allowedPaydays.includes(selectedPaydayPaid)) return [];
+
+    return paidPartners.filter((p) => String(p?.payday) === selectedPaydayPaid);
   }, [paidPartners, selectedPaydayPaid]);
 
   return (
@@ -252,6 +260,7 @@ export default function PagamentosParceiros() {
                     <SelectValue placeholder="Dia do Pagamento" />
                   </SelectTrigger>
                   <SelectContent className="rounded-lg">
+                    <SelectItem value="0">Todos</SelectItem>
                     <SelectItem value="5">Dia 5</SelectItem>
                     <SelectItem value="10">Dia 10</SelectItem>
                     <SelectItem value="15">Dia 15</SelectItem>
@@ -334,6 +343,32 @@ export default function PagamentosParceiros() {
               </div>
             )}
           </div>
+          {!isLoadingPaid && (
+            <div className="bg-primary-900 p-4 rounded-lg flex justify-between items-center">
+              <MyTypography variant="body-big" weight="bold">
+                Pagamentos
+              </MyTypography>
+              <div className="flex flex-col items-center">
+                <MyTypography
+                  variant="body-big"
+                  weight="bold"
+                  className="text-primary-600 self-end"
+                >
+                  Total:
+                </MyTypography>
+                <MyTypography
+                  variant="body-big"
+                  weight="bold"
+                  className="text-primary-600"
+                >
+                  {Number(valorTotalPago).toLocaleString("pt-BR", {
+                    style: "currency",
+                    currency: "BRL",
+                  })}
+                </MyTypography>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Aguardando Pagamento */}
@@ -360,6 +395,7 @@ export default function PagamentosParceiros() {
                     <SelectValue placeholder="Dia do Pagamento" />
                   </SelectTrigger>
                   <SelectContent className="rounded-lg">
+                    <SelectItem value="0">Todos</SelectItem>
                     <SelectItem value="5">Dia 5</SelectItem>
                     <SelectItem value="10">Dia 10</SelectItem>
                     <SelectItem value="15">Dia 15</SelectItem>
@@ -445,16 +481,11 @@ export default function PagamentosParceiros() {
         </div>
 
         {/* Resumo */}
-        {!isLoadingPaid && !isLoading && (
+        {!isLoading && (
           <div className="bg-primary-900 p-4 rounded-lg flex justify-between items-center">
-            <div>
-              <MyTypography variant="body-big" weight="bold">
-                Pagamentos
-              </MyTypography>
-              <MyTypography variant="body-big" weight="bold">
-                {totalPagamentos} parceiros esse mês
-              </MyTypography>
-            </div>
+            <MyTypography variant="body-big" weight="bold">
+              Pagamentos
+            </MyTypography>
             <div className="flex flex-col items-center">
               <MyTypography
                 variant="body-big"
@@ -468,7 +499,7 @@ export default function PagamentosParceiros() {
                 weight="bold"
                 className="text-primary-600"
               >
-                {Number(valorTotal).toLocaleString("pt-BR", {
+                {Number(valorTotalPendente).toLocaleString("pt-BR", {
                   style: "currency",
                   currency: "BRL",
                 })}
