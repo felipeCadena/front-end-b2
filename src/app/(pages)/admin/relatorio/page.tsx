@@ -39,6 +39,13 @@ export default function RelatorioAdmin() {
   const [allOrders, setAllOrders] = React.useState<any[]>([]);
   const [originalAllOrders, setOriginalAllOrders] = React.useState<any[]>([]);
 
+  const CONFIRMED = [
+    "APROVADO",
+    "PAGO",
+    "PAGO_PARCIAL",
+    "PAGO_PARCIAL_AGUARDANDO_PAGAMENTO",
+  ];
+
   const currentMonthKey = format(new Date(), "MM");
   const currentYear = format(new Date(), "yyyy");
 
@@ -109,13 +116,6 @@ export default function RelatorioAdmin() {
   useEffect(() => {
     const result = filterData();
   }, [data, status]);
-
-  const CONFIRMED = [
-    "CONFIRMED",
-    "RECEIVED",
-    "RECEIVED_IN_CASH",
-    "PARTIALLY_REFUNDED",
-  ];
 
   const handleFilterStatus = (status: string) => {
     setStatus(status);
