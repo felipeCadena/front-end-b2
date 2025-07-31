@@ -91,10 +91,10 @@ export default function Login() {
           }
         } catch (error) {
           console.error("Erro ao processar sessão:", error);
+        } finally {
+          setIsLoading(false);
         }
       }
-
-      setIsLoading(false);
     };
 
     handleSessionUpdate();
@@ -116,10 +116,9 @@ export default function Login() {
     } catch (err) {
       console.error("Erro no login:", err);
       toast.error("Erro ao fazer login");
+    } finally {
+      setIsLoading(false);
     }
-    // finally {
-    //   setIsLoading(false);
-    // }
   };
   return (
     <section className="flex flex-col bg-white rounded-lg max-w-lg m-auto w-full">
