@@ -298,6 +298,7 @@ export default function AdminWeb() {
                         value={selectedPayday}
                         onValueChange={setSelectedPayday}
                         label="Dia do Pagamento"
+                        className="text-center"
                       >
                         <SelectTrigger className="rounded-2xl w-[150px] text-[#848A9C] text-xs">
                           <SelectValue placeholder="Dia do Pagamento" />

@@ -361,7 +361,8 @@ export default function RelatorioAdmin() {
             <TableCell className="text-center">
               {allOrders
                 ?.reduce(
-                  (acc: number, i: any) => acc + Number(i.totalTaxes || 0),
+                  (acc: number, i: any) =>
+                    acc + Number(i.totalTaxes || 0) + Number(i.totalGatewayFee),
                   0
                 )
                 .toLocaleString("pt-BR", {
@@ -376,7 +377,8 @@ export default function RelatorioAdmin() {
                     acc +
                     Number(i.totalTaxes || 0) +
                     Number(i.partnerValue || 0) +
-                    Number(i.b2AdventureValue || 0),
+                    Number(i.b2AdventureValue || 0) +
+                    Number(i.totalGatewayFee),
                   0
                 )
                 .toLocaleString("pt-BR", {
