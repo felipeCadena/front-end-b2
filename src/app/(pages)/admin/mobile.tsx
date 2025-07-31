@@ -242,7 +242,7 @@ export default function AdminMobile() {
                     value={selectedPayday}
                     onValueChange={setSelectedPayday}
                     label="Dia do Pagamento"
-                    className="text-[0.8rem]"
+                    className="text-[0.7rem] text-center"
                   >
                     <SelectTrigger className="rounded-2xl text-[#848A9C] text-xs">
                       <SelectValue placeholder="Dia do Pagamento" />
