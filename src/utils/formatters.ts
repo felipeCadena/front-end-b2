@@ -352,6 +352,19 @@ export const handleNameActivity = (name: string) => {
   }
 };
 
+export const handleNameActivityReduce = (name: string) => {
+  switch (name) {
+    case "ar":
+      return "aéreas";
+    case "terra":
+      return "terrestres";
+    case "mar":
+      return "aquáticas";
+    default:
+      return name;
+  }
+};
+
 export function formatStateName(uf: string): string {
   if (!uf) return "";
   const states: Record<string, string> = {

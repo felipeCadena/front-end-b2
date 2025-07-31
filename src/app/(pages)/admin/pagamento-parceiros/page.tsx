@@ -178,24 +178,45 @@ export default function PagamentosParceiros() {
     ? Object.values(pending.partners)
     : [];
 
-  const valorTotalPendente =
-    pendingPartners.reduce((acc, p) => acc + (p.total_value_pending ?? 0), 0) ??
-    0;
+  const valorTotalPendente = React.useMemo(() => {
+    if (selectedPaydayPending === "0") {
+      return pendingPartners.reduce(
+        (acc, p) => acc + (p.total_value_pending ?? 0),
+        0
+      );
+    }
 
-  const valorTotalPago =
-    paidPartners.reduce((acc, p) => acc + (p.total_value_paid ?? 0), 0) ?? 0;
+    return (
+      pendingPartners
+        .filter((p) => String(p.payday) === selectedPaydayPending)
+        .reduce((acc, p) => acc + (p.total_value_pending ?? 0), 0) ?? 0
+    );
+  }, [pendingPartners, selectedPaydayPending]);
 
-  const totalPagamentos = paidPartners.length;
+  const valorTotalPago = React.useMemo(() => {
+    if (selectedPaydayPaid === "0") {
+      return paidPartners.reduce(
+        (acc, p) => acc + (p.total_value_paid ?? 0),
+        0
+      );
+    }
+
+    return (
+      paidPartners
+        .filter((p) => String(p.payday) === selectedPaydayPaid)
+        .reduce((acc, p) => acc + (p.total_value_paid ?? 0), 0) ?? 0
+    );
+  }, [paidPartners, selectedPaydayPaid]);
 
   const filteredPendingPartners = React.useMemo(() => {
-    if (selectedPaydayPaid === "0") return pendingPartners;
+    if (selectedPaydayPending === "0") return pendingPartners;
 
     const allowedPaydays = ["5", "10", "15"];
 
-    if (!allowedPaydays.includes(selectedPaydayPaid)) return [];
+    if (!allowedPaydays.includes(selectedPaydayPending)) return [];
 
     return pendingPartners.filter(
-      (p) => String(p?.payday) === selectedPaydayPaid
+      (p) => String(p?.payday) === selectedPaydayPending
     );
   }, [pendingPartners, selectedPaydayPending]);
 
@@ -235,7 +256,7 @@ export default function PagamentosParceiros() {
         </div>
       )}
 
-      <div className="w-full p-4 space-y-6 md:space-y-16 md:mt-6">
+      <div className="w-full p-4 space-y-6 md:mt-6">
         {/* Pagos */}
         <div>
           <div className="flex items-center w-full mb-4">
@@ -248,7 +269,7 @@ export default function PagamentosParceiros() {
             </MyTypography>
           </div>
 
-          <div className="space-y-3">
+          <div className="space-y-3 min-h-[20vh]">
             <div className="flex items-center justify-end w-full mb-4">
               <div className="flex gap-2 my-2">
                 <MySelect
@@ -320,30 +341,30 @@ export default function PagamentosParceiros() {
               </div>
             ) : (
               <div>
-                {filteredPaidPartners.length > 0 ? (
-                  filteredPaidPartners.map((payment: any) => (
-                    <PartnerPaymentCard
-                      key={payment?.ordersSchedules}
-                      name={payment?.partnerFantasyName}
-                      amount={payment?.total_value_paid}
-                      avatar={payment?.partnerLogo}
-                      payday={payment?.payday}
-                      status={hasTotalValuePaid(payment) ? "paid" : "pending"}
-                      loading={loading}
-                      onPay={() => payPartner(payment?.token_for_pay)}
-                    />
-                  ))
-                ) : (
-                  <div className="min-h-[20vh] text-center flex items-center justify-center">
-                    <MyTypography variant="subtitle4" weight="bold">
-                      Não há pagamentos realizados para o dia selecionado
-                    </MyTypography>
-                  </div>
-                )}
+                {filteredPaidPartners.length > 0
+                  ? filteredPaidPartners.map((payment: any) => (
+                      <PartnerPaymentCard
+                        key={payment?.ordersSchedules}
+                        name={payment?.partnerFantasyName}
+                        amount={payment?.total_value_paid}
+                        avatar={payment?.partnerLogo}
+                        payday={payment?.payday}
+                        status={hasTotalValuePaid(payment) ? "paid" : "pending"}
+                        loading={loading}
+                        onPay={() => payPartner(payment?.token_for_pay)}
+                      />
+                    ))
+                  : !isLoadingPaid && (
+                      <div className="min-h-[20vh] text-center flex items-center justify-center">
+                        <MyTypography variant="subtitle4" weight="bold">
+                          Não há pagamentos realizados para o dia selecionado
+                        </MyTypography>
+                      </div>
+                    )}
               </div>
             )}
           </div>
-          {!isLoadingPaid && (
+          {valorTotalPago > 0 && !isLoadingPaid && (
             <div className="bg-primary-900 p-4 rounded-lg flex justify-between items-center">
               <MyTypography variant="body-big" weight="bold">
                 Pagamentos
@@ -372,7 +393,7 @@ export default function PagamentosParceiros() {
         </div>
 
         {/* Aguardando Pagamento */}
-        <div className="w-full">
+        <div className="w-full pt-4">
           <div className="flex items-center w-full mb-4">
             <MyTypography
               variant="subtitle3"
@@ -455,33 +476,33 @@ export default function PagamentosParceiros() {
               </div>
             ) : (
               <div>
-                {filteredPendingPartners?.length > 0 ? (
-                  filteredPendingPartners.map((payment: any) => (
-                    <PartnerPaymentCard
-                      key={payment?.ordersSchedules}
-                      name={payment?.partnerFantasyName}
-                      amount={payment?.total_value_pending}
-                      avatar={payment?.partnerLogo}
-                      payday={payment?.payday}
-                      status={hasTotalValuePaid(payment) ? "paid" : "pending"}
-                      loading={loading}
-                      onPay={() => payPartner(payment?.token_for_pay)}
-                    />
-                  ))
-                ) : (
-                  <div className="min-h-[20vh] text-center flex items-center justify-center">
-                    <MyTypography variant="subtitle4" weight="bold">
-                      Não há pagamentos pendentes para o dia selecionado
-                    </MyTypography>
-                  </div>
-                )}
+                {filteredPendingPartners?.length > 0
+                  ? filteredPendingPartners.map((payment: any) => (
+                      <PartnerPaymentCard
+                        key={payment?.ordersSchedules}
+                        name={payment?.partnerFantasyName}
+                        amount={payment?.total_value_pending}
+                        avatar={payment?.partnerLogo}
+                        payday={payment?.payday}
+                        status={hasTotalValuePaid(payment) ? "paid" : "pending"}
+                        loading={loading}
+                        onPay={() => payPartner(payment?.token_for_pay)}
+                      />
+                    ))
+                  : !isLoading && (
+                      <div className="min-h-[20vh] text-center flex items-center justify-center">
+                        <MyTypography variant="subtitle4" weight="bold">
+                          Não há pagamentos pendentes para o dia selecionado
+                        </MyTypography>
+                      </div>
+                    )}
               </div>
             )}
           </div>
         </div>
 
         {/* Resumo */}
-        {!isLoading && (
+        {valorTotalPendente > 0 && !isLoading && (
           <div className="bg-primary-900 p-4 rounded-lg flex justify-between items-center">
             <MyTypography variant="body-big" weight="bold">
               Pagamentos
