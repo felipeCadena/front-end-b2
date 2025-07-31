@@ -303,7 +303,7 @@ export default function Dashboard() {
   const currentMonthKey = format(new Date(), "MM");
   const [year, setYear] = React.useState("2025");
 
-  const [selectedPayday, setSelectedPayday] = React.useState<string>("5");
+  const [selectedPayday, setSelectedPayday] = React.useState<string>("0");
 
   const [yearGeneral, setYearGeneral] = React.useState("2025");
 
@@ -567,9 +567,13 @@ export default function Dashboard() {
   }
 
   const filteredPendingPartners = React.useMemo(() => {
-    return pendingPartners.filter(
-      (p) => String(p?.payday) === String(selectedPayday)
-    );
+    if (selectedPayday === "0") return pendingPartners;
+
+    const allowedPaydays = ["5", "10", "15"];
+
+    if (!allowedPaydays.includes(selectedPayday)) return [];
+
+    return pendingPartners.filter((p) => String(p?.payday) === selectedPayday);
   }, [pendingPartners, selectedPayday]);
 
   return (
@@ -616,6 +620,7 @@ export default function Dashboard() {
                       <SelectValue placeholder="Dia do Pagamento" />
                     </SelectTrigger>
                     <SelectContent className="rounded-lg">
+                      <SelectItem value="0">Todos</SelectItem>
                       <SelectItem value="5">Dia 5</SelectItem>
                       <SelectItem value="10">Dia 10</SelectItem>
                       <SelectItem value="15">Dia 15</SelectItem>

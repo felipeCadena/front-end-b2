@@ -19,7 +19,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/molecules/my-table";
-import { getData, getHora, getYearsArray } from "@/utils/formatters";
+import {
+  getData,
+  getHora,
+  getYearsArray,
+  handleNameActivity,
+  handleNameActivityReduce,
+} from "@/utils/formatters";
 import MyIcon from "@/components/atoms/my-icon";
 import { useParams, useRouter } from "next/navigation";
 import React from "react";
@@ -87,6 +93,15 @@ export default function RelatorioAdmin() {
     setFilters((prev) => ({ ...prev, month: value }));
   };
 
+  function totalAgenda(orders: any) {
+    return orders.reduce(
+      (total: any, order: any) => total + order.qntAdults + order.qntChildren,
+      0
+    );
+  }
+
+  console.log(allOrders);
+
   const parsedRows = React.useMemo(() => {
     if (!allOrders) return [];
 
@@ -100,35 +115,45 @@ export default function RelatorioAdmin() {
       groupedByPartnerAndOrder[key].push(item);
     });
 
-    return Object.entries(groupedByPartnerAndOrder).map(([key, items]) => {
-      const first = items[0];
-      const partnerName = first.adventure.partner.fantasyName;
-      const partnerLogo = first.adventure.partner.logo?.url;
-      const pedidoId = first.orderAdventure.id;
+    return Object.entries(groupedByPartnerAndOrder).map(
+      ([key, items], index) => {
+        const first = items[0];
+        const partnerName = first.adventure.partner.fantasyName;
+        const partnerLogo = first.adventure.partner.logo?.url;
+        const pedidoId = first.orderAdventure.id;
 
-      const partnerValueTotal = items.reduce(
-        (sum, i) => sum + Number(i.partnerValue || 0),
-        0
-      );
-      const b2ValueTotal = items.reduce(
-        (sum, i) => sum + Number(i.b2AdventureValue || 0),
-        0
-      );
-      const taxs = items.reduce((sum, i) => sum + Number(i.totalTaxes || 0), 0);
-      const geral = partnerValueTotal + b2ValueTotal + taxs;
+        const partnerValueTotal = items.reduce(
+          (sum, i) => sum + Number(i.partnerValue || 0),
+          0
+        );
+        const b2ValueTotal = items.reduce(
+          (sum, i) => sum + Number(i.b2AdventureValue || 0),
+          0
+        );
+        const taxs = items.reduce(
+          (sum, i) => sum + Number(i.totalTaxes || 0),
+          0
+        );
+        const fee = items.reduce(
+          (sum, i) => sum + Number(i.totalGatewayFee),
+          0
+        );
 
-      return {
-        partnerId: key,
-        partnerName,
-        partnerLogo,
-        pedidoId,
-        qntAgendas: items.length,
-        totalPartner: partnerValueTotal,
-        totalB2: b2ValueTotal,
-        taxs,
-        totalGeral: geral,
-      };
-    });
+        const geral = partnerValueTotal + b2ValueTotal + taxs + fee;
+
+        return {
+          partnerId: key,
+          partnerName,
+          partnerLogo,
+          pedidoId: "1",
+          qntAgendas: totalAgenda(items),
+          totalPartner: partnerValueTotal,
+          totalB2: b2ValueTotal,
+          taxs: taxs + fee,
+          totalGeral: geral,
+        };
+      }
+    );
   }, [allOrders]);
 
   return (
@@ -149,7 +174,8 @@ export default function RelatorioAdmin() {
             weight="bold"
             className={cn("text-[1.1rem] md:text-[1.3rem]")}
           >
-            Relatório das atividades do tipo {typeAdventure ?? ""}
+            Relatório das atividades do tipo{" "}
+            {handleNameActivityReduce(typeAdventure as string) ?? ""}
           </MyTypography>
         </div>
       </div>
@@ -335,7 +361,8 @@ export default function RelatorioAdmin() {
             <TableCell className="text-center">
               {allOrders
                 ?.reduce(
-                  (acc: number, i: any) => acc + Number(i.totalTaxes || 0),
+                  (acc: number, i: any) =>
+                    acc + Number(i.totalTaxes || 0) + Number(i.totalGatewayFee),
                   0
                 )
                 .toLocaleString("pt-BR", {
@@ -350,7 +377,8 @@ export default function RelatorioAdmin() {
                     acc +
                     Number(i.totalTaxes || 0) +
                     Number(i.partnerValue || 0) +
-                    Number(i.b2AdventureValue || 0),
+                    Number(i.b2AdventureValue || 0) +
+                    Number(i.totalGatewayFee),
                   0
                 )
                 .toLocaleString("pt-BR", {
