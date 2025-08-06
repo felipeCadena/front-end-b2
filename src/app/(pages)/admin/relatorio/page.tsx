@@ -40,10 +40,10 @@ export default function RelatorioAdmin() {
   const [originalAllOrders, setOriginalAllOrders] = React.useState<any[]>([]);
 
   const CONFIRMED = [
-    "APROVADO",
-    "PAGO",
-    "PAGO_PARCIAL",
-    "PAGO_PARCIAL_AGUARDANDO_PAGAMENTO",
+    "CONFIRMED",
+    "RECEIVED",
+    "RECEIVED_IN_CASH",
+    "PARTIALLY_REFUNDED",
   ];
 
   const currentMonthKey = format(new Date(), "MM");
@@ -360,15 +360,15 @@ export default function RelatorioAdmin() {
               >
                 <TableCell className="max-sm:px-2 max-sm:py-3 rounded-l-md">
                   <div className="flex items-center justify-start gap-2 px-8">
-                    {
+                    <div className="w-7 h-7 rounded-full overflow-hidden bg-white">
                       <Image
                         src={row.partnerLogo ?? "/user.png"}
                         alt={row.partnerName}
                         width={24}
                         height={24}
-                        className="rounded-full object-cover"
+                        className="w-full h-full object-cover"
                       />
-                    }
+                    </div>
                     <MyTypography variant="body" weight="bold">
                       {row.partnerName}
                     </MyTypography>
