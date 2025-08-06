@@ -300,7 +300,9 @@ type IncomeTypeYear = {
 export default function Dashboard() {
   const router = useRouter();
   const queryClient = useQueryClient();
-  const currentMonthKey = format(new Date(), "MM");
+  const now = new Date();
+  const previousMonth = subMonths(now, 1);
+  const prevMonthKey = format(previousMonth, "MM");
   const [year, setYear] = React.useState("2025");
 
   const [selectedPayday, setSelectedPayday] = React.useState<string>("0");
@@ -310,15 +312,12 @@ export default function Dashboard() {
   const [filters, setFilters] = React.useState({
     report: "",
     year: "2025",
-    month: currentMonthKey,
+    month: prevMonthKey,
     typeDate: "", // month or year
   });
   const [typeGroup, setTypeGroup] = React.useState("month");
 
   const [loading, setLoading] = React.useState(false);
-
-  const now = new Date();
-  const previousMonth = subMonths(now, 1);
 
   const startsAt = format(startOfMonth(previousMonth), "yyyy-MM-dd'T'00:00:00");
   const endsAt = format(endOfMonth(previousMonth), "yyyy-MM-dd'T'00:00:00");
