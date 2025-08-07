@@ -722,21 +722,26 @@ export const formatRecurrencesToDates = (
 export const getWeeklyRecurrenceTime = (
   selected: Date | undefined,
   recurrenceGroup: GroupedRecurrences
-) => {
-  const selectedWeekDay = selected?.getDay();
-  const selectedWeekDayActivityTime = recurrenceGroup?.semanal?.filter((rec) =>
-    rec?.dias.some((day) => day === selectedWeekDay)
-  )[0];
+): string[] => {
+  if (!selected) return [];
 
-  if (!selectedWeekDayActivityTime?.horarios) {
-    const selectedMonthlyDay = recurrenceGroup.mensal.filter((rec) =>
-      rec.dias.some((day) => day === selected?.getDate())
-    )[0];
+  const selectedWeekDay = selected.getDay();
+  const selectedDayOfMonth = selected.getDate();
 
-    return selectedMonthlyDay?.horarios ?? [];
-  }
+  const weeklyHorarios = recurrenceGroup?.semanal
+    ?.filter((rec) => rec.dias.includes(selectedWeekDay))
+    ?.flatMap((rec) => rec.horarios);
 
-  return selectedWeekDayActivityTime?.horarios ?? [];
+  const monthlyHorarios = recurrenceGroup?.mensal
+    ?.filter((rec) => rec.dias.includes(selectedDayOfMonth))
+    ?.flatMap((rec) => rec.horarios);
+
+  // Junta os horários, remove duplicados e ordena
+  const horarios = Array.from(
+    new Set([...(weeklyHorarios ?? []), ...(monthlyHorarios ?? [])])
+  ).sort();
+
+  return horarios;
 };
 
 export const separateDecimals = (formattedPrice: string) => {
@@ -863,28 +868,24 @@ export const addPartnerScheduledTimeToSelectedDateTime = (
         time: string[];
       }[]
     | undefined
-) => {
-  if (selectedDate) {
-    const partnerScheduleSelected = availablePartnerSchedules?.find(
-      (sch) => sch.date === format(selectedDate, "yyyy-MM-dd")
-    );
+): string[] => {
+  if (!selectedDate) return selectedDateTimes;
 
-    if (partnerScheduleSelected) {
-      const timeAlreadyExists = partnerScheduleSelected.time.filter((time) =>
-        selectedDateTimes.some((selectedTime) => selectedTime === time)
-      );
-      const filteredTimes = partnerScheduleSelected.time.filter((time) =>
-        timeAlreadyExists.every((existingTime) => existingTime !== time)
-      );
+  const formattedDate = format(selectedDate, "yyyy-MM-dd");
 
-      return [...selectedDateTimes, ...filteredTimes].sort();
-    } else {
-      return selectedDateTimes;
-    }
-  }
-  return selectedDateTimes;
+  const partnerSchedule = availablePartnerSchedules?.find(
+    (sch) => sch.date === formattedDate
+  );
+
+  if (!partnerSchedule) return selectedDateTimes;
+
+  // Cria um Set para evitar duplicatas
+  const combinedTimes = Array.from(
+    new Set([...selectedDateTimes, ...partnerSchedule.time])
+  ).sort();
+
+  return combinedTimes;
 };
-
 export const formatCardNumber = (cardNumber: string): string => {
   return cardNumber
     .replace(/\D/g, "")
