@@ -265,7 +265,6 @@ export default function RelatorioAdmin() {
               </SelectItem>
             </SelectContent>
           </MySelect>
-
           <MySelect
             value={filters?.year}
             onValueChange={(value) => {
