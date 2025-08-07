@@ -84,38 +84,34 @@ const ActivityDatePicker = ({
       const dayOfWeek = getDay(currentDate); // 0 (domingo) a 6 (sábado)
       const dayOfMonth = getDate(currentDate); // 1-31
 
-      let horarios: string[] = [];
+      // Obtem todos os horários para esse dia da semana
+      const horariosSemanal = groupedRecurrences.semanal
+        .filter(({ dias }) => dias.includes(dayOfWeek))
+        .flatMap(({ horarios }) => horarios);
 
-      // Recorrência semanal
-      groupedRecurrences.semanal.forEach(({ dias, horarios: h }) => {
-        if (dias.includes(dayOfWeek)) {
-          horarios = horarios.concat(h);
-        }
-      });
+      // Obtem todos os horários para esse dia do mês
+      const horariosMensal = groupedRecurrences.mensal
+        .filter(({ dias }) => dias.includes(dayOfMonth))
+        .flatMap(({ horarios }) => horarios);
 
-      // Recorrência mensal
-      groupedRecurrences.mensal.forEach(({ dias, horarios: h }) => {
-        if (dias.includes(dayOfMonth)) {
-          horarios = horarios.concat(h);
-        }
-      });
+      // Junta os horários, remove duplicados e ordena
+      let horarios = Array.from(
+        new Set([...horariosSemanal, ...horariosMensal])
+      ).sort();
 
       if (horarios.length === 0) continue;
 
-      // Remove duplicados e ordena
-      horarios = Array.from(new Set(horarios)).sort();
-
+      // Filtra horários disponíveis (não cancelados)
       const horariosDisponiveis = horarios.filter((horario) => {
         // Se não existe nenhum schedule para esse horário nessa data, está liberado
         if (!scheduleMap[dateStr] || !(horario in scheduleMap[dateStr])) {
           return true;
         }
 
-        // Existe, mas não está cancelado
+        // Existe, mas está disponível (não cancelado)
         return scheduleMap[dateStr][horario] === true;
       });
 
-      // Só adiciona se tiver pelo menos 1 horário
       if (horariosDisponiveis.length > 0) {
         result[dateStr] = horariosDisponiveis;
       }
