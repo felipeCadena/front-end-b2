@@ -8,33 +8,38 @@ import { cn } from "@/utils/cn";
 import { useQuery } from "@tanstack/react-query";
 import { adventures } from "@/services/api/adventures";
 import { useDebounce } from "@/hooks/useDebounce";
-import { Slider } from "../atoms/my-slider-min-max";
 import { PriceRangeSlider } from "../molecules/price-range";
-import MyTypography from "../atoms/my-typography";
-import { usePathname } from "next/navigation";
 
 export default function SearchActivity({
   className,
   setFormData,
+  priceAdult
 }: {
   className?: string;
+  priceAdult?: {
+    min: string
+    max: string
+  };
   setFormData: (adventures: any) => void;
 }) {
-  const [chips, setChips] = React.useState<string[]>([]);
   const [search, setSearch] = React.useState("");
   const [openFilter, setOpenFilter] = React.useState(false);
-  const [priceRange, setPriceRange] = React.useState([0, 3000])
-  const pathname = usePathname()
-
+  const [priceRange, setPriceRange] = React.useState([Number(priceAdult?.min) ?? 0, Number(priceAdult?.max) ?? 10000])
 
   const debouncedValue = useDebounce(search, 700);
+
+  React.useEffect(() => {
+  if (priceAdult) {
+    setPriceRange([Number(priceAdult.min), Number(priceAdult.max)]);
+  }
+}, [priceAdult]);
 
  const { data: filterAdventure, refetch } = useQuery({
   queryKey: ["filterAdventure", debouncedValue, priceRange],
   queryFn: async () => {
     return adventures.filterAdventures({ 
       q: debouncedValue || undefined,
-      priceAdult: (priceRange[0] === 0 && priceRange[1] === 3000) 
+      priceAdult: (priceRange[0] === Number(priceAdult?.min) && priceRange[1] === Number(priceAdult?.max)) 
         ? undefined 
         : `${priceRange[0]},${priceRange[1]}`
     });
@@ -46,7 +51,7 @@ const handleSearch = () => {
   refetch().then(res => {
     setFormData(res.data ?? []);
     setSearch('')
-    setPriceRange([0, 3000])
+    setPriceRange([Number(priceAdult?.min) ?? 0, Number(priceAdult?.max) ?? 10000])
   });
 };
 
@@ -55,7 +60,8 @@ const handleFilter = () => {
     setFormData(res.data ?? []);
     setOpenFilter(false);
     setSearch('')
-    setPriceRange([0, 3000])
+        setPriceRange([Number(priceAdult?.min) ?? 0, Number(priceAdult?.max) ?? 10000])
+
   });
 };
 
@@ -97,11 +103,11 @@ const handleFilter = () => {
         >Filtrar
         </MyButton>
 
-        <MyIcon className={cn(pathname != "/" && "max-sm:hidden", "md:hidden")} name='filter' onClick={() => setOpenFilter(true)}/>        
+        <MyIcon className={cn("md:hidden")} name='filter' onClick={() => setOpenFilter(true)}/>        
     </section>
     <div
         className={cn(
-          "fixed top-0 right-0 h-full w-[30%] bg-white shadow-xl transform transition-transform duration-300 ease-in-out z-50",
+          "fixed top-0 right-0 h-full md:w-[30%] bg-white shadow-xl transform transition-transform duration-300 ease-in-out z-50",
           openFilter ? "translate-x-0" : "translate-x-full"
         )}
       >
