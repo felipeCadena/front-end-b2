@@ -46,6 +46,7 @@ import AutocompleteCombobox from "@/components/organisms/google-autocomplete";
 import { toast } from "react-toastify";
 import { MySingleDatePicker } from "@/components/molecules/my-single-date-picker";
 import Duration from "@/components/molecules/duration";
+import LanguageCheckboxGroup from "@/components/molecules/group-checkbox";
 
 interface AddressData {
   addressStreet: string;
@@ -432,6 +433,9 @@ export default function WebForm({
                 {description.length} / 2000 caracteres
               </div>
             </div>
+
+              <LanguageCheckboxGroup />
+
 
             <div className="grid grid-cols-2 gap-8">
               <MySelect
