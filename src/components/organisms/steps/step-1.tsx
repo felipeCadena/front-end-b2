@@ -19,6 +19,13 @@ export default function Step1({
   const { setAdventureData, typeAdventure, description, title } =
     useAdventureStore();
 
+  const [selected, setSelected] = React.useState([]);
+
+
+  const handleLanguages = () => {
+
+  }
+
   const handleSelectType = (value: TypeAdventure) => {
     setAdventureData({
       typeAdventure: value,
@@ -59,8 +66,8 @@ export default function Step1({
           className="mt-2"
         />
 
-        <LanguageSelector />
-        
+        <LanguageSelector selected={selected} setSelected={setSelected} />
+
 
         <div className="w-full">
           <MyTextarea

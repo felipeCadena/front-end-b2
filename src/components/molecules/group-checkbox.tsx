@@ -1,8 +1,6 @@
 "use client";
 
 import React, { useState } from "react";
-import MyButton from "../atoms/my-button";
-import MyTextInput from "../atoms/my-text-input";
 import MyIcon from "../atoms/my-icon";
 import MyTypography from "../atoms/my-typography";
 import { cn } from "@/utils/cn";
@@ -17,13 +15,13 @@ const languages = [
     { id: "cn", label: "Mandarim (Chinês)" },
 ];
 
-export default function LanguageSelector() {
-    const [selected, setSelected] = useState<string[]>([]);
+
+export default function LanguageSelector({selected, setSelected}: any) {
     const [isOpen, setIsOpen] = useState(true);
 
     const toggleLanguage = (id: string) => {
-        setSelected((prev) =>
-            prev.includes(id) ? prev.filter((lang) => lang !== id) : [...prev, id]
+        setSelected((prev: any) =>
+            prev.includes(id) ? prev.filter((lang: any) => lang !== id) : [...prev, id]
         );
     };
 
@@ -32,12 +30,12 @@ export default function LanguageSelector() {
 
             <div>
 
-            <MyTypography variant="subtitle4" weight="bold" className="mb-2">
-                Idiomas falados:
+            <MyTypography lightness={800} variant="body-big" weight="semibold" className="mb-2">
+                Idiomas falados
             </MyTypography>
             <div
                 onClick={() => setIsOpen(!isOpen)}
-                className="flex items-center justify-between border-t border-l border-r border-gray-300 rounded-t w-full p-4 cursor-pointer bg-gray-100"
+                className={cn("flex items-center justify-between border-gray-300 w-full p-4 cursor-pointer bg-gray-100", isOpen ? "border-t border-l border-r  rounded-t" : "border rounded")}
             >
 
                 <div className="flex items-center gap-2">
@@ -48,7 +46,7 @@ export default function LanguageSelector() {
                 <span className="text-sm">
                     {selected.length > 0
                         ? selected
-                            .map((id) => languages.find((l) => l.id === id)?.label)
+                            .map((id: any) => languages.find((l) => l.id === id)?.label)
                             .join(", ").slice(0,30).concat("...")
                         : "Selecione os idiomas"}
                 </span>
