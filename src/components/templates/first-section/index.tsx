@@ -33,15 +33,15 @@ export default function FirstSection() {
         >
           Qual será sua próxima aventura?
         </MyTypography>
-        <MyButton
+        {/* <MyButton
           variant="default"
           size="md"
           borderRadius="squared"
-          className="mt-4 md:absolute md:bottom-24 md:right-12"
+          className="mt-4 md:absolute md:bottom-24 md:right-12 max-sm:hidden"
           onClick={() => router.push(PATHS.atividades)}
         >
           Descobrir agora
-        </MyButton>
+        </MyButton> */}
       </div>
     </section>
   );

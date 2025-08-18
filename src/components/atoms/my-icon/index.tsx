@@ -129,6 +129,8 @@ import AudioIcon from "./elements/audio";
 import Coins from "./elements/coins";
 import Play from "./elements/play";
 import Pause from "./elements/pause";
+import { Filter } from "./elements/filter";
+import { FilterMuted } from "./elements/filter-muted";
 
 export type IconsMapTypes = keyof typeof IconsMap;
 
@@ -268,6 +270,8 @@ const IconsMap = {
   coins: <Coins />,
   play: <Play />,
   pause: <Pause />,
+  filter: <Filter />,
+  "filter-muted": <FilterMuted />
 };
 
 export default function MyIcon({

@@ -3,6 +3,7 @@
 import MyTextInput from "@/components/atoms/my-text-input";
 import MyTextarea from "@/components/atoms/my-textarea";
 import MyTypography from "@/components/atoms/my-typography";
+import LanguageSelector from "@/components/molecules/group-checkbox";
 import ActivitiesFilter from "@/components/organisms/activities-filter";
 import { TypeAdventure, useAdventureStore } from "@/store/useAdventureStore";
 import { capitalizeFirstLetter } from "@/utils/formatters";
@@ -57,6 +58,9 @@ export default function Step1({
           placeholder="Nome da atividade"
           className="mt-2"
         />
+
+        <LanguageSelector />
+        
 
         <div className="w-full">
           <MyTextarea

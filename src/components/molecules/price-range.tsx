@@ -1,0 +1,71 @@
+"use client"
+
+import * as React from "react"
+import * as SliderPrimitive from "@radix-ui/react-slider"
+import { cn } from "@/utils/cn"
+
+function PriceRangeSlider({
+  value,
+  onChange,
+  min = 0,
+  max = 1000,
+  step = 50,
+}: {
+  value: number[]
+  onChange: (val: number[]) => void
+  min?: number
+  max?: number
+  step?: number
+}) {
+  return (
+    <div className="space-y-6">
+      <p className="bold">Valor da atividade:</p>
+
+      {/* Inputs */}
+      <div className="flex gap-4">
+        <input
+          type="number"
+          className="w-full rounded-md border px-3 py-2 text-center font-medium"
+          value={value[0]}
+          onChange={(e) => {
+            const v = Math.min(Number(e.target.value), value[1])
+            onChange([v, value[1]])
+          }}
+        />
+        <input
+          type="number"
+          className="w-full rounded-md border px-3 py-2 text-center font-medium"
+          value={value[1]}
+          onChange={(e) => {
+            const v = Math.max(Number(e.target.value), value[0])
+            onChange([value[0], v])
+          }}
+        />
+      </div>
+
+      {/* Slider */}
+      <SliderPrimitive.Root
+        min={min}
+        max={max}
+        step={step}
+        value={value}
+        onValueChange={onChange}
+        className={cn(
+          "relative flex w-full touch-none select-none items-center"
+        )}
+      >
+        <SliderPrimitive.Track className="relative h-1 w-full grow overflow-hidden rounded-full bg-gray-200">
+          <SliderPrimitive.Range className="absolute h-full bg-primary-600" />
+        </SliderPrimitive.Track>
+        {value.map((_, i) => (
+          <SliderPrimitive.Thumb
+            key={i}
+            className="block size-5 rounded-full border border-gray-300 bg-white shadow hover:ring-4 hover:ring-green-200 focus:outline-none"
+          />
+        ))}
+      </SliderPrimitive.Root>
+    </div>
+  )
+}
+
+export { PriceRangeSlider }
