@@ -67,8 +67,8 @@ export default function Login() {
 
           if (params?.redirect) {
             console.log("Redirecionando para:", params.redirect);
-            router.push(params.redirect);
             toast.success("Login realizado com sucesso!");
+            router.push(params.redirect);
             return;
           }
 
@@ -85,20 +85,20 @@ export default function Login() {
             DEFAULT_ROLE_PATHS[mappedRole as keyof typeof DEFAULT_ROLE_PATHS];
 
           if (defaultPath) {
+            toast.success("Login realizado com sucesso!");
             console.log("Redirecionando para:", defaultPath);
             router.push(defaultPath);
-            toast.success("Login realizado com sucesso!");
           }
         } catch (error) {
           console.error("Erro ao processar sessão:", error);
+        } finally {
+          setIsLoading(false);
         }
       }
-
-      setIsLoading(false);
     };
 
     handleSessionUpdate();
-  }, [session]);
+  }, [session, status]);
 
   const handleLogin = async () => {
     setIsLoading(true);
@@ -116,12 +116,10 @@ export default function Login() {
     } catch (err) {
       console.error("Erro no login:", err);
       toast.error("Erro ao fazer login");
+    } finally {
+      setIsLoading(false);
     }
-    // finally {
-    //   setIsLoading(false);
-    // }
   };
-
   return (
     <section className="flex flex-col bg-white rounded-lg max-w-lg m-auto w-full">
       <div className="px-6 md:px-12 md:py-6">

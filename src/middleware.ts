@@ -51,7 +51,7 @@ export async function middleware(req: NextRequest) {
     return NextResponse.redirect(redirectUrl);
   }
 
-  const role = token.role;
+  const role = token?.role;
 
   if (role === "superadmin") {
     return NextResponse.next();
@@ -59,7 +59,7 @@ export async function middleware(req: NextRequest) {
 
   // Verifica se o usuário tem acesso à rota privada
   if (
-    (isAdmin && role !== "admin") ||
+    (isAdmin && !["admin", "superadmin"].includes(role as string)) ||
     (isPartner && role !== "partner") ||
     (isCustomer && role !== "customer")
   ) {
