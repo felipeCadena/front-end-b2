@@ -22,11 +22,11 @@ export default function AtividadesTemplate() {
     ""
   );
 
-  const { data: activities = [], isLoading } = useQuery({
+  const { data: activitiesResponse, isLoading } = useQuery({
     queryKey: ["activities", params],
     enabled: !!params,
     queryFn: () =>
-      adventures.filterAdventures({
+      adventures.filterAdventuresWithPrice({
         limit: 100,
         skip: 0,
         ...params,
@@ -60,9 +60,12 @@ export default function AtividadesTemplate() {
 
   const cartSize = getCartSize(userId ?? "");
 
+  const activities = activitiesResponse?.data ?? [];
+  const priceAdult = activitiesResponse?.priceAdult;
+
   const filterActivity = (activities: any, typeAdventure: string) => {
     return (
-      activities?.filter(
+      activities.filter(
         (activity: any) => activity.typeAdventure === typeAdventure
       ) ?? []
     );
@@ -78,7 +81,7 @@ export default function AtividadesTemplate() {
   ) : (
     <section className="">
       <div className="mt-8">
-        <SearchActivity setFormData={handleSearch} />
+        <SearchActivity priceAdult={priceAdult} setFormData={handleSearch} />
       </div>
 
       <ActivitiesFilter selected={selected} setSelected={handleSelect} />
@@ -122,7 +125,7 @@ export default function AtividadesTemplate() {
             >
               Atividades Aéreas
             </MyTypography>
-            {filterActivity(activities, "ar")?.length > 0 ? (
+            {activities && filterActivity(activities, "ar")?.length > 0 ? (
               <CarouselCustom activities={filterActivity(activities, "ar")} />
             ) : (
               <div className="w-full h-[225px] flex flex-col justify-center items-center">
@@ -147,7 +150,7 @@ export default function AtividadesTemplate() {
             >
               Atividades Terrestres
             </MyTypography>
-            {filterActivity(activities, "terra")?.length > 0 ? (
+            {activities && filterActivity(activities, "terra")?.length > 0 ? (
               <CarouselCustom
                 activities={filterActivity(activities, "terra")}
               />
@@ -174,7 +177,7 @@ export default function AtividadesTemplate() {
             >
               Atividades Aquática
             </MyTypography>
-            {filterActivity(activities, "mar")?.length > 0 ? (
+            {activities && filterActivity(activities, "mar")?.length > 0 ? (
               <CarouselCustom activities={filterActivity(activities, "mar")} />
             ) : (
               <div className="w-full h-[225px] flex flex-col justify-center items-center">
