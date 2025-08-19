@@ -100,8 +100,6 @@ export default function RelatorioAdmin() {
     );
   }
 
-  console.log(allOrders);
-
   const parsedRows = React.useMemo(() => {
     if (!allOrders) return [];
 

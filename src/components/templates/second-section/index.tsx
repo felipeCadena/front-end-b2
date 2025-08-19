@@ -33,11 +33,12 @@ export default function SecondSection() {
   const { data: adventuresResponse, isLoading } = useQuery({
     queryKey: ["adventures", selected, params],
     queryFn: async () => {
-      const filterAdventures = await adventuresService.filterAdventuresWithPrice({
-        typeAdventure: selected ? selected : undefined,
-        ...params,
-        limit: 100,
-      });
+      const filterAdventures =
+        await adventuresService.filterAdventuresWithPrice({
+          typeAdventure: selected ? selected : undefined,
+          ...params,
+          limit: 100,
+        });
 
       setSearchedAdventures(selected);
       setAdventures(filterAdventures?.data);
@@ -81,12 +82,13 @@ export default function SecondSection() {
     }
   };
 
-  console.log(adventuresResponse?.priceAdult)
-
   return (
     <section className="">
       <div className="mt-8">
-        <SearchActivity setFormData={handleSearch} priceAdult={adventuresResponse?.priceAdult} />
+        <SearchActivity
+          setFormData={handleSearch}
+          priceAdult={adventuresResponse?.priceAdult}
+        />
       </div>
 
       <ActivitiesFilter selected={selected} setSelected={handleSelect} />
