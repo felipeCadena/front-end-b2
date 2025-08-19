@@ -67,7 +67,7 @@ export default function SearchActivity({
 
   return (
     <>
-      <section className={cn("mt-2 md:w-2/3 md:mx-auto max-sm:px-4 flex items-center gap-4", className)}>
+      <section className={cn("mt-2 md:mx-auto max-sm:px-4 flex items-center gap-4", className)}>
         <MyTextInput
           placeholder="Procurar atividade"
           noHintText
