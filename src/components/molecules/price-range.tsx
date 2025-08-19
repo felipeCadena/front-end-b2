@@ -1,21 +1,21 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import * as SliderPrimitive from "@radix-ui/react-slider"
-import { cn } from "@/utils/cn"
+import * as React from "react";
+import * as SliderPrimitive from "@radix-ui/react-slider";
+import { cn } from "@/utils/cn";
 
 function PriceRangeSlider({
   value,
   onChange,
   min = 0,
-  max = 1000,
+  max = 10000,
   step = 50,
 }: {
-  value: number[]
-  onChange: (val: number[]) => void
-  min?: number
-  max?: number
-  step?: number
+  value: number[];
+  onChange: (val: number[]) => void;
+  min?: number;
+  max?: number;
+  step?: number;
 }) {
   return (
     <div className="space-y-6">
@@ -28,8 +28,8 @@ function PriceRangeSlider({
           className="w-full rounded-md border px-3 py-2 text-center font-medium"
           value={value[0]}
           onChange={(e) => {
-            const v = Math.min(Number(e.target.value), value[1])
-            onChange([v, value[1]])
+            const v = Math.min(Number(e.target.value), value[1]);
+            onChange([v, value[1]]);
           }}
         />
         <input
@@ -37,8 +37,8 @@ function PriceRangeSlider({
           className="w-full rounded-md border px-3 py-2 text-center font-medium"
           value={value[1]}
           onChange={(e) => {
-            const v = Math.max(Number(e.target.value), value[0])
-            onChange([value[0], v])
+            const v = Math.max(Number(e.target.value), value[0]);
+            onChange([value[0], v]);
           }}
         />
       </div>
@@ -65,7 +65,7 @@ function PriceRangeSlider({
         ))}
       </SliderPrimitive.Root>
     </div>
-  )
+  );
 }
 
-export { PriceRangeSlider }
+export { PriceRangeSlider };

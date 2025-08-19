@@ -8,6 +8,7 @@ import Layout from "@/components/organisms/layout";
 import AuthProvider from "@/providers/auth-provider";
 import { Provider } from "@/providers/provider";
 import { GoogleMapsProvider } from "@/providers/google-provider";
+import Script from "next/script";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -64,6 +65,20 @@ export default function RootLayout({
             />
           </Provider>
         </AuthProvider>
+        {/* Google tag */}
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-Z38WV8VE4Y"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+
+            gtag('config', 'G-Z38WV8VE4Y');
+          `}
+        </Script>
       </body>
     </html>
   );
