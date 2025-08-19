@@ -1,21 +1,21 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import * as SliderPrimitive from "@radix-ui/react-slider"
-import { cn } from "@/utils/cn"
+import * as React from "react";
+import * as SliderPrimitive from "@radix-ui/react-slider";
+import { cn } from "@/utils/cn";
 
 function PriceRangeSlider({
   value,
   onChange,
   min = 0,
-  max = 1000,
+  max = 10000,
   step = 50,
 }: {
-  value: number[]
-  onChange: (val: number[]) => void
-  min?: number
-  max?: number
-  step?: number
+  value: number[];
+  onChange: (val: number[]) => void;
+  min?: number;
+  max?: number;
+  step?: number;
 }) {
   const safeValue = value ?? [min, max]
 
@@ -71,7 +71,7 @@ function PriceRangeSlider({
         ))}
       </SliderPrimitive.Root>
     </div>
-  )
+  );
 }
 
-export { PriceRangeSlider }
+export { PriceRangeSlider };

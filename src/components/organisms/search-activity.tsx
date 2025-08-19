@@ -13,18 +13,21 @@ import { PriceRangeSlider } from "../molecules/price-range";
 export default function SearchActivity({
   className,
   setFormData,
-  priceAdult
+  priceAdult,
 }: {
   className?: string;
   priceAdult?: {
-    min: string
-    max: string
+    min: string;
+    max: string;
   };
   setFormData: (adventures: any) => void;
 }) {
   const [search, setSearch] = React.useState("");
   const [openFilter, setOpenFilter] = React.useState(false);
-  const [priceRange, setPriceRange] = React.useState([Number(priceAdult?.min) ?? 0, Number(priceAdult?.max) ?? 10000])
+  const [priceRange, setPriceRange] = React.useState([
+    Number(priceAdult?.min) ?? 0,
+    Number(priceAdult?.max) ?? 10000,
+  ]);
 
   const debouncedValue = useDebounce(search, 700);
 
@@ -39,30 +42,45 @@ export default function SearchActivity({
     queryFn: async () => {
       return adventures.filterAdventures({
         q: debouncedValue || undefined,
-        priceAdult: (priceRange[0] === Number(priceAdult?.min) && priceRange[1] === Number(priceAdult?.max))
-          ? undefined
-          : `${priceRange[0]},${priceRange[1]}`
+        priceAdult:
+          priceRange[0] === Number(priceAdult?.min) &&
+          priceRange[1] === Number(priceAdult?.max)
+            ? undefined
+            : `${priceRange[0]},${priceRange[1]}`,
       });
     },
     enabled: false,
   });
 
   const handleSearch = () => {
-    refetch().then(res => {
+    refetch().then((res) => {
       setFormData(res.data ?? []);
-      setSearch('')
-      setPriceRange([Number(priceAdult?.min) ?? 0, Number(priceAdult?.max) ?? 10000])
+      setSearch("");
+      setPriceRange([
+        Number(priceAdult?.min) ?? 0,
+        Number(priceAdult?.max) ?? 10000,
+      ]);
     });
   };
 
   const handleFilter = () => {
-    refetch().then(res => {
+    refetch().then((res) => {
       setFormData(res.data ?? []);
       setOpenFilter(false);
-      setSearch('')
-      setPriceRange([Number(priceAdult?.min) ?? 0, Number(priceAdult?.max) ?? 10000])
-
+      setSearch("");
+      setPriceRange([
+        Number(priceAdult?.min) ?? 0,
+        Number(priceAdult?.max) ?? 10000,
+      ]);
     });
+  };
+
+  const handleClear = () => {
+    setSearch("");
+    setPriceRange([
+      Number(priceAdult?.min) ?? 0,
+      Number(priceAdult?.max) ?? 10000,
+    ]);
   };
 
   return (
@@ -99,11 +117,17 @@ export default function SearchActivity({
           variant="secondary"
           borderRadius="squared"
           className="max-sm:hidden py-6 px-8 text-black"
-          leftIcon={<MyIcon name='filter-muted' onClick={() => setOpenFilter(true)} />}
-        >Filtrar
+          leftIcon={<MyIcon name="filter-muted" />}
+          onClick={() => setOpenFilter(true)}
+        >
+          Filtrar
         </MyButton>
 
-        <MyIcon className={cn("md:hidden")} name='filter' onClick={() => setOpenFilter(true)} />
+        <MyIcon
+          className={cn("md:hidden")}
+          name="filter"
+          onClick={() => setOpenFilter(true)}
+        />
       </section>
       <div
         className={cn(
@@ -112,32 +136,44 @@ export default function SearchActivity({
         )}
       >
         <div className="p-4">
-          <MyIcon
-            className=""
-            name='x'
-            onClick={() => setOpenFilter(false)}
-          />
+          <MyIcon className="" name="x" onClick={() => setOpenFilter(false)} />
         </div>
 
         <div className="p-4 space-y-10 overflow-y-auto h-[calc(100%-60px)]">
           {/* Valor da atividade */}
           <div className="flex justify-between font-bold">
-            <PriceRangeSlider value={priceRange} onChange={setPriceRange} min={0} max={2000} step={50} />
+            <PriceRangeSlider
+              value={priceRange}
+              onChange={setPriceRange}
+              min={Number(priceAdult?.min)}
+              max={Number(priceAdult?.max)}
+              step={50}
+            />
           </div>
           {/* Botão Salvar */}
 
-          <MyButton
-            variant="default"
-            size="lg"
-            borderRadius="squared"
-            className="w-full"
-            onClick={handleFilter}
-          >
-            Salvar
-          </MyButton>
+          <div className="flex gap-2">
+            <MyButton
+              variant="outline-neutral"
+              size="lg"
+              borderRadius="squared"
+              className="w-full"
+              onClick={handleClear}
+            >
+              Limpar
+            </MyButton>
+
+            <MyButton
+              variant="default"
+              size="lg"
+              borderRadius="squared"
+              className="w-full"
+              onClick={handleFilter}
+            >
+              Filtrar
+            </MyButton>
+          </div>
         </div>
-
-
       </div>
       {/* Overlay escuro ao fundo */}
       {openFilter && (
