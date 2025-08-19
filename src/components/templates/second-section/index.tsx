@@ -2,7 +2,7 @@
 
 import MyTypography from "@/components/atoms/my-typography";
 import ActivitiesFilter from "@/components/organisms/activities-filter";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import CarouselCustom from "./carousel-custom";
 import { useQuery } from "@tanstack/react-query";
 import { adventures as adventuresService } from "@/services/api/adventures";
@@ -30,17 +30,17 @@ export default function SecondSection() {
   } = useAdventures();
 
   // adventures
-  const { isLoading } = useQuery({
+  const { data: adventuresResponse, isLoading } = useQuery({
     queryKey: ["adventures", selected, params],
     queryFn: async () => {
-      const filterAdventures = await adventuresService.filterAdventures({
+      const filterAdventures = await adventuresService.filterAdventuresWithPrice({
         typeAdventure: selected ? selected : undefined,
         ...params,
         limit: 100,
       });
 
       setSearchedAdventures(selected);
-      setAdventures(filterAdventures);
+      setAdventures(filterAdventures?.data);
 
       return filterAdventures;
     },
@@ -81,10 +81,12 @@ export default function SecondSection() {
     }
   };
 
+  console.log(adventuresResponse?.priceAdult)
+
   return (
     <section className="">
       <div className="mt-8">
-        <SearchActivity setFormData={handleSearch} />
+        <SearchActivity setFormData={handleSearch} priceAdult={adventuresResponse?.priceAdult} />
       </div>
 
       <ActivitiesFilter selected={selected} setSelected={handleSelect} />

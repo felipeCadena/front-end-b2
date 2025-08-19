@@ -2,7 +2,7 @@ import MyBadge from "@/components/atoms/my-badge";
 import MyIcon from "@/components/atoms/my-icon";
 import MyTypography from "@/components/atoms/my-typography";
 import StarRating from "@/components/molecules/my-stars";
-import { handleNameActivity, selectActivityImage } from "@/utils/formatters";
+import { formatPrice, handleNameActivity, selectActivityImage } from "@/utils/formatters";
 import Image from "next/image";
 import { Adventure, adventures } from "@/services/api/adventures";
 import React, { use } from "react";
@@ -145,18 +145,19 @@ const CarouselActivity = ({
         </MyTypography>
         <MyTypography
           variant="body-big"
-          className="md:pr-4 break-words"
+          weight='regular'
+          className="md:pr-4 break-words mt-1"
           style={{ overflowWrap: "anywhere" }}
         >
-          {activity?.description.slice(0, 100).concat("...")}
+          a partir de <span style={{ fontWeight: "bold" }}>{formatPrice(activity?.priceAdult)}</span> por adulto
         </MyTypography>
         <MyTypography
           variant="body-big"
-          weight="bold"
+          weight="semibold"
           lightness={500}
-          className="inline cursor-pointer"
+          className="inline cursor-pointer underline mt-1"
         >
-          Saiba Mais
+          Saiba Mais 🡢
         </MyTypography>
       </div>
     </div>

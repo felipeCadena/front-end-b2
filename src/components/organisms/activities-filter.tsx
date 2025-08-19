@@ -78,7 +78,7 @@ export default function ActivitiesFilter({
       )}
     >
       {withText && pathname == "/" ? (
-        <div className="md:hidden mx-4">
+        <div className="hidden mx-4">
           <MyTypography variant="heading2" weight="semibold">
             Como você quer se aventurar?
           </MyTypography>
