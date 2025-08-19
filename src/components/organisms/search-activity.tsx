@@ -91,6 +91,7 @@ export default function SearchActivity({
           className
         )}
       >
+
         <MyTextInput
           placeholder="Procurar atividade"
           noHintText
