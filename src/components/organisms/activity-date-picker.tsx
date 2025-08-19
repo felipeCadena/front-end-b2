@@ -147,9 +147,6 @@ const ActivityDatePicker = ({
     availablePartnerSchedules
   );
 
-  console.log(rawSelectedDateTimes);
-  console.log(selectedDateTimes);
-
   const availableVacancies = findAvailableVacancies(
     activity?.schedules,
     activity?.personsLimit,
