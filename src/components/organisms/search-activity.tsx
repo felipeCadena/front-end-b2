@@ -30,6 +30,9 @@ export default function SearchActivity({
     return [min, max];
   });
 
+  console.log('priceRange search-activity ' + JSON.stringify(priceRange))
+
+
   const debouncedValue = useDebounce(search, 700);
 
   React.useEffect(() => {

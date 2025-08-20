@@ -8,7 +8,7 @@ function PriceRangeSlider({
   value,
   onChange,
   min = 0,
-  max = 10000,
+  max = 2000,
   step = 50,
 }: {
   value: number[];
@@ -21,6 +21,8 @@ function PriceRangeSlider({
     isFinite(value?.[0]) ? Number(value[0]) : min,
     isFinite(value?.[1]) ? Number(value[1]) : max,
   ];
+
+  console.log('safeValue Price-range ' + JSON.stringify(safeValue))
   return (
     <div className="space-y-6">
       <p className="bold">Valor da atividade:</p>

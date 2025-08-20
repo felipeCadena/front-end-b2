@@ -39,6 +39,8 @@ export default function AtividadesTemplate() {
   useEffect(() => {
         setPrice({min: Number(activitiesResponse?.priceAdult.min), max: Number(activitiesResponse?.priceAdult.max)})
     }, [activitiesResponse])
+
+    console.log('/atividades ' + JSON.stringify(price))
     
 
   const arRef = useRef<HTMLDivElement>(null);
@@ -67,8 +69,6 @@ export default function AtividadesTemplate() {
   const { getCartSize } = useCart();
 
   const cartSize = getCartSize(userId ?? "");
-
-  const activities = activitiesResponse?.data ?? [];
 
   const filterActivity = (activities: any, typeAdventure: string) => {
     return (
@@ -132,8 +132,8 @@ export default function AtividadesTemplate() {
             >
               Atividades Aéreas
             </MyTypography>
-            {activities && filterActivity(activities, "ar")?.length > 0 ? (
-              <CarouselCustom activities={filterActivity(activities, "ar")} />
+            {activitiesResponse?.data && filterActivity(activitiesResponse?.data, "ar")?.length > 0 ? (
+              <CarouselCustom activities={filterActivity(activitiesResponse?.data, "ar")} />
             ) : (
               <div className="w-full h-[225px] flex flex-col justify-center items-center">
                 <MyTypography
@@ -157,9 +157,9 @@ export default function AtividadesTemplate() {
             >
               Atividades Terrestres
             </MyTypography>
-            {activities && filterActivity(activities, "terra")?.length > 0 ? (
+            {activitiesResponse?.data && filterActivity(activitiesResponse?.data, "terra")?.length > 0 ? (
               <CarouselCustom
-                activities={filterActivity(activities, "terra")}
+                activities={filterActivity(activitiesResponse?.data, "terra")}
               />
             ) : (
               <div className="w-full h-[225px] flex flex-col justify-center items-center">
@@ -184,8 +184,8 @@ export default function AtividadesTemplate() {
             >
               Atividades Aquática
             </MyTypography>
-            {activities && filterActivity(activities, "mar")?.length > 0 ? (
-              <CarouselCustom activities={filterActivity(activities, "mar")} />
+            {activitiesResponse?.data && filterActivity(activitiesResponse?.data, "mar")?.length > 0 ? (
+              <CarouselCustom activities={filterActivity(activitiesResponse?.data, "mar")} />
             ) : (
               <div className="w-full h-[225px] flex flex-col justify-center items-center">
                 <MyTypography
