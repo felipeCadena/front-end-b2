@@ -24,16 +24,19 @@ export default function SearchActivity({
 }) {
   const [search, setSearch] = React.useState("");
   const [openFilter, setOpenFilter] = React.useState(false);
-  const [priceRange, setPriceRange] = React.useState([
-    Number(priceAdult?.min) ?? 0,
-    Number(priceAdult?.max) ?? 10000,
-  ]);
+  const [priceRange, setPriceRange] = React.useState(() => {
+    const min = Number(priceAdult?.min);
+    const max = Number(priceAdult?.max);
+    return [isNaN(min) ? 0 : min, isNaN(max) ? 10000 : max];
+  });
 
   const debouncedValue = useDebounce(search, 700);
 
   React.useEffect(() => {
     if (priceAdult) {
-      setPriceRange([Number(priceAdult.min), Number(priceAdult.max)]);
+      const min = Number(priceAdult.min);
+      const max = Number(priceAdult.max);
+      setPriceRange([isNaN(min) ? 0 : min, isNaN(max) ? 10000 : max]);
     }
   }, [priceAdult]);
 
@@ -56,10 +59,12 @@ export default function SearchActivity({
     refetch().then((res) => {
       setFormData(res.data ?? []);
       setSearch("");
-      setPriceRange([
-        Number(priceAdult?.min) ?? 0,
-        Number(priceAdult?.max) ?? 10000,
-      ]);
+      const min = Number(priceAdult?.min);
+      const max = Number(priceAdult?.max);
+
+      if (!isNaN(min) && !isNaN(max)) {
+        setPriceRange([min, max]);
+      }
     });
   };
 
@@ -68,10 +73,12 @@ export default function SearchActivity({
       setFormData(res.data ?? []);
       setOpenFilter(false);
       setSearch("");
-      setPriceRange([
-        Number(priceAdult?.min) ?? 0,
-        Number(priceAdult?.max) ?? 10000,
-      ]);
+      const min = Number(priceAdult?.min);
+      const max = Number(priceAdult?.max);
+
+      if (!isNaN(min) && !isNaN(max)) {
+        setPriceRange([min, max]);
+      }
     });
   };
   const handleClear = () => {
@@ -90,7 +97,6 @@ export default function SearchActivity({
           className
         )}
       >
-
         <MyTextInput
           placeholder="Procurar atividade"
           noHintText
