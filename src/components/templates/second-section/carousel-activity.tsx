@@ -144,8 +144,14 @@ const CarouselActivity = ({
         className="cursor-pointer "
         onClick={() => handleActivity((activity?.id).toString())}
       >
-        <MyTypography variant="subtitle1" weight="bold" className="break-words h-10 mb-5">
-          {activity?.title}
+        <MyTypography
+          variant="subtitle1"
+          weight="bold"
+          className="break-words h-10 mb-5"
+        >
+          {activity?.title.length > 45
+            ? activity?.title.slice(0, 45).concat("...")
+            : activity?.title}
         </MyTypography>
         <MyTypography
           variant="body-big"
