@@ -84,7 +84,6 @@ export default function SecondSection() {
       searchRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   };
-
   return (
     <section className="">
       <div className="mt-8">
