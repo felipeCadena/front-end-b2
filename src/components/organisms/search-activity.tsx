@@ -27,7 +27,7 @@ export default function SearchActivity({
   const [priceRange, setPriceRange] = React.useState(() => {
     const min = Number(priceAdult?.min);
     const max = Number(priceAdult?.max);
-    return [isNaN(min) ? 0 : min, isNaN(max) ? 10000 : max];
+    return [min, max];
   });
 
   const debouncedValue = useDebounce(search, 700);
@@ -36,7 +36,7 @@ export default function SearchActivity({
     if (priceAdult) {
       const min = Number(priceAdult.min);
       const max = Number(priceAdult.max);
-      setPriceRange([isNaN(min) ? 0 : min, isNaN(max) ? 10000 : max]);
+      setPriceRange([min, max]);
     }
   }, [priceAdult]);
 
@@ -75,10 +75,7 @@ export default function SearchActivity({
       setSearch("");
       const min = Number(priceAdult?.min);
       const max = Number(priceAdult?.max);
-
-      if (!isNaN(min) && !isNaN(max)) {
-        setPriceRange([min, max]);
-      }
+      setPriceRange([min, max]);
     });
   };
   const handleClear = () => {
@@ -153,13 +150,15 @@ export default function SearchActivity({
         <div className="p-4 space-y-10 overflow-y-auto h-[calc(100%-60px)]">
           {/* Valor da atividade */}
           <div className="flex justify-between font-bold">
-            <PriceRangeSlider
-              value={priceRange}
-              onChange={setPriceRange}
-              min={Number(priceAdult?.min)}
-              max={Number(priceAdult?.max)}
-              step={50}
-            />
+            {priceRange && (
+              <PriceRangeSlider
+                value={priceRange}
+                onChange={setPriceRange}
+                min={Number(priceAdult?.min)}
+                max={Number(priceAdult?.max)}
+                step={50}
+              />
+            )}
           </div>
           {/* Botão Salvar */}
 

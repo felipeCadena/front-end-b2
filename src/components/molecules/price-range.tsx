@@ -17,7 +17,10 @@ function PriceRangeSlider({
   max?: number;
   step?: number;
 }) {
-  const safeValue = value ?? [min, max];
+  const safeValue: [number, number] = [
+    isFinite(value?.[0]) ? Number(value[0]) : min,
+    isFinite(value?.[1]) ? Number(value[1]) : max,
+  ];
   return (
     <div className="space-y-6">
       <p className="bold">Valor da atividade:</p>
