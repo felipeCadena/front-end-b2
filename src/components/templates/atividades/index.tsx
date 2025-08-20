@@ -66,20 +66,6 @@ export default function AtividadesTemplate() {
 
   const activities = activitiesResponse?.data ?? [];
 
-  const price = useMemo(() => {
-    if (!priceAdult)
-      return {
-        min: "0",
-        max: "10000",
-      };
-    const min = priceAdult.min;
-    const max = priceAdult.max;
-    return {
-      min,
-      max,
-    };
-  }, [activitiesResponse?.priceAdult]);
-
   const filterActivity = (activities: any, typeAdventure: string) => {
     return (
       activities.filter(
