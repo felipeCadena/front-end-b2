@@ -26,6 +26,14 @@ export interface GetAdventuresResponse {
   data: Adventure[];
 }
 
+interface ResponseAdventure {
+  data: Adventure[]
+  priceAdult: {
+    min: string,
+    max: string
+  }
+}
+
 export interface GetAdventuresParams {
   limit?: number;
   skip?: number;
@@ -310,6 +318,22 @@ export const adventures = {
         }
       );
       return data.data;
+    } catch (error) {
+      console.error("Error filtering adventures:", error);
+      throw error;
+    }
+  },
+   filterAdventuresWithPrice: async (
+    params: GetAdventuresParams
+  ): Promise<ResponseAdventure> => {
+    try {
+      const { data } = await api.get<ResponseAdventure>(
+        "/adventures/filter",
+        {
+          params,
+        }
+      );
+      return data;
     } catch (error) {
       console.error("Error filtering adventures:", error);
       throw error;

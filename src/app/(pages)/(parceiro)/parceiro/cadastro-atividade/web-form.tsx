@@ -6,7 +6,7 @@ import MyTextInput from "@/components/atoms/my-text-input";
 import MyTypography from "@/components/atoms/my-typography";
 import ActivitiesFilter from "@/components/organisms/activities-filter";
 import { useRouter } from "next/navigation";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   MySelect,
   SelectContent,
@@ -46,6 +46,7 @@ import AutocompleteCombobox from "@/components/organisms/google-autocomplete";
 import { toast } from "react-toastify";
 import { MySingleDatePicker } from "@/components/molecules/my-single-date-picker";
 import Duration from "@/components/molecules/duration";
+import LanguageCheckboxGroup from "@/components/molecules/group-checkbox";
 
 interface AddressData {
   addressStreet: string;
@@ -107,6 +108,13 @@ export default function WebForm({
   } = useAdventureStore();
 
   const inputRef = React.useRef<HTMLInputElement>(null);
+
+  const [selected, setSelected] = useState([]);
+
+
+  const handleLanguages = () => {
+
+  }
 
   // Atualiza as datas para um bloco específico
   const handleDateChange = (blockId: number, dates: Date[]) => {
@@ -398,7 +406,7 @@ export default function WebForm({
           selected={typeAdventure}
         />
 
-        <div className="border-2  border-gray-300 rounded-lg p-8">
+        <div className="border-2 border-gray-300 rounded-lg p-8">
           <div className="space-y-6">
             <MyTextInput
               value={title}
@@ -411,6 +419,9 @@ export default function WebForm({
               placeholder="Nome da atividade"
               className="mt-2"
             />
+
+            <LanguageCheckboxGroup selected={selected} setSelected={setSelected} />
+
 
             <div className="w-full">
               <MyTextarea
@@ -432,7 +443,6 @@ export default function WebForm({
                 {description.length} / 2000 caracteres
               </div>
             </div>
-
             <div className="grid grid-cols-2 gap-8">
               <MySelect
                 label="Antecedência de Agendamento"
