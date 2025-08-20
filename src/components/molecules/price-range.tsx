@@ -17,8 +17,7 @@ function PriceRangeSlider({
   max?: number;
   step?: number;
 }) {
-  const safeValue = value ?? [min, max]
-
+  const safeValue = value ?? [min, max];
   return (
     <div className="space-y-6">
       <p className="bold">Valor da atividade:</p>
@@ -30,10 +29,10 @@ function PriceRangeSlider({
           className="w-full rounded-md border px-3 py-2 text-center font-medium"
           value={value[0]}
           onChange={(e) => {
-            const raw = Number(e.target.value)
-            if (isNaN(raw)) return // ignora valores inválidos
-            const v = Math.min(raw, safeValue[1])
-            onChange([v, safeValue[1]])
+            const raw = Number(e.target.value);
+            if (isNaN(raw)) return; // ignora valores inválidos
+            const v = Math.min(raw, safeValue[1]);
+            onChange([v, safeValue[1]]);
           }}
         />
         <input
@@ -41,10 +40,10 @@ function PriceRangeSlider({
           className="w-full rounded-md border px-3 py-2 text-center font-medium"
           value={value[1]}
           onChange={(e) => {
-            const raw = Number(e.target.value)
-            if (isNaN(raw)) return
-            const v = Math.max(raw, safeValue[0])
-            onChange([safeValue[0], v])
+            const raw = Number(e.target.value);
+            if (isNaN(raw)) return;
+            const v = Math.max(raw, safeValue[0]);
+            onChange([safeValue[0], v]);
           }}
         />
       </div>
