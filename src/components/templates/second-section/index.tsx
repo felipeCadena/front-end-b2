@@ -65,7 +65,6 @@ export default function SecondSection() {
           limit: 100,
         }),
     });
-
   useEffect(() => {
     const hasFilters = params && Object.keys(params).length > 0;
     if (hasFilters) {
