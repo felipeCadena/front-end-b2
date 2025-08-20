@@ -17,8 +17,10 @@ function PriceRangeSlider({
   max?: number;
   step?: number;
 }) {
-  const safeValue = value ?? [min, max]
-
+  const safeValue: [number, number] = [
+    isFinite(value?.[0]) ? Number(value[0]) : min,
+    isFinite(value?.[1]) ? Number(value[1]) : max,
+  ];
   return (
     <div className="space-y-6">
       <p className="bold">Valor da atividade:</p>
@@ -28,23 +30,23 @@ function PriceRangeSlider({
         <input
           type="number"
           className="w-full rounded-md border px-3 py-2 text-center font-medium"
-          value={value[0]}
+          value={Number.isFinite(safeValue[0]) ? safeValue[0] : ""}
           onChange={(e) => {
-            const raw = Number(e.target.value)
-            if (isNaN(raw)) return // ignora valores inválidos
-            const v = Math.min(raw, safeValue[1])
-            onChange([v, safeValue[1]])
+            const raw = Number(e.target.value);
+            if (isNaN(raw)) return;
+            const v = Math.min(raw, safeValue[1]);
+            onChange([v, safeValue[1]]);
           }}
         />
         <input
           type="number"
           className="w-full rounded-md border px-3 py-2 text-center font-medium"
-          value={value[1]}
+          value={Number.isFinite(safeValue[1]) ? safeValue[1] : ""}
           onChange={(e) => {
-            const raw = Number(e.target.value)
-            if (isNaN(raw)) return
-            const v = Math.max(raw, safeValue[0])
-            onChange([safeValue[0], v])
+            const raw = Number(e.target.value);
+            if (isNaN(raw)) return;
+            const v = Math.max(raw, safeValue[0]);
+            onChange([safeValue[0], v]);
           }}
         />
       </div>
@@ -55,7 +57,14 @@ function PriceRangeSlider({
         max={max}
         step={step}
         value={safeValue}
-        onValueChange={onChange}
+        onValueChange={(val) => {
+          // Garantir que o valor retornado é válido
+          const newVal: [number, number] = [
+            Number.isFinite(val[0]) ? val[0] : min,
+            Number.isFinite(val[1]) ? val[1] : max,
+          ];
+          onChange(newVal);
+        }}
         className={cn(
           "relative flex w-full touch-none select-none items-center"
         )}

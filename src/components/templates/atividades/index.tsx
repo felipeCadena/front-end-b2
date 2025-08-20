@@ -4,7 +4,7 @@ import MyTypography from "@/components/atoms/my-typography";
 import ShoppingCard from "@/components/molecules/shopping-card";
 import ActivitiesFilter from "@/components/organisms/activities-filter";
 import CarouselCustom from "@/components/templates/second-section/carousel-custom";
-import React, { useRef } from "react";
+import React, { useMemo, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Adventure, adventures } from "@/services/api/adventures";
 import { useCart } from "@/store/useCart";
@@ -65,6 +65,20 @@ export default function AtividadesTemplate() {
   const cartSize = getCartSize(userId ?? "");
 
   const activities = activitiesResponse?.data ?? [];
+
+  const price = useMemo(() => {
+    if (!priceAdult)
+      return {
+        min: "0",
+        max: "10000",
+      };
+    const min = priceAdult.min;
+    const max = priceAdult.max;
+    return {
+      min,
+      max,
+    };
+  }, [activitiesResponse?.priceAdult]);
 
   const filterActivity = (activities: any, typeAdventure: string) => {
     return (

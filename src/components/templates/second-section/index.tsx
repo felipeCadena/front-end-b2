@@ -2,7 +2,7 @@
 
 import MyTypography from "@/components/atoms/my-typography";
 import ActivitiesFilter from "@/components/organisms/activities-filter";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import CarouselCustom from "./carousel-custom";
 import { useQuery } from "@tanstack/react-query";
 import { adventures as adventuresService } from "@/services/api/adventures";
@@ -50,6 +50,20 @@ export default function SecondSection() {
     },
   });
 
+  const price = useMemo(() => {
+    if (!adventuresResponse?.priceAdult)
+      return {
+        min: "0",
+        max: "10000",
+      };
+    const min = adventuresResponse?.priceAdult.min;
+    const max = adventuresResponse?.priceAdult.max;
+    return {
+      min,
+      max,
+    };
+  }, [adventuresResponse?.priceAdult]);
+
   // adventures
   const { data: popularAdventures = [], isLoading: popularIsLoading } =
     useQuery({
@@ -92,7 +106,6 @@ export default function SecondSection() {
           setFormData={handleSearch}
           priceAdult={price}
         />
-      </div>
 
       <ActivitiesFilter selected={selected} setSelected={handleSelect} />
 
