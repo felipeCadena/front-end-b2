@@ -32,7 +32,7 @@ export default function SecondSection() {
   } = useAdventures();
 
   // adventures
-  const { isLoading } = useQuery({
+  const { data: adventuresFilter, isLoading } = useQuery({
     queryKey: ["adventures", selected, params],
     queryFn: async () => {
       const filterAdventures =
@@ -49,6 +49,11 @@ export default function SecondSection() {
       return filterAdventures;
     },
   });
+
+  useEffect(() => {
+      setPrice({min: Number(adventuresFilter?.priceAdult.min), max: Number(adventuresFilter?.priceAdult.max)})
+  }, [adventuresFilter])
+  
 
   // adventures
   const { data: popularAdventures = [], isLoading: popularIsLoading } =
