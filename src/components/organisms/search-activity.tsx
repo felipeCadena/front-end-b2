@@ -17,8 +17,8 @@ export default function SearchActivity({
 }: {
   className?: string;
   priceAdult?: {
-    min: string;
-    max: string;
+    min: number;
+    max: number;
   };
   setFormData: (adventures: any) => void;
 }) {

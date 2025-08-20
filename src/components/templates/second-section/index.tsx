@@ -19,6 +19,8 @@ export default function SecondSection() {
 
   const searchRef = React.useRef<HTMLDivElement>(null);
 
+  const [price, setPrice] = useState({min: 0, max: 0})
+
   const [selected, setSelected] = React.useState<"ar" | "terra" | "mar" | "">(
     ""
   );
@@ -30,7 +32,7 @@ export default function SecondSection() {
   } = useAdventures();
 
   // adventures
-  const { data: adventuresResponse, isLoading } = useQuery({
+  const { isLoading } = useQuery({
     queryKey: ["adventures", selected, params],
     queryFn: async () => {
       const filterAdventures =
@@ -42,6 +44,7 @@ export default function SecondSection() {
 
       setSearchedAdventures(selected);
       setAdventures(filterAdventures?.data);
+      setPrice({min: Number(filterAdventures?.priceAdult.min), max: Number(filterAdventures?.priceAdult.max)})
 
       return filterAdventures;
     },
@@ -82,12 +85,14 @@ export default function SecondSection() {
     }
   };
 
+  console.log(price)
+
   return (
     <section className="">
       <div className="mt-8">
         <SearchActivity
           setFormData={handleSearch}
-          priceAdult={adventuresResponse?.priceAdult}
+          priceAdult={price}
         />
       </div>
 

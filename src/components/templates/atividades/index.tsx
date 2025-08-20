@@ -21,16 +21,20 @@ export default function AtividadesTemplate() {
   const [selected, setSelected] = React.useState<"ar" | "terra" | "mar" | "">(
     ""
   );
+  const [price, setPrice] = React.useState({min: 0, max: 0})
 
   const { data: activitiesResponse, isLoading } = useQuery({
     queryKey: ["activities", params],
     enabled: !!params,
-    queryFn: () =>
-      adventures.filterAdventuresWithPrice({
+    queryFn: () => {
+      const filterAdventures = adventures.filterAdventuresWithPrice({
         limit: 100,
         skip: 0,
         ...params,
-      }),
+      })
+      setPrice({min: Number(activitiesResponse?.priceAdult.min), max: Number(activitiesResponse?.priceAdult.max)})
+      return filterAdventures
+    },
   });
 
   const arRef = useRef<HTMLDivElement>(null);
@@ -61,7 +65,6 @@ export default function AtividadesTemplate() {
   const cartSize = getCartSize(userId ?? "");
 
   const activities = activitiesResponse?.data ?? [];
-  const priceAdult = activitiesResponse?.priceAdult;
 
   const filterActivity = (activities: any, typeAdventure: string) => {
     return (
@@ -81,7 +84,7 @@ export default function AtividadesTemplate() {
   ) : (
     <section className="">
       <div className="mt-8">
-        <SearchActivity priceAdult={priceAdult} setFormData={handleSearch} />
+        <SearchActivity priceAdult={price} setFormData={handleSearch} />
       </div>
 
       <ActivitiesFilter selected={selected} setSelected={handleSelect} />
