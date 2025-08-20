@@ -2,7 +2,7 @@
 
 import MyTypography from "@/components/atoms/my-typography";
 import ActivitiesFilter from "@/components/organisms/activities-filter";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import CarouselCustom from "./carousel-custom";
 import { useQuery } from "@tanstack/react-query";
 import { adventures as adventuresService } from "@/services/api/adventures";
@@ -19,6 +19,8 @@ export default function SecondSection() {
 
   const searchRef = React.useRef<HTMLDivElement>(null);
 
+  const [price, setPrice] = useState({min: 0, max: 0})
+
   const [selected, setSelected] = React.useState<"ar" | "terra" | "mar" | "">(
     ""
   );
@@ -30,7 +32,7 @@ export default function SecondSection() {
   } = useAdventures();
 
   // adventures
-  const { data: adventuresResponse, isLoading } = useQuery({
+  const { data: adventuresFilter, isLoading } = useQuery({
     queryKey: ["adventures", selected, params],
     queryFn: async () => {
       const filterAdventures =
@@ -42,10 +44,16 @@ export default function SecondSection() {
 
       setSearchedAdventures(selected);
       setAdventures(filterAdventures?.data);
+      setPrice({min: Number(filterAdventures?.priceAdult.min), max: Number(filterAdventures?.priceAdult.max)})
 
       return filterAdventures;
     },
   });
+
+  useEffect(() => {
+      setPrice({min: Number(adventuresFilter?.priceAdult.min), max: Number(adventuresFilter?.priceAdult.max)})
+  }, [adventuresFilter])
+  
 
   // adventures
   const { data: popularAdventures = [], isLoading: popularIsLoading } =
@@ -57,7 +65,6 @@ export default function SecondSection() {
           limit: 100,
         }),
     });
-
   useEffect(() => {
     const hasFilters = params && Object.keys(params).length > 0;
     if (hasFilters) {
@@ -81,15 +88,14 @@ export default function SecondSection() {
       searchRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   };
-
   return (
     <section className="">
       <div className="mt-8">
         <SearchActivity
           setFormData={handleSearch}
-          priceAdult={adventuresResponse?.priceAdult}
+          priceAdult={price}
         />
-      </div>
+        </div>
 
       <ActivitiesFilter selected={selected} setSelected={handleSelect} />
 

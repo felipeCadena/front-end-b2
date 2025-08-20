@@ -4,7 +4,7 @@ import MyTypography from "@/components/atoms/my-typography";
 import ShoppingCard from "@/components/molecules/shopping-card";
 import ActivitiesFilter from "@/components/organisms/activities-filter";
 import CarouselCustom from "@/components/templates/second-section/carousel-custom";
-import React, { useRef } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Adventure, adventures } from "@/services/api/adventures";
 import { useCart } from "@/store/useCart";
@@ -13,7 +13,6 @@ import useSearchQueryService from "@/services/use-search-query-service";
 import Loading from "@/app/loading";
 import SearchActivity from "@/components/organisms/search-activity";
 import { cn } from "@/utils/cn";
-import { users } from "@/services/api/users";
 
 export default function AtividadesTemplate() {
   const { params } = useSearchQueryService();
@@ -21,17 +20,26 @@ export default function AtividadesTemplate() {
   const [selected, setSelected] = React.useState<"ar" | "terra" | "mar" | "">(
     ""
   );
+  const [price, setPrice] = React.useState({min: 0, max: 1500})
 
   const { data: activitiesResponse, isLoading } = useQuery({
     queryKey: ["activities", params],
     enabled: !!params,
-    queryFn: () =>
-      adventures.filterAdventuresWithPrice({
+    queryFn: async () => {
+      const filterAdventures = await adventures.filterAdventuresWithPrice({
         limit: 100,
         skip: 0,
         ...params,
-      }),
+      })
+      setPrice({min: Number(filterAdventures?.priceAdult.min), max: Number(filterAdventures?.priceAdult.max)})
+      return filterAdventures
+    },
   });
+
+  useEffect(() => {
+        setPrice({min: Number(activitiesResponse?.priceAdult.min), max: Number(activitiesResponse?.priceAdult.max)})
+    }, [activitiesResponse])
+    
 
   const arRef = useRef<HTMLDivElement>(null);
   const terraRef = useRef<HTMLDivElement>(null);
@@ -61,7 +69,6 @@ export default function AtividadesTemplate() {
   const cartSize = getCartSize(userId ?? "");
 
   const activities = activitiesResponse?.data ?? [];
-  const priceAdult = activitiesResponse?.priceAdult;
 
   const filterActivity = (activities: any, typeAdventure: string) => {
     return (
@@ -81,7 +88,7 @@ export default function AtividadesTemplate() {
   ) : (
     <section className="">
       <div className="mt-8">
-        <SearchActivity priceAdult={priceAdult} setFormData={handleSearch} />
+        <SearchActivity priceAdult={price} setFormData={handleSearch} />
       </div>
 
       <ActivitiesFilter selected={selected} setSelected={handleSelect} />
