@@ -74,7 +74,6 @@ export default function SearchActivity({
       ]);
     });
   };
-
   const handleClear = () => {
     setSearch("");
     setPriceRange([
