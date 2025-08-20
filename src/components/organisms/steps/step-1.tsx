@@ -66,7 +66,7 @@ export default function Step1({
           className="mt-2"
         />
 
-        <LanguageSelector selected={selected} setSelected={setSelected} />
+        {/* <LanguageSelector selected={selected} setSelected={setSelected} /> */}
 
 
         <div className="w-full">
