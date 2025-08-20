@@ -50,20 +50,6 @@ export default function SecondSection() {
     },
   });
 
-  const price = useMemo(() => {
-    if (!adventuresResponse?.priceAdult)
-      return {
-        min: "0",
-        max: "10000",
-      };
-    const min = adventuresResponse?.priceAdult.min;
-    const max = adventuresResponse?.priceAdult.max;
-    return {
-      min,
-      max,
-    };
-  }, [adventuresResponse?.priceAdult]);
-
   // adventures
   const { data: popularAdventures = [], isLoading: popularIsLoading } =
     useQuery({
@@ -106,6 +92,7 @@ export default function SecondSection() {
           setFormData={handleSearch}
           priceAdult={price}
         />
+        </div>
 
       <ActivitiesFilter selected={selected} setSelected={handleSelect} />
 
