@@ -85,8 +85,6 @@ export default function SecondSection() {
     }
   };
 
-  console.log(price)
-
   return (
     <section className="">
       <div className="mt-8">
