@@ -149,7 +149,6 @@ export default function SearchActivity({
 
         <div className="p-4 space-y-10 overflow-y-auto h-[calc(100%-60px)]">
           {/* Valor da atividade */}
-          <div className="flex justify-between font-bold">
             {priceRange && (
               <PriceRangeSlider
                 value={priceRange}
@@ -159,7 +158,6 @@ export default function SearchActivity({
                 step={50}
               />
             )}
-          </div>
           {/* Botão Salvar */}
 
           <div className="flex gap-2">

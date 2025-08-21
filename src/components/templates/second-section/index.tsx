@@ -88,6 +88,10 @@ export default function SecondSection() {
       searchRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   };
+
+  console.log('/ ' + JSON.stringify(price))
+
+
   return (
     <section className="">
       <div className="mt-8">
