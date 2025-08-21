@@ -18,38 +18,91 @@ function PriceRangeSlider({
   step?: number;
 }) {
   const safeValue: [number, number] = [
-    isFinite(value?.[0]) ? Number(value[0]) : min,
-    isFinite(value?.[1]) ? Number(value[1]) : max,
+    Number.isFinite(value?.[0]) ? Number(value[0]) : min,
+    Number.isFinite(value?.[1]) ? Number(value[1]) : max,
   ];
 
-  console.log('safeValue Price-range ' + JSON.stringify(safeValue))
+  // Estados de texto para permitir digitação livre (com estados intermediários)
+  const [minText, setMinText] = React.useState<string>(() => String(safeValue[0]));
+  const [maxText, setMaxText] = React.useState<string>(() => String(safeValue[1]));
+  const [minFocused, setMinFocused] = React.useState(false);
+  const [maxFocused, setMaxFocused] = React.useState(false);
+
+  // Sincroniza texto quando o valor vem de fora (slider, props), evitando mexer enquanto focado
+  React.useEffect(() => {
+    if (!minFocused) setMinText(String(safeValue[0]));
+    if (!maxFocused) setMaxText(String(safeValue[1]));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [safeValue[0], safeValue[1], minFocused, maxFocused]);
+
+  const commitMin = () => {
+    const n = Number(minText.replace(",", "."));
+    const parsed = Number.isFinite(n) ? n : safeValue[0]; // se vazio/NaN, mantém atual
+    const clamped = Math.max(min, Math.min(parsed, safeValue[1])); // [min, maxAtual]
+    setMinText(String(clamped));
+    onChange([clamped, safeValue[1]]);
+    setMinFocused(false);
+  };
+
+  const commitMax = () => {
+    const n = Number(maxText.replace(",", "."));
+    const parsed = Number.isFinite(n) ? n : safeValue[1];
+    const clamped = Math.min(max, Math.max(parsed, safeValue[0])); // [minAtual, max]
+    setMaxText(String(clamped));
+    onChange([safeValue[0], clamped]);
+    setMaxFocused(false);
+  };
+
+  const onMinKeyDown: React.KeyboardEventHandler<HTMLInputElement> = (e) => {
+    if (e.key === "Enter") {
+      e.currentTarget.blur();
+      commitMin();
+    }
+    if (e.key === "Escape") {
+      setMinText(String(safeValue[0]));
+      e.currentTarget.blur();
+    }
+  };
+
+  const onMaxKeyDown: React.KeyboardEventHandler<HTMLInputElement> = (e) => {
+    if (e.key === "Enter") {
+      e.currentTarget.blur();
+      commitMax();
+    }
+    if (e.key === "Escape") {
+      setMaxText(String(safeValue[1]));
+      e.currentTarget.blur();
+    }
+  };
+
   return (
     <div className="space-y-6">
-      <p className="bold">Valor da atividade:</p>
+      <p className="font-bold">Valor da atividade:</p>
 
       {/* Inputs */}
       <div className="flex gap-4">
         <input
           type="number"
           className="w-full rounded-md border px-3 py-2 text-center font-medium"
-          value={Number.isFinite(safeValue[0]) ? safeValue[0] : ""}
-          onChange={(e) => {
-            const raw = Number(e.target.value);
-            if (isNaN(raw)) return;
-            const v = Math.min(raw, safeValue[1]);
-            onChange([v, safeValue[1]]);
-          }}
+          value={minFocused ? minText : String(safeValue[0])}
+          onFocus={() => setMinFocused(true)}
+          onChange={(e) => setMinText(e.target.value)} // não clampa aqui!
+          onBlur={commitMin} // só valida no commit
+          onKeyDown={onMinKeyDown}
+          min={min}
+          max={safeValue[1]}
         />
+
         <input
           type="number"
           className="w-full rounded-md border px-3 py-2 text-center font-medium"
-          value={Number.isFinite(safeValue[1]) ? safeValue[1] : ""}
-          onChange={(e) => {
-            const raw = Number(e.target.value);
-            if (isNaN(raw)) return;
-            const v = Math.max(raw, safeValue[0]);
-            onChange([safeValue[0], v]);
-          }}
+          value={maxFocused ? maxText : String(safeValue[1])}
+          onFocus={() => setMaxFocused(true)}
+          onChange={(e) => setMaxText(e.target.value)}
+          onBlur={commitMax}
+          onKeyDown={onMaxKeyDown}
+          min={safeValue[0]}
+          max={max}
         />
       </div>
 
@@ -60,16 +113,13 @@ function PriceRangeSlider({
         step={step}
         value={safeValue}
         onValueChange={(val) => {
-          // Garantir que o valor retornado é válido
           const newVal: [number, number] = [
             Number.isFinite(val[0]) ? val[0] : min,
             Number.isFinite(val[1]) ? val[1] : max,
           ];
           onChange(newVal);
         }}
-        className={cn(
-          "relative flex w-full touch-none select-none items-center"
-        )}
+        className={cn("relative flex w-full touch-none select-none items-center")}
       >
         <SliderPrimitive.Track className="relative h-1 w-full grow overflow-hidden rounded-full bg-gray-200">
           <SliderPrimitive.Range className="absolute h-full bg-primary-600" />
