@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import ModalAlert from "@/components/molecules/modal-alert";
 import MyButton from "@/components/atoms/my-button";
 import SearchActivity from "@/components/organisms/search-activity";
@@ -13,15 +13,34 @@ import { useAlert } from "@/hooks/useAlert";
 import { useQuery } from "@tanstack/react-query";
 import { partnerService } from "@/services/api/partner";
 import { Adventure } from "@/services/api/adventures";
+import { users } from "@/services/api/users";
+import AddressModal from "@/components/molecules/address-modal";
 
 export default function SuasAtividades() {
   const router = useRouter();
+  const [modalAddress, setModalAddress] = useState(false)
   const { handleClose, isModalOpen } = useAlert();
   const [selected, setSelected] = React.useState<"ar" | "terra" | "mar" | "">(
     ""
   );
   const [partnerAdventures, setPartnerAdventures] =
     React.useState<Adventure[]>();
+
+    const { data: partner } = useQuery({
+    queryKey: ["partner"],
+    queryFn: () =>
+      partnerService.getPartnerLogged()
+  });
+
+  useEffect(() => {
+    if(!partner?.addressPostalCode) {
+      setModalAddress(true)
+    }
+  }, [partner])
+  
+
+
+
 
   useQuery({
     queryKey: ["myAdventures", selected],
@@ -50,13 +69,24 @@ export default function SuasAtividades() {
 
   return (
     <main className="max-w-screen-custom">
+
+      <AddressModal
+        open={modalAddress}
+        onClose={handleClose}
+        onAction={handleClose}
+        iconName="warning"
+        title={`Olá, ${partner?.fantasyName}`}
+        descrition="Parabéns! Sua atividade foi cadastrada com sucesso e já pode ser visualizada pelos nossos clientes!"
+        button="Voltar ao início"
+      />
+
       <ModalAlert
         open={isModalOpen}
         onClose={handleClose}
         onAction={handleClose}
         iconName="success"
         title="Atividade cadastrada"
-        descrition="Parabéns! Sua atividade foi cadastrada com sucesso e já pode ser visualizada pelos nossos clientes!"
+        descrition="Atualizamos nossa plataforma e, para continuar navegando, é necessário incluir seu endereço no cadastro. Adicione agora e siga aproveitando todos os benefícios da B2 Adventure."
         button="Voltar ao início"
       />
       <section className="px-4">

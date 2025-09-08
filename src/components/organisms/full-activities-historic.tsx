@@ -131,9 +131,6 @@ export default function FullActivitiesHistoric({
     }
   };
 
-  console.log(paid);
-  console.log(isOffCancelLimit);
-
   return (
     <section className="md:max-w-screen-custom">
       {activities && activities.length > 0 ? (

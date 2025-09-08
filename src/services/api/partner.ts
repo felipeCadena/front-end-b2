@@ -61,6 +61,13 @@ export interface Partner {
   facebook: string | null;
   instagram: string | null;
   sumTotalRatings: number;
+  address?: string
+  addressCity?: string
+  addressComplement?: string
+  addressNeighborhood?: string
+  addressNumber?: string
+  addressPostalCode?: string
+  addressState?: string
   createdAt: string;
   updatedAt: string;
   tag?: string;
