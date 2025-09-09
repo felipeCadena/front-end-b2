@@ -38,13 +38,13 @@ export default function SuasAtividades() {
     addressState: "",
   });
 
-  const { data: partner } = useQuery({
+  const { data: partner, isFetched } = useQuery({
     queryKey: ["partner"],
     queryFn: () => partnerService.getPartnerLogged(),
   });
 
   useEffect(() => {
-    if (partner?.addressPostalCode?.length === 0) {
+    if (isFetched && !partner?.addressPostalCode) {
       setModalAddress(true);
     }
   }, [partner]);
