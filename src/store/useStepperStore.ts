@@ -20,7 +20,7 @@ interface StepperState {
   // languages?: string[];
 
   addressPostalCode: string;
-  address: string;
+  addressStreet: string;
   addressNumber: string;
   addressNeighborhood: string;
   addressComplement: string;
@@ -65,7 +65,7 @@ const initialState = {
   // languages: [],
 
   addressPostalCode: "",
-  address: "",
+  addressStreet: "",
   addressNumber: "",
   addressNeighborhood: "",
   addressComplement: "",
@@ -84,16 +84,6 @@ const initialState = {
   bankOwnerDocument: "",
   payday: 0,
   typePayment: "pix",
-
-  // address: {
-  //   street: "",
-  //   number: "",
-  //   complement: "",
-  //   neighborhood: "",
-  //   city: "",
-  //   state: "",
-  //   zipCode: "",
-  // },
 };
 
 export const useStepperStore = create<StepperState>()(

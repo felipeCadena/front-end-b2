@@ -29,7 +29,7 @@ export default function SuasAtividades() {
     React.useState<Adventure[]>();
 
   const [partnerAddress, setPartnerAddress] = useState({
-    address: "",
+    addressStreet: "",
     addressPostalCode: "",
     addressNumber: "",
     addressNeighborhood: "",
@@ -63,7 +63,7 @@ export default function SuasAtividades() {
     if (response) {
       setPartnerAddress({
         addressPostalCode: partnerAddress.addressPostalCode,
-        address: response.logradouro || "",
+        addressStreet: response.logradouro || "",
         addressNumber: response.numero || "",
         addressNeighborhood: response.bairro || "",
         addressComplement: partnerAddress.addressComplement || "",
@@ -73,7 +73,7 @@ export default function SuasAtividades() {
     } else {
       setPartnerAddress({
         addressPostalCode: partnerAddress.addressPostalCode,
-        address: partnerAddress.address,
+        addressStreet: partnerAddress.addressStreet,
         addressNumber: partnerAddress.addressNumber,
         addressNeighborhood: partnerAddress.addressNeighborhood,
         addressComplement: partnerAddress.addressComplement,
@@ -87,7 +87,7 @@ export default function SuasAtividades() {
   const handleUpdatePartner = async () => {
 
     if (!partnerAddress.addressPostalCode 
-      || !partnerAddress.address 
+      || !partnerAddress.addressStreet
       || !partnerAddress.addressCity 
       || !partnerAddress.addressNeighborhood
       || !partnerAddress.addressNumber

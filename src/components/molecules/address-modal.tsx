@@ -13,7 +13,7 @@ import MyTextInput from "../atoms/my-text-input";
 import { formatCEP } from "@/utils/formatters";
 
 export interface PartnerAddress {
-  address: string;
+  addressStreet: string;
   addressPostalCode: string;
   addressNumber: string;
   addressNeighborhood: string;
@@ -91,7 +91,7 @@ export default function AddressModal({
               classNameLabel="text-left"
               placeholder="Digite seu endereço"
               className="mt-1"
-              value={partnerAddress.address}
+              value={partnerAddress.addressStreet}
               onChange={(e) =>
                 setPartnerAddress((prev) => ({
                   ...prev,
