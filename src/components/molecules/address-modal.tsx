@@ -9,31 +9,49 @@ import {
   MyDialog,
 } from "@/components/molecules/my-dialog";
 import MyTypography from "../atoms/my-typography";
+import MyTextInput from "../atoms/my-text-input";
+import { formatCEP } from "@/utils/formatters";
 
-interface ModalAlertProps {
+export interface PartnerAddress {
+  address: string;
+  addressPostalCode: string;
+  addressNumber: string;
+  addressNeighborhood: string;
+  addressComplement: string;
+  addressCity: string;
+  addressState: string;
+}
+
+interface AddressModalProps {
   open: boolean;
   onClose: () => void;
   onAction: () => void;
+  onBlurCep: () => void;
   iconName: IconsMapTypes;
   title: string;
   descrition: string;
   button: string;
   isLoading?: boolean;
+  partnerAddress: PartnerAddress;
+  setPartnerAddress: React.Dispatch<React.SetStateAction<PartnerAddress>>;
 }
 
 export default function AddressModal({
   open,
   onClose,
   onAction,
+  onBlurCep,
   title,
   descrition,
   iconName,
   button,
   isLoading,
-}: ModalAlertProps) {
+  partnerAddress,
+  setPartnerAddress,
+}: AddressModalProps) {
   return (
     <MyDialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-[90%] md:max-w-sm rounded-2xl py-12 px-6 text-center">
+      <DialogContent className="max-w-[90%] md:max-w-2xl rounded-2xl py-12 px-6 text-center">
         <MyIcon
           name="x"
           className="absolute top-4 right-4 cursor-pointer"
@@ -50,6 +68,111 @@ export default function AddressModal({
         >
           {descrition}
         </MyTypography>
+
+        <div className="space-y-2 mt-6 w-11/12 mx-auto">
+          <MyTextInput
+            label="CEP"
+            classNameLabel="text-left"
+            placeholder="Digite o CEP"
+            className="mt-1"
+            value={partnerAddress.addressPostalCode}
+            onChange={(e) =>
+              setPartnerAddress((prev) => ({
+                ...prev,
+                addressPostalCode: formatCEP(e.target.value),
+              }))
+            }
+            onBlur={onBlurCep}
+            noHintText
+          />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <MyTextInput
+              label="Endereço"
+              classNameLabel="text-left"
+              placeholder="Digite seu endereço"
+              className="mt-1"
+              value={partnerAddress.address}
+              onChange={(e) =>
+                setPartnerAddress((prev) => ({
+                  ...prev,
+                  address: e.target.value,
+                }))
+              }
+              noHintText
+            />
+            <MyTextInput
+              label="Número"
+              classNameLabel="text-left"
+              placeholder="Digite o número"
+              className="mt-1"
+              value={partnerAddress.addressNumber}
+              onChange={(e) =>
+                setPartnerAddress((prev) => ({
+                  ...prev,
+                  addressNumber: e.target.value,
+                }))
+              }
+              noHintText
+            />
+            <MyTextInput
+              label="Complemento"
+              classNameLabel="text-left"
+              placeholder="Digite o complemento"
+              className="mt-1"
+              value={partnerAddress.addressComplement}
+              onChange={(e) =>
+                setPartnerAddress((prev) => ({
+                  ...prev,
+                  addressComplement: e.target.value,
+                }))
+              }
+              noHintText
+            />
+            <MyTextInput
+              label="Bairro"
+              classNameLabel="text-left"
+              placeholder="Digite o bairro"
+              className="mt-1"
+              value={partnerAddress.addressNeighborhood}
+              onChange={(e) =>
+                setPartnerAddress((prev) => ({
+                  ...prev,
+                  addressNeighborhood: e.target.value,
+                }))
+              }
+              noHintText
+            />
+            <MyTextInput
+              label="Cidade"
+              placeholder="Digite a cidade"
+              classNameLabel="text-left"
+              className="mt-1"
+              value={partnerAddress.addressCity}
+              onChange={(e) =>
+                setPartnerAddress((prev) => ({
+                  ...prev,
+                  addressCity: e.target.value,
+                }))
+              }
+              noHintText
+            />
+            <MyTextInput
+              label="Estado"
+              classNameLabel="text-left"
+              placeholder="Digite o estado"
+              className="mt-1"
+              value={partnerAddress.addressState}
+              onChange={(e) =>
+                setPartnerAddress((prev) => ({
+                  ...prev,
+                  addressState: e.target.value,
+                }))
+              }
+              noHintText
+            />
+          </div>
+        </div>
+
         <MyButton
           variant="black-border"
           borderRadius="squared"
@@ -58,7 +181,7 @@ export default function AddressModal({
           onClick={onAction}
           isLoading={isLoading ?? false}
         >
-          {button}
+          Salvar
         </MyButton>
       </DialogContent>
     </MyDialog>

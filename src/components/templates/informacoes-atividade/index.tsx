@@ -93,6 +93,13 @@ export default function InformacoesAtividade({
     pixAddressKeyType,
     bankOwnerName,
     bankOwnerDocument,
+    address: addressStepper,
+    addressPostalCode: addressPostalCodeStepper,
+    addressNumber: addressNumberStepper,
+    addressComplement: addressComplementStepper,
+    addressNeighborhood: addressNeighborhoodStepper,
+    addressCity: addressCityStepper,
+    addressState: addressStateStepper,
   } = useStepperStore();
 
   const { data: session } = useSession();
@@ -261,7 +268,13 @@ export default function InformacoesAtividade({
       bankOwnerName,
       bankOwnerDocument,
       about: undefined,
-      address: undefined,
+      address: addressStepper,
+      addressPostalCode: addressPostalCodeStepper,
+      addressNumber: addressNumberStepper,
+      addressComplement: addressComplementStepper,
+      addressNeighborhood: addressNeighborhoodStepper,
+      addressCity: addressCityStepper,
+      addressState: addressStateStepper,
     };
 
     const adventure = {

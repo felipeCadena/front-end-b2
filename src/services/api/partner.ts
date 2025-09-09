@@ -61,13 +61,13 @@ export interface Partner {
   facebook: string | null;
   instagram: string | null;
   sumTotalRatings: number;
-  address?: string
-  addressCity?: string
-  addressComplement?: string
-  addressNeighborhood?: string
-  addressNumber?: string
-  addressPostalCode?: string
-  addressState?: string
+  address?: string;
+  addressCity?: string;
+  addressComplement?: string;
+  addressNeighborhood?: string;
+  addressNumber?: string;
+  addressPostalCode?: string;
+  addressState?: string;
   createdAt: string;
   updatedAt: string;
   tag?: string;
@@ -212,6 +212,17 @@ export const partnerService = {
       return response.data;
     } catch (error) {
       console.error("Error creating partner:", error);
+      throw error;
+    }
+  },
+  updatePartnerLogged: async (
+    partner: Partial<Partner>
+  ): Promise<Partner | null> => {
+    try {
+      const response = await api.patch<Partner>(`/partners`, partner);
+      return response.data;
+    } catch (error) {
+      console.error("Error updating partner:", error);
       throw error;
     }
   },

@@ -15,10 +15,12 @@ import { partnerService } from "@/services/api/partner";
 import { Adventure } from "@/services/api/adventures";
 import { users } from "@/services/api/users";
 import AddressModal from "@/components/molecules/address-modal";
+import { toast } from "react-toastify";
+import { getAddress } from "@/utils/getAddress";
 
 export default function SuasAtividades() {
   const router = useRouter();
-  const [modalAddress, setModalAddress] = useState(false)
+  const [modalAddress, setModalAddress] = useState(false);
   const { handleClose, isModalOpen } = useAlert();
   const [selected, setSelected] = React.useState<"ar" | "terra" | "mar" | "">(
     ""
@@ -26,21 +28,71 @@ export default function SuasAtividades() {
   const [partnerAdventures, setPartnerAdventures] =
     React.useState<Adventure[]>();
 
-    const { data: partner } = useQuery({
+  const [partnerAddress, setPartnerAddress] = useState({
+    address: "",
+    addressPostalCode: "",
+    addressNumber: "",
+    addressNeighborhood: "",
+    addressComplement: "",
+    addressCity: "",
+    addressState: "",
+  });
+
+  const { data: partner } = useQuery({
     queryKey: ["partner"],
-    queryFn: () =>
-      partnerService.getPartnerLogged()
+    queryFn: () => partnerService.getPartnerLogged(),
   });
 
   useEffect(() => {
-    if(!partner?.addressPostalCode) {
-      setModalAddress(true)
+    if (!partner?.addressPostalCode) {
+      setModalAddress(true);
     }
-  }, [partner])
-  
+  }, [partner]);
 
+  function closeModalAddress() {
+    setModalAddress(false);
+  }
 
+  const onBlurCep = async () => {
+    if (!partnerAddress.addressPostalCode) return;
+    const cep = partnerAddress.addressPostalCode.replace(/\D/g, "");
+    if (cep?.length !== 8) return;
 
+    const response = await getAddress(cep);
+
+    if (response) {
+      setPartnerAddress({
+        addressPostalCode: partnerAddress.addressPostalCode,
+        address: response.logradouro || "",
+        addressNumber: response.numero || "",
+        addressNeighborhood: response.bairro || "",
+        addressComplement: partnerAddress.addressComplement || "",
+        addressCity: response.localidade || "",
+        addressState: response.uf || "",
+      });
+    } else {
+      setPartnerAddress({
+        addressPostalCode: partnerAddress.addressPostalCode,
+        address: partnerAddress.address,
+        addressNumber: partnerAddress.addressNumber,
+        addressNeighborhood: partnerAddress.addressNeighborhood,
+        addressComplement: partnerAddress.addressComplement,
+        addressCity: partnerAddress.addressCity,
+        addressState: partnerAddress.addressState,
+      });
+      toast.error("CEP não encontrado");
+    }
+  };
+
+  const handleUpdatePartner = async () => {
+    if (partnerAddress) {
+      await partnerService.updatePartnerLogged(partnerAddress);
+      toast.success("Endereço atualizado com sucesso!");
+    } else {
+      toast.error("Erro ao atualizar endereço, tente novamente.");
+    }
+    setModalAddress(false);
+  };
 
   useQuery({
     queryKey: ["myAdventures", selected],
@@ -69,16 +121,20 @@ export default function SuasAtividades() {
 
   return (
     <main className="max-w-screen-custom">
-
-      <AddressModal
-        open={modalAddress}
-        onClose={handleClose}
-        onAction={handleClose}
-        iconName="warning"
-        title={`Olá, ${partner?.fantasyName}`}
-        descrition="Parabéns! Sua atividade foi cadastrada com sucesso e já pode ser visualizada pelos nossos clientes!"
-        button="Voltar ao início"
-      />
+      {partner?.fantasyName && (
+        <AddressModal
+          open={modalAddress}
+          onClose={closeModalAddress}
+          onAction={handleUpdatePartner}
+          onBlurCep={onBlurCep}
+          partnerAddress={partnerAddress}
+          setPartnerAddress={setPartnerAddress}
+          iconName="warning"
+          title={`Olá, ${partner?.fantasyName}`}
+          descrition="Atualizamos nossa plataformae, para continuar navegando, é necessário incluir seu endereço no cadastro. Adicione agora e siga aproveitando todos os benefícios da B2 Adventure."
+          button="Voltar ao início"
+        />
+      )}
 
       <ModalAlert
         open={isModalOpen}
@@ -86,7 +142,7 @@ export default function SuasAtividades() {
         onAction={handleClose}
         iconName="success"
         title="Atividade cadastrada"
-        descrition="Atualizamos nossa plataforma e, para continuar navegando, é necessário incluir seu endereço no cadastro. Adicione agora e siga aproveitando todos os benefícios da B2 Adventure."
+        descrition="Parabéns! Sua atividade foi cadastrada com sucesso e já pode ser visualizada pelos nossos clientes!"
         button="Voltar ao início"
       />
       <section className="px-4">

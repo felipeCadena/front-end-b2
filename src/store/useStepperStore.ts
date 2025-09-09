@@ -19,6 +19,14 @@ interface StepperState {
   cnpjOrCpf: string;
   // languages?: string[];
 
+  addressPostalCode: string;
+  address: string;
+  addressNumber: string;
+  addressNeighborhood: string;
+  addressComplement: string;
+  addressCity: string;
+  addressState: string;
+
   // Step 4 - Informações
   bankAccount: string;
   bankAgency: string;
@@ -56,6 +64,14 @@ const initialState = {
   cnpjOrCpf: "",
   // languages: [],
 
+  addressPostalCode: "",
+  address: "",
+  addressNumber: "",
+  addressNeighborhood: "",
+  addressComplement: "",
+  addressCity: "",
+  addressState: "",
+
   bankAccount: "",
   bankAgency: "",
   bankCode: "",
@@ -69,15 +85,15 @@ const initialState = {
   payday: 0,
   typePayment: "pix",
 
-  address: {
-    street: "",
-    number: "",
-    complement: "",
-    neighborhood: "",
-    city: "",
-    state: "",
-    zipCode: "",
-  },
+  // address: {
+  //   street: "",
+  //   number: "",
+  //   complement: "",
+  //   neighborhood: "",
+  //   city: "",
+  //   state: "",
+  //   zipCode: "",
+  // },
 };
 
 export const useStepperStore = create<StepperState>()(
