@@ -85,6 +85,19 @@ export default function SuasAtividades() {
   };
 
   const handleUpdatePartner = async () => {
+
+    if (!partnerAddress.addressPostalCode 
+      || !partnerAddress.address 
+      || !partnerAddress.addressCity 
+      || !partnerAddress.addressNeighborhood
+      || !partnerAddress.addressNumber
+      || !partnerAddress.addressState
+    )
+      {
+        toast.error('Preencha os campos obrigatórios!')
+        return
+      }
+
     if (partnerAddress) {
       await partnerService.updatePartnerLogged(partnerAddress);
       toast.success("Endereço atualizado com sucesso!");

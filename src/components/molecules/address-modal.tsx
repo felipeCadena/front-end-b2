@@ -50,13 +50,13 @@ export default function AddressModal({
   setPartnerAddress,
 }: AddressModalProps) {
   return (
-    <MyDialog open={open} onOpenChange={onClose}>
+    <MyDialog open={open} onOpenChange={() => {}}>
       <DialogContent className="max-w-[90%] md:max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl py-12 px-6 text-center">
-        <MyIcon
+        {/* <MyIcon
           name="x"
           className="absolute top-4 right-4 cursor-pointer"
           onClick={onClose}
-        />
+        /> */}
         <DialogHeader className="flex items-center gap-4">
           <MyIcon name={iconName} />
           <DialogTitle className="text-lg font-bold">{title}</DialogTitle>
