@@ -44,7 +44,7 @@ export default function SuasAtividades() {
   });
 
   useEffect(() => {
-    if (!partner?.addressPostalCode) {
+    if (partner?.addressPostalCode?.length === 0) {
       setModalAddress(true);
     }
   }, [partner]);
@@ -131,7 +131,7 @@ export default function SuasAtividades() {
           setPartnerAddress={setPartnerAddress}
           iconName="warning"
           title={`Olá, ${partner?.fantasyName}`}
-          descrition="Atualizamos nossa plataformae, para continuar navegando, é necessário incluir seu endereço no cadastro. Adicione agora e siga aproveitando todos os benefícios da B2 Adventure."
+          descrition="Atualizamos nossa plataforma e, para continuar navegando, é necessário incluir seu endereço no cadastro. Adicione agora e siga aproveitando todos os benefícios da B2 Adventure."
           button="Voltar ao início"
         />
       )}
