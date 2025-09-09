@@ -81,8 +81,8 @@
   
   /* Para navegadores Webkit (Chrome, Edge, Safari) */
 .scrollbar-thin::-webkit-scrollbar {
-  width: 4px; /* Largura da scrollbar */
-  height: 4px; /* Altura da scrollbar para scroll horizontal */
+  width: 2px; /* Largura da scrollbar */
+  height: 2px; /* Altura da scrollbar para scroll horizontal */
 }
 
 .scrollbar-thin::-webkit-scrollbar-thumb {

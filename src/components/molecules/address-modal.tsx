@@ -13,7 +13,7 @@ import MyTextInput from "../atoms/my-text-input";
 import { formatCEP } from "@/utils/formatters";
 
 export interface PartnerAddress {
-  address: string;
+  addressStreet: string;
   addressPostalCode: string;
   addressNumber: string;
   addressNeighborhood: string;
@@ -50,13 +50,14 @@ export default function AddressModal({
   setPartnerAddress,
 }: AddressModalProps) {
   return (
-    <MyDialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-[90%] md:max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl py-12 px-6 text-center">
-        <MyIcon
+    <MyDialog open={open} onOpenChange={() => {}}>
+      <DialogContent className="max-w-[90%] md:max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl py-12 px-6 text-center
+             scrollbar-thin">
+        {/* <MyIcon
           name="x"
           className="absolute top-4 right-4 cursor-pointer"
           onClick={onClose}
-        />
+        /> */}
         <DialogHeader className="flex items-center gap-4">
           <MyIcon name={iconName} />
           <DialogTitle className="text-lg font-bold">{title}</DialogTitle>
@@ -91,7 +92,7 @@ export default function AddressModal({
               classNameLabel="text-left"
               placeholder="Digite seu endereço"
               className="mt-1"
-              value={partnerAddress.address}
+              value={partnerAddress.addressStreet}
               onChange={(e) =>
                 setPartnerAddress((prev) => ({
                   ...prev,
@@ -177,7 +178,7 @@ export default function AddressModal({
           variant="black-border"
           borderRadius="squared"
           size="lg"
-          className="mt-4 md:w-11/12 md:mx-auto font-bold"
+          className="mt-4 md:w-8/12 md:mx-auto font-bold"
           onClick={onAction}
           isLoading={isLoading ?? false}
         >

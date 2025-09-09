@@ -29,7 +29,7 @@ export default function SuasAtividades() {
     React.useState<Adventure[]>();
 
   const [partnerAddress, setPartnerAddress] = useState({
-    address: "",
+    addressStreet: "",
     addressPostalCode: "",
     addressNumber: "",
     addressNeighborhood: "",
@@ -62,7 +62,7 @@ export default function SuasAtividades() {
     if (response) {
       setPartnerAddress({
         addressPostalCode: partnerAddress.addressPostalCode,
-        address: response.logradouro || "",
+        addressStreet: response.logradouro || "",
         addressNumber: response.numero || "",
         addressNeighborhood: response.bairro || "",
         addressComplement: partnerAddress.addressComplement || "",
@@ -72,7 +72,7 @@ export default function SuasAtividades() {
     } else {
       setPartnerAddress({
         addressPostalCode: partnerAddress.addressPostalCode,
-        address: partnerAddress.address,
+        addressStreet: partnerAddress.addressStreet,
         addressNumber: partnerAddress.addressNumber,
         addressNeighborhood: partnerAddress.addressNeighborhood,
         addressComplement: partnerAddress.addressComplement,
@@ -84,8 +84,29 @@ export default function SuasAtividades() {
   };
 
   const handleUpdatePartner = async () => {
+
+    if (!partnerAddress.addressPostalCode 
+      || !partnerAddress.addressStreet
+      || !partnerAddress.addressCity 
+      || !partnerAddress.addressNeighborhood
+      || !partnerAddress.addressNumber
+      || !partnerAddress.addressState
+    )
+      {
+        toast.error('Preencha os campos obrigatórios!')
+        return
+      }
+
     if (partnerAddress) {
-      await partnerService.updatePartnerLogged(partnerAddress);
+      await partnerService.updatePartnerLogged({
+        addressPostalCode: partnerAddress.addressPostalCode,
+        addressNumber: partnerAddress.addressNumber,
+        addressNeighborhood: partnerAddress.addressNeighborhood,
+        addressComplement: partnerAddress.addressComplement,
+        addressCity: partnerAddress.addressCity,
+        addressState: partnerAddress.addressState,
+        address: partnerAddress.addressStreet
+      });
       toast.success("Endereço atualizado com sucesso!");
     } else {
       toast.error("Erro ao atualizar endereço, tente novamente.");

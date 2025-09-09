@@ -93,7 +93,7 @@ export default function InformacoesAtividade({
     pixAddressKeyType,
     bankOwnerName,
     bankOwnerDocument,
-    address: addressStepper,
+    addressStreet: addressStepper,
     addressPostalCode: addressPostalCodeStepper,
     addressNumber: addressNumberStepper,
     addressComplement: addressComplementStepper,
