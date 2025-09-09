@@ -51,7 +51,8 @@ export default function AddressModal({
 }: AddressModalProps) {
   return (
     <MyDialog open={open} onOpenChange={() => {}}>
-      <DialogContent className="max-w-[90%] md:max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl py-12 px-6 text-center">
+      <DialogContent className="max-w-[90%] md:max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl py-12 px-6 text-center
+             scrollbar-thin">
         {/* <MyIcon
           name="x"
           className="absolute top-4 right-4 cursor-pointer"
@@ -177,7 +178,7 @@ export default function AddressModal({
           variant="black-border"
           borderRadius="squared"
           size="lg"
-          className="mt-4 md:w-11/12 md:mx-auto font-bold"
+          className="mt-4 md:w-8/12 md:mx-auto font-bold"
           onClick={onAction}
           isLoading={isLoading ?? false}
         >
