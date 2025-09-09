@@ -51,7 +51,7 @@ export default function AddressModal({
 }: AddressModalProps) {
   return (
     <MyDialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-[90%] md:max-w-2xl rounded-2xl py-12 px-6 text-center">
+      <DialogContent className="max-w-[90%] md:max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl py-12 px-6 text-center">
         <MyIcon
           name="x"
           className="absolute top-4 right-4 cursor-pointer"
@@ -64,12 +64,12 @@ export default function AddressModal({
         <MyTypography
           variant="subtitle4"
           lightness={500}
-          className="w-11/12 mx-auto"
+          className="md:w-11/12 md:mx-auto text-left"
         >
           {descrition}
         </MyTypography>
 
-        <div className="space-y-2 mt-6 w-11/12 mx-auto">
+        <div className="space-y-2 mt-4 md:mt-6 md:w-11/12 md:mx-auto">
           <MyTextInput
             label="CEP"
             classNameLabel="text-left"
@@ -177,7 +177,7 @@ export default function AddressModal({
           variant="black-border"
           borderRadius="squared"
           size="lg"
-          className="mt-4 w-11/12 mx-auto font-bold"
+          className="mt-4 md:w-11/12 md:mx-auto font-bold"
           onClick={onAction}
           isLoading={isLoading ?? false}
         >
