@@ -39,7 +39,6 @@ export default function SearchActivity({
       setPriceRange([min, max]);
     }
   }, [priceAdult]);
-
   const { data: filterAdventure, refetch } = useQuery({
     queryKey: ["filterAdventure", debouncedValue, priceRange],
     queryFn: async () => {
