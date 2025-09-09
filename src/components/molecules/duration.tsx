@@ -134,13 +134,13 @@ export default function TimePickerModal({
             className="h-48 w-36 flex items-center justify-center rounded-lg overflow-hidden"
           >
             <div className="flex flex-col items-center w-full">
-              <p className="mb-2 font-semibold">Hora</p>
+              <p className="mb-2 font-semibold fixed z-20 bg-white">Hora</p>
               {hours.map((hour) => (
                 <div
                   key={hour}
                   data-value={hour}
                   className={cn(
-                    `text-center py-4 w-full cursor-pointer transition-all`,
+                    `text-center mt-8 py-4 w-full cursor-pointer transition-all`,
                     selectedHour === hour
                       ? "border border-primary-600 rounded-md"
                       : "opacity-50"
@@ -158,13 +158,13 @@ export default function TimePickerModal({
             className="h-48 w-36 flex items-center justify-center rounded-lg overflow-hidden"
           >
             <div className="flex flex-col items-center w-full">
-              <p className="mb-2 font-semibold">Minutos</p>
+              <p className="mb-2 font-semibold fixed z-20 bg-white">Minutos</p>
               {minutes.map((minute) => (
                 <div
                   key={minute}
                   data-value={minute}
                   className={cn(
-                    `text-center py-4 w-full cursor-pointer transition-all`,
+                    `text-center mt-8 py-4 w-full cursor-pointer transition-all`,
                     selectedMinute === minute
                       ? "border border-primary-600 rounded-md"
                       : "opacity-50"

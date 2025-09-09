@@ -44,7 +44,7 @@ export default function SobreAEmpresa() {
     bankOwnerName,
     bankOwnerDocument,
     typePayment,
-    address,
+    addressStreet,
     addressPostalCode,
     addressNumber,
     addressComplement,
@@ -87,7 +87,7 @@ export default function SobreAEmpresa() {
       !cnpjOrCpf ||
       !payday ||
       !addressPostalCode ||
-      !address ||
+      !addressStreet ||
       !addressNumber ||
       !addressNeighborhood ||
       !addressCity ||
@@ -119,7 +119,7 @@ export default function SobreAEmpresa() {
     if (response) {
       setStepData(3, {
         addressPostalCode: addressPostalCode,
-        address: response.logradouro || "",
+        addressStreet: response.logradouro || "",
         addressNumber: response.numero || "",
         addressNeighborhood: response.bairro || "",
         addressComplement: "",
@@ -129,7 +129,7 @@ export default function SobreAEmpresa() {
     } else {
       setStepData(3, {
         addressPostalCode: addressPostalCode,
-        address: address,
+        addressStreet: addressStreet,
         addressNumber: addressNumber,
         addressNeighborhood: addressNeighborhood,
         addressComplement: addressComplement,
@@ -199,8 +199,8 @@ export default function SobreAEmpresa() {
             classNameLabel="text-left"
             placeholder="Digite seu endereço"
             className="mt-1"
-            value={address}
-            onChange={(e) => setStepData(3, { address: e.target.value })}
+            value={addressStreet}
+            onChange={(e) => setStepData(3, { addressStreet: e.target.value })}
             noHintText
           />
           <MyTextInput
