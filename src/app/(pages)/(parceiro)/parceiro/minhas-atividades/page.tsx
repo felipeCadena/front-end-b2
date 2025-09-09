@@ -37,7 +37,6 @@ export default function SuasAtividades() {
     addressCity: "",
     addressState: "",
   });
-
   const { data: partner, isFetched } = useQuery({
     queryKey: ["partner"],
     queryFn: () => partnerService.getPartnerLogged(),
