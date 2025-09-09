@@ -99,7 +99,15 @@ export default function SuasAtividades() {
       }
 
     if (partnerAddress) {
-      await partnerService.updatePartnerLogged(partnerAddress);
+      await partnerService.updatePartnerLogged({
+        addressPostalCode: partnerAddress.addressPostalCode,
+        addressNumber: partnerAddress.addressNumber,
+        addressNeighborhood: partnerAddress.addressNeighborhood,
+        addressComplement: partnerAddress.addressComplement,
+        addressCity: partnerAddress.addressCity,
+        addressState: partnerAddress.addressState,
+        address: partnerAddress.addressStreet
+      });
       toast.success("Endereço atualizado com sucesso!");
     } else {
       toast.error("Erro ao atualizar endereço, tente novamente.");
