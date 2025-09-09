@@ -44,6 +44,7 @@ export default function SearchActivity({
     queryKey: ["filterAdventure", debouncedValue, priceRange],
     queryFn: async () => {
       return adventures.filterAdventures({
+        limit: 90,
         q: debouncedValue || undefined,
         priceAdult:
           priceRange[0] === Number(priceAdult?.min) &&
