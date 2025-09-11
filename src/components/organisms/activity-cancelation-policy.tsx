@@ -18,6 +18,7 @@ type ActivityCancelationPolicyProps = {
   duration: string | undefined;
   isChildrenAllowed: boolean;
   transportAddress?: string;
+  languages: string[] | undefined;
 };
 
 const ActivityCancelationPolicy = ({
@@ -27,6 +28,7 @@ const ActivityCancelationPolicy = ({
   duration,
   isChildrenAllowed,
   transportAddress,
+  languages,
 }: ActivityCancelationPolicyProps) => {
   const { id } = useParams();
   const hoursToDays = hoursBeforeCancelation ? hoursBeforeCancelation / 24 : 3;
@@ -57,6 +59,30 @@ const ActivityCancelationPolicy = ({
   return (
     <div className="flex flex-col justify-between">
       <div className="">
+        {languages && (
+          <>
+            <MyTypography variant="body-big" weight="semibold">
+              Idioma falado pelo parceiro:
+            </MyTypography>
+            <div className="grid grid-cols-2 gap-4 my-4 md:grid">
+              {languages?.map((lang) => (
+                <div
+                  className="bg-primary-900 py-2 rounded-md mb-2 md:h-fit"
+                  key={lang}
+                >
+                  <MyTypography
+                    variant="body"
+                    weight="bold"
+                    className="text-center"
+                  >
+                    {lang}
+                  </MyTypography>
+                </div>
+              ))}
+            </div>
+          </>
+        )}
+
         <div>
           {transportAddress && transportAddress?.length > 0 && (
             <>

@@ -71,6 +71,7 @@ export default function InformacoesAtividade({
     transportAddress,
     setAdventureData,
     clearAdventure,
+    languages,
   } = useAdventureStore();
 
   const {
@@ -309,6 +310,7 @@ export default function InformacoesAtividade({
       hoursBeforeCancellation,
       isRepeatable,
       recurrences,
+      languages,
     };
 
     try {
@@ -469,6 +471,7 @@ export default function InformacoesAtividade({
         hoursBeforeCancellation,
         isRepeatable,
         recurrences,
+        languages,
       };
 
       setIsLoading(true);

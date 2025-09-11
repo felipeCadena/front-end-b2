@@ -74,6 +74,7 @@ export default function EditarAtividade() {
       isRepeatable: activity.isRepeatable,
       images: activity.images,
       schedules: activity?.schedules ?? [],
+      languages: activity.languages,
       recurrences: activity.recurrence
         ? Object.values(
             activity.recurrence.reduce(
