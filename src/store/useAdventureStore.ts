@@ -46,6 +46,8 @@ export interface AdventureState {
   coordinates: { lat: number; lng: number } | null;
   pointRefAddress: string;
 
+  languages?: string;
+
   itemsIncluded: string[];
   duration: string;
   priceAdult: string;
@@ -124,6 +126,8 @@ const initialState = {
   tempImages: [],
   address: "",
   transportAddress: "",
+
+  languages: "",
 
   selectionBlocks: [
     {

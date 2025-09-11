@@ -27,11 +27,11 @@ export interface GetAdventuresResponse {
 }
 
 interface ResponseAdventure {
-  data: Adventure[]
+  data: Adventure[];
   priceAdult: {
-    min: string,
-    max: string
-  }
+    min: string;
+    max: string;
+  };
 }
 
 export interface GetAdventuresParams {
@@ -191,6 +191,7 @@ export interface Adventure {
   schedules?: Schedules[];
   transportAddress?: string;
   refusalMsg: string | null | undefined;
+  languages?: string;
 }
 
 export interface CreateAdventureBody {
@@ -323,16 +324,13 @@ export const adventures = {
       throw error;
     }
   },
-   filterAdventuresWithPrice: async (
+  filterAdventuresWithPrice: async (
     params: GetAdventuresParams
   ): Promise<ResponseAdventure> => {
     try {
-      const { data } = await api.get<ResponseAdventure>(
-        "/adventures/filter",
-        {
-          params,
-        }
-      );
+      const { data } = await api.get<ResponseAdventure>("/adventures/filter", {
+        params,
+      });
       return data;
     } catch (error) {
       console.error("Error filtering adventures:", error);

@@ -105,16 +105,27 @@ export default function WebForm({
     recurrences,
     availableDates,
     addTempImage,
+    languages,
   } = useAdventureStore();
 
   const inputRef = React.useRef<HTMLInputElement>(null);
 
   const [selected, setSelected] = useState([]);
 
+  React.useEffect(() => {
+    if (languages) {
+      try {
+        const parsed = JSON.parse(languages);
+        setSelected(parsed);
+      } catch {
+        setSelected([]);
+      }
+    }
+  }, [languages]);
 
-  const handleLanguages = () => {
-
-  }
+  React.useEffect(() => {
+    setAdventureData({ languages: JSON.stringify(selected) });
+  }, [selected, setAdventureData]);
 
   // Atualiza as datas para um bloco específico
   const handleDateChange = (blockId: number, dates: Date[]) => {
@@ -420,9 +431,6 @@ export default function WebForm({
               className="mt-2"
             />
 
-            {/* <LanguageCheckboxGroup selected={selected} setSelected={setSelected} /> */}
-
-
             <div className="w-full">
               <MyTextarea
                 value={description}
@@ -443,6 +451,12 @@ export default function WebForm({
                 {description.length} / 2000 caracteres
               </div>
             </div>
+
+            <LanguageCheckboxGroup
+              selected={selected}
+              setSelected={setSelected}
+            />
+
             <div className="grid grid-cols-2 gap-8">
               <MySelect
                 label="Antecedência de Agendamento"

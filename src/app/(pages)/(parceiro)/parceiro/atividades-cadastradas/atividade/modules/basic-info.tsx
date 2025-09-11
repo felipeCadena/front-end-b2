@@ -27,6 +27,7 @@ import MyIcon from "@/components/atoms/my-icon";
 import MyTypography from "@/components/atoms/my-typography";
 import Duration from "@/components/molecules/duration";
 import ActivitiesFilter from "@/components/organisms/activities-filter";
+import LanguageSelector from "@/components/molecules/group-checkbox";
 
 export default function BasicInfo({
   formData,
@@ -34,12 +35,13 @@ export default function BasicInfo({
   onClose,
 }: ModalProps) {
   const [isLoading, setIsLoading] = React.useState(false);
+  const [selected, setSelected] = React.useState<string[]>([]);
   const queryClient = useQueryClient();
 
   const formatDuration = (hours: string) => {
     if (!hours) return "";
 
-    const [h, m] = hours.split("h");
+    const [h, m] = hours.split(":");
 
     // Garante que temos números válidos
     const hour = parseInt(h);
@@ -47,16 +49,35 @@ export default function BasicInfo({
 
     if (isNaN(hour)) return "";
 
-    // Mantém os minutos se existirem e forem diferentes de zero
-    if (!isNaN(minute) && minute > 0) {
-      return `0${hour}:${minute}`;
-    }
+    const formattedHour = hour <= 9 ? `0${hour}` : `${hour}`;
+    const formattedMinute =
+      !isNaN(minute) && minute > 0
+        ? `${minute > 9 ? minute : `0${minute}`}`
+        : "00";
 
-    return `0${hour}:00`;
+    return `${formattedHour}:${formattedMinute}`;
   };
 
+  React.useEffect(() => {
+    if (formData?.languages) {
+      try {
+        const parsed = JSON.parse(formData?.languages);
+        setSelected(parsed);
+      } catch {
+        setSelected([]);
+      }
+    }
+  }, [formData?.languages]);
+
+  React.useEffect(() => {
+    setFormData((prev: any) => ({
+      ...prev,
+      languages: JSON.stringify(selected),
+    }));
+  }, [selected, setFormData]);
+
   const handleItemsIncluded = () => {
-    const items = JSON.parse(formData.itemsIncluded || "[]");
+    const items = JSON.parse(formData?.itemsIncluded || "[]");
     const included = [];
 
     if (items.includes("Água")) included.push("Água");
@@ -83,19 +104,24 @@ export default function BasicInfo({
     return JSON.stringify(updated);
   };
 
-  const data = {
-    itemsIncluded: handleItemsIncluded(),
-    difficult: formData.difficult,
-    transportIncluded: formData.transportIncluded,
-    picturesIncluded: formData.picturesIncluded,
-    title: formData.title,
-    description: formData.description,
-    hoursBeforeSchedule: formData.hoursBeforeSchedule,
-    hoursBeforeCancellation: formData.hoursBeforeCancellation,
-    transportAddress: formData.transportAddress,
-    duration: formData.duration,
-    typeAdventure: formData.typeAdventure,
-  };
+  const data = React.useMemo(() => {
+    if (!formData) return {};
+
+    return {
+      itemsIncluded: handleItemsIncluded(),
+      difficult: formData.difficult,
+      transportIncluded: formData.transportIncluded,
+      picturesIncluded: formData.picturesIncluded,
+      title: formData.title,
+      description: formData.description,
+      hoursBeforeSchedule: formData.hoursBeforeSchedule,
+      hoursBeforeCancellation: formData.hoursBeforeCancellation,
+      transportAddress: formData.transportAddress,
+      duration: formData.duration,
+      typeAdventure: formData.typeAdventure,
+      languages: formData.languages,
+    };
+  }, [formData]);
 
   const handleSubmit = async () => {
     setIsLoading(true);
@@ -157,16 +183,21 @@ export default function BasicInfo({
             }
           />
           <div className="text-sm text-gray-4 text-right mt-1">
-            {formData?.description.length} / 2000 caracteres
+            {formData?.description?.length} / 2000 caracteres
           </div>
         </div>
       </div>
+
+      <LanguageSelector
+        selected={JSON.parse(formData?.languages || "[]")}
+        setSelected={setSelected}
+      />
 
       <div className="grid grid-cols-1 md:grid-cols-3 items-center gap-4 space-y-6">
         <MySelect
           label="Grau de Dificuldade"
           className="text-base text-black mt-6"
-          value={getDifficultyDescription(formData.difficult) ?? "Selecione"}
+          value={getDifficultyDescription(formData?.difficult) ?? "Selecione"}
           onValueChange={(value) =>
             setFormData({
               ...formData,
@@ -189,7 +220,7 @@ export default function BasicInfo({
         <MySelect
           label="Transporte Incluso"
           className="text-base text-black"
-          value={formData.transportIncluded ? "true" : "false"}
+          value={formData?.transportIncluded ? "true" : "false"}
           onValueChange={(value) =>
             setFormData({
               ...formData,
@@ -222,7 +253,7 @@ export default function BasicInfo({
         <MySelect
           label="Fotos da atividade inclusa"
           className="text-base text-black"
-          value={formData.picturesIncluded ? "true" : "false"}
+          value={formData?.picturesIncluded ? "true" : "false"}
           onValueChange={(value) =>
             setFormData({
               ...formData,
@@ -244,7 +275,7 @@ export default function BasicInfo({
           label="Água inclusa"
           className="text-base text-black"
           value={
-            JSON.parse(formData.itemsIncluded || "[]").includes("Água")
+            JSON.parse(formData?.itemsIncluded || "[]").includes("Água")
               ? "true"
               : "false"
           }
@@ -254,7 +285,7 @@ export default function BasicInfo({
               itemsIncluded: updateItemsIncluded(
                 "Água",
                 value,
-                formData.itemsIncluded
+                formData?.itemsIncluded
               ),
             })
           }
@@ -272,7 +303,7 @@ export default function BasicInfo({
           label="Alimentação inclusa"
           className="text-base text-black"
           value={
-            JSON.parse(formData.itemsIncluded || "[]").includes("Alimentação")
+            JSON.parse(formData?.itemsIncluded || "[]").includes("Alimentação")
               ? "true"
               : "false"
           }
@@ -282,7 +313,7 @@ export default function BasicInfo({
               itemsIncluded: updateItemsIncluded(
                 "Alimentação",
                 value,
-                formData.itemsIncluded
+                formData?.itemsIncluded
               ),
             })
           }
@@ -300,7 +331,7 @@ export default function BasicInfo({
           label="Combustível incluso"
           className="text-base text-black"
           value={
-            JSON.parse(formData.itemsIncluded || "[]").includes("Combustível")
+            JSON.parse(formData?.itemsIncluded || "[]").includes("Combustível")
               ? "true"
               : "false"
           }
@@ -310,7 +341,7 @@ export default function BasicInfo({
               itemsIncluded: updateItemsIncluded(
                 "Combustível",
                 value,
-                formData.itemsIncluded
+                formData?.itemsIncluded
               ),
             })
           }
@@ -327,7 +358,7 @@ export default function BasicInfo({
         <MySelect
           label="Antecedência de Agendamento"
           className="text-base text-black"
-          value={String(convertToTimeString(formData.hoursBeforeSchedule))}
+          value={String(convertToTimeString(formData?.hoursBeforeSchedule))}
           onValueChange={(value) =>
             setFormData({
               ...formData,
@@ -352,7 +383,7 @@ export default function BasicInfo({
           name="daysBeforeCancellation"
           label="Antecedência de Cancelamento"
           className="text-base text-black"
-          value={String(convertToTimeString(formData.hoursBeforeCancellation))}
+          value={String(convertToTimeString(formData?.hoursBeforeCancellation))}
           onValueChange={(value) =>
             setFormData({
               ...formData,
@@ -382,7 +413,7 @@ export default function BasicInfo({
           </MyTypography>
           <Duration
             iconColor="black"
-            selectedTime={formData?.duration}
+            selectedTime={formatDuration(formData?.duration)}
             setSelectedTime={(time) =>
               setFormData({ ...formData, duration: formatDuration(time) })
             }
