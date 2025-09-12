@@ -227,7 +227,6 @@ export default function QuemSomos() {
         >
           VENHA SE AVENTURAR!
         </MyTypography>
-
         <MyButton
           variant="default"
           size="lg"
