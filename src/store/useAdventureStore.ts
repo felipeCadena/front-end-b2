@@ -28,7 +28,6 @@ export interface SelectionBlock {
 }
 
 export type TypeAdventure = "terra" | "ar" | "mar" | "";
-
 export interface AdventureState {
   title: string;
   description: string;
