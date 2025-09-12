@@ -15,6 +15,7 @@ import {
   getDifficultyDescription,
   getDifficultyDescriptionResume,
   handleNameActivity,
+  mapLanguages,
   sortImagesByDefaultFirst,
 } from "@/utils/formatters";
 import PATHS from "@/utils/paths";
@@ -477,6 +478,27 @@ export default function Atividade() {
                   </div>
                 </div>
               )}
+
+            {activity?.languages && (
+              <>
+                <MyTypography variant="body-big" weight="semibold">
+                  Idioma falado pelo parceiro:
+                </MyTypography>
+                <div className="my-4">
+                  {mapLanguages(activity?.languages ?? "").map((lang) => (
+                    <div className="mb-2 md:h-fit" key={lang}>
+                      <MyTypography
+                        variant="body-big"
+                        weight="regular"
+                        className="text-sm md:text-[0.9rem]"
+                      >
+                        • {lang}
+                      </MyTypography>
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
 
             <MyTypography variant="body-big" weight="semibold">
               Ponto de encontro da atividade:

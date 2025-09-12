@@ -17,6 +17,29 @@ import {
 } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
+export function mapLanguages(dbString: string): string[] {
+  if (!dbString) return [];
+
+  const languages = [
+    { id: "pt-br", label: "Português (Brasileiro)" },
+    { id: "en", label: "Inglês" },
+    { id: "es", label: "Espanhol" },
+    { id: "fr", label: "Francês" },
+    { id: "it", label: "Italiano" },
+    { id: "gr", label: "Alemão" },
+    { id: "cn", label: "Mandarim (Chinês)" },
+  ];
+
+  try {
+    const ids: string[] = JSON.parse(dbString); // ["pt-br","en","gr",...]
+    return ids
+      .map((id) => languages.find((l) => l.id === id)?.label)
+      .filter((label): label is string => Boolean(label));
+  } catch {
+    return [];
+  }
+}
+
 // Converte de "HH:mm" para "Xh" ou "XhYY"
 export const formatDuration = (hours: string) => {
   if (!hours) return "";

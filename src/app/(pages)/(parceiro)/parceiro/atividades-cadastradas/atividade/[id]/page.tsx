@@ -17,6 +17,7 @@ import {
   getDifficultyDescription,
   getDifficultyDescriptionResume,
   handleNameActivity,
+  mapLanguages,
   sortImagesByDefaultFirst,
 } from "@/utils/formatters";
 import {
@@ -87,29 +88,6 @@ export default function Atividade() {
       </MyTypography>
     );
   };
-
-  function mapLanguages(dbString: string): string[] {
-    if (!dbString) return [];
-
-    const languages = [
-      { id: "pt-br", label: "Português (Brasileiro)" },
-      { id: "en", label: "Inglês" },
-      { id: "es", label: "Espanhol" },
-      { id: "fr", label: "Francês" },
-      { id: "it", label: "Italiano" },
-      { id: "gr", label: "Alemão" },
-      { id: "cn", label: "Mandarim (Chinês)" },
-    ];
-
-    try {
-      const ids: string[] = JSON.parse(dbString); // ["pt-br","en","gr",...]
-      return ids
-        .map((id) => languages.find((l) => l.id === id)?.label)
-        .filter((label): label is string => Boolean(label));
-    } catch {
-      return [];
-    }
-  }
 
   useQuery({
     queryKey: ["mySchedules"],
@@ -572,18 +550,15 @@ export default function Atividade() {
                 <MyTypography variant="body-big" weight="semibold">
                   Idioma falado pelo parceiro:
                 </MyTypography>
-                <div className="grid grid-cols-2 gap-4 my-4 md:grid">
+                <div className="my-4">
                   {mapLanguages(activity?.languages ?? "").map((lang) => (
-                    <div
-                      className="bg-primary-900 py-2 rounded-md mb-2 md:h-fit"
-                      key={lang}
-                    >
+                    <div className="mb-2 md:h-fit" key={lang}>
                       <MyTypography
-                        variant="body"
-                        weight="bold"
-                        className="text-center"
+                        variant="body-big"
+                        weight="regular"
+                        className="text-sm md:text-[0.9rem]"
                       >
-                        {lang}
+                        • {lang}
                       </MyTypography>
                     </div>
                   ))}
