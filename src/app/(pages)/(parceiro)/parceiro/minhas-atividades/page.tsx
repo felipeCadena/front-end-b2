@@ -37,12 +37,10 @@ export default function SuasAtividades() {
     addressCity: "",
     addressState: "",
   });
-
   const { data: partner, isFetched } = useQuery({
     queryKey: ["partner"],
     queryFn: () => partnerService.getPartnerLogged(),
   });
-
   useEffect(() => {
     if (isFetched && !partner?.addressPostalCode) {
       setModalAddress(true);
@@ -85,18 +83,17 @@ export default function SuasAtividades() {
   };
 
   const handleUpdatePartner = async () => {
-
-    if (!partnerAddress.addressPostalCode 
-      || !partnerAddress.addressStreet
-      || !partnerAddress.addressCity 
-      || !partnerAddress.addressNeighborhood
-      || !partnerAddress.addressNumber
-      || !partnerAddress.addressState
-    )
-      {
-        toast.error('Preencha os campos obrigatórios!')
-        return
-      }
+    if (
+      !partnerAddress.addressPostalCode ||
+      !partnerAddress.addressStreet ||
+      !partnerAddress.addressCity ||
+      !partnerAddress.addressNeighborhood ||
+      !partnerAddress.addressNumber ||
+      !partnerAddress.addressState
+    ) {
+      toast.error("Preencha os campos obrigatórios!");
+      return;
+    }
 
     if (partnerAddress) {
       await partnerService.updatePartnerLogged({
@@ -106,7 +103,7 @@ export default function SuasAtividades() {
         addressComplement: partnerAddress.addressComplement,
         addressCity: partnerAddress.addressCity,
         addressState: partnerAddress.addressState,
-        address: partnerAddress.addressStreet
+        address: partnerAddress.addressStreet,
       });
       toast.success("Endereço atualizado com sucesso!");
     } else {

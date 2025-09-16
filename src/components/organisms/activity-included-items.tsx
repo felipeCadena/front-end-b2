@@ -14,6 +14,9 @@ const ActivityIncludedItems = ({
   itemsIncluded,
   picturesIncluded,
 }: ActivityIncludedItemsProps) => {
+  if (!transportIncluded && !picturesIncluded && itemsIncluded.length === 0) {
+    return null;
+  }
   return (
     <div className="mb-4 md:mb-0 space-y-4">
       <MyTypography variant="body-big" weight="semibold">

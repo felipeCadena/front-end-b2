@@ -17,6 +17,7 @@ import {
   getDifficultyDescription,
   getDifficultyDescriptionResume,
   handleNameActivity,
+  mapLanguages,
   sortImagesByDefaultFirst,
 } from "@/utils/formatters";
 import {
@@ -544,6 +545,27 @@ export default function Atividade() {
                 </div>
               )}
 
+            {activity?.languages && (
+              <>
+                <MyTypography variant="body-big" weight="semibold">
+                  Idioma falado pelo parceiro:
+                </MyTypography>
+                <div className="my-4">
+                  {mapLanguages(activity?.languages ?? "").map((lang) => (
+                    <div className="mb-2 md:h-fit" key={lang}>
+                      <MyTypography
+                        variant="body-big"
+                        weight="regular"
+                        className="text-sm md:text-[0.9rem]"
+                      >
+                        • {lang}
+                      </MyTypography>
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
+
             <MyTypography variant="body-big" weight="semibold">
               Local da atividade:
             </MyTypography>
@@ -572,7 +594,6 @@ export default function Atividade() {
                 </MyTypography>
               </div>
             </div>
-
             <div className="space-y-6 my-10">
               <div className="flex items-center gap-2">
                 <MyIcon name="duracao" />

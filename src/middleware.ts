@@ -76,6 +76,6 @@ export async function middleware(req: NextRequest) {
 export const config = {
   matcher: [
     // Ignora rotas internas do Next, imagens públicas, favicons, fontes, etc
-    "/((?!api|_next/static|_next/image|favicon.ico|images|user.png|logo.png|logo-web.png|fonts|assets).*)",
+    "/((?!api|_next/static|_next/image|favicon.ico|images|user.png|logo.png|logo-web.png|mock-celular.png|fonts|assets).*)",
   ],
 };

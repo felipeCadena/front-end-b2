@@ -16,15 +16,10 @@ export default function Step1({
   edit?: boolean;
   initialData?: any;
 }) {
-  const { setAdventureData, typeAdventure, description, title } =
+  const { setAdventureData, typeAdventure, description, title, languages } =
     useAdventureStore();
 
-  const [selected, setSelected] = React.useState([]);
-
-
-  const handleLanguages = () => {
-
-  }
+  const [selected, setSelected] = React.useState<string[]>([]);
 
   const handleSelectType = (value: TypeAdventure) => {
     setAdventureData({
@@ -37,6 +32,21 @@ export default function Step1({
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
   }, []);
+
+  React.useEffect(() => {
+    if (languages) {
+      try {
+        const parsed = JSON.parse(languages);
+        setSelected(parsed);
+      } catch {
+        setSelected([]);
+      }
+    }
+  }, [languages]);
+
+  React.useEffect(() => {
+    setAdventureData({ languages: JSON.stringify(selected) });
+  }, [selected, setAdventureData]);
 
   return (
     <section className="">
@@ -66,9 +76,10 @@ export default function Step1({
           className="mt-2"
         />
 
-        {/* <LanguageSelector selected={selected} setSelected={setSelected} /> */}
-
-
+        <LanguageSelector
+          selected={selected}
+          setSelected={setSelected} // agora só cuida do estado local
+        />
         <div className="w-full">
           <MyTextarea
             value={description}

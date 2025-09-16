@@ -28,7 +28,6 @@ export interface SelectionBlock {
 }
 
 export type TypeAdventure = "terra" | "ar" | "mar" | "";
-
 export interface AdventureState {
   title: string;
   description: string;
@@ -45,6 +44,8 @@ export interface AdventureState {
   addressCountry: string;
   coordinates: { lat: number; lng: number } | null;
   pointRefAddress: string;
+
+  languages?: string;
 
   itemsIncluded: string[];
   duration: string;
@@ -124,6 +125,8 @@ const initialState = {
   tempImages: [],
   address: "",
   transportAddress: "",
+
+  languages: "",
 
   selectionBlocks: [
     {
