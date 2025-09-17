@@ -21,12 +21,19 @@ export default function QuemSomos() {
   return (
     <section className="text-center my-6 max-sm:overflow-x-hidden">
       <div className="relative">
+        <MyTypography
+          variant="heading1"
+          weight="extrabold"
+          className="text-left md:text-right md:w-1/2 max-sm:hidden"
+        >
+          Quem Somos
+        </MyTypography>
         <Image
           src="/images/quem-somos/quem01.jpeg"
           width={1200}
           height={800}
           alt="Image de um passeio"
-          className="w-full h-[200px] md:h-[400px] object-cover md:rounded-lg"
+          className="w-full h-[200px] md:h-[500px] object-cover object-top md:rounded-lg"
         />
 
         <div className="p-[4px] rounded-full absolute -bottom-[3rem] md:-bottom-[4.2rem] left-[40%] md:left-[46%] w-[90px] h-[90px] md:w-[100px] md:h-[100px]">
@@ -42,18 +49,18 @@ export default function QuemSomos() {
         </div>
       </div>
 
-      <div className="mt-20 mb-6 md:mb-10 px-4 md:px-20 flex max-sm:flex-col gap-4 md:gap-8 md:justify-center">
+      <div className="mt-20 mb-6 md:mb-10 px-4 md:px-20 flex max-sm:flex-col gap-4 md:gap-48">
         <MyTypography
           variant="heading3"
           weight="extrabold"
-          className="text-left text-primary-600 md:text-right md:w-1/2"
+          className="text-left text-primary-600 md:text-right md:w-1/2 md:hidden"
         >
           Quem Somos
         </MyTypography>
         <MyTypography
           variant="heading3"
           weight="bold"
-          className="text-left md:w-1/2 text-[1rem] md:text-[1.3rem]"
+          className="text-left md:w-[80%] text-[1rem] md:text-[1.3rem]"
         >
           A B2 Adventure é o ponto de partida para quem quer viver o melhor do
           turismo de aventura no Brasil.
@@ -62,7 +69,7 @@ export default function QuemSomos() {
         <MyTypography
           variant="heading3"
           weight="regular"
-          className="text-left md:w-1/2 text-[1rem] md:text-[1.3rem]"
+          className="text-left md:w-[80%] text-[1rem] md:text-[1.3rem]"
         >
           Reunimos, em um só lugar, a maior variedade de esportes ao ar livre em
           meio à natureza — sempre com profissionais que entendem do assunto e
@@ -70,8 +77,7 @@ export default function QuemSomos() {
         </MyTypography>
       </div>
 
-      <div className="relative">
-        <div className="px-4">
+        <div className="px-4 flex gap-4">
           <Image
             src="/images/quem-somos/quem02.jpeg"
             width={1200}
@@ -80,11 +86,22 @@ export default function QuemSomos() {
             className="w-full h-[250px] md:h-[400px] object-cover rounded-l-xl rounded-tr-xl"
             style={{ borderBottomRightRadius: "80px" }}
           />
+        <Image
+          src="/images/quem-somos/quem04.jpeg"
+          width={1200}
+          height={800}
+          alt="Image de um passeio"
+          className="w-full h-[250px] md:h-[400px] object-cover rounded-r-xl rounded-tl-xl max-sm:hidden"
+          style={{ borderBottomLeftRadius: "80px" }}
+        />
         </div>
+      {/* <div className="mt-8 w-[100px] h-[4px] opacity-60 mx-auto rounded-full bg-gradient-to-r from-[#1fa9e0] to-[#62bb46]" /> */}
+
+      <div className="mt-10">
         <MyTypography
           variant="subtitle2"
           weight="medium"
-          className="max-sm:text-left mt-6 max-sm:px-4 max-sm:mb-4 md:w-2/3 md:mx-auto text-[1rem] md:text-[1.3rem]"
+          className="max-sm:text-left max-sm:px-4 max-sm:mb-4 text-[1rem] md:text-[1.3rem]"
         >
           <span className="font-extrabold max-sm:block">
             Nascemos do desejo de facilitar o acesso a experiências que fazem a
@@ -94,15 +111,10 @@ export default function QuemSomos() {
           mergulhos que revelam um novo mundo, remadas, pedaladas, saltos e
           muitas outras formas de se sentir vivo.
         </MyTypography>
-      </div>
-
-      {/* <div className="mt-8 w-[100px] h-[4px] opacity-60 mx-auto rounded-full bg-gradient-to-r from-[#1fa9e0] to-[#62bb46]" /> */}
-
-      <div>
         <MyTypography
           variant="subtitle2"
           weight="medium"
-          className="max-sm:text-left mt-6 max-sm:px-4 max-sm:mb-4 md:w-2/3 md:mx-auto text-[1rem] md:text-[1.3rem]"
+          className="max-sm:text-left mt-6 max-sm:px-4 max-sm:mb-4 text-[1rem] md:text-[1.3rem]"
         >
           Aqui, você encontra uma curadoria de aventuras com praticidade,
           segurança e liberdade para escolher como e onde se conectar com a
@@ -111,7 +123,7 @@ export default function QuemSomos() {
         <MyTypography
           variant="subtitle2"
           weight="medium"
-          className="text-primary-600 max-sm:text-left mt-6 max-sm:px-4 max-sm:mb-4 md:w-2/3 md:mx-auto text-[1rem] md:text-[1.3rem]"
+          className="text-primary-600 max-sm:text-left mt-6 max-sm:px-4 max-sm:mb-4 text-[1rem] md:text-[1.3rem]"
         >
           Acreditamos que cada experiência ao ar livre é uma chance de descobrir
           o novo, se superar e criar memórias que ficam pra sempre.
@@ -119,13 +131,13 @@ export default function QuemSomos() {
       </div>
 
       <div className="mt-8">
-        <div className="px-4">
+        <div className="max-sm:px-4">
           <Image
             src="/images/quem-somos/quem03.jpeg"
             width={1200}
             height={800}
             alt="Image de um passeio"
-            className="w-full h-[250px] md:h-[400px] object-cover rounded-r-xl rounded-tl-xl"
+            className="w-full h-[250px] md:h-[700px] object-cover rounded-r-xl rounded-tl-xl"
             style={{ borderBottomLeftRadius: "80px" }}
           />
         </div>
@@ -145,7 +157,7 @@ export default function QuemSomos() {
           width={1200}
           height={800}
           alt="Image de um passeio"
-          className="w-full h-[250px] md:h-[400px] object-cover rounded-l-xl rounded-tr-xl"
+          className="w-full h-[250px] md:h-[400px] object-cover rounded-l-xl rounded-tr-xl md:hidden"
           style={{ borderBottomRightRadius: "80px" }}
         />
       </div>
