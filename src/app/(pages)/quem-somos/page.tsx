@@ -20,10 +20,10 @@ export default function QuemSomos() {
 
   return (
     <section className="text-center my-6 max-sm:overflow-x-hidden">
-      <div className="relative">
+      <div className="relative ">
         <MyTypography
           variant="heading1"
-          weight="extrabold"
+          weight="bold"
           className="text-center text-[2.5rem] md:text-[5rem] my-4 md:my-6"
         >
           Quem Somos
@@ -33,7 +33,7 @@ export default function QuemSomos() {
           width={1200}
           height={800}
           alt="Image de um passeio"
-          className="w-full h-[200px] md:h-[500px] object-cover object-top md:rounded-lg"
+          className="w-full h-[200px] md:h-[400px] object-cover object-top md:rounded-lg"
         />
 
         <div className="p-[4px] rounded-full absolute -bottom-[3rem] md:-bottom-[4.2rem] left-[40%] md:left-[46%] w-[90px] h-[90px] md:w-[100px] md:h-[100px]">
@@ -49,39 +49,64 @@ export default function QuemSomos() {
         </div>
       </div>
 
-      <div className="mt-20 mb-6 md:mb-10 max-sm:px-4 flex max-sm:flex-col gap-4 md:gap-48">
+      <div className="mt-12 md:mt-20 mb-6 md:mb-10 px-4 flex max-sm:flex-col gap-6 md:justify-center">
         <MyTypography
           variant="heading3"
           weight="bold"
-          className="text-left md:w-[80%] text-[1rem] md:text-[1.3rem]"
+          className="text-left md:text-right md:w-1/2 text-[1rem] md:text-[1.3rem] uppercase"
         >
-          <span className="uppercase">
-            A B2 Adventure é o ponto de partida para quem quer viver o melhor do
-            turismo de aventura no Brasil.
-          </span>
-          <span className="max-sm:hidden block font-medium mt-8">
-            Criada no Rio de Janeiro e com a missão de se expandir por todo o
-            Brasil, a plataforma conecta pessoas que buscam viver momentos
-            únicos a profissionais que dominam cada atividade e conhecem a fundo
-            os lugares onde elas acontecem.
-          </span>
+          A B2 Adventure é o ponto de partida para quem quer viver o melhor do
+          turismo de aventura no Brasil.
         </MyTypography>
 
         <MyTypography
           variant="heading3"
           weight="regular"
-          className="text-left md:w-[80%] text-[1rem] md:text-[1.3rem] md:hidden"
+          className="text-left md:w-1/2 text-[1rem] md:text-[1.3rem]"
         >
           Criada no Rio de Janeiro e com a missão de se expandir por todo o
           Brasil, a plataforma conecta pessoas que buscam viver momentos únicos
           a profissionais que dominam cada atividade e conhecem a fundo os
           lugares onde elas acontecem.
         </MyTypography>
+      </div>
 
+      <div className="relative mt-6 md:mt-24">
+        <div className="grid md:grid-cols-2 gap-6 justify-center">
+          <Image
+            src="/images/quem-somos/quem02.jpeg"
+            width={1200}
+            height={800}
+            alt="Image de um passeio"
+            className="w-full h-[250px] md:h-[400px] object-cover"
+          />
+          <Image
+            src="/images/quem-somos/quem04.jpeg"
+            width={1200}
+            height={800}
+            alt="Image de um passeio"
+            className="w-full h-[250px] md:h-[400px] object-cover max-sm:hidden"
+          />
+        </div>
+
+        <div className="absolute -top-14 left-[33%] p-6 bg-primary-600 z-50 w-1/3 max-sm:hidden">
+          <MyTypography
+            variant="heading3"
+            weight="bold"
+            className="text-white text-[1rem] md:text-[1.3rem] uppercase"
+          >
+            Nossos parceiros são parte fundamental dessa jornada.
+          </MyTypography>
+        </div>
+      </div>
+
+      {/* <div className="mt-8 w-[100px] h-[4px] opacity-60 mx-auto rounded-full bg-gradient-to-r from-[#1fa9e0] to-[#62bb46]" /> */}
+
+      <div className="mt-8 md:mt-10">
         <MyTypography
           variant="heading3"
           weight="regular"
-          className="text-right md:w-[80%] text-[1rem] md:text-[1.3rem]"
+          className="text-left max-sm:px-4 max-sm:mb-4 text-[1rem] md:text-[1.3rem]"
         >
           Aqui você encontra, em um só espaço, uma variedade de esportes de
           aventura: desde trilhas que revelam paisagens surpreendentes até
@@ -91,31 +116,10 @@ export default function QuemSomos() {
           cada escolha, uma nova forma de sentir a energia da natureza e
           descobrir o que ela tem de mais fascinante.
         </MyTypography>
-      </div>
-
-      <div className="flex gap-4">
-        <Image
-          src="/images/quem-somos/quem02.jpeg"
-          width={1200}
-          height={800}
-          alt="Image de um passeio"
-          className="w-full h-[250px] md:h-[400px] object-cover"
-        />
-        <Image
-          src="/images/quem-somos/quem04.jpeg"
-          width={1200}
-          height={800}
-          alt="Image de um passeio"
-          className="w-full h-[250px] md:h-[400px] object-cover max-sm:hidden"
-        />
-      </div>
-      {/* <div className="mt-8 w-[100px] h-[4px] opacity-60 mx-auto rounded-full bg-gradient-to-r from-[#1fa9e0] to-[#62bb46]" /> */}
-
-      <div className="mt-10">
         <MyTypography
           variant="subtitle2"
           weight="medium"
-          className="text-left max-sm:px-4 max-sm:mb-4 text-[1rem] md:text-[1.3rem]"
+          className="text-left mt-6 max-sm:px-4 max-sm:mb-4 text-[1rem] md:text-[1.3rem]"
         >
           Acreditamos que se aventurar é muito mais do que praticar um esporte.
           É viver uma experiência transformadora, criar memórias duradouras e se
@@ -126,7 +130,7 @@ export default function QuemSomos() {
         <MyTypography
           variant="subtitle2"
           weight="medium"
-          className="text-left mt-6 max-sm:px-4 max-sm:mb-4 text-[1rem] md:text-[1.3rem]"
+          className="text-left mt-6 max-sm:px-4 max-sm:mb-4 text-[1rem] md:text-[1.3rem] md:hidden"
         >
           Nossos parceiros são parte fundamental dessa jornada.
         </MyTypography>
@@ -142,7 +146,7 @@ export default function QuemSomos() {
         </MyTypography>
       </div>
 
-      <div className="mt-8">
+      <div className="mt-10 md:mt-16">
         <div className="">
           <Image
             src="/images/quem-somos/quem03.jpeg"
@@ -155,7 +159,7 @@ export default function QuemSomos() {
         <MyTypography
           variant="subtitle2"
           weight="extrabold"
-          className="text-left mt-6 md:mt-10 px-4 max-sm:mb-4 text-[1rem] md:text-[1.3rem]"
+          className="text-left mt-10 md:mt-16 px-4 max-sm:mb-4 text-[1rem] md:text-[1.3rem]"
         >
           A B2 Adventure é, acima de tudo, um convite: sair da rotina, explorar
           o novo e sentir a natureza de perto. Uma ponte entre você e
@@ -164,7 +168,7 @@ export default function QuemSomos() {
         </MyTypography>
       </div>
 
-      <div className="">
+      <div className="mt-10">
         <Image
           src="/images/quem-somos/quem04.jpeg"
           width={1200}
@@ -174,7 +178,7 @@ export default function QuemSomos() {
         />
       </div>
 
-      <div className="max-sm:space-y-12 mt-12 md:flex items-stretch gap-4">
+      <div className="max-sm:space-y-12 mt-20 md:flex items-stretch gap-4">
         <div className="relative w-full md:w-2/3 mx-auto max-sm:my-8 px-4 ">
           <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 ">
             <div className="w-12 h-12 rounded-full bg-white border border-primary-600 flex items-center justify-center">
@@ -245,9 +249,9 @@ export default function QuemSomos() {
 
       <div className="mt-8">
         <MyTypography
-          variant="heading3"
+          variant="heading1"
           weight="extrabold"
-          className="text-primary-600"
+          className="text-primary-600 my-12 text-[1.5rem] md:text-[2rem]"
         >
           VENHA SE AVENTURAR!
         </MyTypography>
@@ -255,7 +259,7 @@ export default function QuemSomos() {
           variant="default"
           size="lg"
           borderRadius="squared"
-          className="mt-6 mb-10"
+          className="mt-4 mb-10"
           onClick={() => router.push(PATHS.atividades)}
         >
           Ver passeios
