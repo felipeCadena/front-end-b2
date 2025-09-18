@@ -24,7 +24,7 @@ export default function QuemSomos() {
         <MyTypography
           variant="heading1"
           weight="extrabold"
-          className="text-left md:text-right md:w-1/2 max-sm:hidden"
+          className="text-center text-[2.5rem] md:text-[5rem] my-4 md:my-6"
         >
           Quem Somos
         </MyTypography>
@@ -49,129 +49,141 @@ export default function QuemSomos() {
         </div>
       </div>
 
-      <div className="mt-20 mb-6 md:mb-10 px-4 md:px-20 flex max-sm:flex-col gap-4 md:gap-48">
-        <MyTypography
-          variant="heading3"
-          weight="extrabold"
-          className="text-left text-primary-600 md:text-right md:w-1/2 md:hidden"
-        >
-          Quem Somos
-        </MyTypography>
+      <div className="mt-20 mb-6 md:mb-10 max-sm:px-4 flex max-sm:flex-col gap-4 md:gap-48">
         <MyTypography
           variant="heading3"
           weight="bold"
           className="text-left md:w-[80%] text-[1rem] md:text-[1.3rem]"
         >
-          A B2 Adventure é o ponto de partida para quem quer viver o melhor do
-          turismo de aventura no Brasil.
+          <span className="uppercase">
+            A B2 Adventure é o ponto de partida para quem quer viver o melhor do
+            turismo de aventura no Brasil.
+          </span>
+          <span className="max-sm:hidden block font-medium mt-8">
+            Criada no Rio de Janeiro e com a missão de se expandir por todo o
+            Brasil, a plataforma conecta pessoas que buscam viver momentos
+            únicos a profissionais que dominam cada atividade e conhecem a fundo
+            os lugares onde elas acontecem.
+          </span>
         </MyTypography>
 
         <MyTypography
           variant="heading3"
           weight="regular"
-          className="text-left md:w-[80%] text-[1rem] md:text-[1.3rem]"
+          className="text-left md:w-[80%] text-[1rem] md:text-[1.3rem] md:hidden"
         >
-          Reunimos, em um só lugar, a maior variedade de esportes ao ar livre em
-          meio à natureza — sempre com profissionais que entendem do assunto e
-          cuidam de cada detalhe.
+          Criada no Rio de Janeiro e com a missão de se expandir por todo o
+          Brasil, a plataforma conecta pessoas que buscam viver momentos únicos
+          a profissionais que dominam cada atividade e conhecem a fundo os
+          lugares onde elas acontecem.
+        </MyTypography>
+
+        <MyTypography
+          variant="heading3"
+          weight="regular"
+          className="text-right md:w-[80%] text-[1rem] md:text-[1.3rem]"
+        >
+          Aqui você encontra, em um só espaço, uma variedade de esportes de
+          aventura: desde trilhas que revelam paisagens surpreendentes até
+          mergulhos que abrem as portas para um mundo subaquático cheio de vida;
+          de voos de paraquedas que fazem o coração disparar até remadas,
+          escaladas, saltos de wakeboard, passeios de veleiro e muito mais. A
+          cada escolha, uma nova forma de sentir a energia da natureza e
+          descobrir o que ela tem de mais fascinante.
         </MyTypography>
       </div>
 
-        <div className="px-4 flex gap-4">
-          <Image
-            src="/images/quem-somos/quem02.jpeg"
-            width={1200}
-            height={800}
-            alt="Image de um passeio"
-            className="w-full h-[250px] md:h-[400px] object-cover rounded-l-xl rounded-tr-xl"
-            style={{ borderBottomRightRadius: "80px" }}
-          />
+      <div className="flex gap-4">
+        <Image
+          src="/images/quem-somos/quem02.jpeg"
+          width={1200}
+          height={800}
+          alt="Image de um passeio"
+          className="w-full h-[250px] md:h-[400px] object-cover"
+        />
         <Image
           src="/images/quem-somos/quem04.jpeg"
           width={1200}
           height={800}
           alt="Image de um passeio"
-          className="w-full h-[250px] md:h-[400px] object-cover rounded-r-xl rounded-tl-xl max-sm:hidden"
-          style={{ borderBottomLeftRadius: "80px" }}
+          className="w-full h-[250px] md:h-[400px] object-cover max-sm:hidden"
         />
-        </div>
+      </div>
       {/* <div className="mt-8 w-[100px] h-[4px] opacity-60 mx-auto rounded-full bg-gradient-to-r from-[#1fa9e0] to-[#62bb46]" /> */}
 
       <div className="mt-10">
         <MyTypography
           variant="subtitle2"
           weight="medium"
-          className="max-sm:text-left max-sm:px-4 max-sm:mb-4 text-[1rem] md:text-[1.3rem]"
+          className="text-left max-sm:px-4 max-sm:mb-4 text-[1rem] md:text-[1.3rem]"
         >
-          <span className="font-extrabold max-sm:block">
-            Nascemos do desejo de facilitar o acesso a experiências que fazem a
-            vida pulsar:
-          </span>{" "}
-          trilhas que levam a vistas inesquecíveis, voos que tiram o fôlego,
-          mergulhos que revelam um novo mundo, remadas, pedaladas, saltos e
-          muitas outras formas de se sentir vivo.
+          Acreditamos que se aventurar é muito mais do que praticar um esporte.
+          É viver uma experiência transformadora, criar memórias duradouras e se
+          conectar com pessoas, culturas e histórias. Por isso, trabalhamos para
+          que cada detalhe seja pensado com praticidade e segurança, garantindo
+          liberdade na hora de escolher quando, onde e como se aventurar..
         </MyTypography>
         <MyTypography
           variant="subtitle2"
           weight="medium"
-          className="max-sm:text-left mt-6 max-sm:px-4 max-sm:mb-4 text-[1rem] md:text-[1.3rem]"
+          className="text-left mt-6 max-sm:px-4 max-sm:mb-4 text-[1rem] md:text-[1.3rem]"
         >
-          Aqui, você encontra uma curadoria de aventuras com praticidade,
-          segurança e liberdade para escolher como e onde se conectar com a
-          natureza.
+          Nossos parceiros são parte fundamental dessa jornada.
         </MyTypography>
         <MyTypography
           variant="subtitle2"
-          weight="medium"
-          className="text-primary-600 max-sm:text-left mt-6 max-sm:px-4 max-sm:mb-4 text-[1rem] md:text-[1.3rem]"
+          weight="bold"
+          className="text-primary-600 text-left mt-6 max-sm:px-4 max-sm:mb-4 text-[1rem] md:text-[1.3rem]"
         >
-          Acreditamos que cada experiência ao ar livre é uma chance de descobrir
-          o novo, se superar e criar memórias que ficam pra sempre.
+          Selecionamos profissionais experientes e apaixonados, que estão
+          preparados para guiar cada cliente com responsabilidade, cuidado e
+          entusiasmo. Essa união nos permite oferecer aventuras que unem emoção,
+          confiança e qualidade.
         </MyTypography>
       </div>
 
       <div className="mt-8">
-        <div className="max-sm:px-4">
+        <div className="">
           <Image
             src="/images/quem-somos/quem03.jpeg"
             width={1200}
             height={800}
             alt="Image de um passeio"
-            className="w-full h-[250px] md:h-[700px] object-cover rounded-r-xl rounded-tl-xl"
-            style={{ borderBottomLeftRadius: "80px" }}
+            className="w-full h-[250px] md:h-[600px] object-cover"
           />
         </div>
         <MyTypography
           variant="subtitle2"
           weight="extrabold"
-          className="max-sm:text-left mt-6 max-sm:px-10 max-sm:mb-4 md:w-2/3 md:mx-auto text-[1rem] md:text-[1.3rem]"
+          className="text-left mt-6 md:mt-10 px-4 max-sm:mb-4 text-[1rem] md:text-[1.3rem]"
         >
-          A B2 é isso: uma plataforma que te aproxima do que realmente importa —
-          com leveza, confiança e emoção.
+          A B2 Adventure é, acima de tudo, um convite: sair da rotina, explorar
+          o novo e sentir a natureza de perto. Uma ponte entre você e
+          experiências que fazem sentido, criadas para serem lembradas e
+          compartilhadas.
         </MyTypography>
       </div>
 
-      <div className="px-4">
+      <div className="">
         <Image
           src="/images/quem-somos/quem04.jpeg"
           width={1200}
           height={800}
           alt="Image de um passeio"
-          className="w-full h-[250px] md:h-[400px] object-cover rounded-l-xl rounded-tr-xl md:hidden"
-          style={{ borderBottomRightRadius: "80px" }}
+          className="w-full h-[250px] md:h-[400px] object-cover md:hidden"
         />
       </div>
 
-      <div className="space-y-12 mt-12">
-        <div className="relative w-full md:w-2/3 mx-auto my-8 px-4">
-          <div className="absolute -top-6 left-1/2 transform -translate-x-1/2">
+      <div className="max-sm:space-y-12 mt-12 md:flex items-stretch gap-4">
+        <div className="relative w-full md:w-2/3 mx-auto max-sm:my-8 px-4 ">
+          <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 ">
             <div className="w-12 h-12 rounded-full bg-white border border-primary-600 flex items-center justify-center">
               <MyIcon name="mountains" />
             </div>
           </div>
 
-          <div className="rounded-xl border-opacity-90 border-2 border-transparent bg-white bg-gradient-to-r from-[#1fa9e0] to-[#62bb46]">
-            <div className="rounded-xl bg-white p-6 text-center">
+          <div className="rounded-xl  border-opacity-90 border-2 border-transparent bg-white bg-gradient-to-r from-[#1fa9e0] to-[#62bb46]">
+            <div className="rounded-xl bg-white p-6 text-center md:min-h-[230px]">
               <MyTypography
                 variant="subtitle2"
                 weight="regular"
@@ -185,7 +197,7 @@ export default function QuemSomos() {
           </div>
         </div>
 
-        <div className="relative w-full md:w-2/3 mx-auto my-8 px-4">
+        <div className="relative w-full md:w-2/3 mx-auto max-sm:my-8 px-4 ">
           <div className="absolute -top-6 left-1/2 transform -translate-x-1/2">
             <div className="w-12 h-12 rounded-full bg-white border border-primary-600 flex items-center justify-center">
               <MyIcon name="binoculars" />
@@ -193,7 +205,7 @@ export default function QuemSomos() {
           </div>
 
           <div className="rounded-xl border-opacity-90 border-2 border-transparent bg-white bg-gradient-to-r from-[#1fa9e0] to-[#62bb46]">
-            <div className="rounded-xl bg-white p-6 text-center">
+            <div className="rounded-xl bg-white p-6 text-center md:min-h-[230px]">
               <MyTypography
                 variant="subtitle2"
                 weight="regular"
@@ -208,7 +220,7 @@ export default function QuemSomos() {
           </div>
         </div>
 
-        <div className="relative w-full md:w-2/3 mx-auto my-8 px-4">
+        <div className="relative w-full md:w-2/3 mx-auto max-sm:my-8 px-4">
           <div className="absolute -top-6 left-1/2 transform -translate-x-1/2">
             <div className="w-12 h-12 rounded-full bg-white border border-primary-600 flex items-center justify-center">
               <MyIcon name="sketch" />
@@ -216,7 +228,7 @@ export default function QuemSomos() {
           </div>
 
           <div className="rounded-xl border-opacity-90 border-2 border-transparent bg-white bg-gradient-to-r from-[#1fa9e0] to-[#62bb46]">
-            <div className="rounded-xl bg-white p-6 text-center">
+            <div className="rounded-xl bg-white p-6 text-center md:min-h-[230px]">
               <MyTypography
                 variant="subtitle2"
                 weight="regular"

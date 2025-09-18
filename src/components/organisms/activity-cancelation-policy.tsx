@@ -64,15 +64,18 @@ const ActivityCancelationPolicy = ({
             <MyTypography variant="body-big" weight="semibold">
               Idioma falado pelo parceiro:
             </MyTypography>
-            <div className="my-4">
+            <div className="grid grid-cols-2 gap-4 my-4 md:grid">
               {languages?.map((lang) => (
-                <div className="mb-2 md:h-fit" key={lang}>
+                <div
+                  className="bg-primary-900 text-center py-2 rounded-md mb-2 md:h-fit"
+                  key={lang}
+                >
                   <MyTypography
                     variant="body-big"
-                    weight="regular"
-                    className="text-sm md:text-[0.9rem]"
+                    weight="bold"
+                    className="text-[0.8rem] md:text-[0.9rem]"
                   >
-                    • {lang}
+                    {lang}
                   </MyTypography>
                 </div>
               ))}
