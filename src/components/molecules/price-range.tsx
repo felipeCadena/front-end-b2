@@ -23,8 +23,12 @@ function PriceRangeSlider({
   ];
 
   // Estados de texto para permitir digitação livre (com estados intermediários)
-  const [minText, setMinText] = React.useState<string>(() => String(safeValue[0]));
-  const [maxText, setMaxText] = React.useState<string>(() => String(safeValue[1]));
+  const [minText, setMinText] = React.useState<string>(() =>
+    String(safeValue[0])
+  );
+  const [maxText, setMaxText] = React.useState<string>(() =>
+    String(safeValue[1])
+  );
   const [minFocused, setMinFocused] = React.useState(false);
   const [maxFocused, setMaxFocused] = React.useState(false);
 
@@ -81,29 +85,39 @@ function PriceRangeSlider({
 
       {/* Inputs */}
       <div className="flex gap-4">
-        <input
-          type="number"
-          className="w-full rounded-md border px-3 py-2 text-center font-medium"
-          value={minFocused ? minText : String(safeValue[0])}
-          onFocus={() => setMinFocused(true)}
-          onChange={(e) => setMinText(e.target.value)} // não clampa aqui!
-          onBlur={commitMin} // só valida no commit
-          onKeyDown={onMinKeyDown}
-          min={min}
-          max={safeValue[1]}
-        />
-
-        <input
-          type="number"
-          className="w-full rounded-md border px-3 py-2 text-center font-medium"
-          value={maxFocused ? maxText : String(safeValue[1])}
-          onFocus={() => setMaxFocused(true)}
-          onChange={(e) => setMaxText(e.target.value)}
-          onBlur={commitMax}
-          onKeyDown={onMaxKeyDown}
-          min={safeValue[0]}
-          max={max}
-        />
+        <div className="relative">
+          <span className="absolute left-3 top-1/2 -translate-y-1/2 font-medium">
+            R$
+          </span>
+          <input
+            type="number"
+            className="w-full rounded-md border px-3 py-2 text-center font-medium"
+            value={minFocused ? minText : String(safeValue[0])}
+            onFocus={() => setMinFocused(true)}
+            onChange={(e) => setMinText(e.target.value)} // não clampa aqui!
+            onBlur={commitMin} // só valida no commit
+            onKeyDown={onMinKeyDown}
+            placeholder="R$"
+            min={min}
+            max={safeValue[1]}
+          />
+        </div>
+        <div className="relative">
+          <span className="absolute left-3 top-1/2 -translate-y-1/2 font-medium">
+            R$
+          </span>
+          <input
+            type="number"
+            className="w-full rounded-md border px-3 py-2 text-center font-medium"
+            value={maxFocused ? maxText : String(safeValue[1])}
+            onFocus={() => setMaxFocused(true)}
+            onChange={(e) => setMaxText(e.target.value)}
+            onBlur={commitMax}
+            onKeyDown={onMaxKeyDown}
+            min={safeValue[0]}
+            max={max}
+          />
+        </div>
       </div>
 
       {/* Slider */}
@@ -119,7 +133,9 @@ function PriceRangeSlider({
           ];
           onChange(newVal);
         }}
-        className={cn("relative flex w-full touch-none select-none items-center")}
+        className={cn(
+          "relative flex w-full touch-none select-none items-center"
+        )}
       >
         <SliderPrimitive.Track className="relative h-1 w-full grow overflow-hidden rounded-full bg-gray-200">
           <SliderPrimitive.Range className="absolute h-full bg-primary-600" />
