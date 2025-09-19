@@ -82,7 +82,6 @@ function PriceRangeSlider({
   return (
     <div className="space-y-6">
       <p className="font-bold">Valor da atividade:</p>
-
       {/* Inputs */}
       <div className="flex gap-4">
         <div className="relative">
