@@ -85,13 +85,13 @@ function PriceRangeSlider({
 
       {/* Inputs */}
       <div className="flex gap-4">
-        <div className="relative">
+        <div className="relative max-w-40">
           <span className="absolute left-3 top-1/2 -translate-y-1/2 font-medium">
             R$
           </span>
           <input
             type="number"
-            className="w-full rounded-md border px-3 py-2 text-center font-medium"
+            className="w-full rounded-md border  pl-10 pr-1 py-2 text-left font-medium"
             value={minFocused ? minText : String(safeValue[0])}
             onFocus={() => setMinFocused(true)}
             onChange={(e) => setMinText(e.target.value)} // não clampa aqui!
@@ -102,13 +102,14 @@ function PriceRangeSlider({
             max={safeValue[1]}
           />
         </div>
-        <div className="relative">
+        <div className="relative max-w-40 ">
           <span className="absolute left-3 top-1/2 -translate-y-1/2 font-medium">
             R$
           </span>
           <input
             type="number"
-            className="w-full rounded-md border px-3 py-2 text-center font-medium"
+            className="w-full rounded-md border py-2  pl-10 pr-1 text-left font-medium"
+            placeholder="R$"
             value={maxFocused ? maxText : String(safeValue[1])}
             onFocus={() => setMaxFocused(true)}
             onChange={(e) => setMaxText(e.target.value)}
