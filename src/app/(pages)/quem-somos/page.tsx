@@ -26,17 +26,17 @@ export default function QuemSomos() {
           weight="bold"
           className="text-center text-[2.5rem] md:text-[5rem] my-4 md:my-6"
         >
-          Quem Somos
+          Quem somos
         </MyTypography>
         <Image
           src="/images/quem-somos/quem01.jpeg"
           width={1200}
           height={800}
           alt="Image de um passeio"
-          className="w-full h-[200px] md:h-[400px] object-cover object-top md:rounded-lg"
+          className="w-full h-[200px] md:h-[400px] object-cover md:rounded-lg"
         />
 
-        <div className="p-[4px] rounded-full absolute -bottom-[3rem] md:-bottom-[4.2rem] left-[40%] md:left-[46%] w-[90px] h-[90px] md:w-[100px] md:h-[100px]">
+        <div className="p-[4px] rounded-full absolute -bottom-[3rem] md:-bottom-[4.2rem] left-[40%] md:left-[46%] w-[90px] h-[90px] md:w-[120px] md:h-[120px]">
           <div className="w-full h-full rounded-full bg-white flex items-center justify-center overflow-hidden">
             <Image
               src="/logo.png"
@@ -153,7 +153,14 @@ export default function QuemSomos() {
             width={1200}
             height={800}
             alt="Image de um passeio"
-            className="w-full h-[250px] md:h-[600px] object-cover"
+            className="w-full h-[250px] md:h-[600px] object-cover max-sm:hidden"
+          />
+          <Image
+            src="/images/quem-somos/quem04.jpeg"
+            width={1200}
+            height={800}
+            alt="Image de um passeio"
+            className="w-full h-[250px] md:h-[400px] object-cover md:hidden"
           />
         </div>
         <MyTypography
@@ -169,13 +176,15 @@ export default function QuemSomos() {
       </div>
 
       <div className="mt-10">
-        <Image
-          src="/images/quem-somos/quem04.jpeg"
-          width={1200}
-          height={800}
-          alt="Image de um passeio"
-          className="w-full h-[250px] md:h-[400px] object-cover md:hidden"
-        />
+        <div className="">
+          <Image
+            src="/images/quem-somos/quem03.jpeg"
+            width={1200}
+            height={800}
+            alt="Image de um passeio"
+            className="w-full h-[250px] md:h-[600px] object-cover md:hidden"
+          />
+        </div>
       </div>
 
       <div className="max-sm:space-y-12 mt-20 md:flex items-stretch gap-4">
@@ -251,7 +260,7 @@ export default function QuemSomos() {
         <MyTypography
           variant="heading1"
           weight="extrabold"
-          className="text-primary-600 my-12 text-[1.5rem] md:text-[2rem]"
+          className="text-primary-600 mt-16 mb-12 text-[1.5rem] md:text-[2rem]"
         >
           VENHA SE AVENTURAR!
         </MyTypography>
