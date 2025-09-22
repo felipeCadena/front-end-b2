@@ -78,7 +78,6 @@ function PriceRangeSlider({
       e.currentTarget.blur();
     }
   };
-
   return (
     <div className="space-y-6">
       <p className="font-bold">Valor da atividade:</p>
