@@ -125,7 +125,7 @@ export default function QuemSomos() {
           É viver uma experiência transformadora, criar memórias duradouras e se
           conectar com pessoas, culturas e histórias. Por isso, trabalhamos para
           que cada detalhe seja pensado com praticidade e segurança, garantindo
-          liberdade na hora de escolher quando, onde e como se aventurar..
+          liberdade na hora de escolher quando, onde e como se aventurar.
         </MyTypography>
         <MyTypography
           variant="subtitle2"
@@ -146,7 +146,7 @@ export default function QuemSomos() {
         </MyTypography>
       </div>
 
-      <div className="mt-10 md:mt-16">
+      <div className="mt-10 md:mt-16 relative">
         <div className="">
           <Image
             src="/images/quem-somos/quem03.jpeg"
@@ -155,6 +155,9 @@ export default function QuemSomos() {
             alt="Image de um passeio"
             className="w-full h-[250px] md:h-[600px] object-cover max-sm:hidden"
           />
+        </div>
+
+        <div>
           <Image
             src="/images/quem-somos/quem04.jpeg"
             width={1200}
@@ -163,10 +166,24 @@ export default function QuemSomos() {
             className="w-full h-[250px] md:h-[400px] object-cover md:hidden"
           />
         </div>
+        <div className="max-sm:hidden pl-12 pr-6 py-10 bg-white opacity-90 absolute top-[12%] right-[70%] w-[30%] text-left rounded-r-xl">
+          <MyTypography
+            variant="subtitle2"
+            weight="bold"
+            className="text-[1rem] md:text-[1.3rem]"
+          >
+            A B2 Adventure é, acima de tudo, um convite:
+            <span className="block mt-2 font-medium">
+              sair da rotina, explorar o novo e sentir a natureza de perto. Uma
+              ponte entre você e experiências que fazem sentido, criadas para
+              serem lembradas e compartilhadas.
+            </span>
+          </MyTypography>
+        </div>
         <MyTypography
           variant="subtitle2"
           weight="extrabold"
-          className="text-left mt-10 md:mt-16 px-4 max-sm:mb-4 text-[1rem] md:text-[1.3rem]"
+          className="text-left mt-10 md:mt-16 px-4 max-sm:mb-4 text-[1rem] md:text-[1.3rem] md:hidden"
         >
           A B2 Adventure é, acima de tudo, um convite: sair da rotina, explorar
           o novo e sentir a natureza de perto. Uma ponte entre você e
