@@ -20,6 +20,7 @@ export type ModalProps = {
   formData: any;
   setFormData: (data: any) => void;
   onClose: () => void;
+  isApproved?: boolean;
 };
 
 export function EditarAtividadeTemplate({
@@ -41,6 +42,7 @@ export function EditarAtividadeTemplate({
             formData={formData}
             setFormData={setFormData}
             onClose={onClose}
+            isApproved={data?.adminApproved}
           />
         );
 
@@ -53,6 +55,7 @@ export function EditarAtividadeTemplate({
             formData={formData}
             setFormData={setFormData}
             onClose={onClose}
+            isApproved={data?.adminApproved}
           />
         );
 
@@ -62,6 +65,7 @@ export function EditarAtividadeTemplate({
             formData={formData}
             setFormData={setFormData}
             onClose={onClose}
+            isApproved={data?.adminApproved}
           />
         );
 
@@ -71,6 +75,7 @@ export function EditarAtividadeTemplate({
             formData={formData}
             setFormData={setFormData}
             onClose={onClose}
+            isApproved={data?.adminApproved}
           />
         );
       case "availability":
@@ -79,6 +84,7 @@ export function EditarAtividadeTemplate({
             formData={formData}
             setFormData={setFormData}
             onClose={onClose}
+            isApproved={data?.adminApproved}
           />
         );
       default:

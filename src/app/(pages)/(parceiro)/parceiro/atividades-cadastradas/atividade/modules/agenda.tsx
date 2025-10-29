@@ -7,7 +7,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import React from "react";
 import { toast } from "react-toastify";
 
-export default function Agenda({ formData, setFormData, onClose }: ModalProps) {
+export default function Agenda({ formData, setFormData, onClose, isApproved }: ModalProps) {
   const queryClient = useQueryClient();
 
   const handleCreateSchedule = async (datetimes: string[]) => {

@@ -163,9 +163,7 @@ export default function Notificacoes() {
                             ? `0${page * 12 - 12 + index + 1}`
                             : page * 12 - 12 + index + 1}{" "}
                           -{" "}
-                          {notification?.title?.length > 33
-                            ? notification.title.slice(0, 33) + "..."
-                            : notification.title}
+                          {notification?.title}
                         </MyTypography>
 
                         <MyTypography

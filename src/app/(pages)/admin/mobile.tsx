@@ -77,6 +77,7 @@ export default function AdminMobile() {
       }),
   });
 
+  const limit = 100;
   const { isLoading: activitiesLoading } = useQuery({
     queryKey: ["activitiesNotAprooved", pageActivities],
     queryFn: async () => {
@@ -84,8 +85,9 @@ export default function AdminMobile() {
         // startsAt,
         // endsAt,
         adminApproved: false,
-        limit: 6,
-        skip: pageActivities * 6 - 6,
+        limit: limit,
+        skip: pageActivities * limit - limit,
+        orderBy: "updatedAt asc",
       });
       setAllActivities(adventures);
       setActivitiesNotAprovved(

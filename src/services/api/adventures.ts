@@ -164,6 +164,8 @@ export interface Adventure {
   duration: string;
   priceAdult: string;
   priceChildren: string;
+  adultPartnerValue?: string;
+  childrenPartnerValue?: string;
   transportIncluded: boolean;
   picturesIncluded: boolean;
   typeAdventure: "ar" | "terra" | "mar" | "";
@@ -192,6 +194,8 @@ export interface Adventure {
   transportAddress?: string;
   refusalMsg: string | null | undefined;
   languages?: string;
+  updateToValidate?: string | null;
+  updateIsApproved?: boolean | null;
 }
 
 export interface CreateAdventureBody {
@@ -445,7 +449,7 @@ export const adventures = {
 
       await fetch(response.data.uploadUrl, {
         method: "PUT",
-        body: body.file,
+        body: body.file as any,
         headers: {
           "Content-Type": body.mimetype,
         },

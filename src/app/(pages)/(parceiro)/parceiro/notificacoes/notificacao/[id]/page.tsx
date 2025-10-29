@@ -20,8 +20,7 @@ export default function Notificacao() {
     queryFn: () => notificationsService.getNotificationById(id as string),
   });
 
-  const notificationHeader =
-    notification?.title.split(" dia")[0] ?? "Carregando...";
+  const notificationHeader = notification?.title;
   const orderStatus = "realizada";
 
   useEffect(() => {

@@ -28,14 +28,17 @@ import MyTypography from "@/components/atoms/my-typography";
 import Duration from "@/components/molecules/duration";
 import ActivitiesFilter from "@/components/organisms/activities-filter";
 import LanguageSelector from "@/components/molecules/group-checkbox";
+import ModalAlert from "@/components/molecules/modal-alert";
 
 export default function BasicInfo({
   formData,
   setFormData,
   onClose,
+  isApproved,
 }: ModalProps) {
   const [isLoading, setIsLoading] = React.useState(false);
   const [selected, setSelected] = React.useState<string[]>([]);
+  const [showWarning, setShowWarning] = React.useState(false);
   const queryClient = useQueryClient();
 
   const formatDuration = (hours: string) => {
@@ -124,13 +127,23 @@ export default function BasicInfo({
   }, [formData]);
 
   const handleSubmit = async () => {
+    if (isApproved && !showWarning) {
+      setShowWarning(true);
+      return;
+    }
+
     setIsLoading(true);
 
     try {
       await adventures.updateAdventureById(formData.id, data);
 
       queryClient.invalidateQueries({ queryKey: ["activity"] });
-      toast.success("Atividade atualizada com sucesso!");
+      toast.success(
+        isApproved
+          ? "Alterações enviadas para aprovação!"
+          : "Atividade atualizada com sucesso!"
+      );
+      setShowWarning(false);
       onClose();
     } catch (error) {
       toast.error("Erro ao atualizar atividade");
@@ -141,6 +154,17 @@ export default function BasicInfo({
 
   return (
     <section className="">
+      <ModalAlert
+        open={showWarning}
+        onClose={() => setShowWarning(false)}
+        onAction={handleSubmit}
+        iconName="warning"
+        title="Alteração em atividade aprovada"
+        descrition="Esta atividade já está aprovada e online. As alterações que você fizer precisarão ser validadas pelo administrador da B2 Adventure antes de serem publicadas no site."
+        button="Continuar"
+        isLoading={isLoading}
+      />
+
       <div className="flex gap-4 items-center mb-10">
         <MyIcon name="voltar-black" className="-ml-2" onClick={onClose} />
         <MyTypography variant="subtitle1" weight="bold" className="">

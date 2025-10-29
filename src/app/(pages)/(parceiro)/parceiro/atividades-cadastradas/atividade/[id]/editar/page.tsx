@@ -63,6 +63,8 @@ export default function EditarAtividade() {
       priceChildren: formatApiValueToBR(activity.priceChildren),
       transportIncluded: activity.transportIncluded,
       picturesIncluded: activity.picturesIncluded,
+      adultPartnerValue: activity.adultPartnerValue,
+      childrenPartnerValue: activity.childrenPartnerValue,
       typeAdventure: activity.typeAdventure,
       personsLimit: activity.personsLimit,
       partnerId: activity.partnerId,

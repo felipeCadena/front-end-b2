@@ -57,7 +57,7 @@ export default function ActivityStatusCard({
               </MyTypography>
 
               <MyTypography variant="button" lightness={400}>
-                {`Solicitado em ${getData(activity?.createdAt)} às ${getHora(activity?.createdAt)}`}
+                {`Atualizado ${getData(activity?.updatedAt)} às ${getHora(activity?.updatedAt)}`}
               </MyTypography>
             </div>
           </div>
@@ -127,7 +127,7 @@ export default function ActivityStatusCard({
                 Parceiro: {activity?.partner?.fantasyName ?? "Parceiro"}
               </MyTypography>
               <MyTypography variant="button" lightness={400}>
-                {`Solicitado em ${getData(activity?.createdAt)} às ${getHora(activity?.createdAt)}`}
+                {`Atualizado ${getData(activity?.updatedAt)} às ${getHora(activity?.updatedAt)}`}
               </MyTypography>
             </div>
           </div>

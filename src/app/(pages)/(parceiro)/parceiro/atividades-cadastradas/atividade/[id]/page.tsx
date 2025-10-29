@@ -41,6 +41,7 @@ export default function Atividade() {
   const [hideActivity, setHideActivity] = React.useState(false);
   const [confirmedHideActivity, setConfirmedHideActivity] =
     React.useState(false);
+  const [showUpdateRefusal, setShowUpdateRefusal] = React.useState(false);
   const { handleClose, isModalOpen } = useAlert();
   const queryClient = useQueryClient();
 
@@ -311,6 +312,20 @@ export default function Atividade() {
         button="Voltar"
       />
 
+      {/* Modal de recusa de atualização */}
+      <ModalAlert
+        open={showUpdateRefusal}
+        onClose={() => setShowUpdateRefusal(false)}
+        onAction={() => setShowUpdateRefusal(false)}
+        iconName="warning"
+        title="Atualização recusada"
+        descrition={
+          activity.refusalMsg ||
+          "Sua atualização foi recusada pelo administrador."
+        }
+        button="Fechar"
+      />
+
       <div className="relative">
         <MyIcon
           name="voltar-black"
@@ -348,6 +363,25 @@ export default function Atividade() {
                     Pendente de aprovação pela B2
                   </MyBadge>
                 )}
+                {activity.adminApproved &&
+                  activity.updateToValidate &&
+                  activity.updateIsApproved === false && (
+                    <MyBadge variant="warning" className="md:mx-4 p-1">
+                      Atualização pendente de aprovação
+                    </MyBadge>
+                  )}
+                {activity.adminApproved &&
+                  activity.updateToValidate &&
+                  activity.updateIsApproved === false &&
+                  activity.refusalMsg && (
+                    <MyBadge
+                      variant="error"
+                      className="md:mx-4 p-1 cursor-pointer"
+                      onClick={() => setShowUpdateRefusal(true)}
+                    >
+                      Atualização recusada - Ver motivo
+                    </MyBadge>
+                  )}
               </div>
             </div>
             <div className="max-sm:hidden">
