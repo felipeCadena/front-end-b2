@@ -367,7 +367,14 @@ export default function AprovarAtividade() {
     const formatValue = (value: any, field: string): string => {
         if (value === null || value === undefined) return "Não definido";
         if (typeof value === "boolean") return value ? "Sim" : "Não";
-        if (field === "priceAdult" || field === "priceChildren") {
+        if (
+            field === "priceAdult" ||
+            field === "priceChildren" ||
+            field === "adultPartnerValue" ||
+            field === "childrenPartnerValue" ||
+            field === "childrenB2Value" ||
+            field === "adultB2Value"
+        ) {
             return formatPrice(String(value));
         }
         if (field === "itemsIncluded") {
