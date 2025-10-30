@@ -248,6 +248,29 @@ export default function AprovarAtividade() {
         }
     };
 
+    const onDeactivateActivity = async (id: number) => {
+        const body = {
+            adminApproved: false,
+            refusalMsg,
+        };
+        try {
+            await adminService.approveOrRejectAdventure(id, body);
+            toast.success("Atividade desativada com sucesso!");
+            queryClient.invalidateQueries({ queryKey: ["activity"] });
+            setRefusalMsg("");
+        } catch (err: unknown) {
+            if (err instanceof AxiosError) {
+                const message =
+                    err.response?.data?.message == "string"
+                        ? err.response?.data?.message
+                        : "Erro ao desativar atividade.";
+                toast.error(`${message}`);
+            } else {
+                toast.error("Erro desconhecido ao desativar atividade.");
+            }
+        }
+    };
+
     const onApproveUpdate = async (id: number) => {
         setIsLoading(true);
         const body = {
@@ -1127,6 +1150,32 @@ export default function AprovarAtividade() {
                         </MyButton>
                     </div>
                 </div>
+            </div>
+
+            <div className="m-5">
+                {activity.adminApproved && !activity.updateToValidate && (
+                    <RejectModal
+                        customTitle="Desativar atividade"
+                        customConfirmMessage="Desativar"
+                        iconName="warning"
+                        callbackFn={() => onDeactivateActivity(activity?.id)}
+                        refusalMsg={refusalMsg}
+                        setRefusalMsg={setRefusalMsg}
+                        customDescription="Escreva a justificativa da desativação da atividade"
+                    >
+                        <div className="col-span-2">
+                            <MyButton
+                                variant="red"
+                                className="w-full"
+                                borderRadius="squared"
+                                size="lg"
+                            >
+                                <MyIcon name="x-red" />
+                                Desativar Atividade
+                            </MyButton>
+                        </div>
+                    </RejectModal>
+                )}
             </div>
         </section>
     );
