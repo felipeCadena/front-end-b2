@@ -121,47 +121,58 @@ export default function MultiSelect({
       <PopoverContent className="w-full p-0">
         <Command>
           <CommandGroup>
-            <p className="text-center mt-2 font-semibold">
-              Horários Disponíveis
-            </p>
-            {grid ? (
-              <div className={cn("grid grid-cols-4 gap-4 p-4")}>
-                {options.map((option) => (
+            <div className="flex flex-col justify-center">
+              <p className="text-center mt-2 font-semibold">
+                Horários Disponíveis
+              </p>
+              {grid ? (
+                <div className={cn("grid grid-cols-4 gap-4 p-4")}>
+                  {options.map((option) => (
+                    <CommandItem
+                      key={option.value}
+                      onSelect={() => toggleSelection(option.value)}
+                      className={cn(
+                        "flex items-center justify-center p-2 border rounded-md cursor-pointer",
+                        selected?.includes(option.value) &&
+                          "bg-primary-600 text-white",
+                        disabledTimes &&
+                          disabledTimes.includes(option.value) &&
+                          "opacity-50 cursor-not-allowed pointer-events-none"
+                      )}
+                    >
+                      {option.label}
+                    </CommandItem>
+                  ))}
+                </div>
+              ) : (
+                options.map((option) => (
                   <CommandItem
                     key={option.value}
                     onSelect={() => toggleSelection(option.value)}
                     className={cn(
-                      "flex items-center justify-center p-2 border rounded-md cursor-pointer",
+                      "flex justify-center",
                       selected?.includes(option.value) &&
                         "bg-primary-600 text-white",
+
                       disabledTimes &&
                         disabledTimes.includes(option.value) &&
-                        "opacity-50 cursor-not-allowed pointer-events-none"
+                        "opacity-50 cursor-not-allowed"
                     )}
                   >
-                    {option.label}
+                    {daysMap[option.value]}
                   </CommandItem>
-                ))}
-              </div>
-            ) : (
-              options.map((option) => (
-                <CommandItem
-                  key={option.value}
-                  onSelect={() => toggleSelection(option.value)}
-                  className={cn(
-                    "flex justify-center",
-                    selected?.includes(option.value) &&
-                      "bg-primary-600 text-white",
-
-                    disabledTimes &&
-                      disabledTimes.includes(option.value) &&
-                      "opacity-50 cursor-not-allowed"
-                  )}
-                >
-                  {daysMap[option.value]}
-                </CommandItem>
-              ))
-            )}
+                ))
+              )}
+              <MyButton
+                variant="default"
+                borderRadius="squared"
+                size="md"
+                className="my-2 w-1/6 mx-auto"
+                onClick={() => setOpen(false)}
+              >
+                Ok
+              </MyButton>
+            </div>
           </CommandGroup>
         </Command>
       </PopoverContent>

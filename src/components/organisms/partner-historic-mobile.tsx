@@ -3,7 +3,12 @@
 import { cn } from "@/utils/cn";
 import React from "react";
 import MyTypography from "../atoms/my-typography";
-import { getData, getHora, isPastActivity } from "@/utils/formatters";
+import {
+  getData,
+  getHora,
+  isPastActivity,
+  isWithinChatWindow,
+} from "@/utils/formatters";
 import Now from "../atoms/my-icon/elements/now";
 import PopupActivity from "./popup-activity";
 import { useRouter } from "next/navigation";
@@ -62,6 +67,10 @@ export default function PartnerHistoricMobile({
     );
   };
 
+  const handleChat = (id: string) => {
+    router.push(`/chat?scheduleId=${id}`);
+  };
+
   return (
     <section className="px-4">
       <div className="mt-6">
@@ -104,23 +113,21 @@ export default function PartnerHistoricMobile({
                     : !activity.isCanceled && "border border-[#8DC63F]"
                 )}
               >
-                {!hidden ? (
-                  <div className="absolute top-0 right-3 z-20">
-                    <PopupActivity
-                      reservation
-                      onDuplicar={() => console.log("Duplicar")}
-                      onCancelar={() => handleCancel(activity?.id)}
-                      onEditar={() => handleEdit(activity.id)}
-                      onOcultar={() => console.log("Ocultar")}
-                      onExcluir={() => console.log("Excluir")}
-                      onCustomer={() => handleModalCustomers(activity?.id)}
-                    />
-                  </div>
-                ) : (
-                  <div className="absolute top-4 right-3 z-20">
-                    <Hide iconColor="#9F9F9F" />
-                  </div>
-                )}
+                <div className="absolute top-0 right-3 z-20">
+                  <PopupActivity
+                    reservation
+                    onDuplicar={() => console.log("Duplicar")}
+                    chat={isWithinChatWindow(activity?.datetime)}
+                    onCancelar={() => handleCancel(activity?.id)}
+                    pastActivity={isPastActivity(activity?.datetime)}
+                    activityCanceled={activity?.isCanceled}
+                    onChat={() => handleChat(activity?.id)}
+                    onEditar={() => handleEdit(activity.id)}
+                    onOcultar={() => console.log("Ocultar")}
+                    onExcluir={() => console.log("Excluir")}
+                    onCustomer={() => handleModalCustomers(activity?.id)}
+                  />
+                </div>
 
                 <div className="flex items-center gap-4">
                   <div className="flex items-center justify-between">

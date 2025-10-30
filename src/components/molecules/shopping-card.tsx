@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import React from 'react';
-import MyIcon from '../atoms/my-icon';
-import MyTypography from '../atoms/my-typography';
-import { useRouter } from 'next/navigation';
-import PATHS from '@/utils/paths';
+import React from "react";
+import MyIcon from "../atoms/my-icon";
+import MyTypography from "../atoms/my-typography";
+import { useRouter } from "next/navigation";
+import PATHS from "@/utils/paths";
 
 export default function ShoppingCard({
   items,
@@ -20,7 +20,7 @@ export default function ShoppingCard({
       {isMobile ? (
         <div
           className="fixed bottom-8 right-8 z-20 cursor-pointer md:hidden"
-          onClick={() => router.push(PATHS['carrinho'])}
+          onClick={() => router.push(PATHS["carrinho"])}
         >
           <MyIcon name="shopping-card" className="relative" />
           <div className="h-[1.1rem] w-[1.1rem] bg-black rounded-full absolute top-1 right-3 text-center">
@@ -36,7 +36,7 @@ export default function ShoppingCard({
       ) : (
         <div
           className="fixed bottom-8 right-8 z-20 cursor-pointer max-sm:hidden"
-          onClick={() => router.push(PATHS['finalizar-compra'])}
+          onClick={() => router.push(PATHS["finalizar-compra"])}
         >
           <MyIcon name="shopping-card" className="relative" />
           <div className="h-[1.1rem] w-[1.1rem] bg-black rounded-full absolute top-1 right-3 text-center">

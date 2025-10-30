@@ -13,14 +13,16 @@ import HoursSelect from "../molecules/date-select";
 import ConfirmModal from "../molecules/confirm-modal";
 import ModalAlert from "../molecules/modal-alert";
 import MyTypography from "../atoms/my-typography";
+import { useQuery } from "@tanstack/react-query";
+import { adminService } from "@/services/api/admin";
 
-const justificativas = [
-  "Houve um imprevisto e irei precisar cancelar nossa atividade, desculpe!",
-  "Condições climáticas desfavoráveis para a realização da atividade.",
-  "Problemas técnicos com equipamentos necessários.",
-  "Número insuficiente de participantes.",
-  "Motivos de força maior/emergência.",
-];
+// const justificativas = [
+//   "Houve um imprevisto e irei precisar cancelar nossa atividade, desculpe!",
+//   "Condições climáticas desfavoráveis para a realização da atividade.",
+//   "Problemas técnicos com equipamentos necessários.",
+//   "Número insuficiente de participantes.",
+//   "Motivos de força maior/emergência.",
+// ];
 
 interface Schedule {
   id: string;
@@ -39,15 +41,15 @@ interface SchedulesByDate {
 type CalendarProps = {
   duration: string;
   schedules?: Schedule[];
-  onCreateSchedule: (datetimes: string[]) => Promise<void>;
+  onCreateSchedule: (datetimes: string[]) => Promise<any>;
   onCancelSchedule: (
     scheduleId: string,
     justificativa?: string
-  ) => Promise<void>;
+  ) => Promise<any>;
   onCancelAllSchedules: (
     chedulesId: string[],
     justificativa?: string
-  ) => Promise<void>;
+  ) => Promise<any>;
   className?: string;
 } & Omit<DayPickerProps, "mode" | "selected" | "onSelect">;
 
@@ -68,6 +70,11 @@ function CalendarAvailability({
     React.useState<string>("");
   const [hasClient, setHasClient] = React.useState(false);
   const [hasClientAllCancel, setHasClientAllCancel] = React.useState(false);
+
+  const { data: justificativas } = useQuery({
+    queryKey: ["configs"],
+    queryFn: () => adminService.listConfig({ type: "justificativa" }),
+  });
 
   const [isModalCancelOpen, setIsModalCancelOpen] = React.useState(false);
 
@@ -170,8 +177,11 @@ function CalendarAvailability({
     const formattedSchedules = formatScheduleTimes(selectedDate, newTimesOnly);
 
     try {
-      await onCreateSchedule(formattedSchedules);
-      setSelectedTimes([]); // limpa a seleção
+      const response = await onCreateSchedule(formattedSchedules);
+
+      if (response) {
+        setSelectedTimes([]);
+      }
     } catch (error) {
       console.log("Erro ao criar horários");
     } finally {
@@ -188,16 +198,14 @@ function CalendarAvailability({
 
     // Verifica se tem cliente agendado
 
-    try {
-      await onCancelSchedule(id, justificativa);
+    const response = await onCancelSchedule(id, justificativa);
+
+    if (response) {
       setIsModalCancelOpen(true);
-    } catch (error) {
-      console.log("Erro ao cancelar horário");
-    } finally {
-      setIsLoadingCancel(false);
       setHasClient(false);
       setSelectedJustificativa("");
     }
+    setIsLoadingCancel(false);
   };
 
   const handleCloseModal = () => {
@@ -213,13 +221,15 @@ function CalendarAvailability({
     setIsLoadingAllCancel(true);
 
     try {
-      await onCancelAllSchedules(ids, selectedJustificativa);
-      setCancelAllSchedules(false);
-      setConfirmCancelAll(true);
+      const response = await onCancelAllSchedules(ids, selectedJustificativa);
+      if (response) {
+        setCancelAllSchedules(false);
+        setConfirmCancelAll(true);
+      }
     } catch (error) {
       console.log("Erro ao cancelar horários");
-    } finally {
       setIsLoadingAllCancel(false);
+    } finally {
     }
   };
 
@@ -510,23 +520,29 @@ function CalendarAvailability({
                           </MyTypography>
 
                           <div className="space-y-3">
-                            {justificativas.map((justificativa, index) => (
-                              <div
-                                key={index}
-                                className={`p-4 rounded-lg border cursor-pointer transition-all border-l-8 ${
-                                  selectedJustificativa === justificativa
-                                    ? "border-black bg-gray-50"
-                                    : "border-gray-200 bg-gray-50 opacity-80"
-                                }`}
-                                onClick={() =>
-                                  setSelectedJustificativa(justificativa)
-                                }
-                              >
-                                <MyTypography variant="body-big">
-                                  {justificativa}
-                                </MyTypography>
-                              </div>
-                            ))}
+                            {justificativas &&
+                              justificativas.map(
+                                (justificativa: any, index: number) => (
+                                  <div
+                                    key={index}
+                                    className={`p-4 rounded-lg border cursor-pointer transition-all border-l-8 ${
+                                      selectedJustificativa ===
+                                      justificativa?.text
+                                        ? "border-black bg-gray-50"
+                                        : "border-gray-200 bg-gray-50 opacity-80"
+                                    }`}
+                                    onClick={() =>
+                                      setSelectedJustificativa(
+                                        justificativa?.text
+                                      )
+                                    }
+                                  >
+                                    <MyTypography variant="body-big">
+                                      {justificativa?.text}
+                                    </MyTypography>
+                                  </div>
+                                )
+                              )}
                           </div>
 
                           <div className="flex gap-4">
@@ -590,23 +606,26 @@ function CalendarAvailability({
                       </MyTypography>
 
                       <div className="space-y-3">
-                        {justificativas.map((justificativa, index) => (
-                          <div
-                            key={index}
-                            className={`p-4 rounded-lg border cursor-pointer transition-all border-l-8 ${
-                              selectedJustificativa === justificativa
-                                ? "border-black bg-gray-50"
-                                : "border-gray-200 bg-gray-50 opacity-80"
-                            }`}
-                            onClick={() =>
-                              setSelectedJustificativa(justificativa)
-                            }
-                          >
-                            <MyTypography variant="body-big">
-                              {justificativa}
-                            </MyTypography>
-                          </div>
-                        ))}
+                        {justificativas &&
+                          justificativas.map(
+                            (justificativa: any, index: number) => (
+                              <div
+                                key={index}
+                                className={`p-4 rounded-lg border cursor-pointer transition-all border-l-8 ${
+                                  selectedJustificativa === justificativa.text
+                                    ? "border-black bg-gray-50"
+                                    : "border-gray-200 bg-gray-50 opacity-80"
+                                }`}
+                                onClick={() =>
+                                  setSelectedJustificativa(justificativa.text)
+                                }
+                              >
+                                <MyTypography variant="body-big">
+                                  {justificativa.text}
+                                </MyTypography>
+                              </div>
+                            )
+                          )}
                       </div>
 
                       <div className="flex gap-4">

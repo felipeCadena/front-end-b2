@@ -17,9 +17,60 @@ import {
 } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
+export function mapLanguages(dbString: string): string[] {
+  if (!dbString) return [];
+
+  const languages = [
+    { id: "pt-br", label: "Português (Brasileiro)" },
+    { id: "en", label: "Inglês" },
+    { id: "es", label: "Espanhol" },
+    { id: "fr", label: "Francês" },
+    { id: "it", label: "Italiano" },
+    { id: "gr", label: "Alemão" },
+    { id: "cn", label: "Mandarim (Chinês)" },
+  ];
+
+  try {
+    const ids: string[] = JSON.parse(dbString); // ["pt-br","en","gr",...]
+    return ids
+      .map((id) => languages.find((l) => l.id === id)?.label)
+      .filter((label): label is string => Boolean(label));
+  } catch {
+    return [];
+  }
+}
+
+// Converte de "HH:mm" para "Xh" ou "XhYY"
+export const formatDuration = (hours: string) => {
+  if (!hours) return "";
+
+  const [h, m] = hours.split(":");
+
+  // Garante que temos números válidos
+  const hour = parseInt(h);
+  const minute = parseInt(m);
+
+  if (isNaN(hour)) return "";
+
+  const formattedHour = hour <= 9 ? `0${hour}` : `${hour}`;
+  const formattedMinute =
+    !isNaN(minute) && minute > 0
+      ? `${minute > 9 ? minute : `0${minute}`}`
+      : "00";
+
+  return `${formattedHour}:${formattedMinute}`;
+};
+
 export function capitalizeFirstLetter(str: string) {
   if (!str) return "";
   return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+export function brlToApiNumberString(value: string): string {
+  if (!value) return "0.00";
+
+  // Remove pontos de milhar e troca vírgula por ponto decimal
+  return value.replace(/\./g, "").replace(",", ".");
 }
 
 export function isWithinChatWindow(datetimeUTC: string): boolean {
@@ -286,6 +337,18 @@ export const getDifficultyDescription = (number: number) => {
   return dificulties[number - 1] || null;
 };
 
+export const getDifficultyDescriptionResume = (number: number) => {
+  const dificulties = [
+    "Iniciante / Muito Leve",
+    "Leve",
+    "Moderado / Intenso",
+    "Avançado / Difícil",
+    "Extremo / Muito Difícil",
+  ];
+
+  return dificulties[number - 1] || null;
+};
+
 export const getDifficultyNumber = (description: string) => {
   const dificulties = [
     "Grau 1 - Iniciante / Muito Leve",
@@ -307,6 +370,19 @@ export const handleNameActivity = (name: string) => {
       return "Atividades Terrestres";
     case "mar":
       return "Atividades Aquáticas";
+    default:
+      return name;
+  }
+};
+
+export const handleNameActivityReduce = (name: string) => {
+  switch (name) {
+    case "ar":
+      return "aéreas";
+    case "terra":
+      return "terrestres";
+    case "mar":
+      return "aquáticas";
     default:
       return name;
   }
@@ -442,10 +518,14 @@ export const formatIconName = (name: string) => {
 };
 
 export const selectActivityImage = (activity: Adventure) => {
-  const defaultImage = activity?.images?.find((image) => image?.isDefault)?.url;
+  const defaultImage = activity?.images?.find(
+    (image) => image?.isDefault == true
+  );
   const firstImage =
     activity?.images?.[0]?.url ?? "/images/atividades/paraquedas.webp";
-  return defaultImage ?? firstImage;
+
+  const imageUpdate = `${defaultImage?.url ?? firstImage}?v=${defaultImage?.updatedAt ?? "1"}`;
+  return imageUpdate ?? firstImage;
 };
 
 export const sortImagesByDefaultFirst = (images: AdventureImage[] = []) => {
@@ -665,21 +745,26 @@ export const formatRecurrencesToDates = (
 export const getWeeklyRecurrenceTime = (
   selected: Date | undefined,
   recurrenceGroup: GroupedRecurrences
-) => {
-  const selectedWeekDay = selected?.getDay();
-  const selectedWeekDayActivityTime = recurrenceGroup?.semanal?.filter((rec) =>
-    rec?.dias.some((day) => day === selectedWeekDay)
-  )[0];
+): string[] => {
+  if (!selected) return [];
 
-  if (!selectedWeekDayActivityTime?.horarios) {
-    const selectedMonthlyDay = recurrenceGroup.mensal.filter((rec) =>
-      rec.dias.some((day) => day === selected?.getDate())
-    )[0];
+  const selectedWeekDay = selected.getDay();
+  const selectedDayOfMonth = selected.getDate();
 
-    return selectedMonthlyDay?.horarios ?? [];
-  }
+  const weeklyHorarios = recurrenceGroup?.semanal
+    ?.filter((rec) => rec.dias.includes(selectedWeekDay))
+    ?.flatMap((rec) => rec.horarios);
 
-  return selectedWeekDayActivityTime?.horarios ?? [];
+  const monthlyHorarios = recurrenceGroup?.mensal
+    ?.filter((rec) => rec.dias.includes(selectedDayOfMonth))
+    ?.flatMap((rec) => rec.horarios);
+
+  // Junta os horários, remove duplicados e ordena
+  const horarios = Array.from(
+    new Set([...(weeklyHorarios ?? []), ...(monthlyHorarios ?? [])])
+  ).sort();
+
+  return horarios;
 };
 
 export const separateDecimals = (formattedPrice: string) => {
@@ -760,56 +845,41 @@ export const formatInstallmentOptions = (
 export const getPartnerAvailableSchedules = (
   activity: Adventure | undefined
 ) => {
-  if (activity) {
-    const partnerSchedules = activity.schedules?.reduce(
-      (acc, schedule) => {
-        if (schedule.isAvailable && !schedule.isCanceled) {
-          // formata a data para UTC-3
-          const forceStringDate = String(schedule.datetime);
-          const localDateTime = new Date(schedule.datetime);
-          const localHours = localDateTime
-            .getHours()
-            .toString()
-            .padStart(2, "0");
-          const localMinutes = localDateTime
-            .getMinutes()
-            .toString()
-            .padStart(2, "0");
+  if (!activity?.schedules) return [];
 
-          const availableScheduleDateTime = `${localHours}:${localMinutes}`;
+  const partnerSchedules = activity.schedules.reduce(
+    (acc, schedule) => {
+      if (schedule.isAvailable && !schedule.isCanceled) {
+        // Formata data e horário
+        const scheduleDate = schedule.datetime.slice(0, 10); // YYYY-MM-DD
+        const localDateTime = new Date(schedule.datetime);
+        const hours = localDateTime.getHours().toString().padStart(2, "0");
+        const minutes = localDateTime.getMinutes().toString().padStart(2, "0");
+        const timeString = `${hours}:${minutes}`;
 
-          const availableScheduleDate = forceStringDate.slice(0, 10);
+        // Busca dia no acumulador
+        let dayEntry = acc.find((entry) => entry.date === scheduleDate);
 
-          const formattedSchedule = {
-            date: availableScheduleDate,
-            time: [availableScheduleDateTime],
+        if (!dayEntry) {
+          // Se não existe dia, cria novo
+          dayEntry = {
+            date: scheduleDate,
+            time: [timeString],
           };
-
-          const existingAvailableSchedule = acc.find(
-            (sch) => sch.date === formattedSchedule.date
-          );
-
-          if (!existingAvailableSchedule) {
-            acc.push(formattedSchedule);
+          acc.push(dayEntry);
+        } else {
+          // Se existe, adiciona horário, se ainda não tiver
+          if (!dayEntry.time.includes(timeString)) {
+            dayEntry.time.push(timeString);
           }
-
-          const alreadyScheduledTime = existingAvailableSchedule?.time.find(
-            (time) => availableScheduleDateTime === time
-          );
-
-          if (!alreadyScheduledTime) {
-            existingAvailableSchedule?.time.push(availableScheduleDateTime);
-          }
-
-          return acc;
         }
-        return acc;
-      },
-      [] as { date: string; time: string[] }[]
-    );
+      }
+      return acc;
+    },
+    [] as { date: string; time: string[] }[]
+  );
 
-    return partnerSchedules;
-  }
+  return partnerSchedules;
 };
 
 export const addPartnerScheduledTimeToSelectedDateTime = (
@@ -821,28 +891,24 @@ export const addPartnerScheduledTimeToSelectedDateTime = (
         time: string[];
       }[]
     | undefined
-) => {
-  if (selectedDate) {
-    const partnerScheduleSelected = availablePartnerSchedules?.find(
-      (sch) => sch.date === format(selectedDate, "yyyy-MM-dd")
-    );
+): string[] => {
+  if (!selectedDate) return selectedDateTimes;
 
-    if (partnerScheduleSelected) {
-      const timeAlreadyExists = partnerScheduleSelected.time.filter((time) =>
-        selectedDateTimes.some((selectedTime) => selectedTime === time)
-      );
-      const filteredTimes = partnerScheduleSelected.time.filter((time) =>
-        timeAlreadyExists.every((existingTime) => existingTime !== time)
-      );
+  const formattedDate = format(selectedDate, "yyyy-MM-dd");
 
-      return [...selectedDateTimes, ...filteredTimes].sort();
-    } else {
-      return selectedDateTimes;
-    }
-  }
-  return selectedDateTimes;
+  const partnerSchedule = availablePartnerSchedules?.find(
+    (sch) => sch.date === formattedDate
+  );
+
+  if (!partnerSchedule) return selectedDateTimes;
+
+  // Cria um Set para evitar duplicatas
+  const combinedTimes = Array.from(
+    new Set([...selectedDateTimes, ...partnerSchedule.time])
+  ).sort();
+
+  return combinedTimes;
 };
-
 export const formatCardNumber = (cardNumber: string): string => {
   return cardNumber
     .replace(/\D/g, "")
@@ -903,4 +969,42 @@ export const findAvailableVacancies = (
     return qtdLimitPersons;
   }
   return qtdLimitPersons;
+};
+
+export const removeCanceledRecurrenceTimes = (
+  selectedDate: Date | undefined,
+  recurrenceTimes: string[],
+  schedules: Adventure["schedules"]
+): string[] => {
+  if (!selectedDate || !schedules || !recurrenceTimes?.length)
+    return recurrenceTimes;
+
+  const selectedDateISO = selectedDate.toISOString().slice(0, 10);
+
+  const canceledTimes = schedules
+    .filter((sch) => {
+      const scheduleDate = new Date(sch.datetime).toISOString().slice(0, 10);
+      const scheduleTime = new Date(sch.datetime).toTimeString().slice(0, 5);
+      return (
+        scheduleDate === selectedDateISO && (!sch.isAvailable || sch.isCanceled)
+      );
+    })
+    .map((sch) => new Date(sch.datetime).toTimeString().slice(0, 5));
+
+  // 1. Remover horários cancelados
+  const filtered = recurrenceTimes.filter(
+    (time) => !canceledTimes.includes(time)
+  );
+
+  // 2. Se TODOS os horários foram cancelados, considera a data como indisponível
+  const totalTimes = recurrenceTimes.length;
+  const totalCanceled = recurrenceTimes.filter((time) =>
+    canceledTimes.includes(time)
+  ).length;
+
+  if (totalCanceled === totalTimes) {
+    return [];
+  }
+
+  return filtered;
 };

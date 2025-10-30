@@ -86,17 +86,17 @@ export const authService = {
   // Logout
   logout: async (token: string) => {
     try {
-      api.defaults.headers.common.Authorization = `Bearer ${token}`;
-      await api.post("/auth/logout");
-      // await axios.post(
-      //   `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/logout`,
-      //   {},
-      //   {
-      //     headers: {
-      //       Authorization: `Bearer ${token}`,
-      //     },
-      //   }
-      // );
+      // api.defaults.headers.common.Authorization = `Bearer ${token}`;
+      // await api.post("/auth/logout");
+      await axios.post(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/logout`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
     } catch (error) {
       console.error("Erro no logout:", error);
     }

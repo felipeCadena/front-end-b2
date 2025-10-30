@@ -25,6 +25,7 @@ export const schedules = {
     endDate?: string;
     limit?: number;
     skip?: number;
+    dateMediasPosted?: string;
   }) => {
     try {
       const response = await api.get('/schedules', { params });

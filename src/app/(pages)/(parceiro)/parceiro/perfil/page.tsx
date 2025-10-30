@@ -159,6 +159,16 @@ export default function PerfiParceiro() {
   //   queryClient.invalidateQueries({ queryKey: ["fetchPartner"] });
   // };
 
+  const handleActivities = (length: number) => {
+    if (length === 0) {
+      return "Nenhuma atividade cadastrada";
+    } else if (length === 1) {
+      return "1 atividade cadastrada";
+    } else {
+      return `${length} atividades cadastradas`;
+    }
+  };
+
   return (
     <section className="px-6 mt-8 mb-16">
       <div className="relative flex gap-4 items-center">
@@ -223,7 +233,7 @@ export default function PerfiParceiro() {
             lightness={400}
             className="mt-2"
           >
-            {fetchPartner?._count?.adventures} Atividades realizadas
+            {handleActivities(fetchPartner?._count?.adventures ?? 0)}
           </MyTypography>
 
           <div className="flex gap-2 items-center">

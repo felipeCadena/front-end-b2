@@ -18,6 +18,21 @@ const isPathMatch = (path: string, publicPaths: string[]) => {
 export async function middleware(req: NextRequest) {
   const token = await getToken({ req });
 
+  NextResponse.next().headers.set(
+    "Content-Security-Policy",
+    "default-src 'self'"
+  );
+  NextResponse.next().headers.set("X-Frame-Options", "SAMEORIGIN");
+  NextResponse.next().headers.set("X-Content-Type-Options", "nosniff");
+  NextResponse.next().headers.set(
+    "Referrer-Policy",
+    "no-referrer-when-downgrade"
+  );
+  NextResponse.next().headers.set(
+    "Permissions-Policy",
+    "geolocation=(), microphone=(), camera=()"
+  );
+
   const { pathname } = req.nextUrl;
 
   const isPublic = isPathMatch(pathname, PATHS_CONFIG.public);
@@ -31,12 +46,12 @@ export async function middleware(req: NextRequest) {
   // Se não tiver token, redireciona
   if (!token) {
     const redirectUrl = req.nextUrl.clone();
-    redirectUrl.pathname = "/";
+    redirectUrl.pathname = "/login";
 
     return NextResponse.redirect(redirectUrl);
   }
 
-  const role = token.role;
+  const role = token?.role;
 
   if (role === "superadmin") {
     return NextResponse.next();
@@ -44,12 +59,12 @@ export async function middleware(req: NextRequest) {
 
   // Verifica se o usuário tem acesso à rota privada
   if (
-    (isAdmin && role !== "admin") ||
+    (isAdmin && !["admin", "superadmin"].includes(role as string)) ||
     (isPartner && role !== "partner") ||
     (isCustomer && role !== "customer")
   ) {
     const redirectUrl = req.nextUrl.clone();
-    redirectUrl.pathname = "/";
+    redirectUrl.pathname = "/login";
 
     return NextResponse.redirect(redirectUrl);
   }
@@ -61,6 +76,6 @@ export async function middleware(req: NextRequest) {
 export const config = {
   matcher: [
     // Ignora rotas internas do Next, imagens públicas, favicons, fontes, etc
-    "/((?!api|_next/static|_next/image|favicon.ico|images|user.png|logo.png|logo-web.png|fonts|assets).*)",
+    "/((?!api|_next/static|_next/image|favicon.ico|images|user.png|logo.png|logo-web.png|mock-celular.png|fonts|assets).*)",
   ],
 };

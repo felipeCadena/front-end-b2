@@ -24,6 +24,7 @@ import { cn } from "@/utils/cn";
 import { useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { toast } from "react-toastify";
+import { addHours } from "date-fns";
 
 type FullActivitiesHistoricProps = {
   activities: CustomerSchedule[] | undefined;
@@ -44,13 +45,31 @@ export default function ScheduledActivitiesMobile({
   const [showCanceledModal, setShowCanceledModal] = useState(false);
   const [cancelOrder, setCancelOrder] = useState<CancelSchedule | null>(null);
   const queryClient = useQueryClient();
+  const [isOffCancelLimit, setIsOffCancelLimit] = useState(false);
+  const [paid, setPaid] = useState(false);
 
-  const handleModal = (
-    orderAdventuresId: string,
-    orderScheduleAdventureId: string
-  ) => {
+  const handleFindCancelLimit = (activity: CustomerSchedule) => {
+    const today = new Date();
+    const hoursBeforeCancellation = activity.adventure.hoursBeforeCancellation;
+
+    const todayPlusHours = addHours(today, hoursBeforeCancellation).getTime();
+
+    const scheduleDateTime = new Date(activity.schedule.datetime).getTime();
+
+    const isOffLimit = todayPlusHours > scheduleDateTime;
+
+    const notPaid = activity.personsIsAccounted;
+
+    setIsOffCancelLimit(isOffLimit);
+    setPaid(notPaid);
+  };
+
+  const handleModal = (activity: CustomerSchedule) => {
+    const orderAdventuresId = String(activity.orderAdventureId);
+    const orderScheduleAdventureId = activity.id;
     setShowModal(true);
     setCancelOrder({ orderAdventuresId, orderScheduleAdventureId });
+    handleFindCancelLimit(activity);
   };
 
   const handleClose = () => {
@@ -73,6 +92,9 @@ export default function ScheduledActivitiesMobile({
         queryClient.invalidateQueries({
           queryKey: ["schedules"],
         });
+        setCancelOrder(null);
+        setShowModal(false);
+        setShowCanceledModal(true);
       } catch (error) {
         if (error instanceof AxiosError) {
           if (error.status === 400) {
@@ -80,12 +102,6 @@ export default function ScheduledActivitiesMobile({
             toast.error(error.response?.data.message);
           }
         }
-      } finally {
-        setCancelOrder(null);
-        setShowModal(false);
-        setTimeout(() => {
-          setShowCanceledModal(true);
-        }, 500);
       }
     }
   };
@@ -96,9 +112,10 @@ export default function ScheduledActivitiesMobile({
         activities.map((activity, index: number) => (
           <div
             className={cn(
-              "flex flex-col gap-4 px-2 my-8",
-              activity?.adventureStatus.includes("cancelado") &&
-                "opacity-60 pointer-events-none"
+              "flex flex-col gap-4 px-2 my-12",
+              activity?.adventureStatus.includes("cancelado") ||
+                (activity?.schedule?.isCanceled &&
+                  "opacity-60 pointer-events-none")
             )}
             key={index}
           >
@@ -111,7 +128,7 @@ export default function ScheduledActivitiesMobile({
               </div>
               <div className="flex justify-center gap-2 max-h-[9rem]">
                 <div
-                  className="relative z-10 overflow-hidden min-w-[110px] min-h-[7rem] hover:cursor-pointer rounded-md"
+                  className="relative z-10 overflow-hidden min-w-[100px] min-h-[7rem] hover:cursor-pointer rounded-md"
                   onClick={() =>
                     router.push(
                       PATHS.visualizarAtividade(activity?.adventure?.id)
@@ -123,7 +140,7 @@ export default function ScheduledActivitiesMobile({
                     src={getDefaultImage(activity)}
                     width={250}
                     height={300}
-                    className="w-[110px] h-full object-cover"
+                    className="w-[100px] h-full object-cover"
                   />
                 </div>
                 <div className="flex flex-col gap-1 justify-start">
@@ -136,24 +153,10 @@ export default function ScheduledActivitiesMobile({
                         {handleNameActivity(activity?.adventure?.typeAdventure)}
                       </MyBadge>
 
-                      {/* {activity?.adventureStatus ===
-                        "cancelado_pelo_cliente" && (
-                        <MyBadge
-                          className="font-medium text-nowrap p-1 rounded-lg"
-                          variant="error"
-                        >
-                          Cancelada
-                        </MyBadge>
-                      )} */}
                       {withOptions && (
                         <div className="cursor-pointer z-20">
                           <PopupCancelActivity
-                            onCancelar={() =>
-                              handleModal(
-                                String(activity.orderAdventureId),
-                                activity.id
-                              )
-                            }
+                            onCancelar={() => handleModal(activity)}
                           />
                         </div>
                       )}
@@ -161,26 +164,39 @@ export default function ScheduledActivitiesMobile({
                   </div>
 
                   {!activity?.personsIsAccounted ? (
-                    <MyBadge variant="error" className="h-6 rounded-lg ">
-                      Pendente de pagamento
-                    </MyBadge>
+                    <div>
+                      <MyBadge variant="error" className="rounded-lg">
+                        Pendente de pagamento
+                      </MyBadge>
+                    </div>
                   ) : (
                     !activity?.partnerConfirmed && (
-                      <MyBadge variant="info" className="h-6 rounded-lg ">
-                        Pendente de confirmação
-                      </MyBadge>
+                      <div>
+                        <MyBadge variant="info" className="rounded-lg">
+                          Pendente de confirmação
+                        </MyBadge>
+                      </div>
                     )
                   )}
+                  {activity?.adventureStatus.includes("cancelad") ||
+                    (activity?.schedule?.isCanceled && (
+                      <div>
+                        <MyBadge className="h-6 rounded-lg" variant="error">
+                          Cancelada
+                        </MyBadge>
+                      </div>
+                    ))}
                   <MyTypography variant="subtitle3" weight="bold" className="">
                     {activity?.adventure?.title.length > 20
-                      ? activity?.adventure?.title.slice(0, 20).trim() + "..."
+                      ? activity?.adventure?.title.slice(0, 14).trim() + "..."
                       : activity?.adventure?.title}
                   </MyTypography>
                   <MyTypography variant="label" className="pr-2">
                     {!activity?.personsIsAccounted ||
-                    !activity?.partnerConfirmed
+                    !activity?.partnerConfirmed ||
+                    activity?.schedule?.isCanceled
                       ? activity.adventure.description
-                          .slice(0, 35)
+                          .slice(0, 30)
                           .concat("...")
                       : activity.adventure.description
                           .slice(0, 60)
@@ -193,7 +209,13 @@ export default function ScheduledActivitiesMobile({
         ))}
       <MyCancelScheduleModal
         title="Cancelamento de atividade"
-        subtitle="Tem certeza que deseja cancelar essa atividade? Não será possível remarcar na mesma data ou reembolsar o valor pago."
+        subtitle={
+          !paid
+            ? "Tem certeza que deseja cancelar essa atividade?"
+            : isOffCancelLimit
+              ? "O limite para cancelamento com reembolso foi ultrapassado! Tem certeza que ainda assim deseja cancelar essa atividade? Não será possível reembolsar o valor pago."
+              : "Tem certeza que deseja cancelar essa atividade?"
+        }
         buttonTitle="Cancelar atividade"
         iconName="cancel"
         open={showModal}
@@ -202,7 +224,13 @@ export default function ScheduledActivitiesMobile({
       />
       <MyCancelScheduleModal
         title="Atividade cancelada"
-        subtitle="A atividade já foi cancelada e em breve seu estorno estará disponível na mesma forma de pagamento realizada."
+        subtitle={
+          !paid
+            ? "Essa atividade não foi paga. Portanto, foi cancelada com sucesso e não há reembolso!"
+            : isOffCancelLimit
+              ? "Atividade cancelada com sucesso!"
+              : "Atividade cancelada! Em breve o seu estorno estará disponível na mesma forma de pagamento realizada."
+        }
         buttonTitle="Voltar"
         iconName="warning"
         open={showCanceledModal}

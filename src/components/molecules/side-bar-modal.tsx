@@ -22,21 +22,17 @@ export default function SideBarModal({
 }) {
   const { clearUser } = useAuthStore();
   const { data: session, status } = useSession();
-  const handleExit = async (item: any) => {
-    if (item === "Sair") {
-      try {
-        await signOut({ callbackUrl: "/login" });
 
-        await authService.logout(session?.user.refreshToken ?? "");
-        clearUser();
-      } catch (error) {
-        console.error("Error during logout:", error);
-        toast.error("Erro ao fazer logout. Tente novamente.");
-      }
+  const handleLogout = async () => {
+    try {
+      clearUser();
+      await authService.logout(session?.user.refreshToken ?? "");
+      signOut({ callbackUrl: "/" });
+    } catch (error) {
+      console.error("Error during logout:", error);
+      toast.error("Erro ao fazer logout. Tente novamente.");
     }
   };
-
-  console.log(status);
 
   return (
     <MyDropdownMenu>
@@ -50,7 +46,12 @@ export default function SideBarModal({
               key={item.label}
               href={`${item.link == "/galeria-de-fotos" ? "/informacoes" : item.link}${item.tab ? `?tab=${item.tab}` : ""}`}
               passHref
-              onClick={() => handleExit(item.label)}
+              onClick={(e) => {
+                if (item.label == "Sair") {
+                  e.preventDefault();
+                  handleLogout();
+                }
+              }}
             >
               <DropdownMenuItem
                 className="px-4 py-3 hover:text-black hover:bg-gray-100 cursor-pointer"

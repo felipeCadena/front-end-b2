@@ -6,7 +6,7 @@ import MyTextInput from "@/components/atoms/my-text-input";
 import MyTypography from "@/components/atoms/my-typography";
 import ActivitiesFilter from "@/components/organisms/activities-filter";
 import { useRouter } from "next/navigation";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   MySelect,
   SelectContent,
@@ -38,6 +38,7 @@ import {
   capitalizeFirstLetter,
   convertToHours,
   convertToTimeString,
+  formatDuration,
   getDifficultyDescription,
   getDifficultyNumber,
 } from "@/utils/formatters";
@@ -45,6 +46,7 @@ import AutocompleteCombobox from "@/components/organisms/google-autocomplete";
 import { toast } from "react-toastify";
 import { MySingleDatePicker } from "@/components/molecules/my-single-date-picker";
 import Duration from "@/components/molecules/duration";
+import LanguageCheckboxGroup from "@/components/molecules/group-checkbox";
 
 interface AddressData {
   addressStreet: string;
@@ -103,9 +105,27 @@ export default function WebForm({
     recurrences,
     availableDates,
     addTempImage,
+    languages,
   } = useAdventureStore();
 
   const inputRef = React.useRef<HTMLInputElement>(null);
+
+  const [selected, setSelected] = useState([]);
+
+  React.useEffect(() => {
+    if (languages) {
+      try {
+        const parsed = JSON.parse(languages);
+        setSelected(parsed);
+      } catch {
+        setSelected([]);
+      }
+    }
+  }, [languages]);
+
+  React.useEffect(() => {
+    setAdventureData({ languages: JSON.stringify(selected) });
+  }, [selected, setAdventureData]);
 
   // Atualiza as datas para um bloco específico
   const handleDateChange = (blockId: number, dates: Date[]) => {
@@ -201,6 +221,60 @@ export default function WebForm({
   const handleNextStep = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
+    if (
+      !typeAdventure ||
+      !title ||
+      !description ||
+      !hoursBeforeCancellation ||
+      !hoursBeforeSchedule
+    ) {
+      toast.error("Preencha todos os campos.");
+      return;
+    }
+    if (!difficult) {
+      toast.error("Preencha todos os campos.");
+      return;
+    }
+
+    const someDate = selectionBlocks.some(
+      (date) =>
+        (date.dates.length || date.recurrenceWeekly.length) &&
+        date.recurrenceHour.length
+    );
+
+    if (duration === "00:00") {
+      toast.error("A duração não pode ser 0.");
+      return;
+    }
+    if (!someDate) {
+      toast.error(
+        "Em calendário da atividade, é necessário selecionar o dia da semana ou dias específicos. Os horários são obrigatórios."
+      );
+      return;
+    }
+
+    if (!address || !pointRefAddress) {
+      toast.error("Preencha o endereço e o ponto de referência.");
+      return;
+    }
+
+    if (tempImages.length < 5) {
+      toast.error("São necessárias 5 imagens.");
+      return;
+    }
+
+    if (tempImages.length > 5) {
+      toast.error(
+        "São permitidas no máximo 5 imagens. Exclua até ter 5 imagens."
+      );
+      return;
+    }
+
+    if (transportIncluded && !transportAddress) {
+      toast.error("Preencha o local de saída e retorno.");
+      return;
+    }
+
     handleNext && handleNext();
   };
 
@@ -220,28 +294,6 @@ export default function WebForm({
     e.preventDefault();
     addSelectionBlock();
   };
-
-  // Converte de "HH:mm" para "Xh" ou "XhYY"
-  const formatDuration = (hours: string) => {
-    if (!hours) return "";
-
-    const [h, m] = hours.split("h");
-
-    // Garante que temos números válidos
-    const hour = parseInt(h);
-    const minute = parseInt(m);
-
-    if (isNaN(hour)) return "";
-
-    // Mantém os minutos se existirem e forem diferentes de zero
-    if (!isNaN(minute) && minute > 0) {
-      return `0${hour}:${minute}`;
-    }
-
-    return `0${hour}:00`;
-  };
-
-  console.log(address);
 
   const handleLocationSelected = (locationData: LocationData) => {
     console.log("Location Data Received:", locationData);
@@ -281,30 +333,50 @@ export default function WebForm({
       !title ||
       !description ||
       !hoursBeforeCancellation ||
-      !hoursBeforeSchedule ||
-      // !selectionBlocks.length ||
-      duration === "" ||
-      !tempImages.length ||
-      !address
+      !hoursBeforeSchedule
     ) {
       toast.error("Preencha todos os campos.");
       return;
     }
+    if (!difficult) {
+      toast.error("Preencha todos os campos.");
+      return;
+    }
+
+    const someDate = selectionBlocks.some(
+      (date) =>
+        (date.dates.length || date.recurrenceWeekly.length) &&
+        date.recurrenceHour.length
+    );
 
     if (duration === "00:00") {
       toast.error("A duração não pode ser 0.");
       return;
     }
+    if (!someDate) {
+      toast.error(
+        "Em calendário da atividade, é necessário selecionar o dia da semana ou dias específicos. Os horários são obrigatórios."
+      );
+      return;
+    }
 
+    if (!address || !pointRefAddress) {
+      toast.error("Preencha o endereço e o ponto de referência.");
+      return;
+    }
     if (tempImages.length < 5) {
       toast.error("São necessárias 5 imagens.");
       return;
     }
-
     if (tempImages.length > 5) {
       toast.error(
         "São permitidas no máximo 5 imagens. Exclua até ter 5 imagens."
       );
+      return;
+    }
+
+    if (transportIncluded && !transportAddress) {
+      toast.error("Preencha o local de saída e retorno.");
       return;
     }
 
@@ -345,7 +417,7 @@ export default function WebForm({
           selected={typeAdventure}
         />
 
-        <div className="border-2  border-gray-300 rounded-lg p-8">
+        <div className="border-2 border-gray-300 rounded-lg p-8">
           <div className="space-y-6">
             <MyTextInput
               value={title}
@@ -371,14 +443,19 @@ export default function WebForm({
                 placeholder="Fale sobre a atividade e destaque o que só você oferece para torná-la incrível."
                 classNameLabel="text-black text-base font-bold"
                 rows={5}
-                maxLength={1000}
+                maxLength={2000}
                 className="resize-y" // permite redimensionar verticalmente
               />
 
               <div className="text-sm text-gray-4 text-right mt-1">
-                {description.length} / 1000 caracteres
+                {description.length} / 2000 caracteres
               </div>
             </div>
+
+            <LanguageCheckboxGroup
+              selected={selected}
+              setSelected={setSelected}
+            />
 
             <div className="grid grid-cols-2 gap-8">
               <MySelect
@@ -798,7 +875,7 @@ export default function WebForm({
                     Enviar imagens ou arraste os arquivos aqui
                   </MyTypography>
                   <MyTypography lightness={400}>
-                    JPG e PNG. Tamanho máximo de cada imagem: 1MB
+                    JPG e PNG. Tamanho máximo de cada imagem: 6MB
                   </MyTypography>
                 </div>
               </div>

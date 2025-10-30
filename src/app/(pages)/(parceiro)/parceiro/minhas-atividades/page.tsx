@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import ModalAlert from "@/components/molecules/modal-alert";
 import MyButton from "@/components/atoms/my-button";
 import SearchActivity from "@/components/organisms/search-activity";
@@ -13,9 +13,14 @@ import { useAlert } from "@/hooks/useAlert";
 import { useQuery } from "@tanstack/react-query";
 import { partnerService } from "@/services/api/partner";
 import { Adventure } from "@/services/api/adventures";
+import { users } from "@/services/api/users";
+import AddressModal from "@/components/molecules/address-modal";
+import { toast } from "react-toastify";
+import { getAddress } from "@/utils/getAddress";
 
 export default function SuasAtividades() {
   const router = useRouter();
+  const [modalAddress, setModalAddress] = useState(false);
   const { handleClose, isModalOpen } = useAlert();
   const [selected, setSelected] = React.useState<"ar" | "terra" | "mar" | "">(
     ""
@@ -23,12 +28,97 @@ export default function SuasAtividades() {
   const [partnerAdventures, setPartnerAdventures] =
     React.useState<Adventure[]>();
 
+  const [partnerAddress, setPartnerAddress] = useState({
+    addressStreet: "",
+    addressPostalCode: "",
+    addressNumber: "",
+    addressNeighborhood: "",
+    addressComplement: "",
+    addressCity: "",
+    addressState: "",
+  });
+  const { data: partner, isFetched } = useQuery({
+    queryKey: ["partner"],
+    queryFn: () => partnerService.getPartnerLogged(),
+  });
+  useEffect(() => {
+    if (isFetched && !partner?.addressPostalCode) {
+      setModalAddress(true);
+    }
+  }, [partner]);
+
+  function closeModalAddress() {
+    setModalAddress(false);
+  }
+
+  const onBlurCep = async () => {
+    if (!partnerAddress.addressPostalCode) return;
+    const cep = partnerAddress.addressPostalCode.replace(/\D/g, "");
+    if (cep?.length !== 8) return;
+
+    const response = await getAddress(cep);
+
+    if (response) {
+      setPartnerAddress({
+        addressPostalCode: partnerAddress.addressPostalCode,
+        addressStreet: response.logradouro || "",
+        addressNumber: response.numero || "",
+        addressNeighborhood: response.bairro || "",
+        addressComplement: partnerAddress.addressComplement || "",
+        addressCity: response.localidade || "",
+        addressState: response.uf || "",
+      });
+    } else {
+      setPartnerAddress({
+        addressPostalCode: partnerAddress.addressPostalCode,
+        addressStreet: partnerAddress.addressStreet,
+        addressNumber: partnerAddress.addressNumber,
+        addressNeighborhood: partnerAddress.addressNeighborhood,
+        addressComplement: partnerAddress.addressComplement,
+        addressCity: partnerAddress.addressCity,
+        addressState: partnerAddress.addressState,
+      });
+      toast.error("CEP não encontrado");
+    }
+  };
+
+  const handleUpdatePartner = async () => {
+    if (
+      !partnerAddress.addressPostalCode ||
+      !partnerAddress.addressStreet ||
+      !partnerAddress.addressCity ||
+      !partnerAddress.addressNeighborhood ||
+      !partnerAddress.addressNumber ||
+      !partnerAddress.addressState
+    ) {
+      toast.error("Preencha os campos obrigatórios!");
+      return;
+    }
+
+    if (partnerAddress) {
+      await partnerService.updatePartnerLogged({
+        addressPostalCode: partnerAddress.addressPostalCode,
+        addressNumber: partnerAddress.addressNumber,
+        addressNeighborhood: partnerAddress.addressNeighborhood,
+        addressComplement: partnerAddress.addressComplement,
+        addressCity: partnerAddress.addressCity,
+        addressState: partnerAddress.addressState,
+        address: partnerAddress.addressStreet,
+      });
+      toast.success("Endereço atualizado com sucesso!");
+    } else {
+      toast.error("Erro ao atualizar endereço, tente novamente.");
+    }
+    setModalAddress(false);
+  };
+
   useQuery({
     queryKey: ["myAdventures", selected],
     queryFn: async () => {
       const activities = await partnerService.getMyAdventures({
         typeAdventure: selected ? selected : undefined,
         orderBy: "averageRating desc",
+        limit: 100,
       });
 
       if (activities) {
@@ -41,11 +131,29 @@ export default function SuasAtividades() {
   const { data: allAdventures } = useQuery({
     queryKey: ["adventuresPartners"],
     queryFn: () =>
-      partnerService.getMyAdventures({ orderBy: "qntTotalSales desc" }),
+      partnerService.getMyAdventures({
+        orderBy: "qntTotalSales desc",
+        limit: 100,
+      }),
   });
 
   return (
     <main className="max-w-screen-custom">
+      {partner?.fantasyName && (
+        <AddressModal
+          open={modalAddress}
+          onClose={closeModalAddress}
+          onAction={handleUpdatePartner}
+          onBlurCep={onBlurCep}
+          partnerAddress={partnerAddress}
+          setPartnerAddress={setPartnerAddress}
+          iconName="warning"
+          title={`Olá, ${partner?.fantasyName}`}
+          descrition="Atualizamos nossa plataforma e, para continuar navegando, é necessário incluir seu endereço no cadastro. Adicione agora e siga aproveitando todos os benefícios da B2 Adventure."
+          button="Voltar ao início"
+        />
+      )}
+
       <ModalAlert
         open={isModalOpen}
         onClose={handleClose}

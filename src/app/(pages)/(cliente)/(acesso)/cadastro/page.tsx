@@ -27,10 +27,10 @@ const formSchema = z
       .trim()
       .min(3, { message: "Por favor, forneça seu nome completo." }),
     email: z.string().email({ message: "E-mail inválido." }),
-    phone: z
-      .string()
-      .trim()
-      .min(8, { message: "Forneça um número de celular válido." }),
+    phone: z.string().regex(/^\+\d{1,3} \(\d{2}\) \d{4,5}-\d{4}$/, {
+      message:
+        "Informe um telefone válido com código do país. Ex: +55 (11) 91234-5678",
+    }),
     cpf: z
       .string()
       .trim()

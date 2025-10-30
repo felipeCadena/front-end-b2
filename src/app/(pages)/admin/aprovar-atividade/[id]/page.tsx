@@ -10,9 +10,13 @@ import Image from "next/image";
 import { adventures } from "@/services/api/adventures";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
-  formatAddress,
-  formatPrice,
-  handleNameActivity,
+    formatAddress,
+    formatPrice,
+    getDifficultyDescription,
+    getDifficultyDescriptionResume,
+    handleNameActivity,
+    mapLanguages,
+    sortImagesByDefaultFirst,
 } from "@/utils/formatters";
 import PATHS from "@/utils/paths";
 import { toast } from "react-toastify";
@@ -27,624 +31,1096 @@ import ChatWeb from "@/components/atoms/my-icon/elements/chat-web";
 import Chat from "@/components/atoms/my-icon/elements/chat";
 
 export default function AprovarAtividade() {
-  const router = useRouter();
-  const { id } = useParams();
-  const [isLoading, setIsLoading] = React.useState(false);
-  const [isLoadingChat, setIsLoadingChat] = React.useState(false);
-  const queryClient = useQueryClient();
+    const router = useRouter();
+    const { id } = useParams();
+    const [isLoading, setIsLoading] = React.useState(false);
+    const [isLoadingChat, setIsLoadingChat] = React.useState(false);
+    const queryClient = useQueryClient();
+    const [expanded, setExpanded] = React.useState(false);
+    const MAX_LENGTH = 1000;
 
-  const [refusalMsg, setRefusalMsg] = React.useState("");
+    const [refusalMsg, setRefusalMsg] = React.useState("");
+    const [showUpdateComparison, setShowUpdateComparison] =
+        React.useState(true);
 
-  const { data: activity, isLoading: isLoadingActivity } = useQuery({
-    queryKey: ["activity", id],
-    queryFn: () => adventures.getAdventureById(Number(id)),
-    enabled: !!id,
-  });
+    const { data: activity, isLoading: isLoadingActivity } = useQuery({
+        queryKey: ["activity", id],
+        queryFn: () => adventures.getAdventureById(Number(id)),
+        enabled: !!id,
+    });
 
-  const { data: partner } = useQuery({
-    queryKey: ["partner", activity?.partnerId],
-    queryFn: () => adminService.getPartnerById(String(activity?.partnerId)),
-    enabled: !!activity?.partnerId,
-  });
+    const { data: partner } = useQuery({
+        queryKey: ["partner", activity?.partnerId],
+        queryFn: () => adminService.getPartnerById(String(activity?.partnerId)),
+        enabled: !!activity?.partnerId,
+    });
 
-  const getAddress = (address: string) => {
-    const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
-    return googleMapsUrl;
-  };
-
-  if (!activity) {
-    return isLoadingActivity ? (
-      <div className="flex items-center justify-center">
-        <Image
-          src="/logo.png"
-          alt="B2 Adventure Logo"
-          width={250}
-          height={250}
-          className="object-contain animate-pulse"
-        />
-      </div>
-    ) : (
-      <div className="flex flex-col gap-4 items-center justify-center my-10">
-        <MyTypography variant="subtitle3" weight="bold">
-          A atividade buscada não foi encontrada.
-        </MyTypography>
-        <MyButton
-          variant="default"
-          size="lg"
-          borderRadius="squared"
-          onClick={() => router.push(PATHS["atividades-cadastradas"])}
-        >
-          Voltar
-        </MyButton>
-      </div>
-    );
-  }
-
-  const address = {
-    addressState: activity?.addressState,
-    addressCity: activity?.addressCity,
-    addressNeighborhood: activity?.addressNeighborhood,
-    addressStreet: activity?.addressStreet,
-    addressNumber: activity?.addressNumber,
-    addressComplement: activity?.addressComplement,
-    addressPostalCode: activity?.addressPostalCode,
-    addressCountry: activity?.addressCountry,
-  };
-
-  const formattedItemsIncluded = () => {
-    const includedItems = [];
-
-    const itemsArray =
-      typeof activity?.itemsIncluded === "string"
-        ? JSON.parse(activity?.itemsIncluded)
-        : activity?.itemsIncluded || [];
-
-    const map = [
-      { key: "Água", icon: "agua", label: "Água" },
-      { key: "Alimentação", icon: "alimentacao", label: "Alimentação" },
-      { key: "Combustível", icon: "combustivel", label: "Combustível" },
-      {
-        key: "Transporte",
-        icon: "transporte",
-        label: "Transporte",
-        value: activity?.transportIncluded,
-      },
-      {
-        key: "Fotos",
-        icon: "fotografia",
-        label: "Fotos",
-        value: activity?.picturesIncluded,
-      },
-    ];
-
-    for (const item of map) {
-      const isIncluded =
-        item.value !== undefined ? item.value : itemsArray.includes(item.key);
-
-      if (isIncluded) {
-        includedItems.push({
-          label: item.label,
-          icon: item.icon,
-        });
-      }
-    }
-
-    return includedItems;
-  };
-
-  const onApproveActivity = async (id: number) => {
-    setIsLoading(true);
-    const body = {
-      adminApproved: true,
-      onSite: false,
-      refusalMsg: "",
+    const getAddress = (address: string) => {
+        const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
+        return googleMapsUrl;
     };
-    try {
-      await adminService.approveOrRejectAdventure(id, body);
-      toast.success("Atividade aprovada com sucesso!");
-      queryClient.invalidateQueries({ queryKey: ["activity"] });
-    } catch (err: unknown) {
-      if (err instanceof AxiosError) {
-        const message =
-          err.response?.data?.message == "string"
-            ? err.response?.data?.message
-            : "Erro ao aprovar atividade.";
-        toast.error(`${message}`);
-      } else {
-        toast.error("Erro desconhecido ao aprovar atividade.");
-      }
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
-  const handleChat = async (userId: string) => {
-    setIsLoadingChat(true);
-    try {
-      await adminService.createChat({ userToId: userId });
-      router.push(`/chat`);
-      toast.success("Chat criado com sucesso!");
-    } catch (error) {
-      console.error("Erro ao criar chat:", error);
-      toast.error("Erro ao criar chat");
-    } finally {
-      setIsLoadingChat(false);
-    }
-  };
+    const renderDescription = () => {
+        const full = activity?.description ?? "";
+        const isLong = full.length > MAX_LENGTH;
 
-  const onRejectActivity = async (id: number) => {
-    const body = {
-      adminApproved: false,
-      onSite: false,
-      refusalMsg,
-    };
-    try {
-      await adminService.approveOrRejectAdventure(id, body);
-      toast.success("Atividade rejeitada com sucesso!");
-      queryClient.invalidateQueries({ queryKey: ["activity"] });
-    } catch (err: unknown) {
-      if (err instanceof AxiosError) {
-        const message =
-          err.response?.data?.message == "string"
-            ? err.response?.data?.message
-            : "Erro ao rejeitar atividade.";
-        toast.error(`${message}`);
-      } else {
-        toast.error("Erro desconhecido ao rejeitar atividade.");
-      }
-    }
-  };
-
-  return (
-    <section className="my-10">
-      <div className="relative">
-        <MyIcon
-          name="voltar-black"
-          className="absolute z-20 top-8 left-8 md:hidden"
-          onClick={() => router.back()}
-        />
-
-        <div className="md:hidden">
-          <CarouselImages images={activity?.images.slice(0, 5)} />
-        </div>
-        <div className="flex flex-col my-4">
-          <div className="flex max-sm:flex-col items-start justify-between gap-8 max-sm:px-4">
-            <div className="flex flex-col gap-2">
-              <div className="flex items-center gap-1">
-                <MyIcon
-                  name="voltar-black"
-                  className="cursor-pointer max-sm:hidden"
-                  onClick={() => router.back()}
-                />
-                <MyTypography variant="heading2" weight="bold" className="">
-                  {activity?.title
-                    ? activity.title.charAt(0).toUpperCase() +
-                      activity.title.slice(1).toLowerCase()
-                    : ""}
-                </MyTypography>
-              </div>
-              <div className="flex gap-2 items-center">
-                <MyBadge variant="outline" className="p-1 ">
-                  {handleNameActivity(activity?.typeAdventure ?? "")}
-                </MyBadge>
-                {!activity.onSite && activity.adminApproved && (
-                  <MyBadge variant="error" className="md:mx-4 p-1">
-                    Atividade Desativada
-                  </MyBadge>
-                )}
-              </div>
-            </div>
-            <div className="max-sm:hidden grid grid-cols-2 gap-4">
-              {!activity.adminApproved && (
-                <>
-                  <MyButton
-                    variant="secondary-muted"
-                    className="w-full flex justify-center"
-                    borderRadius="squared"
-                    size="lg"
-                    onClick={() => onApproveActivity(activity?.id)}
-                    isLoading={isLoading}
-                  >
-                    <Check
-                      className="w-6 h-6"
-                      stroke="#97E169"
-                      strokeWidth="1"
-                    />
-                  </MyButton>
-                  <RejectModal
-                    customTitle="Rejeitar atividade"
-                    customConfirmMessage="Rejeitar"
-                    iconName="warning"
-                    callbackFn={() => onRejectActivity(activity?.id)}
-                    refusalMsg={refusalMsg}
-                    setRefusalMsg={setRefusalMsg}
-                    customDescription="Escreva a justificativa da recusa da atividade"
-                  >
-                    <div>
-                      <MyButton
-                        variant="red"
-                        className="w-full"
-                        borderRadius="squared"
-                        size="lg"
-                      >
-                        <MyIcon name="x-red" />
-                      </MyButton>
-                    </div>
-                  </RejectModal>
-                </>
-              )}
-              <div className="col-span-2">
-                <MyButton
-                  variant="partner"
-                  borderRadius="squared"
-                  size="lg"
-                  className="font-bold text-[1rem] w-full"
-                  leftIcon={<Chat fill="#2DADE4" />}
-                  onClick={() => handleChat(partner?.userId)}
-                >
-                  Falar com o parceiro
-                </MyButton>
-              </div>
-            </div>
-          </div>
-
-          <div className="flex flex-col gap-2 mt-4 max-sm:hidden">
-            <div className="flex items-center gap-2">
-              <Image
-                alt="avatar"
-                src={activity?.partner?.logo?.url ?? "/user.png"}
-                width={6}
-                height={6}
-                className="w-10 h-10 rounded-full object-cover"
-              />
-              <div>
-                <MyTypography variant="notification" weight="semibold">
-                  {activity?.partner.fantasyName}
-                </MyTypography>
+        if (!isLong) {
+            return (
                 <MyTypography
-                  variant="notification"
-                  weight="regular"
-                  lightness={400}
+                    variant="body-big"
+                    weight="regular"
+                    className="mt-1 whitespace-pre-wrap"
                 >
-                  Parceiro e Guia de atividades
+                    {full}
                 </MyTypography>
-              </div>
-            </div>
-            <div className="">
-              <MyTypography variant="subtitle3" weight="bold" className="">
-                Descrição da atividade:
-              </MyTypography>
-              <MyTypography
+            );
+        }
+
+        const displayedText = expanded ? full : full.slice(0, MAX_LENGTH);
+        const toggleText = expanded ? "Ver menos" : "Ver mais";
+
+        return (
+            <MyTypography
                 variant="body-big"
                 weight="regular"
                 className="mt-1 whitespace-pre-wrap"
-              >
-                {activity?.description}
-              </MyTypography>
-            </div>
-          </div>
-        </div>
-        <div className="max-sm:hidden grid grid-cols-4 grid-rows-2 gap-4">
-          {activity?.images?.length &&
-            activity.images
-              .slice(0, 5)
-              .sort((a, b) => (b.isDefault ? 1 : 0) - (a.isDefault ? 1 : 0))
-              .map((image, index) => (
-                <Image
-                  key={index}
-                  src={`${image.url ?? "/images/atividades/ar/ar-1.jpeg"}?v=${image.updatedAt ?? image.id}`}
-                  alt="fotos da atividade"
-                  width={300}
-                  height={300}
-                  className={`h-full w-ful max-h-[27rem] rounded-lg object-cover ${index === 0 ? "col-span-2 row-span-2 w-full h-[27rem]" : "h-[12rem] max-h-[12rem]"}`}
-                />
-              ))}
-        </div>
-
-        <div className="mx-4 md:hidden">
-          <div className="flex items-center gap-2 mb-4">
-            <Image
-              alt="avatar"
-              src={activity?.partner?.logo?.url ?? "/user.png"}
-              width={6}
-              height={6}
-              className="w-10 h-10 rounded-full object-cover"
-            />
-            <div>
-              <MyTypography variant="notification" weight="semibold">
-                {activity?.partner?.fantasyName}
-              </MyTypography>
-              <MyTypography
-                variant="notification"
-                weight="regular"
-                lightness={400}
-              >
-                Parceiro e Guia de atividades
-              </MyTypography>
-            </div>
-          </div>
-          <MyTypography variant="subtitle3" weight="bold" className="">
-            Descrição da atividade:
-          </MyTypography>
-          <MyTypography
-            variant="body-big"
-            weight="regular"
-            className="mt-1 whitespace-pre-wrap"
-          >
-            {activity?.description}
-          </MyTypography>
-        </div>
-      </div>
-
-      <div className="mx-6">
-        <div className="md:grid md:grid-cols-2 md:gap-8">
-          {formattedItemsIncluded().length > 0 && (
-            <div
-              className={cn(
-                "grid grid-cols-2 md:grid-cols-3 gap-x-8 gap-y-4 my-10"
-              )}
             >
-              {formattedItemsIncluded().map((item) => (
-                <div key={item.label} className="flex items-center gap-2">
-                  <MyIcon
-                    name={item.icon as IconsMapTypes}
-                    className="p-2 bg-primary-900 rounded-md text-white"
-                  />
-                  <MyTypography variant="body" weight="bold">
-                    {item.label}
-                  </MyTypography>
-                </div>
-              ))}
-            </div>
-          )}
-
-          <div
-            className={cn(
-              "grid grid-cols-2 md:grid-cols-3 gap-4 md:my-auto",
-              formattedItemsIncluded().length == 0 && "my-4 md:my-4"
-            )}
-          >
-            <div className="bg-primary-900 py-2 rounded-md mb-2 md:h-fit">
-              <MyTypography
-                variant="body"
-                weight="bold"
-                className="text-center"
-              >
-                {activity?.isInGroup
-                  ? "Atividade em grupo"
-                  : "Atividade individual"}
-              </MyTypography>
-            </div>
-
-            <div className="bg-primary-900 py-2 rounded-md mb-2 md:h-fit">
-              <MyTypography
-                variant="body"
-                weight="bold"
-                className="text-center"
-              >
-                {activity?.isChildrenAllowed
-                  ? "Permite crianças"
-                  : "Não permite crianças"}
-              </MyTypography>
-            </div>
-
-            <div className="bg-primary-900 py-2 rounded-md mb-2 md:h-fit">
-              <MyTypography
-                variant="body"
-                weight="bold"
-                className="text-center"
-              >
-                Grau de dificuldade: {activity?.difficult}
-              </MyTypography>
-            </div>
-          </div>
-        </div>
-
-        <div className="md:grid md:grid-cols-2 gap-8">
-          <div className="md:w-full">
-            {activity?.transportAddress &&
-              activity?.transportAddress?.length > 0 && (
-                <div className="mb-6">
-                  <MyTypography
-                    variant="body-big"
-                    weight="semibold"
-                    className="mt-4"
-                  >
-                    Local de saida e retorno do transporte incluído:
-                  </MyTypography>
-                  <div className="max-sm:my-2 flex items-center mt-2 p-3 bg-[#F1F0F587] border border-primary-600/30 border-opacity-80 rounded-lg shadow-sm hover:bg-gray-100 relative">
-                    <div className="absolute inset-y-0 left-0 w-3 bg-primary-900 rounded-l-lg"></div>
-
-                    <MyIcon name="localizacaoRedonda" className="" />
-                    <MyTypography className="ml-2">
-                      <Link
-                        href={getAddress(activity?.transportAddress)}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        {activity?.transportAddress}
-                      </Link>
-                    </MyTypography>
-                  </div>
-                </div>
-              )}
-
-            <MyTypography variant="body-big" weight="semibold">
-              Ponto de encontro da atividade:
-            </MyTypography>
-            <div className="max-sm:my-2 flex items-center mt-2 p-3 bg-[#F1F0F587] border border-primary-600/30 border-opacity-80 rounded-lg shadow-sm hover:bg-gray-100 relative">
-              <div className="absolute inset-y-0 left-0 w-3 bg-primary-900 rounded-l-lg"></div>
-              <MyIcon
-                name="localizacaoRedonda"
-                className="w-6 h-6 text-primary-900 ml-3"
-              />
-              <div className="ml-3">
-                <MyTypography variant="body-big" weight="regular">
-                  <Link
-                    href={getAddress(formatAddress(address))}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {formatAddress(address)}
-                  </Link>
-                </MyTypography>
-                <MyTypography
-                  variant="body"
-                  weight="regular"
-                  className="text-gray-600"
+                {displayedText}
+                {isLong && !expanded && "..."}
+                <span
+                    onClick={() => setExpanded(!expanded)}
+                    className="px-1 inline text-gray-400 underline cursor-pointer"
                 >
-                  Ponto de encontro: {activity?.pointRefAddress}
-                </MyTypography>
-              </div>
-            </div>
+                    {toggleText}
+                </span>
+            </MyTypography>
+        );
+    };
 
-            <div className="space-y-6 my-10">
-              <div className="flex items-center gap-2">
-                <MyIcon name="duracao" />
-                <div>
-                  <MyTypography variant="subtitle3" weight="bold">
-                    Duração da atividade
-                  </MyTypography>
-                  <MyTypography variant="body-big" weight="regular">
-                    {activity?.duration +
-                      (activity?.duration == "01:00" ? " hora" : " horas")}
-                  </MyTypography>
-                </div>
-              </div>
+    if (!activity) {
+        return isLoadingActivity ? (
+            <div className="flex items-center justify-center">
+                <Image
+                    src="/logo.png"
+                    alt="B2 Adventure Logo"
+                    width={250}
+                    height={250}
+                    className="object-contain animate-pulse"
+                />
             </div>
-          </div>
-
-          <div>
-            <div className="space-y-6 mt-4 md:mt-2">
-              <div className="space-y-2">
+        ) : (
+            <div className="flex flex-col gap-4 items-center justify-center my-10">
                 <MyTypography variant="subtitle3" weight="bold">
-                  Políticas da atividade
+                    A atividade buscada não foi encontrada.
                 </MyTypography>
-                {activity?.hoursBeforeSchedule && (
-                  <MyTypography variant="body-big" weight="regular">
-                    • Antecedência mínima para agendamento:{" "}
-                    <span className="max-sm:block">
-                      {activity?.hoursBeforeSchedule}h
-                    </span>
-                  </MyTypography>
-                )}
-                {activity?.hoursBeforeCancellation && (
-                  <MyTypography variant="body-big" weight="regular">
-                    • Antecedência mínima para cancelamento:{" "}
-                    <span className="max-sm:block">
-                      {activity?.hoursBeforeCancellation}h
-                    </span>
-                  </MyTypography>
-                )}
-                <MyTypography variant="body-big" weight="regular">
-                  • Quantidade de pessoas: {activity?.personsLimit}
-                </MyTypography>
-              </div>
-
-              <div className="space-y-2">
-                <MyTypography variant="subtitle3" weight="bold">
-                  Essa atividade será realizada:
-                </MyTypography>
-
-                <MyTypography variant="body-big" weight="regular">
-                  • {activity.isInGroup ? "Em grupo" : "Individual"}
-                </MyTypography>
-
-                <MyTypography variant="body-big" weight="regular">
-                  • {activity.isChildrenAllowed ? "Com criança" : "Sem criança"}
-                </MyTypography>
-              </div>
-
-              <div className="space-y-4">
-                <div className="flex justify-between items-center mt-1">
-                  <MyTypography
-                    variant="subtitle3"
-                    weight="bold"
-                    className="text-md md:text-lg"
-                  >
-                    Valor por adulto:
-                  </MyTypography>
-
-                  <MyTypography
-                    variant="heading2"
-                    weight="extrabold"
-                    className="text-primary-600 text-lg md:text-2xl"
-                  >
-                    {formatPrice(activity?.priceAdult ?? "")}
-                  </MyTypography>
-                </div>
-
-                {activity?.isChildrenAllowed && (
-                  <div className="flex justify-between items-center mt-4">
-                    <MyTypography
-                      variant="subtitle3"
-                      weight="bold"
-                      className="text-md md:text-lg"
-                    >
-                      Valor por criança:
-                    </MyTypography>
-                    <MyTypography
-                      variant="heading2"
-                      weight="extrabold"
-                      className="text-primary-600 text-lg md:text-2xl"
-                    >
-                      {formatPrice(activity?.priceChildren ?? "")}
-                    </MyTypography>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="w-full grid grid-cols-2 gap-4 md:hidden mt-6">
-          {!activity.adminApproved && (
-            <>
-              <MyButton
-                variant="secondary-muted"
-                className="w-full flex justify-center"
-                borderRadius="squared"
-                size="lg"
-                onClick={() => onApproveActivity(activity?.id)}
-                isLoading={isLoading}
-              >
-                <Check className="w-6 h-6" stroke="#97E169" strokeWidth="1" />
-              </MyButton>
-              <RejectModal
-                customTitle="Rejeitar atividade"
-                customConfirmMessage="Rejeitar"
-                iconName="warning"
-                callbackFn={() => onRejectActivity(activity?.id)}
-                refusalMsg={refusalMsg}
-                setRefusalMsg={setRefusalMsg}
-                customDescription="Escreva a justificativa da recusa da atividade"
-              >
-                <div>
-                  <MyButton
-                    variant="red"
-                    className="w-full"
-                    borderRadius="squared"
+                <MyButton
+                    variant="default"
                     size="lg"
-                  >
-                    <MyIcon name="x-red" />
-                  </MyButton>
+                    borderRadius="squared"
+                    onClick={() => router.push(PATHS["atividades-cadastradas"])}
+                >
+                    Voltar
+                </MyButton>
+            </div>
+        );
+    }
+
+    const address = {
+        addressState: activity?.addressState,
+        addressCity: activity?.addressCity,
+        addressNeighborhood: activity?.addressNeighborhood,
+        addressStreet: activity?.addressStreet,
+        addressNumber: activity?.addressNumber,
+        addressComplement: activity?.addressComplement,
+        addressPostalCode: activity?.addressPostalCode,
+        addressCountry: activity?.addressCountry,
+    };
+
+    const formattedItemsIncluded = () => {
+        const includedItems = [];
+
+        const itemsArray =
+            typeof activity?.itemsIncluded === "string"
+                ? JSON.parse(activity?.itemsIncluded)
+                : activity?.itemsIncluded || [];
+
+        const map = [
+            { key: "Água", icon: "agua", label: "Água" },
+            { key: "Alimentação", icon: "alimentacao", label: "Alimentação" },
+            { key: "Combustível", icon: "combustivel", label: "Combustível" },
+            {
+                key: "Transporte",
+                icon: "transporte",
+                label: "Transporte",
+                value: activity?.transportIncluded,
+            },
+            {
+                key: "Fotos",
+                icon: "fotografia",
+                label: "Fotos",
+                value: activity?.picturesIncluded,
+            },
+        ];
+
+        for (const item of map) {
+            const isIncluded =
+                item.value !== undefined
+                    ? item.value
+                    : itemsArray.includes(item.key);
+
+            if (isIncluded) {
+                includedItems.push({
+                    label: item.label,
+                    icon: item.icon,
+                });
+            }
+        }
+
+        return includedItems;
+    };
+
+    const onApproveActivity = async (id: number) => {
+        setIsLoading(true);
+        const body = {
+            adminApproved: true,
+            onSite: true,
+            refusalMsg: "",
+        };
+        try {
+            await adminService.approveOrRejectAdventure(id, body);
+            toast.success("Atividade aprovada com sucesso!");
+            queryClient.invalidateQueries({ queryKey: ["activity"] });
+        } catch (err: unknown) {
+            if (err instanceof AxiosError) {
+                const message =
+                    err.response?.data?.message == "string"
+                        ? err.response?.data?.message
+                        : "Erro ao aprovar atividade.";
+                toast.error(`${message}`);
+            } else {
+                toast.error("Erro desconhecido ao aprovar atividade.");
+            }
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const handleChat = async (userId: string) => {
+        setIsLoadingChat(true);
+        try {
+            await adminService.createChat({ userToId: userId });
+            router.push(`/chat`);
+            toast.success("Chat criado com sucesso!");
+        } catch (err) {
+            console.error("Erro ao criar chat:", err);
+            if (err instanceof AxiosError) {
+                const message = err.response?.data?.error;
+                toast.error(`${message}`);
+            } else {
+                toast.error("Erro ao criar chat");
+            }
+        } finally {
+            setIsLoadingChat(false);
+        }
+    };
+
+    const onRejectActivity = async (id: number) => {
+        const body = {
+            adminApproved: false,
+            onSite: false,
+            refusalMsg,
+        };
+        try {
+            await adminService.approveOrRejectAdventure(id, body);
+            toast.success("Atividade rejeitada com sucesso!");
+            queryClient.invalidateQueries({ queryKey: ["activity"] });
+            setRefusalMsg("");
+        } catch (err: unknown) {
+            if (err instanceof AxiosError) {
+                const message =
+                    err.response?.data?.message == "string"
+                        ? err.response?.data?.message
+                        : "Erro ao rejeitar atividade.";
+                toast.error(`${message}`);
+            } else {
+                toast.error("Erro desconhecido ao rejeitar atividade.");
+            }
+        }
+    };
+
+    const onApproveUpdate = async (id: number) => {
+        setIsLoading(true);
+        const body = {
+            updateIsApproved: true,
+            updateToValidate: null,
+            refusalMsg: "",
+        };
+        try {
+            await adminService.approveOrRejectAdventure(id, body);
+            toast.success("Atualização aprovada com sucesso!");
+            queryClient.invalidateQueries({ queryKey: ["activity"] });
+        } catch (err: unknown) {
+            if (err instanceof AxiosError) {
+                const message =
+                    err.response?.data?.message == "string"
+                        ? err.response?.data?.message
+                        : "Erro ao aprovar atualização.";
+                toast.error(`${message}`);
+            } else {
+                toast.error("Erro desconhecido ao aprovar atualização.");
+            }
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const onRejectUpdate = async (id: number) => {
+        const body = {
+            updateIsApproved: false,
+            refusalMsg,
+        };
+        try {
+            await adminService.approveOrRejectAdventure(id, body);
+            toast.success("Atualização rejeitada com sucesso!");
+            queryClient.invalidateQueries({ queryKey: ["activity"] });
+            setRefusalMsg("");
+        } catch (err: unknown) {
+            if (err instanceof AxiosError) {
+                const message =
+                    err.response?.data?.message == "string"
+                        ? err.response?.data?.message
+                        : "Erro ao rejeitar atualização.";
+                toast.error(`${message}`);
+            } else {
+                toast.error("Erro desconhecido ao rejeitar atualização.");
+            }
+        }
+    };
+
+    const getUpdateChanges = () => {
+        if (!activity?.updateToValidate) return [];
+
+        try {
+            const updates = JSON.parse(activity.updateToValidate);
+            const changes: Array<{
+                field: string;
+                oldValue: any;
+                newValue: any;
+                label: string;
+            }> = [];
+
+            const fieldLabels: Record<string, string> = {
+                title: "Título",
+                description: "Descrição",
+                typeAdventure: "Tipo de Aventura",
+                difficult: "Dificuldade",
+                duration: "Duração",
+                priceAdult: "Preço Final Adulto",
+                priceChildren: "Preço Final Criança",
+                adultPartnerValue: "Valor Parceiro para Adulto",
+                childrenPartnerValue: "Valor Parceiro para Criança",
+                childrenB2Value: "Valor B2 para Criança",
+                adultB2Value: "Valor B2 para Adulto",
+                personsLimit: "Limite de Pessoas",
+                isInGroup: "Atividade em Grupo",
+                isChildrenAllowed: "Permite Crianças",
+                transportIncluded: "Transporte Incluído",
+                picturesIncluded: "Fotos Incluídas",
+                transportAddress: "Endereço de Transporte",
+                itemsIncluded: "Itens Incluídos",
+                hoursBeforeSchedule: "Horas Antes do Agendamento",
+                hoursBeforeCancellation: "Horas Antes do Cancelamento",
+                addressStreet: "Rua",
+                addressNumber: "Número",
+                addressNeighborhood: "Bairro",
+                addressCity: "Cidade",
+                addressState: "Estado",
+                addressPostalCode: "CEP",
+                pointRefAddress: "Ponto de Referência",
+                languages: "Idiomas",
+            };
+
+            Object.keys(updates).forEach((key) => {
+                if (key !== "timestamp" && fieldLabels[key]) {
+                    const oldValue = (activity as any)[key];
+                    const newValue = updates[key];
+
+                    console.log(key, oldValue, newValue);
+                    if (oldValue != newValue) {
+                        changes.push({
+                            field: key,
+                            label: fieldLabels[key],
+                            oldValue,
+                            newValue,
+                        });
+                    }
+                }
+            });
+
+            return changes;
+        } catch (error) {
+            console.error("Erro ao parsear updateToValidate:", error);
+            return [];
+        }
+    };
+
+    const formatValue = (value: any, field: string): string => {
+        if (value === null || value === undefined) return "Não definido";
+        if (typeof value === "boolean") return value ? "Sim" : "Não";
+        if (field === "priceAdult" || field === "priceChildren") {
+            return formatPrice(String(value));
+        }
+        if (field === "itemsIncluded") {
+            try {
+                const items =
+                    typeof value === "string" ? JSON.parse(value) : value;
+                return Array.isArray(items) ? items.join(", ") : String(value);
+            } catch {
+                return String(value);
+            }
+        }
+        if (field === "languages") {
+            try {
+                const langs =
+                    typeof value === "string" ? JSON.parse(value) : value;
+                return Array.isArray(langs)
+                    ? mapLanguages(JSON.stringify(langs)).join(", ")
+                    : String(value);
+            } catch {
+                return String(value);
+            }
+        }
+        return String(value);
+    };
+
+    return (
+        <section className="my-10">
+            <div className="relative">
+                <MyIcon
+                    name="voltar-black"
+                    className="absolute z-20 top-8 left-8 md:hidden"
+                    onClick={() => router.back()}
+                />
+
+                <div className="md:hidden">
+                    <CarouselImages images={activity?.images.slice(0, 5)} />
                 </div>
-              </RejectModal>
-            </>
-          )}
-          <div className="col-span-2 w-full">
-            <MyButton
-              variant="partner"
-              borderRadius="squared"
-              size="lg"
-              className="font-bold text-[1rem] w-full"
-              leftIcon={<MyIcon name="chat-web" className="" />}
-              onClick={() => handleChat(partner?.userId)}
-            >
-              Falar com o parceiro
-            </MyButton>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
+                <div className="flex flex-col my-4">
+                    <div className="flex max-sm:flex-col items-start justify-between gap-8 max-sm:px-4">
+                        <div className="flex flex-col gap-2">
+                            <div className="flex items-center gap-1">
+                                <MyIcon
+                                    name="voltar-black"
+                                    className="cursor-pointer max-sm:hidden"
+                                    onClick={() => router.back()}
+                                />
+                                <MyTypography
+                                    variant="heading2"
+                                    weight="bold"
+                                    className=""
+                                >
+                                    {activity?.title}
+                                </MyTypography>
+                            </div>
+                            <div className="flex gap-2 items-center flex-wrap">
+                                <MyBadge variant="outline" className="p-1 ">
+                                    {handleNameActivity(
+                                        activity?.typeAdventure ?? ""
+                                    )}
+                                </MyBadge>
+                                {!activity.onSite && activity.adminApproved && (
+                                    <MyBadge
+                                        variant="error"
+                                        className="md:mx-4 p-1"
+                                    >
+                                        Atividade Desativada
+                                    </MyBadge>
+                                )}
+                                {activity.adminApproved &&
+                                    activity.updateToValidate &&
+                                    activity.updateIsApproved === false && (
+                                        <MyBadge
+                                            variant="warning"
+                                            className="md:mx-4 p-1"
+                                        >
+                                            Atualização pendente de aprovação
+                                        </MyBadge>
+                                    )}
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Seção de comparação de alterações */}
+                    {showUpdateComparison &&
+                        activity.updateToValidate &&
+                        activity.updateIsApproved === false && (
+                            <div className="mt-6 mx-2 p-4 border-2 border-yellow-500 rounded-lg bg-yellow-50">
+                                <MyTypography
+                                    variant="subtitle3"
+                                    weight="bold"
+                                    className="mb-4 text-yellow-900"
+                                >
+                                    Alterações Pendentes de Aprovação
+                                </MyTypography>
+                                <div className="space-y-4">
+                                    {getUpdateChanges().length > 0 ? (
+                                        getUpdateChanges().map(
+                                            (change, index) => (
+                                                <div
+                                                    key={index}
+                                                    className="p-3 bg-white rounded border border-gray-200"
+                                                >
+                                                    <MyTypography
+                                                        variant="subtitle4"
+                                                        weight="bold"
+                                                        className="mb-2"
+                                                    >
+                                                        {change.label}
+                                                    </MyTypography>
+                                                    <div className="grid grid-cols-2 gap-4">
+                                                        <div>
+                                                            <MyTypography
+                                                                variant="body"
+                                                                weight="semibold"
+                                                                className="text-red-600 mb-1"
+                                                            >
+                                                                Valor Atual:
+                                                            </MyTypography>
+                                                            <MyTypography
+                                                                variant="body-big"
+                                                                weight="regular"
+                                                                className="text-gray-700"
+                                                            >
+                                                                {formatValue(
+                                                                    change.oldValue,
+                                                                    change.field
+                                                                )}
+                                                            </MyTypography>
+                                                        </div>
+                                                        <div>
+                                                            <MyTypography
+                                                                variant="body"
+                                                                weight="semibold"
+                                                                className="text-green-600 mb-1"
+                                                            >
+                                                                Novo Valor:
+                                                            </MyTypography>
+                                                            <MyTypography
+                                                                variant="body-big"
+                                                                weight="regular"
+                                                                className="text-gray-700"
+                                                            >
+                                                                {formatValue(
+                                                                    change.newValue,
+                                                                    change.field
+                                                                )}
+                                                            </MyTypography>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            )
+                                        )
+                                    ) : (
+                                        <MyTypography
+                                            variant="body"
+                                            weight="regular"
+                                        >
+                                            Nenhuma alteração detectada.
+                                        </MyTypography>
+                                    )}
+                                </div>
+                            </div>
+                        )}
+
+                    {
+                        <div className="grid grid-cols-2 gap-4 m-2">
+                            {!activity.adminApproved && (
+                                <>
+                                    <MyButton
+                                        variant="secondary-muted"
+                                        className="w-full flex justify-center"
+                                        borderRadius="squared"
+                                        size="lg"
+                                        onClick={() =>
+                                            onApproveActivity(activity?.id)
+                                        }
+                                        isLoading={isLoading}
+                                    >
+                                        <Check
+                                            className="w-6 h-6"
+                                            stroke="#97E169"
+                                            strokeWidth="1"
+                                        />
+                                    </MyButton>
+                                    <RejectModal
+                                        customTitle="Rejeitar atividade"
+                                        customConfirmMessage="Rejeitar"
+                                        iconName="warning"
+                                        callbackFn={() =>
+                                            onRejectActivity(activity?.id)
+                                        }
+                                        refusalMsg={refusalMsg}
+                                        setRefusalMsg={setRefusalMsg}
+                                        customDescription="Escreva a justificativa da recusa da atividade"
+                                    >
+                                        <div>
+                                            <MyButton
+                                                variant="red"
+                                                className="w-full"
+                                                borderRadius="squared"
+                                                size="lg"
+                                            >
+                                                <MyIcon name="x-red" />
+                                            </MyButton>
+                                        </div>
+                                    </RejectModal>
+                                </>
+                            )}
+                            {activity.adminApproved &&
+                                activity.updateToValidate &&
+                                activity.updateIsApproved === false && (
+                                    <>
+                                        <MyButton
+                                            variant="secondary-muted"
+                                            className="w-full flex justify-center"
+                                            borderRadius="squared"
+                                            size="lg"
+                                            onClick={() =>
+                                                setShowUpdateComparison(
+                                                    !showUpdateComparison
+                                                )
+                                            }
+                                        >
+                                            {showUpdateComparison
+                                                ? "Ocultar"
+                                                : "Ver"}{" "}
+                                            Alterações
+                                        </MyButton>
+                                        <MyButton
+                                            variant="default"
+                                            className="w-full flex justify-center"
+                                            borderRadius="squared"
+                                            size="lg"
+                                            onClick={() =>
+                                                onApproveUpdate(activity?.id)
+                                            }
+                                            isLoading={isLoading}
+                                        >
+                                            <Check
+                                                className="w-6 h-6"
+                                                stroke="#fff"
+                                                strokeWidth="1"
+                                            />
+                                            Aprovar Atualização
+                                        </MyButton>
+                                        <RejectModal
+                                            customTitle="Rejeitar atualização"
+                                            customConfirmMessage="Rejeitar"
+                                            iconName="warning"
+                                            callbackFn={() =>
+                                                onRejectUpdate(activity?.id)
+                                            }
+                                            refusalMsg={refusalMsg}
+                                            setRefusalMsg={setRefusalMsg}
+                                            customDescription="Escreva a justificativa da recusa da atualização"
+                                        >
+                                            <div className="col-span-2">
+                                                <MyButton
+                                                    variant="red"
+                                                    className="w-full"
+                                                    borderRadius="squared"
+                                                    size="lg"
+                                                >
+                                                    <MyIcon name="x-red" />
+                                                    Rejeitar Atualização
+                                                </MyButton>
+                                            </div>
+                                        </RejectModal>
+                                    </>
+                                )}
+                        </div>
+                    }
+
+                    {activity.updateToValidate &&
+                        activity.updateIsApproved === false && (
+                            <MyBadge
+                                variant="info"
+                                className="p-2 my-4 ml-1"
+                                style={{ width: "220px" }}
+                            >
+                                Dados atuais disponível no site {"=>"}
+                            </MyBadge>
+                        )}
+                    <div className="flex flex-col gap-2 mt-4 max-sm:hidden">
+                        <div className="flex items-center gap-2">
+                            <Image
+                                alt="avatar"
+                                src={
+                                    activity?.partner?.logo?.url ?? "/user.png"
+                                }
+                                width={6}
+                                height={6}
+                                className="w-10 h-10 rounded-full object-cover"
+                            />
+                            <div>
+                                <MyTypography
+                                    variant="notification"
+                                    weight="semibold"
+                                >
+                                    {activity?.partner.fantasyName}
+                                </MyTypography>
+                                <MyTypography
+                                    variant="notification"
+                                    weight="regular"
+                                    lightness={400}
+                                >
+                                    Parceiro e Guia de atividades
+                                </MyTypography>
+                            </div>
+                        </div>
+                        <div className="">
+                            <MyTypography
+                                variant="subtitle3"
+                                weight="bold"
+                                className=""
+                            >
+                                Descrição da atividade:
+                            </MyTypography>
+                            <MyTypography
+                                variant="body-big"
+                                weight="regular"
+                                className="mt-1 whitespace-pre-wrap"
+                            >
+                                {renderDescription()}
+                            </MyTypography>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="max-sm:hidden grid grid-cols-4 grid-rows-2 gap-4">
+                    {activity?.images?.length &&
+                        sortImagesByDefaultFirst(activity.images)
+                            .slice(0, 5)
+                            .map((image, index) => (
+                                <Image
+                                    key={index}
+                                    src={`${image.url ?? "/images/atividades/ar/ar-1.jpeg"}?v=${image.updatedAt ?? image.id}`}
+                                    alt="fotos da atividade"
+                                    width={300}
+                                    height={300}
+                                    className={`w-full max-h-[25rem] rounded-lg object-cover ${index === 0 ? "col-span-2 row-span-2 h-[25rem]" : "h-[12rem] max-h-[12rem]"}`}
+                                />
+                            ))}
+                </div>
+
+                <div className="mx-4 md:hidden">
+                    <div className="flex items-center gap-2 mb-4">
+                        <Image
+                            alt="avatar"
+                            src={activity?.partner?.logo?.url ?? "/user.png"}
+                            width={6}
+                            height={6}
+                            className="w-10 h-10 rounded-full object-cover"
+                        />
+                        <div>
+                            <MyTypography
+                                variant="notification"
+                                weight="semibold"
+                            >
+                                {activity?.partner?.fantasyName}
+                            </MyTypography>
+                            <MyTypography
+                                variant="notification"
+                                weight="regular"
+                                lightness={400}
+                            >
+                                Parceiro e Guia de atividades
+                            </MyTypography>
+                        </div>
+                    </div>
+                    <MyTypography
+                        variant="subtitle3"
+                        weight="bold"
+                        className=""
+                    >
+                        Descrição da atividade:
+                    </MyTypography>
+                    <MyTypography
+                        variant="body-big"
+                        weight="regular"
+                        className="mt-1 whitespace-pre-wrap"
+                    >
+                        {activity?.description}
+                    </MyTypography>
+                </div>
+            </div>
+
+            <div className="mx-6 mt-4">
+                <div className="md:grid md:grid-cols-2 md:gap-8">
+                    {formattedItemsIncluded().length > 0 && (
+                        <div>
+                            <MyTypography variant="body-big" weight="semibold">
+                                Está incluso:
+                            </MyTypography>
+                            <div
+                                className={cn(
+                                    "grid grid-cols-2 md:grid-cols-3 gap-x-8 gap-y-4 mt-4 mb-8"
+                                )}
+                            >
+                                {formattedItemsIncluded().map((item) => (
+                                    <div
+                                        key={item.label}
+                                        className="flex items-center gap-2"
+                                    >
+                                        <MyIcon
+                                            name={item.icon as IconsMapTypes}
+                                            className="p-2 bg-primary-900 rounded-md text-white"
+                                        />
+                                        <MyTypography
+                                            variant="body"
+                                            weight="bold"
+                                        >
+                                            {item.label}
+                                        </MyTypography>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+
+                    <div
+                        className={cn(
+                            "grid grid-cols-2 md:grid-cols-3 gap-4 md:my-auto",
+                            formattedItemsIncluded().length == 0 &&
+                                "my-4 md:my-4"
+                        )}
+                    >
+                        <div className="bg-primary-900 py-2 rounded-md mb-2 md:h-fit">
+                            <MyTypography
+                                variant="body"
+                                weight="bold"
+                                className="text-center"
+                            >
+                                {activity?.isInGroup
+                                    ? "Atividade em grupo"
+                                    : "Atividade individual"}
+                            </MyTypography>
+                        </div>
+
+                        <div className="bg-primary-900 py-2 rounded-md mb-2 md:h-fit">
+                            <MyTypography
+                                variant="body"
+                                weight="bold"
+                                className="text-center"
+                            >
+                                {activity?.isChildrenAllowed
+                                    ? "Permite crianças"
+                                    : "Não permite crianças"}
+                            </MyTypography>
+                        </div>
+
+                        <div className="bg-primary-900 py-2 rounded-md mb-2 md:h-fit">
+                            <MyTypography
+                                variant="body"
+                                weight="bold"
+                                className="text-center"
+                            >
+                                Grau de dificuldade:{" "}
+                                {getDifficultyDescriptionResume(
+                                    activity?.difficult
+                                )}
+                            </MyTypography>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="md:grid md:grid-cols-2 gap-8">
+                    <div className="md:w-full">
+                        {activity?.transportAddress &&
+                            activity?.transportAddress?.length > 0 && (
+                                <div className="mb-6">
+                                    <MyTypography
+                                        variant="body-big"
+                                        weight="semibold"
+                                        className="mt-4"
+                                    >
+                                        Local de saida e retorno do transporte
+                                        incluído:
+                                    </MyTypography>
+                                    <div className="max-sm:my-2 flex items-center mt-2 p-3 bg-[#F1F0F587] border border-primary-600/30 border-opacity-80 rounded-lg shadow-sm hover:bg-gray-100 relative">
+                                        <div className="absolute inset-y-0 left-0 w-3 bg-primary-900 rounded-l-lg"></div>
+
+                                        <MyIcon
+                                            name="localizacaoRedonda"
+                                            className=""
+                                        />
+                                        <MyTypography className="ml-2">
+                                            <Link
+                                                href={getAddress(
+                                                    activity?.transportAddress
+                                                )}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                            >
+                                                {activity?.transportAddress}
+                                            </Link>
+                                        </MyTypography>
+                                    </div>
+                                </div>
+                            )}
+
+                        {activity?.languages && (
+                            <>
+                                <MyTypography
+                                    variant="body-big"
+                                    weight="semibold"
+                                >
+                                    Idioma falado pelo parceiro:
+                                </MyTypography>
+                                <div className="my-4">
+                                    {mapLanguages(
+                                        activity?.languages ?? ""
+                                    ).map((lang) => (
+                                        <div
+                                            className="bg-primary-900 text-center py-2 rounded-md mb-2 md:h-fit"
+                                            key={lang}
+                                        >
+                                            <MyTypography
+                                                variant="body-big"
+                                                weight="bold"
+                                                className="text-[0.8rem] md:text-[0.9rem]"
+                                            >
+                                                {lang}
+                                            </MyTypography>
+                                        </div>
+                                    ))}
+                                </div>
+                            </>
+                        )}
+
+                        <MyTypography variant="body-big" weight="semibold">
+                            Ponto de encontro da atividade:
+                        </MyTypography>
+                        <div className="max-sm:my-2 flex items-center mt-2 p-3 bg-[#F1F0F587] border border-primary-600/30 border-opacity-80 rounded-lg shadow-sm hover:bg-gray-100 relative">
+                            <div className="absolute inset-y-0 left-0 w-3 bg-primary-900 rounded-l-lg"></div>
+                            <MyIcon
+                                name="localizacaoRedonda"
+                                className="w-6 h-6 text-primary-900 ml-3"
+                            />
+                            <div className="ml-3">
+                                <MyTypography
+                                    variant="body-big"
+                                    weight="regular"
+                                >
+                                    <Link
+                                        href={getAddress(
+                                            formatAddress(address)
+                                        )}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                    >
+                                        {formatAddress(address)}
+                                    </Link>
+                                </MyTypography>
+                                <MyTypography
+                                    variant="body"
+                                    weight="regular"
+                                    className="text-gray-600"
+                                >
+                                    Ponto de encontro:{" "}
+                                    {activity?.pointRefAddress}
+                                </MyTypography>
+                            </div>
+                        </div>
+
+                        <div className="space-y-6 my-10">
+                            <div className="flex items-center gap-2">
+                                <MyIcon name="duracao" />
+                                <div>
+                                    <MyTypography
+                                        variant="subtitle3"
+                                        weight="bold"
+                                    >
+                                        Duração da atividade
+                                    </MyTypography>
+                                    <MyTypography
+                                        variant="body-big"
+                                        weight="regular"
+                                    >
+                                        {activity?.duration +
+                                            (activity?.duration == "01:00"
+                                                ? " hora"
+                                                : " horas")}
+                                    </MyTypography>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div className="space-y-6 mt-4 md:mt-2">
+                            <div className="space-y-2">
+                                <MyTypography variant="subtitle3" weight="bold">
+                                    Políticas da atividade
+                                </MyTypography>
+                                {activity?.hoursBeforeSchedule && (
+                                    <MyTypography
+                                        variant="body-big"
+                                        weight="regular"
+                                    >
+                                        • Antecedência mínima para agendamento:{" "}
+                                        <span className="max-sm:block">
+                                            {activity?.hoursBeforeSchedule}h
+                                        </span>
+                                    </MyTypography>
+                                )}
+                                {activity?.hoursBeforeCancellation && (
+                                    <MyTypography
+                                        variant="body-big"
+                                        weight="regular"
+                                    >
+                                        • Antecedência mínima para cancelamento:{" "}
+                                        <span className="max-sm:block">
+                                            {activity?.hoursBeforeCancellation}h
+                                        </span>
+                                    </MyTypography>
+                                )}
+                                <MyTypography
+                                    variant="body-big"
+                                    weight="regular"
+                                >
+                                    • Quantidade de pessoas:{" "}
+                                    {activity?.personsLimit}
+                                </MyTypography>
+                            </div>
+
+                            <div className="space-y-2">
+                                <MyTypography variant="subtitle3" weight="bold">
+                                    Essa atividade será realizada:
+                                </MyTypography>
+
+                                <MyTypography
+                                    variant="body-big"
+                                    weight="regular"
+                                >
+                                    •{" "}
+                                    {activity.isInGroup
+                                        ? "Em grupo"
+                                        : "Individual"}
+                                </MyTypography>
+
+                                <MyTypography
+                                    variant="body-big"
+                                    weight="regular"
+                                >
+                                    •{" "}
+                                    {activity.isChildrenAllowed
+                                        ? "Com criança"
+                                        : "Sem criança"}
+                                </MyTypography>
+                            </div>
+
+                            <div className="space-y-4">
+                                <div className="flex justify-between items-center mt-1">
+                                    <MyTypography
+                                        variant="subtitle3"
+                                        weight="bold"
+                                        className="text-md md:text-lg"
+                                    >
+                                        Valor por adulto:
+                                    </MyTypography>
+
+                                    <MyTypography
+                                        variant="heading2"
+                                        weight="extrabold"
+                                        className="text-primary-600 text-lg md:text-2xl"
+                                    >
+                                        {formatPrice(
+                                            activity?.priceAdult ?? ""
+                                        )}
+                                    </MyTypography>
+                                </div>
+
+                                {activity?.isChildrenAllowed && (
+                                    <div className="flex justify-between items-center mt-4">
+                                        <MyTypography
+                                            variant="subtitle3"
+                                            weight="bold"
+                                            className="text-md md:text-lg"
+                                        >
+                                            Valor por criança:
+                                        </MyTypography>
+                                        <MyTypography
+                                            variant="heading2"
+                                            weight="extrabold"
+                                            className="text-primary-600 text-lg md:text-2xl"
+                                        >
+                                            {formatPrice(
+                                                activity?.priceChildren ?? ""
+                                            )}
+                                        </MyTypography>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div className="w-full grid grid-cols-2 gap-4 md:hidden mt-6">
+                    {!activity.adminApproved && (
+                        <>
+                            <MyButton
+                                variant="secondary-muted"
+                                className="w-full flex justify-center"
+                                borderRadius="squared"
+                                size="lg"
+                                onClick={() => onApproveActivity(activity?.id)}
+                                isLoading={isLoading}
+                            >
+                                <Check
+                                    className="w-6 h-6"
+                                    stroke="#97E169"
+                                    strokeWidth="1"
+                                />
+                            </MyButton>
+                            <RejectModal
+                                customTitle="Rejeitar atividade"
+                                customConfirmMessage="Rejeitar"
+                                iconName="warning"
+                                callbackFn={() =>
+                                    onRejectActivity(activity?.id)
+                                }
+                                refusalMsg={refusalMsg}
+                                setRefusalMsg={setRefusalMsg}
+                                customDescription="Escreva a justificativa da recusa da atividade"
+                            >
+                                <div>
+                                    <MyButton
+                                        variant="red"
+                                        className="w-full"
+                                        borderRadius="squared"
+                                        size="lg"
+                                    >
+                                        <MyIcon name="x-red" />
+                                    </MyButton>
+                                </div>
+                            </RejectModal>
+                        </>
+                    )}
+
+                    <div className="col-span-2 w-full">
+                        <MyButton
+                            variant="partner"
+                            borderRadius="squared"
+                            size="lg"
+                            className="font-bold text-[1rem] w-full"
+                            leftIcon={<MyIcon name="chat-web" className="" />}
+                            onClick={() => handleChat(partner?.userId)}
+                        >
+                            Falar com o parceiro
+                        </MyButton>
+                    </div>
+                </div>
+            </div>
+        </section>
+    );
 }

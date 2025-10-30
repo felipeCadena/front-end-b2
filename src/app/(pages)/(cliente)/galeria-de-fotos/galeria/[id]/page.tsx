@@ -13,6 +13,7 @@ import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 import React from "react";
+import handleDownloadImage from "@/utils/downloadImage";
 
 export default function Galeria() {
   const { id } = useParams();
@@ -20,7 +21,7 @@ export default function Galeria() {
   const [loading, setLoading] = React.useState(false);
   const [loadingRedirect, setLoadingRedirect] = React.useState(true);
 
-  const { data: activity, isLoading } = useQuery({
+  const { data: activity } = useQuery({
     queryKey: ["activity_schedule"],
     queryFn: () => schedules.getScheduleById(id as string),
   });
@@ -29,24 +30,6 @@ export default function Galeria() {
     queryKey: ["activity_photos"],
     queryFn: async () => await schedules.getScheduleMedias(id as string),
   });
-
-  const handleDownloadImage = async (imageURL: string, fileTitle: string) => {
-    try {
-      const response = await fetch(`${imageURL}?download=1`);
-      const blob = await response.blob();
-      const url = URL.createObjectURL(blob);
-
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = fileTitle;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    } catch (err) {
-      console.error("Erro ao baixar imagem", err);
-    }
-  };
 
   const handleFetchPhotos = async (id: string, downloadAll?: boolean) => {
     if (downloadAll && id !== "") {
@@ -105,7 +88,7 @@ export default function Galeria() {
         <div className="flex gap-2 items-center">
           <Image
             alt="foto parceiro"
-            src={activity?.adventure?.partner?.logo.url ?? ""}
+            src={activity?.adventure?.partner?.logo.url ?? "/user.png"}
             width={40}
             height={40}
             className="rounded-full"
@@ -136,7 +119,7 @@ export default function Galeria() {
           activityPhotos.map((media, index) => (
             <div key={index} className="flex justify-center relative">
               <Image
-                src={media.url}
+                src={media.url ?? ""}
                 alt={media.title ?? "foto"}
                 width={150}
                 height={150}

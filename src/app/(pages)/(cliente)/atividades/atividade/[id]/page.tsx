@@ -44,12 +44,37 @@ const initialScheduleState = {
   pricePerChildren: "",
 };
 
+function mapLanguages(dbString: string): string[] {
+  if (!dbString) return [];
+
+  const languages = [
+    { id: "pt-br", label: "Português (Brasileiro)" },
+    { id: "en", label: "Inglês" },
+    { id: "es", label: "Espanhol" },
+    { id: "fr", label: "Francês" },
+    { id: "it", label: "Italiano" },
+    { id: "gr", label: "Alemão" },
+    { id: "cn", label: "Mandarim (Chinês)" },
+  ];
+
+  try {
+    const ids: string[] = JSON.parse(dbString); // ["pt-br","en","gr",...]
+    return ids
+      .map((id) => languages.find((l) => l.id === id)?.label)
+      .filter((label): label is string => Boolean(label));
+  } catch {
+    return [];
+  }
+}
+
 export default function Atividade() {
   const router = useRouter();
   const { id } = useParams();
   const [favorite, setFavorite] = useState(false);
   const [schedule, setSchedule] =
     useState<ClientSchedule>(initialScheduleState);
+  const [expanded, setExpanded] = React.useState(false);
+  const MAX_LENGTH = 1000;
 
   const { data: session } = useSession();
 
@@ -65,6 +90,43 @@ export default function Atividade() {
   const price = {
     adult: fetchedActivity?.priceAdult,
     children: fetchedActivity?.priceChildren,
+  };
+
+  const renderDescription = () => {
+    const full = fetchedActivity?.description ?? "";
+    const isLong = full.length > MAX_LENGTH;
+
+    if (!isLong) {
+      return (
+        <MyTypography
+          variant="body-big"
+          weight="regular"
+          className="mt-1 whitespace-pre-wrap"
+        >
+          {full}
+        </MyTypography>
+      );
+    }
+
+    const displayedText = expanded ? full : full.slice(0, MAX_LENGTH);
+    const toggleText = expanded ? "Ver menos" : "Ver mais";
+
+    return (
+      <MyTypography
+        variant="body-big"
+        weight="regular"
+        className="mt-1 whitespace-pre-wrap"
+      >
+        {displayedText}
+        {isLong && !expanded && "..."}
+        <span
+          onClick={() => setExpanded(!expanded)}
+          className="px-1 inline text-gray-400 underline cursor-pointer"
+        >
+          {toggleText}
+        </span>
+      </MyTypography>
+    );
   };
 
   const { data: favorites = [] } = useQuery({
@@ -84,7 +146,9 @@ export default function Atividade() {
   const handleFavorite = async () => {
     if (!session?.user) {
       toast.error("Você precisa ter uma conta para favoritar uma atividade");
-      router.push(PATHS.login);
+      router.push(
+        `${PATHS.login}?redirect=${PATHS.visualizarAtividade(id as string)}`
+      );
       return;
     }
 
@@ -118,7 +182,9 @@ export default function Atividade() {
   const handleOrder = () => {
     if (!session?.user) {
       toast.error("Você precisa ter uma conta para adicionar ao carrinho.");
-      router.push(PATHS.login);
+      router.push(
+        `${PATHS.login}?redirect=${PATHS.visualizarAtividade(id as string)}`
+      );
       return;
     }
 
@@ -153,7 +219,9 @@ export default function Atividade() {
   const handleMobileOrder = () => {
     if (!session?.user) {
       toast.error("Você precisa ter uma conta para adicionar ao carrinho.");
-      router.push(PATHS.login);
+      router.push(
+        `${PATHS.login}?redirect=${PATHS.visualizarAtividade(id as string)}`
+      );
       return;
     }
 
@@ -220,7 +288,7 @@ export default function Atividade() {
         <MyIcon
           name="voltar-black"
           className="absolute z-20 top-8 left-8 md:hidden hover:cursor-pointer"
-          onClick={() => router.back()}
+          onClick={() => router.push(PATHS.atividades)}
         />
 
         <div className="md:hidden">
@@ -235,7 +303,7 @@ export default function Atividade() {
               (image, index) => (
                 <Image
                   key={index}
-                  src={image?.url}
+                  src={image?.url ?? "/images/atividades/terra/terra-5.jpeg"}
                   alt="album"
                   width={300}
                   height={300}
@@ -267,10 +335,7 @@ export default function Atividade() {
 
         <div className="m-4 mx-6 md:hidden">
           <MyTypography variant="heading2" weight="bold" className="">
-            {fetchedActivity?.title
-              ? fetchedActivity.title.charAt(0).toUpperCase() +
-                fetchedActivity.title.slice(1).toLowerCase()
-              : ""}
+            {fetchedActivity?.title}
           </MyTypography>
           <div className="flex items-center justify-between">
             <MyBadge variant="outline" className="p-1">
@@ -309,17 +374,17 @@ export default function Atividade() {
           <MyTypography
             variant="body-big"
             weight="regular"
-            className="mt-1 whitespace-pre-wrap"
+            className="mt-1 whitespace-pre-wrap break-words"
           >
-            {fetchedActivity?.description}
+            {renderDescription()}
           </MyTypography>
         </div>
       </div>
-
       <div className="mx-6">
         <div className="md:grid md:grid-cols-2 md:gap-8 my-4">
           <ActivityIncludedItems
             transportIncluded={fetchedActivity?.transportIncluded ?? false}
+            picturesIncluded={fetchedActivity?.picturesIncluded ?? false}
             itemsIncluded={parsedItems}
           />
 
@@ -338,6 +403,7 @@ export default function Atividade() {
             hoursBeforeCancelation={fetchedActivity?.hoursBeforeCancellation}
             price={price}
             isChildrenAllowed={fetchedActivity?.isChildrenAllowed ?? false}
+            languages={mapLanguages(fetchedActivity?.languages ?? "")}
           />
 
           <div className="md:flex md:flex-col md:items-center">

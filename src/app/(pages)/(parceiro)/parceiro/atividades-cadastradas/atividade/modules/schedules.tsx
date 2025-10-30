@@ -16,6 +16,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
 import React, { useEffect } from "react";
 import { toast } from "react-toastify";
+import ModalAlert from "@/components/molecules/modal-alert";
 
 type SelectionBlock = {
   id: string;
@@ -35,6 +36,7 @@ export default function Schedules({
   formData,
   setFormData,
   onClose,
+  isApproved,
 }: ModalProps) {
   const addSelectionBlock = () => {
     const newBlock: SelectionBlock = {
@@ -80,6 +82,7 @@ export default function Schedules({
   };
 
   const [isLoading, setIsLoading] = React.useState(false);
+  const [showWarning, setShowWarning] = React.useState(false);
 
   // Função para formatar os dados antes de salvar
   const formatRecurrences = (): Recurrence[] => {
@@ -122,9 +125,13 @@ export default function Schedules({
 
   const queryClient = useQueryClient();
   const formattedRecurrences = formatRecurrences();
-  // console.log("formattedRecurrences", formattedRecurrences);
 
   const handleSubmit = async () => {
+    if (isApproved && !showWarning) {
+      setShowWarning(true);
+      return;
+    }
+
     const formattedRecurrences = formatRecurrences();
 
     const data = {
@@ -138,13 +145,18 @@ export default function Schedules({
       await adventures.updateAdventureById(formData.id, data);
 
       queryClient.invalidateQueries({ queryKey: ["activity"] });
-      toast.success("Atividade atualizada com sucesso!");
+      toast.success(
+        isApproved
+          ? "Alterações enviadas para aprovação!"
+          : "Atividade atualizada com sucesso!"
+      );
+      setShowWarning(false);
+      onClose();
     } catch (error) {
       toast.error("Erro ao atualizar atividade");
       console.error("Error updating adventure:", error);
     }
     setIsLoading(false);
-    onClose();
   };
 
   const handleDateChange = (blockId: string, dates: Date[]) => {
@@ -158,6 +170,17 @@ export default function Schedules({
 
   return (
     <div className="flex flex-col gap-4">
+      <ModalAlert
+        open={showWarning}
+        onClose={() => setShowWarning(false)}
+        onAction={handleSubmit}
+        iconName="warning"
+        title="Alteração em atividade aprovada"
+        descrition="Esta atividade já está aprovada e online. As alterações que você fizer precisarão ser validadas pelo administrador da B2 Adventure antes de serem publicadas no site."
+        button="Continuar"
+        isLoading={isLoading}
+      />
+
       <div className="flex gap-4 items-center mb-8">
         <MyIcon name="voltar-black" className="-ml-2" onClick={onClose} />
         <MyTypography variant="subtitle1" weight="bold" className="">

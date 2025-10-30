@@ -4,7 +4,7 @@ import MyTypography from "@/components/atoms/my-typography";
 import ShoppingCard from "@/components/molecules/shopping-card";
 import ActivitiesFilter from "@/components/organisms/activities-filter";
 import CarouselCustom from "@/components/templates/second-section/carousel-custom";
-import React, { useRef } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Adventure, adventures } from "@/services/api/adventures";
 import { useCart } from "@/store/useCart";
@@ -13,7 +13,6 @@ import useSearchQueryService from "@/services/use-search-query-service";
 import Loading from "@/app/loading";
 import SearchActivity from "@/components/organisms/search-activity";
 import { cn } from "@/utils/cn";
-import { users } from "@/services/api/users";
 
 export default function AtividadesTemplate() {
   const { params } = useSearchQueryService();
@@ -21,17 +20,28 @@ export default function AtividadesTemplate() {
   const [selected, setSelected] = React.useState<"ar" | "terra" | "mar" | "">(
     ""
   );
+  const [price, setPrice] = React.useState({min: 0, max: 1500})
 
-  const { data: activities = [], isLoading } = useQuery({
+  const { data: activitiesResponse, isLoading } = useQuery({
     queryKey: ["activities", params],
     enabled: !!params,
-    queryFn: () =>
-      adventures.filterAdventures({
-        limit: 50,
+    queryFn: async () => {
+      const filterAdventures = await adventures.filterAdventuresWithPrice({
+        limit: 100,
         skip: 0,
         ...params,
-      }),
+      })
+      setPrice({min: Number(filterAdventures?.priceAdult.min), max: Number(filterAdventures?.priceAdult.max)})
+      return filterAdventures
+    },
   });
+
+  useEffect(() => {
+        setPrice({min: Number(activitiesResponse?.priceAdult.min), max: Number(activitiesResponse?.priceAdult.max)})
+    }, [activitiesResponse])
+
+    console.log('/atividades ' + JSON.stringify(price))
+    
 
   const arRef = useRef<HTMLDivElement>(null);
   const terraRef = useRef<HTMLDivElement>(null);
@@ -62,7 +72,7 @@ export default function AtividadesTemplate() {
 
   const filterActivity = (activities: any, typeAdventure: string) => {
     return (
-      activities?.filter(
+      activities.filter(
         (activity: any) => activity.typeAdventure === typeAdventure
       ) ?? []
     );
@@ -78,7 +88,7 @@ export default function AtividadesTemplate() {
   ) : (
     <section className="">
       <div className="mt-8">
-        <SearchActivity setFormData={handleSearch} />
+        <SearchActivity priceAdult={price} setFormData={handleSearch} />
       </div>
 
       <ActivitiesFilter selected={selected} setSelected={handleSelect} />
@@ -122,7 +132,19 @@ export default function AtividadesTemplate() {
             >
               Atividades Aéreas
             </MyTypography>
-            <CarouselCustom activities={filterActivity(activities, "ar")} />
+            {activitiesResponse?.data && filterActivity(activitiesResponse?.data, "ar")?.length > 0 ? (
+              <CarouselCustom activities={filterActivity(activitiesResponse?.data, "ar")} />
+            ) : (
+              <div className="w-full h-[225px] flex flex-col justify-center items-center">
+                <MyTypography
+                  variant="heading3"
+                  className="text-base md:text-2xl text-center"
+                >
+                  Nenhuma atividade encontrada.
+                  <p>Faça uma nova busca!</p>
+                </MyTypography>
+              </div>
+            )}
           </div>
 
           <div className="border-2 border-gray-200 w-1/2 mx-auto rounded-md mb-6 md:hidden" />
@@ -135,7 +157,21 @@ export default function AtividadesTemplate() {
             >
               Atividades Terrestres
             </MyTypography>
-            <CarouselCustom activities={filterActivity(activities, "terra")} />
+            {activitiesResponse?.data && filterActivity(activitiesResponse?.data, "terra")?.length > 0 ? (
+              <CarouselCustom
+                activities={filterActivity(activitiesResponse?.data, "terra")}
+              />
+            ) : (
+              <div className="w-full h-[225px] flex flex-col justify-center items-center">
+                <MyTypography
+                  variant="heading3"
+                  className="text-base md:text-2xl text-center"
+                >
+                  Nenhuma atividade encontrada.
+                  <p>Faça uma nova busca!</p>
+                </MyTypography>
+              </div>
+            )}
           </div>
 
           <div className="border-2 border-gray-200 w-1/2 mx-auto rounded-md mb-6 md:hidden" />
@@ -148,12 +184,24 @@ export default function AtividadesTemplate() {
             >
               Atividades Aquática
             </MyTypography>
-            <CarouselCustom activities={filterActivity(activities, "mar")} />
+            {activitiesResponse?.data && filterActivity(activitiesResponse?.data, "mar")?.length > 0 ? (
+              <CarouselCustom activities={filterActivity(activitiesResponse?.data, "mar")} />
+            ) : (
+              <div className="w-full h-[225px] flex flex-col justify-center items-center">
+                <MyTypography
+                  variant="heading3"
+                  className="text-base md:text-2xl text-center"
+                >
+                  Nenhuma atividade encontrada.
+                  <p>Faça uma nova busca!</p>
+                </MyTypography>
+              </div>
+            )}
           </div>
         </div>
       )}
-      <ShoppingCard isMobile={false} items={cartSize} />
-      <ShoppingCard isMobile items={cartSize} />
+      {cartSize > 0 && <ShoppingCard isMobile={false} items={cartSize} />}
+      {cartSize > 0 && <ShoppingCard isMobile items={cartSize} />}
     </section>
   );
 }

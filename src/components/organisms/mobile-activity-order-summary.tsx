@@ -53,7 +53,10 @@ const MobileActivitiesOrderSummary = ({
               <div className="flex rounded-md w-fit">
                 <Image
                   alt="sample_file"
-                  src={selectActivityImage(adventure) ?? ""}
+                  src={
+                    selectActivityImage(adventure) ??
+                    "/images/atividades/terra/terra-5.jpeg"
+                  }
                   width={114}
                   height={106}
                   className="w-[94px] h-[106px] object-cover rounded-md"

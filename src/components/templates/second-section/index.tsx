@@ -2,7 +2,7 @@
 
 import MyTypography from "@/components/atoms/my-typography";
 import ActivitiesFilter from "@/components/organisms/activities-filter";
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import CarouselCustom from "./carousel-custom";
 import { useQuery } from "@tanstack/react-query";
 import { adventures as adventuresService } from "@/services/api/adventures";
@@ -19,6 +19,8 @@ export default function SecondSection() {
 
   const searchRef = React.useRef<HTMLDivElement>(null);
 
+  const [price, setPrice] = useState({min: 0, max: 0})
+
   const [selected, setSelected] = React.useState<"ar" | "terra" | "mar" | "">(
     ""
   );
@@ -30,20 +32,28 @@ export default function SecondSection() {
   } = useAdventures();
 
   // adventures
-  const { isLoading } = useQuery({
+  const { data: adventuresFilter, isLoading } = useQuery({
     queryKey: ["adventures", selected, params],
     queryFn: async () => {
-      const filterAdventures = await adventuresService.filterAdventures({
-        typeAdventure: selected ? selected : undefined,
-        ...params,
-      });
+      const filterAdventures =
+        await adventuresService.filterAdventuresWithPrice({
+          typeAdventure: selected ? selected : undefined,
+          ...params,
+          limit: 100,
+        });
 
       setSearchedAdventures(selected);
-      setAdventures(filterAdventures);
+      setAdventures(filterAdventures?.data);
+      setPrice({min: Number(filterAdventures?.priceAdult.min), max: Number(filterAdventures?.priceAdult.max)})
 
       return filterAdventures;
     },
   });
+
+  useEffect(() => {
+      setPrice({min: Number(adventuresFilter?.priceAdult.min), max: Number(adventuresFilter?.priceAdult.max)})
+  }, [adventuresFilter])
+  
 
   // adventures
   const { data: popularAdventures = [], isLoading: popularIsLoading } =
@@ -52,9 +62,9 @@ export default function SecondSection() {
       queryFn: async () =>
         await adventuresService.getAdventures({
           orderBy: "qntTotalSales desc",
+          limit: 100,
         }),
     });
-
   useEffect(() => {
     const hasFilters = params && Object.keys(params).length > 0;
     if (hasFilters) {
@@ -79,11 +89,17 @@ export default function SecondSection() {
     }
   };
 
+  console.log('/ ' + JSON.stringify(price))
+
+
   return (
     <section className="">
       <div className="mt-8">
-        <SearchActivity setFormData={handleSearch} />
-      </div>
+        <SearchActivity
+          setFormData={handleSearch}
+          priceAdult={price}
+        />
+        </div>
 
       <ActivitiesFilter selected={selected} setSelected={handleSelect} />
 
@@ -102,8 +118,12 @@ export default function SecondSection() {
             <CarouselCustom home activities={adventures} />
           ) : (
             <div className="w-full h-[225px] flex flex-col justify-center items-center">
-              <MyTypography variant="heading3">
-                Nenhuma atividade encontrada. Faça uma nova busca!
+              <MyTypography
+                variant="heading3"
+                className="text-base md:text-2xl text-center"
+              >
+                Nenhuma atividade encontrada.
+                <p>Faça uma nova busca!</p>
               </MyTypography>
             </div>
           )
@@ -129,7 +149,19 @@ export default function SecondSection() {
         </MyTypography>
 
         {!popularIsLoading ? (
-          <CarouselCustom home activities={popularAdventures} />
+          popularAdventures && popularAdventures?.length > 0 ? (
+            <CarouselCustom home activities={popularAdventures} />
+          ) : (
+            <div className="w-full h-[225px] flex flex-col justify-center items-center">
+              <MyTypography
+                variant="heading3"
+                className="text-base md:text-2xl text-center"
+              >
+                Nenhuma atividade encontrada.
+                <p>Faça uma nova busca!</p>
+              </MyTypography>
+            </div>
+          )
         ) : (
           <div className="grid md:grid-cols-4 gap-4 max-sm:hidden">
             {Array.from({ length: 4 }).map((_, index) => (

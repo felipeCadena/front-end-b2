@@ -2,7 +2,11 @@ import MyBadge from "@/components/atoms/my-badge";
 import MyIcon from "@/components/atoms/my-icon";
 import MyTypography from "@/components/atoms/my-typography";
 import StarRating from "@/components/molecules/my-stars";
-import { handleNameActivity, selectActivityImage } from "@/utils/formatters";
+import {
+  formatPrice,
+  handleNameActivity,
+  selectActivityImage,
+} from "@/utils/formatters";
 import Image from "next/image";
 import { Adventure, adventures } from "@/services/api/adventures";
 import React, { use } from "react";
@@ -71,7 +75,7 @@ const CarouselActivity = ({
   return (
     <div
       key={activity.id}
-      className="min-w-[80%] md:w-[25%] md:min-w-[25%] flex flex-col gap-1 items-start md:mb-8 "
+      className=" md:w-[250px] md:min-w-[250px] flex flex-col gap-1 items-start md:mb-8 whitespace-pre-wrap"
     >
       <div className="relative z-10 overflow-hidden h-[225px] w-full md:w-[250px] hover:cursor-pointer rounded-md">
         <Image
@@ -81,7 +85,7 @@ const CarouselActivity = ({
             "/images/atividades/paraquedas.webp"
           }
           fill
-          className="object-cover cursor-pointer"
+          className="object-cover cursor-pointer h-[225px] w-full md:w-[250px]"
           onClick={() => handleActivity((activity?.id).toString())}
         />
         {type !== "parceiro" && isFavorite ? (
@@ -113,10 +117,11 @@ const CarouselActivity = ({
           )
         )}
       </div>
-      <div className="mt-1 flex gap-2 items-center">
+      <div className="mt-1 flex  gap-2 items-center">
         <MyBadge variant="outline" className="p-1 text-nowrap">
           {handleNameActivity(activity?.typeAdventure)}
         </MyBadge>
+
         <StarRating rating={activity?.averageRating} />
       </div>
       <div className="flex gap-2 items-center mt-1">
@@ -136,22 +141,37 @@ const CarouselActivity = ({
         </MyTypography>
       </div>
       <div
-        className="cursor-pointer"
+        className="cursor-pointer "
         onClick={() => handleActivity((activity?.id).toString())}
       >
-        <MyTypography variant="subtitle1" weight="bold">
-          {activity?.title}
+        <MyTypography
+          variant="subtitle1"
+          weight="bold"
+          className="break-words h-10 mb-5"
+        >
+          {activity?.title.length > 45
+            ? activity?.title.slice(0, 45).concat("...")
+            : activity?.title}
         </MyTypography>
-        <MyTypography variant="body-big" className="md:pr-4">
-          {activity?.description.slice(0, 105).concat("...")}
-          <MyTypography
-            variant="body-big"
-            weight="bold"
-            lightness={500}
-            className="inline cursor-pointer"
-          >
-            Saiba Mais
-          </MyTypography>
+        <MyTypography
+          variant="body-big"
+          weight="regular"
+          className="md:pr-4 break-words mt-1"
+          style={{ overflowWrap: "anywhere" }}
+        >
+          a partir de{" "}
+          <span style={{ fontWeight: "bold" }}>
+            {formatPrice(activity?.priceAdult)}
+          </span>{" "}
+          por adulto
+        </MyTypography>
+        <MyTypography
+          variant="body-big"
+          weight="semibold"
+          lightness={500}
+          className="inline cursor-pointer underline mt-1"
+        >
+          Saiba Mais {"\u2794"}
         </MyTypography>
       </div>
     </div>

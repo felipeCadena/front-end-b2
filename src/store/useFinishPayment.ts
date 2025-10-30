@@ -1,5 +1,5 @@
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
 export interface FinishPayment {
   id: number;
@@ -10,6 +10,7 @@ export interface FinishPayment {
   pixDueDate?: string;
   qrCode?: string | null;
   pixCopyPaste?: string | null;
+  total?: number;
 }
 
 interface FinishPaymentStore {
@@ -32,6 +33,6 @@ export const useFinishPayment = create<FinishPaymentStore>()(
         }));
       },
     }),
-    { name: 'payment-storage' }
+    { name: "payment-storage" }
   )
 );

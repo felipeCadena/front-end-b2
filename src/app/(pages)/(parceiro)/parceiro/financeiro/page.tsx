@@ -248,12 +248,10 @@ export default function Dashboard() {
 
   const type =
     typeGroup === "month"
-      ? `${filters.year}-${filters.month}`
+      ? `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, "0")}`
       : partnerIncome && getLatestWeekKey(partnerIncome);
 
   const incomeData = partnerIncome?.[type ?? ""];
-
-  // const incomeYearData = partnerIncomeYear?.[type];
 
   const activities = [
     {
@@ -359,20 +357,9 @@ export default function Dashboard() {
     const formatted =
       currentMonthLabel.charAt(0).toUpperCase() + currentMonthLabel.slice(1);
 
-    console.log(formatted);
-    console.log(data);
-
     const found = data.find((item: any) => `${item.name}.` === formatted);
     return found?.name ?? null;
   };
-
-  // const getMiddleLabel = (data: { name: string; Total: number }[]) => {
-  //   const withValue = data.filter((d) => d.Total > 0);
-  //   if (!withValue.length) return null;
-
-  //   const middleIndex = Math.floor(withValue.length / 2);
-  //   return withValue[middleIndex]?.name ?? null;
-  // };
 
   return (
     <main className="max-sm:mx-4 my-6">
@@ -448,9 +435,9 @@ export default function Dashboard() {
                       className="mt-1 ml-1"
                     >
                       % das atividades realizadas{" "}
-                      <span className="text-xs text-neutral-400">
+                      <p className="text-xs text-neutral-400 mt-1">
                         Saiba Mais
-                      </span>
+                      </p>
                     </MyTypography>
                   </div>
                 </div>
@@ -589,7 +576,7 @@ export default function Dashboard() {
               weight="bold"
               className="text-nowrap"
             >
-              Passeios do mês
+              Passeios por mês
             </MyTypography>
 
             <div className="ml-auto">
@@ -600,7 +587,7 @@ export default function Dashboard() {
                 }}
               >
                 <SelectTrigger className="rounded-2xl w-[100px] text-[#848A9C] text-xs">
-                  <SelectValue placeholder="Setembro" />
+                  <SelectValue placeholder="Ano vigente" />
                 </SelectTrigger>
                 <SelectContent className="rounded-lg">
                   {getYearsArray().map((year) => (
@@ -608,9 +595,6 @@ export default function Dashboard() {
                       {year}
                     </SelectItem>
                   ))}
-                  <SelectItem key="2026" value="2026">
-                    2026
-                  </SelectItem>
                 </SelectContent>
               </MySelect>
             </div>

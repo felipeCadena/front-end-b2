@@ -20,21 +20,12 @@ export default function Notificacao() {
     queryFn: () => notificationsService.getNotificationById(id as string),
   });
 
-  const notificationHeader =
-    notification?.title.split(" dia")[0] ?? "Carregando...";
+  const notificationHeader = notification?.title;
   const orderStatus = "realizada";
 
   useEffect(() => {
     queryClient.invalidateQueries({ queryKey: ["unread_notifications"] });
   }, [notification]);
-
-  const formatDescription = () => {
-    return (
-      <div className="flex flex-col gap-4 ml-2 mt-2">
-        <p dangerouslySetInnerHTML={{ __html: notification?.text || "" }} />
-      </div>
-    );
-  };
 
   return (
     <section className="m-6 space-y-4">
@@ -83,7 +74,23 @@ export default function Notificacao() {
               {notificationHeader}
             </MyTypography>
             <div className="flex justify-start items-center">
-              {formatDescription()}
+              <div className="flex flex-col gap-4 ml-2 mt-2 w-full">
+                <p
+                  dangerouslySetInnerHTML={{
+                    __html: notification?.text as string,
+                  }}
+                  className="text-wrap"
+                />
+                {notification?.link && (
+                  <a
+                    className="text-blue-500 underline text-wrap"
+                    href={notification.link}
+                    target="_blank"
+                  >
+                    Clique aqui!
+                  </a>
+                )}
+              </div>
             </div>
           </div>
         </div>

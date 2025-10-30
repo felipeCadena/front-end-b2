@@ -5,7 +5,7 @@ import { Slot } from "@radix-ui/react-slot";
 import MySpinner from "./my-spinner";
 
 export const buttonVariants = cva(
-  "inline-flex items-center justify-center whitespace-nowrap text-[0.725rem] font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none",
+  "inline-flex items-center justify-center whitespace-nowrap text-[0.725rem] font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none",
   {
     variants: {
       variant: {
@@ -24,7 +24,7 @@ export const buttonVariants = cva(
         link: "underline-offset-4 underline text-primary-600 hover:text-primary-600 disabled:text-gray-200",
         "link-muted":
           "underline-offset-4 underline text-neutral-800 hover:text-neutral-900 disabled:text-neutral-200",
-        text: "text-primary-600 text-[0.875rem] font-semibold hover:text-primary-600 disabled:text-gray-200 hover:text-[#7daf44]",
+        text: "text-primary-600 text-[0.875rem] font-semibold hover:text-primary-600 disabled:text-gray-200 hover:text-[#7daf44] focus-visible:outline-none focus-visible:ring-0",
         "text-muted": "text-neutral-400 text-[0.9rem]",
         date: "border bg-traparent",
         ghost: "hover:bg-accent hover:text-accent-foreground",

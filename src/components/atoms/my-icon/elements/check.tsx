@@ -2,14 +2,18 @@ const Check = ({
   stroke = "currentColor",
   strokeWidth = "2",
   className,
+  width = "11",
+  height = "9",
 }: {
   stroke?: string;
   strokeWidth?: string;
   className?: string;
+  width?: string;
+  height?: string;
 }) => (
   <svg
-    width="11"
-    height="9"
+    width={width}
+    height={height}
     viewBox="0 0 11 9"
     stroke={stroke}
     className={className}

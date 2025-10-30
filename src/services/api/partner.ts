@@ -2,12 +2,22 @@ import { api } from "@/libs/api";
 import {
   AddToCartAdventure,
   Adventure,
+  CreateAdventureBody,
   GetAdventuresParams,
   GetAdventuresResponse,
   Schedules,
 } from "./adventures";
 import { clearObject } from "@/utils/clear-object";
 import { DateOption } from "@/store/useAdventureStore";
+import { tr } from "react-day-picker/locale";
+
+export interface CreateUserPartner {
+  name: string;
+  email: string;
+  password: string;
+  cpf?: string | null;
+  phone: string;
+}
 
 export interface CreatePartner {
   companyName: string;
@@ -17,17 +27,11 @@ export interface CreatePartner {
   cnpj?: string;
   cpf?: string;
   userId?: string;
-  user?: {
-    name: string;
-    email: string;
-    password: string;
-    cpf?: string | null;
-    phone: string;
-  };
+  user?: CreateUserPartner;
   bankAccount: string | null;
   bankAgency: string | null;
   bankName: string | null;
-  pixKey: string | null;
+  pixKey?: string | null;
   about?: string | null;
   payday: number | null;
   address?: string | null;
@@ -57,6 +61,13 @@ export interface Partner {
   facebook: string | null;
   instagram: string | null;
   sumTotalRatings: number;
+  address?: string;
+  addressCity?: string;
+  addressComplement?: string;
+  addressNeighborhood?: string;
+  addressNumber?: string;
+  addressPostalCode?: string;
+  addressState?: string;
   createdAt: string;
   updatedAt: string;
   tag?: string;
@@ -183,6 +194,35 @@ export const partnerService = {
       return response.data;
     } catch (error) {
       console.error("Error creating partner:", error);
+      throw error;
+    }
+  },
+
+  createPartnerAndAdventure: async (
+    user: CreateUserPartner,
+    partner: CreatePartner,
+    adventure: CreateAdventureBody
+  ): Promise<any | null> => {
+    try {
+      const response = await api.post<any>("/partners", {
+        user,
+        partner,
+        adventure,
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error creating partner:", error);
+      throw error;
+    }
+  },
+  updatePartnerLogged: async (
+    partner: Partial<Partner>
+  ): Promise<Partner | null> => {
+    try {
+      const response = await api.patch<Partner>(`/partners`, partner);
+      return response.data;
+    } catch (error) {
+      console.error("Error updating partner:", error);
       throw error;
     }
   },
@@ -323,7 +363,6 @@ export const partnerService = {
   },
 
   async listPartnerSchedules(params?: MyScheduleParams) {
-    console.log(params);
     try {
       const response = await api.get(
         `/ordersAdventures/orderSchedule/partner`,
@@ -341,14 +380,14 @@ export const partnerService = {
     justification?: string
   ): Promise<any> => {
     try {
-      await api.post(
+      const response = await api.post(
         `/schedules/cancel/${orderScheduleId}/adventure/${adventureId}`,
-        { justificationCancel: justification }
+        { justificationCancel: justification ?? undefined }
       );
-      return true;
+      return response?.data;
     } catch (error) {
       console.error("Error canceling schedule:", error);
-      return false;
+      throw error;
     }
   },
 
@@ -365,7 +404,7 @@ export const partnerService = {
       return response.data;
     } catch (error) {
       console.error("Error fetching partner income:", error);
-      return null;
+      throw error;
     }
   },
 
@@ -374,6 +413,7 @@ export const partnerService = {
     endsAt?: string;
     typeAdventure?: string;
     orderStatus?: string;
+    orderBy?: string;
   }): Promise<PartnerIncome | null> => {
     try {
       const response = await api.get<PartnerIncome>(`/admin/partner/orders`, {
@@ -382,7 +422,7 @@ export const partnerService = {
       return response.data;
     } catch (error) {
       console.error("Error fetching partner income:", error);
-      return null;
+      throw error;
     }
   },
 
@@ -397,7 +437,7 @@ export const partnerService = {
       return data;
     } catch (error) {
       console.error("Error fetching adventures:", error);
-      return null;
+      throw error;
     }
   },
 };

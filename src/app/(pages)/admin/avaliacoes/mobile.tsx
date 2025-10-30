@@ -1,33 +1,95 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import MyTypography from '@/components/atoms/my-typography';
-import ActivitiesDetails from '@/components/organisms/activities-details';
-import { useQuery } from '@tanstack/react-query';
-import { adventures } from '@/services/api/adventures';
-import { MyTabs } from '@/components/molecules/my-tabs';
-import { Pagination } from '@/components/molecules/pagination';
-import { TabsList, TabsTrigger, TabsContent } from '@radix-ui/react-tabs';
-import ActivitiesFilter from '@/components/organisms/activities-filter';
-import Loading from '@/app/loading';
+import React, { useState } from "react";
+import MyTypography from "@/components/atoms/my-typography";
+import ActivitiesDetails from "@/components/organisms/activities-details";
+import { useQuery } from "@tanstack/react-query";
+import { adventures } from "@/services/api/adventures";
+import { MyTabs } from "@/components/molecules/my-tabs";
+import { Pagination } from "@/components/molecules/pagination";
+import { TabsList, TabsTrigger, TabsContent } from "@radix-ui/react-tabs";
+import ActivitiesFilter from "@/components/organisms/activities-filter";
+import Loading from "@/app/loading";
 
-type TypeAdventure = 'ar' | 'terra' | 'mar' | '';
+type TypeAdventure = "ar" | "terra" | "mar" | "";
 
 export default function AvaliacoesMobile() {
-  const [actFilter, setActFilter] = useState('totalFavorites desc');
-  const [typeAdvFilter, setTypeAdvFilter] = useState<TypeAdventure>();
+  const [actFilter, setActFilter] = useState("favoritos");
+  const [typeAdvFilter, setTypeAdvFilter] = useState<TypeAdventure>("");
+  const [stateFilter, setStateFilter] = useState("RJ");
+  const [rateFilter, setRateFilter] = useState("Todos");
 
   const [page, setPage] = useState(1);
 
-  const { data: activities = [], isLoading } = useQuery({
-    queryKey: [actFilter, page, typeAdvFilter],
+  const [activeTab, setActiveTab] = useState<TabKey>("favoritos");
+  const [pageMap, setPageMap] = useState<Record<TabKey, number>>({
+    favoritos: 1,
+    procuradas: 1,
+    menor: 1,
+  });
+
+  const tabFilters = {
+    favoritos: "totalFavorites desc",
+    procuradas: "qntTotalSales desc",
+    menor: "averageRating asc",
+  } as const;
+
+  type TabKey = keyof typeof tabFilters;
+
+  const { data: activitiesFavoritos = [], isLoading: loadingFavoritos } =
+    useQuery({
+      queryKey: [
+        "favoritos",
+        pageMap.favoritos,
+        typeAdvFilter,
+        stateFilter,
+        rateFilter,
+      ],
+      queryFn: () =>
+        adventures.filterAdventures({
+          orderBy: tabFilters.favoritos,
+          limit: 8,
+          skip: pageMap.favoritos * 8 - 8,
+          typeAdventure: typeAdvFilter || undefined,
+          state: stateFilter,
+          averageRating: rateFilter === "Todos" ? undefined : rateFilter,
+        }),
+      enabled: activeTab === "favoritos",
+    });
+
+  const { data: activitiesProcuradas = [], isLoading: loadingProcuradas } =
+    useQuery({
+      queryKey: [
+        "procuradas",
+        pageMap.procuradas,
+        typeAdvFilter,
+        stateFilter,
+        rateFilter,
+      ],
+      queryFn: () =>
+        adventures.filterAdventures({
+          orderBy: tabFilters.procuradas,
+          limit: 8,
+          skip: pageMap.procuradas * 8 - 8,
+          typeAdventure: typeAdvFilter || undefined,
+          state: stateFilter,
+          averageRating: rateFilter === "Todos" ? undefined : rateFilter,
+        }),
+      enabled: activeTab === "procuradas",
+    });
+
+  const { data: activitiesMenor = [], isLoading: loadingMenor } = useQuery({
+    queryKey: ["menor", pageMap.menor, typeAdvFilter, stateFilter, rateFilter],
     queryFn: () =>
       adventures.filterAdventures({
-        orderBy: actFilter,
-        typeAdventure: typeAdvFilter,
-        limit: 4,
-        skip: page * 4 - 4,
+        orderBy: tabFilters.menor,
+        limit: 8,
+        skip: pageMap.menor * 8 - 8,
+        typeAdventure: typeAdvFilter || undefined,
+        state: stateFilter,
+        averageRating: rateFilter === "Todos" ? undefined : rateFilter,
       }),
+    enabled: activeTab === "menor",
   });
 
   const handleChangeTab = (tabFilter: string) => {
@@ -39,42 +101,38 @@ export default function AvaliacoesMobile() {
     <section className="space-y-8 my-6 px-4">
       {
         <MyTabs defaultValue="favoritos" className="mb-10">
-          <TabsList className="mb-10 flex justify-between items-center ">
+          <TabsList className="mb-10 grid grid-cols-3">
             <TabsTrigger
-              onClick={() => handleChangeTab('totalFavorites desc')}
               value="favoritos"
-              className={`${actFilter === 'totalFavorites desc' ? 'underline' : 'text-[#d9d9d9]'}`}
+              onClick={() => setActiveTab("favoritos")}
             >
               <MyTypography
                 weight="bold"
                 variant="label"
-                className={`${actFilter === 'totalFavorites desc' ? 'underline' : 'text-[#d9d9d9]'}`}
+                className={`${activeTab === "favoritos" ? "underline" : "text-[#d9d9d9]"}`}
               >
                 Favoritos
               </MyTypography>
             </TabsTrigger>
             <TabsTrigger
-              onClick={() => handleChangeTab('qntTotalSales desc')}
+              onClick={() => setActiveTab("procuradas")}
               value="procuradas"
             >
               <MyTypography
                 weight="bold"
                 variant="label"
-                className={`${actFilter === 'qntTotalSales desc' ? 'underline' : 'text-[#d9d9d9]'}`}
+                className={`${activeTab === "procuradas" ? "underline" : "text-[#d9d9d9]"}`}
               >
                 Mais procuradas
               </MyTypography>
             </TabsTrigger>
-            <TabsTrigger
-              onClick={() => handleChangeTab('averageRating asc')}
-              value="menor"
-            >
+            <TabsTrigger value="menor" onClick={() => setActiveTab("menor")}>
               <MyTypography
                 weight="bold"
                 variant="label"
-                className={`${actFilter === 'averageRating asc' ? 'underline' : 'text-[#d9d9d9]'}`}
+                className={`${activeTab === "menor" ? "underline" : "text-[#d9d9d9]"}`}
               >
-                Menor avaliadas
+                Avaliação baixa
               </MyTypography>
             </TabsTrigger>
           </TabsList>
@@ -84,18 +142,21 @@ export default function AvaliacoesMobile() {
             setSelected={setTypeAdvFilter}
           />
           <TabsContent value="favoritos">
-            {isLoading ? (
+            {loadingFavoritos ? (
               <div className="h-[50vh] flex justify-center items-center">
                 <Loading height="[10vh]" />
               </div>
             ) : (
               <div className="space-y-3 mt-8">
-                {activities.length > 0 ? (
+                {activitiesFavoritos.length > 0 ? (
                   <>
-                    <ActivitiesDetails activities={activities} type="admin" />
+                    <ActivitiesDetails
+                      activities={activitiesFavoritos}
+                      type="admin"
+                    />
 
                     <Pagination
-                      data={activities}
+                      data={activitiesFavoritos}
                       page={page}
                       setPage={setPage}
                       limit={4}
@@ -112,17 +173,20 @@ export default function AvaliacoesMobile() {
             )}
           </TabsContent>
           <TabsContent value="procuradas">
-            {isLoading ? (
+            {loadingMenor ? (
               <div className="h-[50vh] flex justify-center items-center">
                 <Loading height="[10vh]" />
               </div>
             ) : (
               <div className="space-y-3 mt-8">
-                {activities.length > 0 ? (
+                {activitiesProcuradas.length > 0 ? (
                   <>
-                    <ActivitiesDetails activities={activities} type="admin" />
+                    <ActivitiesDetails
+                      activities={activitiesProcuradas}
+                      type="admin"
+                    />
                     <Pagination
-                      data={activities}
+                      data={activitiesProcuradas}
                       page={page}
                       setPage={setPage}
                       limit={4}
@@ -139,17 +203,20 @@ export default function AvaliacoesMobile() {
             )}
           </TabsContent>
           <TabsContent value="menor">
-            {isLoading ? (
+            {loadingMenor ? (
               <div className="h-[50vh] flex justify-center items-center">
                 <Loading height="[10vh]" />
               </div>
             ) : (
               <div className="space-y-3 mt-8">
-                {activities.length > 0 ? (
+                {activitiesMenor.length > 0 ? (
                   <>
-                    <ActivitiesDetails activities={activities} type="admin" />
+                    <ActivitiesDetails
+                      activities={activitiesMenor}
+                      type="admin"
+                    />
                     <Pagination
-                      data={activities}
+                      data={activitiesMenor}
                       page={page}
                       setPage={setPage}
                       limit={4}

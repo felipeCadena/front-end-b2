@@ -57,10 +57,9 @@ export default function SidebarMenu({
 
   const handleLogout = async () => {
     try {
-      await signOut({ callbackUrl: "/login" });
-
-      await authService.logout(session?.user.refreshToken ?? "");
       clearUser();
+      await authService.logout(session?.user.refreshToken ?? "");
+      signOut({ callbackUrl: "/" });
     } catch (error) {
       console.error("Error during logout:", error);
       toast.error("Erro ao fazer logout. Tente novamente.");
@@ -79,7 +78,7 @@ export default function SidebarMenu({
   const { data: notifications = { messagesUnred: 0 } } = useQuery({
     queryKey: ["unread_notifications"],
     queryFn: () => notificationsService.countUnreadNotifications(),
-    enabled: Boolean(userId),
+    enabled: !!session?.user?.id,
   });
 
   return (
@@ -98,12 +97,16 @@ export default function SidebarMenu({
             <Link
               href={`${item.link}${item.tab ? `?tab=${item.tab}` : ""}`}
               className={cn("flex justify-between")}
-              onClick={(e) => {
+              onClick={async (e) => {
                 handleCloseSidebar(e);
-                item.label === "Sair" && handleLogout();
+
+                if (item.label === "Sair") {
+                  e.preventDefault(); // Impede a navegação automática
+                  await handleLogout(); // Executa o logout corretamente
+                }
               }}
             >
-              <div className="flex gap-1 items-center">
+              <div className="flex gap-1 items-center relative">
                 <MyIcon name={item.icon} />
                 {item.label}
               </div>
@@ -115,7 +118,7 @@ export default function SidebarMenu({
                     notifications?.messagesUnred > 0
                       ? "bg-red-400"
                       : "bg-slate-300",
-                    notifications?.messagesUnred > 10 && "h-[1.2rem] w-[1.3rem]"
+                    notifications?.messagesUnred > 10 && "h-[1.2rem] w-[1.8rem]"
                   )}
                 >
                   {notifications?.messagesUnred}

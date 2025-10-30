@@ -24,49 +24,120 @@ import { AxiosError } from "axios";
 import { toast } from "react-toastify";
 import ModalAlert from "@/components/molecules/modal-alert";
 import { PurchaseOrderFormData } from "../../finalizar-compra/page";
-import { formatCpfCnpj, formatPhoneNumber } from "@/utils/formatters";
+import {
+  formatCpfCnpj,
+  formatPhoneNumber,
+  formatPhoneNumberDDI,
+} from "@/utils/formatters";
 import { useSession } from "next-auth/react";
 
-const formSchema = z.object({
-  paymentMethod: z.string().optional(),
-  installmentCount: z.string().optional(),
-  creditCard: z
-    .object({
-      holderName: z.string().trim().optional(),
-      number: z.string().trim().optional(),
-      expiryMonth: z.string().optional(),
-      expiryYear: z.string().optional(),
-      ccv: z.string().optional(),
-    })
-    .optional(),
-  creditCardHolderInfo: z
-    .object({
-      name: z.string().trim(),
-      email: z.string().email().trim(),
-      cpfCnpj: z.string(),
-      postalCode: z.string(),
-      addressNumber: z.string().optional(),
-      addressComplement: z.string().nullable().optional(),
-      phone: z
-        .string()
-        .optional()
-        .nullable()
-        .transform((v) => v ?? ""),
-      mobilePhone: z.string().optional(),
-    })
-    .optional(),
-  adventures: z
-    .array(
-      z.object({
-        adventureId: z.number(),
-        scheduleDate: z.date(),
-        qntAdults: z.number(),
-        qntChildren: z.number(),
-        qntBabies: z.number(),
+const formSchema = z
+  .object({
+    paymentMethod: z.string().optional(),
+    installmentCount: z.string().optional(),
+    creditCard: z
+      .object({
+        holderName: z.string().trim().optional(),
+        number: z.string().trim().optional(),
+        expiryMonth: z.string().optional(),
+        expiryYear: z.string().optional(),
+        ccv: z.string().optional(),
       })
-    )
-    .optional(),
-});
+      .optional(),
+    creditCardHolderInfo: z
+      .object({
+        name: z.string().min(1, { message: "Nome obrigatório." }).trim(),
+        email: z.string().email("E-mail inválido!").trim(),
+        cpfCnpj: z.string().min(11, {
+          message: "Por favor insira um CPF válido",
+        }),
+        postalCode: z.string(),
+        addressNumber: z.string().optional(),
+        addressComplement: z.string().nullable().optional(),
+        phone: z
+          .string()
+          .optional()
+          .nullable()
+          .transform((v) => v ?? ""),
+        mobilePhone: z
+          .string()
+          .min(1, { message: "Telefone obrigatório" })
+          .optional(),
+      })
+      .optional(),
+    adventures: z
+      .array(
+        z.object({
+          adventureId: z.number(),
+          scheduleDate: z.date(),
+          qntAdults: z.number(),
+          qntChildren: z.number(),
+          qntBabies: z.number(),
+        })
+      )
+      .optional(),
+  })
+  .superRefine((data, ctx) => {
+    if (data.paymentMethod === "CREDIT_CARD") {
+      // Validação dos campos obrigatórios do cartão
+      if (!data.creditCard) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Dados do cartão são obrigatórios para pagamento com cartão",
+          path: ["creditCard"],
+        });
+      } else {
+        if (
+          !data.creditCard.holderName ||
+          data.creditCard.holderName.trim() === ""
+        ) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "Nome do titular é obrigatório",
+            path: ["creditCard", "holderName"],
+          });
+        }
+        if (
+          !data.creditCard.number ||
+          data.creditCard.number.trim().length < 16
+        ) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "Número do cartão inválido",
+            path: ["creditCard", "number"],
+          });
+        }
+        if (!data.creditCard.expiryMonth) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "Mês é obrigatório",
+            path: ["creditCard", "expiryMonth"],
+          });
+        }
+        if (!data.creditCard.expiryYear) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "Ano é obrigatório",
+            path: ["creditCard", "expiryYear"],
+          });
+        }
+        if (!data.creditCard.ccv || data.creditCard.ccv.trim().length < 3) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "CCV é obrigatório",
+            path: ["creditCard", "ccv"],
+          });
+        }
+        if (!data.creditCardHolderInfo?.postalCode?.trim()) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "CEP é obrigatório para pagamento com cartão",
+            path: ["creditCardHolderInfo", "postalCode"],
+          });
+        }
+      }
+    }
+  });
 
 const paymentDefaultValues = {
   paymentMethod: "PIX",
@@ -135,6 +206,25 @@ const PagamentoMobile = () => {
 
   const userCart = carts.find((cart) => cart.userId === userId);
 
+  const orderBudget = userCart?.cart.map((item) => {
+    if (item) {
+      const formatOrder = {
+        adventureId: item.adventure.id,
+        qntAdults: item.schedule.qntAdults,
+        qntChildren: item.schedule.qntChildren,
+        qntBabies: item.schedule.qntBabies,
+      };
+      return formatOrder;
+    }
+  });
+
+  const { data: budget } = useQuery({
+    queryKey: ["budget", orderBudget],
+    queryFn: () =>
+      ordersAdventuresService.createBudget({ adventures: orderBudget }, userIP),
+    enabled: Boolean(userIP) && Boolean(orderBudget?.length),
+  });
+
   const purchaseOrder = userCart?.cart.map((item) => {
     if (item) {
       const [hour, minute] = item.schedule.scheduleTime.split(":");
@@ -201,9 +291,9 @@ const PagamentoMobile = () => {
           ...paymentDefaultValues.creditCardHolderInfo,
           name: loggedUser.name,
           email: loggedUser.email,
-          phone: loggedUser.phone,
+          phone: formatPhoneNumberDDI(loggedUser.phone),
           cpfCnpj: formatCpfCnpj(loggedUser.cpf),
-          mobilePhone: formatPhoneNumber(loggedUser.phone),
+          mobilePhone: formatPhoneNumberDDI(loggedUser.phone),
         },
         adventures: purchaseOrder,
       });
@@ -257,6 +347,7 @@ const PagamentoMobile = () => {
             pixDueDate: data.pixResponse.expirationDate,
             qrCode: data.pixResponse.encodedImage,
             pixCopyPaste: data.pixResponse.payload,
+            total: budget["BOLETO_PIX"].orderFinalPrice ?? 0,
           });
         }
         if (selectedPayment === "BOLETO") {
@@ -266,6 +357,7 @@ const PagamentoMobile = () => {
             paymentStatus: data.db.paymentStatus,
             bankSlipUrl: data.db.bankSlipUrl,
             dueDate: data.db.dueDate,
+            total: budget["BOLETO_PIX"].orderFinalPrice ?? 0,
           });
         }
         clearCart(userId);
@@ -310,25 +402,6 @@ const PagamentoMobile = () => {
     setSelectedPayment(paymentName);
     form.setValue("paymentMethod", paymentName);
   };
-
-  const orderBudget = userCart?.cart.map((item) => {
-    if (item) {
-      const formatOrder = {
-        adventureId: item.adventure.id,
-        qntAdults: item.schedule.qntAdults,
-        qntChildren: item.schedule.qntChildren,
-        qntBabies: item.schedule.qntBabies,
-      };
-      return formatOrder;
-    }
-  });
-
-  const { data: budget } = useQuery({
-    queryKey: ["budget", orderBudget],
-    queryFn: () =>
-      ordersAdventuresService.createBudget({ adventures: orderBudget }, userIP),
-    enabled: Boolean(userIP) && Boolean(orderBudget?.length),
-  });
 
   const activityPrice =
     userCart &&

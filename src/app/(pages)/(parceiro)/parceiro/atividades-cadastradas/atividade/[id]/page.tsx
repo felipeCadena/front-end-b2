@@ -14,7 +14,11 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   formatAddress,
   formatPrice,
+  getDifficultyDescription,
+  getDifficultyDescriptionResume,
   handleNameActivity,
+  mapLanguages,
+  sortImagesByDefaultFirst,
 } from "@/utils/formatters";
 import {
   ActivityEditMenu,
@@ -37,28 +41,64 @@ export default function Atividade() {
   const [hideActivity, setHideActivity] = React.useState(false);
   const [confirmedHideActivity, setConfirmedHideActivity] =
     React.useState(false);
+  const [showUpdateRefusal, setShowUpdateRefusal] = React.useState(false);
   const { handleClose, isModalOpen } = useAlert();
   const queryClient = useQueryClient();
+
+  const [expanded, setExpanded] = React.useState(false);
+  const MAX_LENGTH = 1000;
 
   const { data: activity, isLoading: isLoadingActivity } = useQuery({
     queryKey: ["activity"],
     queryFn: () => adventures.getAdventureById(Number(id)),
   });
 
+  const renderDescription = () => {
+    const full = activity?.description ?? "";
+    const isLong = full.length > MAX_LENGTH;
+
+    if (!isLong) {
+      return (
+        <MyTypography
+          variant="body-big"
+          weight="regular"
+          className="mt-1 whitespace-pre-wrap"
+        >
+          {full}
+        </MyTypography>
+      );
+    }
+
+    const displayedText = expanded ? full : full.slice(0, MAX_LENGTH);
+    const toggleText = expanded ? "Ver menos" : "Ver mais";
+
+    return (
+      <MyTypography
+        variant="body-big"
+        weight="regular"
+        className="mt-1 whitespace-pre-wrap"
+      >
+        {displayedText}
+        {isLong && !expanded && "..."}
+        <span
+          onClick={() => setExpanded(!expanded)}
+          className="px-1 inline text-gray-400 underline cursor-pointer"
+        >
+          {toggleText}
+        </span>
+      </MyTypography>
+    );
+  };
+
   useQuery({
     queryKey: ["mySchedules"],
-    queryFn: async () => {
-      const schedules = await partnerService.getMySchedules({
+    queryFn: () =>
+      partnerService.getMySchedules({
         limit: 30,
         skip: 0,
         adventureId: id as string,
         isAvailable: true,
-      });
-      if (schedules && schedules?.totalCount > 0) {
-        setHasClient(true);
-      }
-      return schedules ?? [];
-    },
+      }),
   });
 
   const getAddress = (address: string) => {
@@ -81,101 +121,6 @@ export default function Atividade() {
       `/parceiro/atividades-cadastradas/atividade/${id}/editar?section=${section}`
     );
   };
-
-  // const formattedActivity = React.useMemo(() => {
-  //   if (!activity) return null;
-
-  //   const today = new Date();
-  //   const baseYear = today.getFullYear();
-  //   const baseMonth = today.getMonth();
-
-  //   return {
-  //     id: activity.id,
-  //     title: activity.title,
-  //     addressStreet: activity.addressStreet,
-  //     addressPostalCode: activity.addressPostalCode,
-  //     addressNumber: activity.addressNumber,
-  //     addressComplement: activity.addressComplement,
-  //     addressNeighborhood: activity.addressNeighborhood,
-  //     addressCity: activity.addressCity,
-  //     addressState: activity.addressState,
-  //     addressCountry: activity.addressCountry,
-  //     address: formatAddress({
-  //       addressStreet: activity.addressStreet,
-  //       addressNumber: activity.addressNumber,
-  //       addressNeighborhood: activity.addressNeighborhood,
-  //       addressCity: activity.addressCity,
-  //       addressState: activity.addressState,
-  //       addressPostalCode: activity.addressPostalCode,
-  //       addressCountry: activity.addressCountry,
-  //     }),
-  //     coordinates: {
-  //       lat: Number(activity.coordinates.split(":")[0]),
-  //       lng: Number(activity.coordinates.split(":")[1]),
-  //     },
-  //     pointRefAddress: activity.pointRefAddress,
-  //     description: activity.description,
-  //     itemsIncluded: activity.itemsIncluded,
-  //     duration: activity.duration,
-  //     priceAdult: activity.priceAdult,
-  //     priceChildren: activity.priceChildren,
-  //     transportIncluded: activity.transportIncluded,
-  //     picturesIncluded: activity.picturesIncluded,
-  //     typeAdventure: activity.typeAdventure,
-  //     personsLimit: activity.personsLimit,
-  //     partnerId: activity.partnerId,
-  //     isInGroup: activity.isInGroup,
-  //     isChildrenAllowed: activity.isChildrenAllowed,
-  //     difficult: activity.difficult,
-  //     hoursBeforeSchedule: activity.hoursBeforeSchedule,
-  //     hoursBeforeCancellation: activity.hoursBeforeCancellation,
-  //     isRepeatable: activity.isRepeatable,
-  //     images: activity.images,
-  //     schedules: activity.schedules,
-  //     recurrences: activity.recurrence
-  //       ? Object.values(
-  //           activity.recurrence.reduce(
-  //             (acc, rec) => {
-  //               const group = acc[rec.groupId] || {
-  //                 groupId: rec.groupId,
-  //                 recurrenceWeekly: [],
-  //                 dates: [],
-  //                 recurrenceHour: [],
-  //               };
-
-  //               if (rec.type === "WEEKLY") {
-  //                 group.recurrenceWeekly.push(String(rec.value));
-  //               } else if (rec.type === "MONTHLY") {
-  //                 const day = Number(rec.value);
-  //                 const date = new Date(baseYear, baseMonth, day); // Converte para Date real
-  //                 group.dates.push(date);
-  //               } else if (rec.type === "HOUR") {
-  //                 const hours = Math.floor(rec.value / 100);
-  //                 const minutes = rec.value % 100;
-  //                 group.recurrenceHour.push(
-  //                   `${hours.toString().padStart(2, "0")}:${minutes
-  //                     .toString()
-  //                     .padStart(2, "0")}`
-  //                 );
-  //               }
-
-  //               acc[rec.groupId] = group;
-  //               return acc;
-  //             },
-  //             {} as Record<
-  //               string,
-  //               {
-  //                 dates: Date[];
-  //                 recurrenceHour: string[];
-  //                 recurrenceWeekly: string[];
-  //                 groupId: string;
-  //               }
-  //             >
-  //           )
-  //         )
-  //       : null,
-  //   };
-  // }, [activity, activity?.images]);
 
   if (!activity) {
     return isLoadingActivity ? (
@@ -271,7 +216,6 @@ export default function Atividade() {
       setIsLoading(false);
     }
   };
-
   const handleConfirmCancel = () => {
     router.push(PATHS["atividades-cadastradas"]);
     setConfirmedCancel(false);
@@ -368,6 +312,20 @@ export default function Atividade() {
         button="Voltar"
       />
 
+      {/* Modal de recusa de atualização */}
+      <ModalAlert
+        open={showUpdateRefusal}
+        onClose={() => setShowUpdateRefusal(false)}
+        onAction={() => setShowUpdateRefusal(false)}
+        iconName="warning"
+        title="Atualização recusada"
+        descrition={
+          activity.refusalMsg ||
+          "Sua atualização foi recusada pelo administrador."
+        }
+        button="Fechar"
+      />
+
       <div className="relative">
         <MyIcon
           name="voltar-black"
@@ -388,10 +346,7 @@ export default function Atividade() {
                   onClick={() => router.push(PATHS["atividades-cadastradas"])}
                 />
                 <MyTypography variant="heading2" weight="bold" className="">
-                  {activity?.title
-                    ? activity.title.charAt(0).toUpperCase() +
-                      activity.title.slice(1).toLowerCase()
-                    : ""}
+                  {activity?.title}
                 </MyTypography>
               </div>
               <div className="flex max-sm:flex-col items-start gap-2 md:items-center">
@@ -408,6 +363,25 @@ export default function Atividade() {
                     Pendente de aprovação pela B2
                   </MyBadge>
                 )}
+                {activity.adminApproved &&
+                  activity.updateToValidate &&
+                  activity.updateIsApproved === false && (
+                    <MyBadge variant="warning" className="md:mx-4 p-1">
+                      Atualização pendente de aprovação
+                    </MyBadge>
+                  )}
+                {activity.adminApproved &&
+                  activity.updateToValidate &&
+                  activity.updateIsApproved === false &&
+                  activity.refusalMsg && (
+                    <MyBadge
+                      variant="error"
+                      className="md:mx-4 p-1 cursor-pointer"
+                      onClick={() => setShowUpdateRefusal(true)}
+                    >
+                      Atualização recusada - Ver motivo
+                    </MyBadge>
+                  )}
               </div>
             </div>
             <div className="max-sm:hidden">
@@ -450,16 +424,15 @@ export default function Atividade() {
                 weight="regular"
                 className="mt-1 whitespace-pre-wrap"
               >
-                {activity?.description}
+                {renderDescription()}
               </MyTypography>
             </div>
           </div>
         </div>
         <div className="max-sm:hidden grid grid-cols-4 grid-rows-2 gap-4">
           {activity?.images?.length &&
-            activity.images
+            sortImagesByDefaultFirst(activity.images)
               .slice(0, 5)
-              .sort((a, b) => (b.isDefault ? 1 : 0) - (a.isDefault ? 1 : 0))
               .map((image, index) => (
                 <Image
                   key={index}
@@ -467,7 +440,7 @@ export default function Atividade() {
                   alt="fotos da atividade"
                   width={300}
                   height={300}
-                  className={`h-full w-ful max-h-[27rem] rounded-lg object-cover ${index === 0 ? "col-span-2 row-span-2 w-full h-[27rem]" : "h-[12rem] max-h-[12rem]"}`}
+                  className={`w-full max-h-[25rem] rounded-lg object-cover ${index === 0 ? "col-span-2 row-span-2 h-[25rem]" : "h-[12rem] max-h-[12rem]"}`}
                 />
               ))}
         </div>
@@ -502,36 +475,41 @@ export default function Atividade() {
             weight="regular"
             className="mt-1 whitespace-pre-wrap"
           >
-            {activity?.description}
+            {renderDescription()}
           </MyTypography>
         </div>
       </div>
 
-      <div className="mx-6">
+      <div className="mx-6 mt-4">
         <div className="md:grid md:grid-cols-2 md:gap-8">
           {formattedItemsIncluded().length > 0 && (
-            <div
-              className={cn(
-                "grid grid-cols-2 md:grid-cols-3 gap-x-8 gap-y-4 my-10"
-              )}
-            >
-              {formattedItemsIncluded().map((item) => (
-                <div key={item.label} className="flex items-center gap-2">
-                  <MyIcon
-                    name={item.icon as IconsMapTypes}
-                    className="p-2 bg-primary-900 rounded-md text-white"
-                  />
-                  <MyTypography variant="body" weight="bold">
-                    {item.label}
-                  </MyTypography>
-                </div>
-              ))}
+            <div>
+              <MyTypography variant="body-big" weight="semibold">
+                Está incluso:
+              </MyTypography>
+              <div
+                className={cn(
+                  "grid grid-cols-2 md:grid-cols-3 gap-x-8 gap-y-4 mt-4 mb-8"
+                )}
+              >
+                {formattedItemsIncluded().map((item) => (
+                  <div key={item.label} className="flex items-center gap-2">
+                    <MyIcon
+                      name={item.icon as IconsMapTypes}
+                      className="p-2 bg-primary-900 rounded-md text-white"
+                    />
+                    <MyTypography variant="body" weight="bold">
+                      {item.label}
+                    </MyTypography>
+                  </div>
+                ))}
+              </div>
             </div>
           )}
 
           <div
             className={cn(
-              "grid grid-cols-2 md:grid-cols-3 gap-4 md:my-auto",
+              "grid grid-cols-2 md:grid-cols-3 gap-4 md:my-auto mb-4",
               formattedItemsIncluded().length == 0 && "my-4 md:my-4"
             )}
           >
@@ -565,7 +543,8 @@ export default function Atividade() {
                 weight="bold"
                 className="text-center"
               >
-                Grau de dificuldade: {activity?.difficult}
+                Grau de dificuldade:{" "}
+                {getDifficultyDescriptionResume(activity?.difficult)}
               </MyTypography>
             </div>
           </div>
@@ -579,7 +558,7 @@ export default function Atividade() {
                   <MyTypography
                     variant="body-big"
                     weight="semibold"
-                    className="mt-4"
+                    className=""
                   >
                     Local de saida e retorno do transporte incluído:
                   </MyTypography>
@@ -600,8 +579,32 @@ export default function Atividade() {
                 </div>
               )}
 
+            {activity?.languages && (
+              <>
+                <MyTypography variant="body-big" weight="semibold">
+                  Idioma falado pelo parceiro:
+                </MyTypography>
+                <div className="my-4">
+                  {mapLanguages(activity?.languages ?? "").map((lang) => (
+                    <div
+                      className="bg-primary-900 text-center py-2 rounded-md mb-2 md:h-fit"
+                      key={lang}
+                    >
+                      <MyTypography
+                        variant="body-big"
+                        weight="bold"
+                        className="text-[0.8rem] md:text-[0.9rem]"
+                      >
+                        {lang}
+                      </MyTypography>
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
+
             <MyTypography variant="body-big" weight="semibold">
-              Ponto de encontro da atividade:
+              Local da atividade:
             </MyTypography>
             <div className="max-sm:my-2 flex items-center mt-2 p-3 bg-[#F1F0F587] border border-primary-600/30 border-opacity-80 rounded-lg shadow-sm hover:bg-gray-100 relative">
               <div className="absolute inset-y-0 left-0 w-3 bg-primary-900 rounded-l-lg"></div>
@@ -624,11 +627,10 @@ export default function Atividade() {
                   weight="regular"
                   className="text-gray-600"
                 >
-                  Ponto de encontro: {activity?.pointRefAddress}
+                  Ponto de referência: {activity?.pointRefAddress}
                 </MyTypography>
               </div>
             </div>
-
             <div className="space-y-6 my-10">
               <div className="flex items-center gap-2">
                 <MyIcon name="duracao" />
@@ -733,6 +735,16 @@ export default function Atividade() {
             adminAprroved={activity?.adminApproved}
             isOcult={!activity.onSite}
           />
+          <MyButton
+            variant="outline-neutral"
+            size="lg"
+            borderRadius="squared"
+            className="mt-4 w-full md:hidden"
+            leftIcon={<MyIcon name="voltar-black" />}
+            onClick={() => router.push(PATHS["atividades-cadastradas"])}
+          >
+            Ir para atividades
+          </MyButton>
         </div>
       </div>
     </section>

@@ -18,6 +18,7 @@ type ActivityCancelationPolicyProps = {
   duration: string | undefined;
   isChildrenAllowed: boolean;
   transportAddress?: string;
+  languages: string[] | undefined;
 };
 
 const ActivityCancelationPolicy = ({
@@ -27,6 +28,7 @@ const ActivityCancelationPolicy = ({
   duration,
   isChildrenAllowed,
   transportAddress,
+  languages,
 }: ActivityCancelationPolicyProps) => {
   const { id } = useParams();
   const hoursToDays = hoursBeforeCancelation ? hoursBeforeCancelation / 24 : 3;
@@ -57,14 +59,34 @@ const ActivityCancelationPolicy = ({
   return (
     <div className="flex flex-col justify-between">
       <div className="">
+        {languages && (
+          <>
+            <MyTypography variant="body-big" weight="semibold">
+              Idioma falado pelo parceiro:
+            </MyTypography>
+            <div className="grid grid-cols-2 gap-4 my-4 md:grid">
+              {languages?.map((lang) => (
+                <div
+                  className="bg-primary-900 text-center py-2 rounded-md mb-2 md:h-fit"
+                  key={lang}
+                >
+                  <MyTypography
+                    variant="body-big"
+                    weight="bold"
+                    className="text-[0.8rem] md:text-[0.9rem]"
+                  >
+                    {lang}
+                  </MyTypography>
+                </div>
+              ))}
+            </div>
+          </>
+        )}
+
         <div>
           {transportAddress && transportAddress?.length > 0 && (
             <>
-              <MyTypography
-                variant="body-big"
-                weight="semibold"
-                className="mt-4"
-              >
+              <MyTypography variant="body-big" weight="semibold" className="">
                 Local de saida e retorno do transporte incluído:
               </MyTypography>
               <div className="flex justify-start items-center mt-2 bg-slate-100 border-[1px] border-primary-900 rounded-lg w-full py-2 px-6">
@@ -82,8 +104,8 @@ const ActivityCancelationPolicy = ({
             </>
           )}
 
-          <MyTypography variant="body-big" weight="semibold" className="mt-6">
-            Ponto de encontro da atividade:
+          <MyTypography variant="body-big" weight="semibold" className="mt-4">
+            Local da atividade:
           </MyTypography>
 
           <div className="flex justify-start items-center mt-2 bg-slate-100 border-[1px] border-primary-900 rounded-lg w-full py-2 px-6">

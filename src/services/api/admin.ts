@@ -195,13 +195,31 @@ export const adminService = {
   // Adventures
   approveOrRejectAdventure: async (
     id: number,
-    payload: { adminApproved: boolean; onSite: boolean; refusalMsg?: string }
+    payload: { adminApproved?: boolean; onSite?: boolean; refusalMsg?: string, updateIsApproved?: boolean }
   ): Promise<Adventure> => {
     try {
       const { data } = await api.patch<Adventure>(`/adventures/${id}`, payload);
       return data;
     } catch (error) {
       console.error("Erro ao aprovar ou rejeitar atividade:", error);
+      throw error;
+    }
+  },
+  async listOrdersAdventures(params: {
+    startCreatedAt: string;
+    endCreatedAt: string;
+    limit?: number;
+    adventureType?: string;
+    orderBy?: string;
+    skip?: number;
+  }): Promise<PartnerSchedule[]> {
+    try {
+      const response = await api.get(`/ordersAdventures/orderSchedule/search`, {
+        params,
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error listing ordersAdventures:", error);
       throw error;
     }
   },
@@ -251,9 +269,27 @@ export const adminService = {
   },
 
   // Config
+  async listConfig(params?: { limit?: number; skip?: number; type?: string }) {
+    try {
+      const response = await api.get("/system", { params });
+      return response.data;
+    } catch (error) {
+      console.error("Error listing config:", error);
+      throw error;
+    }
+  },
+  async getConfigById(id: string) {
+    try {
+      const response = await api.get(`/system/${id}`);
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching config by ID:", error);
+      throw error;
+    }
+  },
   async createConfig(data: {
     type: "imgSystem" | "justificativa" | "textSystem" | "timeAdventures";
-    name?: string;
+    name: string;
     text?: string;
     localInsert: string;
     media?: {
@@ -327,6 +363,56 @@ export const adminService = {
       return response.data;
     } catch (error) {
       console.error("Error listing pending paid partners:", error);
+      throw error;
+    }
+  },
+
+  async listExecutedPayments(params?: {
+    startsAt?: string;
+    endsAt?: string;
+    limit?: number;
+    skip?: number;
+  }) {
+    try {
+      const response = await api.get("/admin/payments", { params });
+      return response.data;
+    } catch (error) {
+      console.error("Error listing pending paid partners:", error);
+      throw error;
+    }
+  },
+
+  async downloadReport(params?: {
+    startsAt?: string;
+    endsAt?: string;
+    limit?: number;
+    skip?: number;
+  }) {
+    try {
+      const response = await api.get("/admin/report", {
+        params,
+        responseType: "blob",
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error download report:", error);
+      throw error;
+    }
+  },
+
+  async listOrders(params?: {
+    startsAt?: string;
+    endsAt?: string;
+    limit?: number;
+    typeAdventure?: string;
+    skip?: number;
+    paymentStatus?: string;
+  }) {
+    try {
+      const response = await api.get("/ordersAdventures/search", { params });
+      return response.data;
+    } catch (error) {
+      console.error("Error:", error);
       throw error;
     }
   },

@@ -15,21 +15,41 @@ import GoogleLoginButton from "@/components/molecules/google-login-button";
 import { signIn, useSession } from "next-auth/react";
 import FacebookLoginButton from "@/components/molecules/facebook-login-button";
 import useLogin from "@/store/useLogin";
+import useSearchQueryService from "@/services/use-search-query-service";
 
 export default function Login() {
   const router = useRouter();
   const { setUser } = useAuthStore();
   const [isLoading, setIsLoading] = React.useState(false);
   const { data: session, status } = useSession();
+  const { params } = useSearchQueryService();
 
   const [visibility, setVisibility] = React.useState(false);
 
   const { email, password, error, setEmail, setPassword, clearError } =
     useLogin();
 
+  const didHandleRef = React.useRef(false);
+
   useEffect(() => {
     const handleSessionUpdate = async () => {
-      if (status === "authenticated" && session?.user?.role) {
+      if (didHandleRef.current) return;
+      // Se a sessão ainda está carregando, não faça nada
+      if (status === "loading") return;
+
+      // Se não está autenticado ou sessão não existe, não execute nada
+      if (status !== "authenticated" || !session?.user) return;
+
+      // Se a sessão tem erro de refresh token, ignore
+      if (session.error === "RefreshAccessTokenError") return;
+
+      if (
+        status === "authenticated" &&
+        session?.user?.role &&
+        session?.error !== "RefreshAccessTokenError"
+      ) {
+        didHandleRef.current = true;
+
         try {
           const userData = {
             id: session.user.id,
@@ -44,6 +64,13 @@ export default function Login() {
             email: userData.email,
             role: userData.role,
           });
+
+          if (params?.redirect) {
+            console.log("Redirecionando para:", params.redirect);
+            toast.success("Login realizado com sucesso!");
+            router.push(params.redirect);
+            return;
+          }
 
           const userRole = session.user.role.toLowerCase();
           const roleMapping = {
@@ -64,12 +91,14 @@ export default function Login() {
           }
         } catch (error) {
           console.error("Erro ao processar sessão:", error);
+        } finally {
+          setIsLoading(false);
         }
       }
     };
 
     handleSessionUpdate();
-  }, [status]);
+  }, [session, status]);
 
   const handleLogin = async () => {
     setIsLoading(true);
@@ -91,7 +120,6 @@ export default function Login() {
       setIsLoading(false);
     }
   };
-
   return (
     <section className="flex flex-col bg-white rounded-lg max-w-lg m-auto w-full">
       <div className="px-6 md:px-12 md:py-6">

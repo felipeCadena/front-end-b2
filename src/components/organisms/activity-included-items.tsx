@@ -5,39 +5,63 @@ import MyTypography from "../atoms/my-typography";
 
 type ActivityIncludedItemsProps = {
   transportIncluded: boolean;
+  picturesIncluded: boolean;
   itemsIncluded: string[];
 };
 
 const ActivityIncludedItems = ({
   transportIncluded,
   itemsIncluded,
+  picturesIncluded,
 }: ActivityIncludedItemsProps) => {
+  if (!transportIncluded && !picturesIncluded && itemsIncluded.length === 0) {
+    return null;
+  }
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 gap-x-8 gap-y-4 mb-4 md:mb-0">
-      {transportIncluded && (
-        <div className="flex items-center gap-2">
-          <MyIcon name="transporte" className="p-2 bg-primary-900 rounded-md" />
-          <MyTypography variant="body" weight="bold" className="">
-            Transporte
-          </MyTypography>
-        </div>
-      )}
+    <div className="mb-4 md:mb-0 space-y-4">
+      <MyTypography variant="body-big" weight="semibold">
+        Está incluso:
+      </MyTypography>
 
-      {itemsIncluded.map(
-        (item) =>
-          item &&
-          item !== "Transporte" && (
-            <div key={item} className="flex items-center gap-2">
-              <MyIcon
-                name={formatIconName(item) as any}
-                className="p-2 bg-primary-900 rounded-md"
-              />
-              <MyTypography variant="body" weight="bold">
-                {item.charAt(0).toUpperCase() + item.slice(1)}
-              </MyTypography>
-            </div>
-          )
-      )}
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-4">
+        {transportIncluded && (
+          <div className="flex items-center gap-2">
+            <MyIcon
+              name="transporte"
+              className="p-2 bg-primary-900 rounded-md"
+            />
+            <MyTypography variant="body" weight="bold" className="">
+              Transporte
+            </MyTypography>
+          </div>
+        )}
+
+        {picturesIncluded && (
+          <div className="flex items-center gap-2">
+            <MyIcon name="camera" className="p-2 bg-primary-900 rounded-md" />
+            <MyTypography variant="body" weight="bold" className="">
+              Fotos
+            </MyTypography>
+          </div>
+        )}
+
+        {itemsIncluded.map(
+          (item) =>
+            item &&
+            item !== "Transporte" &&
+            item !== "Fotos" && (
+              <div key={item} className="flex items-center gap-2">
+                <MyIcon
+                  name={formatIconName(item) as any}
+                  className="p-2 bg-primary-900 rounded-md"
+                />
+                <MyTypography variant="body" weight="bold">
+                  {item.charAt(0).toUpperCase() + item.slice(1)}
+                </MyTypography>
+              </div>
+            )
+        )}
+      </div>
     </div>
   );
 };

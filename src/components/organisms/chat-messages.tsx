@@ -38,6 +38,7 @@ export default function ChatMessages({ chat }: ChatMessagesProps) {
   const queryClient = useQueryClient();
   const [message, setMessage] = React.useState("");
   const inputRef = React.useRef<HTMLInputElement>(null);
+  const messageRef = React.useRef<HTMLInputElement>(null);
   const [file, setFile] = React.useState<File[] | null>(null);
 
   const handleClickUpload = () => {
@@ -95,7 +96,14 @@ export default function ChatMessages({ chat }: ChatMessagesProps) {
     }
   };
 
-  const handleSendMessage = async () => {
+  const scrollToBottom = () => {
+    requestAnimationFrame(() => {
+      setTimeout(() => {
+        messageRef.current?.scrollTo({ top: 0, behavior: "smooth" });
+      }, 150);
+    });
+  };
+  const handleSendMessage = async (message: string) => {
     try {
       await chatService.sendMessage(
         chat?.id ?? "",
@@ -103,21 +111,27 @@ export default function ChatMessages({ chat }: ChatMessagesProps) {
         chat?.session_token ?? ""
       );
 
-      queryClient.invalidateQueries({ queryKey: ["messages"] });
+      queryClient.invalidateQueries({ queryKey: ["messages", chat?.id] });
     } catch (error) {
       console.error("Error sending message:", error);
       toast.error("Failed to send message");
+    } finally {
+      setMessage("");
+      scrollToBottom();
     }
   };
 
-  // useEffect(() => {
-  //   if (window && document) {
-  //     window.scrollTo(0, document.body.scrollHeight);
-  //   }
-  // }, []);
+  useEffect(() => {
+    if (!messages || messages.length === 0) return;
+    const timeout = setTimeout(() => {
+      scrollToBottom();
+    }, 200);
+
+    return () => clearTimeout(timeout);
+  }, [messages]);
 
   return (
-    <div className="h-full flex flex-col">
+    <div className="h-[100dvh] flex flex-col">
       <div className="flex items-center p-4">
         <MyIcon
           name="left"
@@ -143,7 +157,10 @@ export default function ChatMessages({ chat }: ChatMessagesProps) {
         {/* <Options width="20" height="5" /> */}
       </div>
 
-      <div className="flex-1 flex flex-col-reverse overflow-y-auto scrollbar-thin p-4 gap-2">
+      <div
+        ref={messageRef}
+        className="flex-1 flex flex-col-reverse overflow-y-auto scrollbar-thin p-4 gap-2 pb-[90px]"
+      >
         {messages &&
           messages?.map((message: any, index: number) => (
             <div
@@ -205,7 +222,7 @@ export default function ChatMessages({ chat }: ChatMessagesProps) {
       </div>
 
       {chat?.session_token ? (
-        <div className="flex items-center gap-3 p-4 mb-4">
+        <div className="flex items-center max-sm:h-[6rem] gap-3 p-4 max-sm:px-4 max-sm:py-6 max-sm:fixed max-sm:bottom-0 max-sm:bg-white">
           <MyTextInput
             type="text"
             placeholder="Digite uma mensagem..."
@@ -226,14 +243,15 @@ export default function ChatMessages({ chat }: ChatMessagesProps) {
                 multiple
                 accept="jpg, png, image/*"
               >
-                <div onClick={handleClickUpload}>
+                <div onClick={handleClickUpload} ref={messageRef}>
                   <Plus fill="#2DADE4" className="cursor-pointer" />
                 </div>
               </Dropzone>
             }
             onKeyDown={(e) => {
               if (e.key === "Enter") {
-                handleSendMessage();
+                e.preventDefault();
+                handleSendMessage(message);
               }
             }}
           />
@@ -241,7 +259,8 @@ export default function ChatMessages({ chat }: ChatMessagesProps) {
           <MyIcon
             name="send-message"
             className="cursor-pointer"
-            onClick={handleSendMessage}
+            onClick={() => handleSendMessage(message)}
+
             // onKeyDown={(e) => {
             //   if (e.key === "Enter") {
             //     handleSendMessage();
@@ -252,6 +271,7 @@ export default function ChatMessages({ chat }: ChatMessagesProps) {
       ) : (
         <p className="text-gray-400 text-center text-xl my-4">Chat encerrado</p>
       )}
+      {/* <div ref={messageRef} /> */}
     </div>
   );
 }

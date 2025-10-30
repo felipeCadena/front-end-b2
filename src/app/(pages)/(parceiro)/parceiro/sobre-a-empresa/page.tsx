@@ -16,10 +16,12 @@ import MyTypography from "@/components/atoms/my-typography";
 import { useStepperStore } from "@/store/useStepperStore";
 import { cn } from "@/utils/cn";
 import {
+  formatCEP,
   formatCNPJ,
   formatCpfCnpj,
   formatPhoneNumber,
 } from "@/utils/formatters";
+import { getAddress } from "@/utils/getAddress";
 import PATHS from "@/utils/paths";
 import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
@@ -42,6 +44,13 @@ export default function SobreAEmpresa() {
     bankOwnerName,
     bankOwnerDocument,
     typePayment,
+    addressStreet,
+    addressPostalCode,
+    addressNumber,
+    addressComplement,
+    addressNeighborhood,
+    addressCity,
+    addressState,
   } = useStepperStore();
 
   const router = useRouter();
@@ -57,36 +66,36 @@ export default function SobreAEmpresa() {
         !bankAccount ||
         !bankAgency ||
         !bankName ||
-        !payday ||
         !bankAccountDigit ||
         !bankAccountType ||
         !bankOwnerName ||
         !bankOwnerDocument ||
-        !bankCode ||
-        !pixAddressKeyType
+        !bankCode
       ) {
         toast.error("Todos os campos são obrigatórios!");
         return;
       }
     } else if (typePayment == "pix") {
-      if (!pixKey || !pixAddressKeyType || !payday) {
+      if (!pixKey || !pixAddressKeyType) {
         toast.error("Todos os campos são obrigatórios!");
         return;
       }
     }
 
-    if (!fantasyName || !cnpjOrCpf) {
+    if (
+      !fantasyName ||
+      !cnpjOrCpf ||
+      !payday ||
+      !addressPostalCode ||
+      !addressStreet ||
+      !addressNumber ||
+      !addressNeighborhood ||
+      !addressCity ||
+      !addressState
+    ) {
       toast.error("Todos os campos são obrigatórios!");
       return;
     }
-    // setStepData(3, {
-    //   fantasyName,
-    //   cnpj,
-    //   bankAccount,
-    //   bankAgency,
-    //   bankName,
-    //   payday,
-    // });
 
     router.push(PATHS["cadastro-atividade"]);
   };
@@ -100,7 +109,36 @@ export default function SobreAEmpresa() {
     }
   }, [bankName]);
 
-  console.log(cnpjOrCpf.length);
+  const onBlurCep = async () => {
+    if (!addressPostalCode) return;
+    const cep = addressPostalCode.replace(/\D/g, "");
+    if (cep?.length !== 8) return;
+
+    const response = await getAddress(cep);
+
+    if (response) {
+      setStepData(3, {
+        addressPostalCode: addressPostalCode,
+        addressStreet: response.logradouro || "",
+        addressNumber: response.numero || "",
+        addressNeighborhood: response.bairro || "",
+        addressComplement: "",
+        addressCity: response.localidade || "",
+        addressState: response.uf || "",
+      });
+    } else {
+      setStepData(3, {
+        addressPostalCode: addressPostalCode,
+        addressStreet: addressStreet,
+        addressNumber: addressNumber,
+        addressNeighborhood: addressNeighborhood,
+        addressComplement: addressComplement,
+        addressCity: addressCity,
+        addressState: addressState,
+      });
+      toast.error("CEP não encontrado. Preencha o endereço manualmente.");
+    }
+  };
 
   return (
     <section className="m-6 space-y-4 md:space-y-8 md:max-w-screen-md md:mx-auto md:mt-12 md:border-2 md:border-gray-200 md:rounded-xl md:py-16">
@@ -139,6 +177,80 @@ export default function SobreAEmpresa() {
             label="CNPJ ou CPF"
             placeholder="Digite o CNPJ ou CPF"
             className="mt-2"
+          />
+        </div>
+      </div>
+      <div className="space-y-2 mt-6">
+        <MyTextInput
+          label="CEP"
+          classNameLabel="text-left"
+          placeholder="Digite o CEP"
+          className="mt-1"
+          value={addressPostalCode}
+          onChange={(e) =>
+            setStepData(3, { addressPostalCode: formatCEP(e.target.value) })
+          }
+          onBlur={onBlurCep}
+          noHintText
+        />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <MyTextInput
+            label="Endereço"
+            classNameLabel="text-left"
+            placeholder="Digite seu endereço"
+            className="mt-1"
+            value={addressStreet}
+            onChange={(e) => setStepData(3, { addressStreet: e.target.value })}
+            noHintText
+          />
+          <MyTextInput
+            label="Número"
+            classNameLabel="text-left"
+            placeholder="Digite o número"
+            className="mt-1"
+            value={addressNumber}
+            onChange={(e) => setStepData(3, { addressNumber: e.target.value })}
+            noHintText
+          />
+          <MyTextInput
+            label="Complemento"
+            classNameLabel="text-left"
+            placeholder="Digite o complemento"
+            className="mt-1"
+            value={addressComplement}
+            onChange={(e) =>
+              setStepData(3, { addressComplement: e.target.value })
+            }
+            noHintText
+          />
+          <MyTextInput
+            label="Bairro"
+            classNameLabel="text-left"
+            placeholder="Digite o bairro"
+            className="mt-1"
+            value={addressNeighborhood}
+            onChange={(e) =>
+              setStepData(3, { addressNeighborhood: e.target.value })
+            }
+            noHintText
+          />
+          <MyTextInput
+            label="Cidade"
+            placeholder="Digite a cidade"
+            classNameLabel="text-left"
+            className="mt-1"
+            value={addressCity}
+            onChange={(e) => setStepData(3, { addressCity: e.target.value })}
+            noHintText
+          />
+          <MyTextInput
+            label="Estado"
+            classNameLabel="text-left"
+            placeholder="Digite o estado"
+            className="mt-1"
+            value={addressState}
+            onChange={(e) => setStepData(3, { addressState: e.target.value })}
+            noHintText
           />
         </div>
       </div>

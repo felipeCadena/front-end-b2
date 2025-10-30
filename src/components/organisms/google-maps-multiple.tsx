@@ -19,13 +19,13 @@ export default function GoogleMapsMultiple({
   };
 
   const mapRef = React.useRef<google.maps.Map | null>(null);
-
   // Centraliza no primeiro item do array (caso exista)
-  const center = locations.length > 0 ? locations[1] : { lat: 0, lng: 0 };
+  const center =
+    locations.length > 0
+      ? locations.find((location) => location?.lat)
+      : { lat: 0, lng: 0 };
 
   const { isLoaded } = useGoogleMaps();
-
-  if (!isLoaded) return <p>Carregando mapa...</p>;
 
   // Quando selectedIndex mudar, centraliza o mapa no local correspondente
   React.useEffect(() => {
@@ -36,8 +36,9 @@ export default function GoogleMapsMultiple({
     ) {
       mapRef.current.panTo(locations[selectedIndex]);
     }
-  }, [selectedIndex, locations]);
+  }, [selectedIndex]);
 
+  if (!isLoaded) return <p>Carregando mapa...</p>;
   return (
     <div className="rounded-xl overflow-hidden max-sm:mt-4">
       <GoogleMap

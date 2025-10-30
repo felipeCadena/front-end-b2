@@ -11,7 +11,9 @@ import {
   findAvailableVacancies,
   getPartnerAvailableSchedules,
   getWeeklyRecurrenceTime,
+  removeCanceledRecurrenceTimes,
 } from "@/utils/formatters";
+import { addDays, format, getDate, getDay } from "date-fns";
 
 export type Recurrence = {
   adventureId: number;
@@ -57,11 +59,84 @@ const ActivityDatePicker = ({
 
   const activityRecurrence = activity?.recurrence ?? [];
 
+  const getAvailableHoursByDate = (
+    groupedRecurrences: ReturnType<typeof agruparRecorrencias>,
+    schedules: { datetime: string; isCanceled: boolean }[],
+    daysToGenerate = 30
+  ): { [date: string]: string[] } => {
+    const result: { [date: string]: string[] } = {};
+    const today = new Date();
+
+    // Agrupa schedules por data/hora e se está cancelado
+    const scheduleMap: { [date: string]: { [hour: string]: boolean } } = {};
+    for (const s of schedules) {
+      const dt = new Date(s.datetime);
+      const dateStr = format(dt, "yyyy-MM-dd");
+      const hourStr = format(dt, "HH:mm");
+
+      if (!scheduleMap[dateStr]) scheduleMap[dateStr] = {};
+      scheduleMap[dateStr][hourStr] = !s.isCanceled;
+    }
+
+    for (let i = 0; i < daysToGenerate; i++) {
+      const currentDate = addDays(today, i);
+      const dateStr = format(currentDate, "yyyy-MM-dd");
+      const dayOfWeek = getDay(currentDate); // 0 (domingo) a 6 (sábado)
+      const dayOfMonth = getDate(currentDate); // 1-31
+
+      // Obtem todos os horários para esse dia da semana
+      const horariosSemanal = groupedRecurrences.semanal
+        .filter(({ dias }) => dias.includes(dayOfWeek))
+        .flatMap(({ horarios }) => horarios);
+
+      // Obtem todos os horários para esse dia do mês
+      const horariosMensal = groupedRecurrences.mensal
+        .filter(({ dias }) => dias.includes(dayOfMonth))
+        .flatMap(({ horarios }) => horarios);
+
+      // Junta os horários, remove duplicados e ordena
+      let horarios = Array.from(
+        new Set([...horariosSemanal, ...horariosMensal])
+      ).sort();
+
+      if (horarios.length === 0) continue;
+
+      // Filtra horários disponíveis (não cancelados)
+      const horariosDisponiveis = horarios.filter((horario) => {
+        // Se não existe nenhum schedule para esse horário nessa data, está liberado
+        if (!scheduleMap[dateStr] || !(horario in scheduleMap[dateStr])) {
+          return true;
+        }
+
+        // Existe, mas está disponível (não cancelado)
+        return scheduleMap[dateStr][horario] === true;
+      });
+
+      if (horariosDisponiveis.length > 0) {
+        result[dateStr] = horariosDisponiveis;
+      }
+    }
+
+    return result;
+  };
+
   const groupedRecurrences = agruparRecorrencias(activityRecurrence);
 
-  const selectedDateTimes = getWeeklyRecurrenceTime(
+  const availableHoursByDate = getAvailableHoursByDate(
+    groupedRecurrences,
+    activity?.schedules ?? [],
+    500
+  );
+
+  const rawSelectedDateTimes = getWeeklyRecurrenceTime(
     selectedDate,
     groupedRecurrences
+  );
+
+  const selectedDateTimes = removeCanceledRecurrenceTimes(
+    selectedDate,
+    rawSelectedDateTimes,
+    activity?.schedules
   );
 
   const availablePartnerSchedules = getPartnerAvailableSchedules(activity);
@@ -93,8 +168,6 @@ const ActivityDatePicker = ({
     enabled: !!selectedDate && !!selectedTime,
   });
 
-  // console.log('ava', availableVacancies);
-
   return (
     <div className="md:w-3/4 mt-8 md:mt-0">
       <div className="px-6 lg:col-span-2 ">
@@ -109,6 +182,7 @@ const ActivityDatePicker = ({
               activityRecurrences={activityRecurrence}
               partnerSchedules={availablePartnerSchedules}
               hourBeforeSchedule={activity?.hoursBeforeSchedule}
+              availableHoursByDate={availableHoursByDate}
             />
             <TimePickerModal
               availableActivityTimes={AddToSelectedDateTimes}

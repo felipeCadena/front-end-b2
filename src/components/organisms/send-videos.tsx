@@ -71,10 +71,13 @@ export default function SendVideos({
           schedulesMedia
             ?.filter((video: any) => video?.mimetype?.includes("video"))
             ?.map((media: any, index: number) => (
-              <div key={media.id} className="relative w-[16rem] mt-4">
+              <div
+                key={media.id}
+                className="relative h-[100px] md:w-[256px] md:h-[256px]  mt-4"
+              >
                 <video
                   src={media?.url}
-                  className="w-[16rem] h-[16rem] rounded-md object-cover"
+                  className="w-[100px] h-[100px] md:w-[256px] md:h-[256px] rounded-md object-cover"
                   controls
                 />
                 <MyTypography
@@ -93,10 +96,13 @@ export default function SendVideos({
 
         {files &&
           files?.map((file, index) => (
-            <div key={file.name} className="relative w-[16rem] mt-4">
+            <div
+              key={file.name}
+              className="relative h-[100px] md:w-[16rem]  mt-4"
+            >
               <video
                 src={URL.createObjectURL(file)}
-                className="w-[16rem] h-[16rem] rounded-md object-cover"
+                className="w-[100px] h-[100px] md:w-[16rem] md:h-[16rem]  rounded-md object-cover"
                 controls
               />
               <MyTypography

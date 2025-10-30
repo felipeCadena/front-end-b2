@@ -12,6 +12,7 @@ import { formatAddress } from "@/utils/formatters";
 import { useQueryClient } from "@tanstack/react-query";
 import React, { useEffect } from "react";
 import { toast } from "react-toastify";
+import ModalAlert from "@/components/molecules/modal-alert";
 
 interface AddressData {
   addressStreet: string;
@@ -37,6 +38,7 @@ export default function Location({
   formData,
   setFormData,
   onClose,
+  isApproved,
 }: ModalProps) {
   const [formattedCoordinates, setFormattedCoordinates] = React.useState({
     lat: formData.coordinates?.lat ?? -22.9519,
@@ -44,6 +46,7 @@ export default function Location({
   });
   const queryClient = useQueryClient();
   const [isLoading, setIsLoading] = React.useState(false);
+  const [showWarning, setShowWarning] = React.useState(false);
 
   const handleLocationSelected = (locationData: LocationData) => {
     console.log("Location Data Received:", locationData);
@@ -70,6 +73,11 @@ export default function Location({
   };
 
   const handleSubmit = async () => {
+    if (isApproved && !showWarning) {
+      setShowWarning(true);
+      return;
+    }
+
     const data = {
       addressStreet: formData.addressStreet,
       coordinates: `${formattedCoordinates?.lat}:${formattedCoordinates?.lng}`,
@@ -85,22 +93,36 @@ export default function Location({
     setIsLoading(true);
 
     try {
-      await adventures.updateAdventureById(formData.id, data);
+      await adventures.updateAdventureById(formData?.id, data);
 
       queryClient.invalidateQueries({ queryKey: ["activity"] });
-      toast.success("Atividade atualizada com sucesso!");
+      toast.success(
+        isApproved
+          ? "Alterações enviadas para aprovação!"
+          : "Atividade atualizada com sucesso!"
+      );
+      setShowWarning(false);
+      onClose();
     } catch (error) {
       toast.error("Erro ao atualizar atividade");
       console.error("Error updating adventure:", error);
     }
     setIsLoading(false);
-    onClose();
-
-    console.log("Form Data Updated:", data);
   };
 
   return (
     <section className="space-y-12">
+      <ModalAlert
+        open={showWarning}
+        onClose={() => setShowWarning(false)}
+        onAction={handleSubmit}
+        iconName="warning"
+        title="Alteração em atividade aprovada"
+        descrition="Esta atividade já está aprovada e online. As alterações que você fizer precisarão ser validadas pelo administrador da B2 Adventure antes de serem publicadas no site."
+        button="Continuar"
+        isLoading={isLoading}
+      />
+
       <div className="flex gap-4 items-center mb-8">
         <MyIcon name="voltar-black" className="-ml-2" onClick={onClose} />
         <MyTypography variant="subtitle1" weight="bold" className="">
@@ -116,8 +138,9 @@ export default function Location({
             </MyTypography>
             <AutocompleteCombobox
               onLocationSelected={handleLocationSelected}
-              formData={formData}
+              formData={formData?.address}
               setFormData={setFormData}
+              editAdventure
             />
           </div>
           <MyTextInput

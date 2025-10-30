@@ -29,6 +29,7 @@ export default function TimePickerModal({
 
     const hour = match[1].padStart(2, "0");
     const minutes = (match[2] || "0").padStart(2, "0");
+
     return { hour, minute: minutes };
   };
 
@@ -47,11 +48,11 @@ export default function TimePickerModal({
   );
 
   // Atualiza a seleção quando o valor externo muda
-  useEffect(() => {
-    const { hour, minute } = parseValue(selectedTime);
-    setSelectedHour(hour);
-    setSelectedMinute(minute);
-  }, [selectedTime]);
+  // useEffect(() => {
+  //   const { hour, minute } = parseValue(selectedTime);
+  //   setSelectedHour(hour);
+  //   setSelectedMinute(minute);
+  // }, [selectedTime]);
 
   // Formata e envia o valor quando a seleção muda
   useEffect(() => {
@@ -59,7 +60,10 @@ export default function TimePickerModal({
       const hour = parseInt(selectedHour);
       const minute = parseInt(selectedMinute);
       // Só inclui os minutos se forem maiores que zero
-      const formattedValue = minute > 0 ? `${hour}:${minute}` : `${hour}:00`;
+      const formattedValue =
+        minute > 0
+          ? `${hour}:${minute > 9 ? minute : `0${minute}`}`
+          : `${hour}:00`;
       setSelectedTime(formattedValue);
     }
   }, [selectedHour, selectedMinute]);
@@ -130,13 +134,13 @@ export default function TimePickerModal({
             className="h-48 w-36 flex items-center justify-center rounded-lg overflow-hidden"
           >
             <div className="flex flex-col items-center w-full">
-              <p className="mb-2 font-semibold">Hora</p>
+              <p className="mb-2 font-semibold fixed z-20 bg-white">Hora</p>
               {hours.map((hour) => (
                 <div
                   key={hour}
                   data-value={hour}
                   className={cn(
-                    `text-center py-4 w-full cursor-pointer transition-all`,
+                    `text-center mt-8 py-4 w-full cursor-pointer transition-all`,
                     selectedHour === hour
                       ? "border border-primary-600 rounded-md"
                       : "opacity-50"
@@ -154,13 +158,13 @@ export default function TimePickerModal({
             className="h-48 w-36 flex items-center justify-center rounded-lg overflow-hidden"
           >
             <div className="flex flex-col items-center w-full">
-              <p className="mb-2 font-semibold">Minutos</p>
+              <p className="mb-2 font-semibold fixed z-20 bg-white">Minutos</p>
               {minutes.map((minute) => (
                 <div
                   key={minute}
                   data-value={minute}
                   className={cn(
-                    `text-center py-4 w-full cursor-pointer transition-all`,
+                    `text-center mt-8 py-4 w-full cursor-pointer transition-all`,
                     selectedMinute === minute
                       ? "border border-primary-600 rounded-md"
                       : "opacity-50"

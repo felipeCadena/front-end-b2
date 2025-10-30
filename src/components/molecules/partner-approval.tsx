@@ -44,7 +44,7 @@ export default function PartnerApprovalCard({
         <div className="flex items-center justify-between gap-2 w-full">
           <div className="relative w-10 h-10 flex-shrink-0">
             <Image
-              src={avatar}
+              src={avatar ?? "/user.png"}
               alt={name}
               fill
               className="rounded-full object-cover"

@@ -8,6 +8,7 @@ interface PartnerPaymentCardProps {
   name: string;
   amount: number;
   avatar: string;
+  payday: number;
   onPay: () => void;
   status?: string;
   loading?: boolean;
@@ -17,21 +18,21 @@ export default function PartnerPaymentCard({
   name,
   amount,
   avatar,
+  payday,
   onPay,
   status,
   loading,
 }: PartnerPaymentCardProps) {
   return (
-    <div className="flex items-center justify-between bg-[#F1F0F5] py-3 px-4 rounded-lg relative">
+    <div className="flex items-center justify-between bg-[#F1F0F5] py-3 px-4 rounded-lg relative my-4">
       <div className="flex items-center gap-3">
         <div className="relative w-12 h-12">
           <Image
-            src={avatar}
-            alt={name}
+            src={avatar ?? "/user.png"}
+            alt={name ?? "avatar"}
             fill
             className="rounded-full object-cover"
           />
-          <div className="absolute right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white" />
         </div>
         <div>
           <MyTypography variant="body-big" weight="semibold">

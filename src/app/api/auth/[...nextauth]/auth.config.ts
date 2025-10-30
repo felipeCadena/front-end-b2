@@ -33,6 +33,11 @@ interface DecodedToken {
   role: string;
   iat: number;
   exp: number;
+  partner?: {
+    id: number;
+    fantasyName: string;
+    isActive: boolean;
+  };
 }
 
 const processedLogins = new Set<string>();
@@ -73,8 +78,8 @@ export const authOptions: NextAuthOptions = {
           // Calcula o timestamp exato de expiração
           const expiresAt = Date.now() + response.expires_in * 1000;
 
-          console.log("response login: " + response?.refresh_token);
-          console.log("response login access_token: " + response?.access_token);
+          // console.log("response login: " + response?.refresh_token);
+          // console.log("response login access_token: " + response?.access_token);
 
           // Retorna o usuário no formato esperado pelo NextAuth
           return {
@@ -86,6 +91,9 @@ export const authOptions: NextAuthOptions = {
             role: decodedToken.role,
             expiresIn: response.expires_in,
             expiresAt,
+            partnerId: decodedToken?.partner?.id,
+            partnerName: decodedToken?.partner?.fantasyName,
+            partnerIsActive: decodedToken?.partner?.isActive,
             defaultPath:
               DEFAULT_ROLE_PATHS[
                 decodedToken?.role.toLowerCase() as keyof typeof DEFAULT_ROLE_PATHS
@@ -120,10 +128,10 @@ export const authOptions: NextAuthOptions = {
 
           if (!response) return false;
 
-          console.log("response google: " + response?.refresh_token);
-          console.log(
-            "response google access_token: " + response?.access_token
-          );
+          // console.log("response google: " + response?.refresh_token);
+          // console.log(
+          //   "response google access_token: " + response?.access_token
+          // );
 
           const decodedToken = jwtDecode<DecodedToken>(response.access_token);
 
@@ -137,11 +145,13 @@ export const authOptions: NextAuthOptions = {
             (user.role = decodedToken.role);
           user.expiresIn = response.expires_in;
           user.expiresAt = expiresAt;
-          user.image = decodedToken.image;
-          user.defaultPath =
-            DEFAULT_ROLE_PATHS[
-              decodedToken?.role.toLowerCase() as keyof typeof DEFAULT_ROLE_PATHS
-            ];
+          (user.partnerId = decodedToken?.partner?.id),
+            (user.partnerName = decodedToken?.partner?.fantasyName),
+            (user.partnerIsActive = decodedToken?.partner?.isActive),
+            (user.defaultPath =
+              DEFAULT_ROLE_PATHS[
+                decodedToken?.role.toLowerCase() as keyof typeof DEFAULT_ROLE_PATHS
+              ]);
         }
 
         if (account?.provider === "facebook") {
@@ -159,7 +169,7 @@ export const authOptions: NextAuthOptions = {
           // Calcula o timestamp exato de expiração
           const expiresAt = Date.now() + response.expires_in * 1000;
 
-          // console.log("response google: " + response?.refresh_token);
+          console.log("response google: " + response?.refresh_token);
 
           (user.email = decodedToken.email),
             (user.name = decodedToken.name),
@@ -168,11 +178,13 @@ export const authOptions: NextAuthOptions = {
             (user.role = decodedToken.role);
           user.expiresIn = response.expires_in;
           user.expiresAt = expiresAt;
-          user.image = decodedToken.image;
-          user.defaultPath =
-            DEFAULT_ROLE_PATHS[
-              decodedToken?.role.toLowerCase() as keyof typeof DEFAULT_ROLE_PATHS
-            ];
+          (user.partnerId = decodedToken?.partner?.id),
+            (user.partnerName = decodedToken?.partner?.fantasyName),
+            (user.partnerIsActive = decodedToken?.partner?.isActive),
+            (user.defaultPath =
+              DEFAULT_ROLE_PATHS[
+                decodedToken?.role.toLowerCase() as keyof typeof DEFAULT_ROLE_PATHS
+              ]);
         }
 
         return true;
@@ -182,7 +194,7 @@ export const authOptions: NextAuthOptions = {
       }
     },
     async jwt({ token, user }: JWTCallback) {
-      console.log("token: " + token?.refreshToken);
+      // console.log("token: " + token?.refreshToken);
       if (user) {
         token.accessToken = user.accessToken;
         token.refreshToken = user.refreshToken;
@@ -191,23 +203,24 @@ export const authOptions: NextAuthOptions = {
         token.id = user.id;
         token.email = user.email;
         token.defaultPath = user.defaultPath;
-        token.image = user.image ?? "";
         token.expiresAt = user.expiresAt;
         token.loginSocial = user.loginSocial;
-        token.provider = user.provider;
+        token.partnerId = user.partnerId;
+        token.partnerName = user.partnerName;
+        token.partnerIsActive = user.partnerIsActive;
 
         return token;
       }
 
       const now = Date.now();
 
-      if (now > token.expiresAt && token?.refreshToken) {
+      if (token?.expiresAt && now > token.expiresAt && token?.refreshToken) {
         // console.log("token if expirado " + token?.refreshToken);
         try {
           const dataAuth = await authService.refreshToken(token?.refreshToken);
 
-          console.log("dataAuth?.access_token: " + dataAuth?.access_token);
-          console.log("dataAuth?.access_token: " + dataAuth?.refresh_token);
+          // console.log("dataAuth?.access_token: " + dataAuth?.access_token);
+          // console.log("dataAuth?.access_token: " + dataAuth?.refresh_token);
 
           if (dataAuth?.access_token) {
             const newExpiresAt = Date.now() + dataAuth.expires_in * 1000;
@@ -222,26 +235,38 @@ export const authOptions: NextAuthOptions = {
           }
         } catch (err) {
           console.error("Erro ao renovar token:", (err as any)?.response?.data);
+          return {
+            ...token,
+            error: "RefreshAccessTokenError", // <- chave para verificar no frontend
+          };
         }
       }
 
       return token;
     },
     async session({ session, token }: SessionCallback) {
-      console.log("token session ", token?.refreshToken);
+      // console.log("token session ", token?.refreshToken);
 
-      if (token) {
-        session.user.accessToken = token?.accessToken;
-        session.user.refreshToken = token?.refreshToken;
-        session.user.role = token?.role;
-        session.user.id = token?.id;
-        session.user.defaultPath = token?.defaultPath;
-        session.user.expiresIn = token?.expiresIn;
-        session.user.email = token?.email;
-        session.user.expiresAt = token?.expiresAt;
+      if (token?.error) {
+        session.error = "RefreshAccessTokenError";
+        session.user = null;
+      } else if (token) {
+        session.user = {
+          accessToken: token.accessToken,
+          refreshToken: token.refreshToken,
+          role: token.role,
+          id: token.id,
+          defaultPath: token.defaultPath,
+          expiresIn: token.expiresIn,
+          email: token.email,
+          expiresAt: token.expiresAt,
+        };
+        // você pode adicionar os dados do parceiro diretamente na session
+        session.partnerId = token.partnerId;
+        session.partnerName = token.partnerName;
+        session.partnerIsActive = token.partnerIsActive;
       }
 
-      console.log("session ", session?.user?.refreshToken);
       return session;
     },
     async redirect({ url, baseUrl }) {
@@ -251,8 +276,7 @@ export const authOptions: NextAuthOptions = {
   pages: {
     signIn: "/login",
     error: "/login",
-    signOut: "/login",
-    // verifyRequest: "/",
+    signOut: "/",
   },
   session: {
     strategy: "jwt",

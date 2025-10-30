@@ -10,7 +10,7 @@ import PartnerApprovalCard from "@/components/molecules/partner-approval";
 import ActivityStatusCard from "@/components/molecules/activity-status";
 import PATHS from "@/utils/paths";
 import SearchActivity from "@/components/organisms/search-activity";
-import { endOfMonth, format, startOfMonth } from "date-fns";
+import { endOfMonth, format, startOfMonth, subMonths } from "date-fns";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { adminService } from "@/services/api/admin";
 import { toast } from "react-toastify";
@@ -44,7 +44,9 @@ export default function AdminMobile() {
   const router = useRouter();
   const queryClient = useQueryClient();
   const [loading, setLoading] = React.useState(false);
-  const [filter, setFilter] = React.useState("todos");
+  const [filter, setFilter] = React.useState("pendente");
+
+  const [selectedPayday, setSelectedPayday] = React.useState<string>("0");
 
   const [pageActivities, setPageActivities] = React.useState(1);
   const [refusalMsg, setRefusalMsg] = React.useState("");
@@ -58,10 +60,12 @@ export default function AdminMobile() {
   >([]);
 
   const now = new Date();
+  const previousMonth = subMonths(now, 1);
+
   const currentMonthKey = format(new Date(), "MM");
 
-  const startsAt = format(startOfMonth(now), "yyyy-MM-dd'T'00:00:00");
-  const endsAt = format(endOfMonth(now), "yyyy-MM-dd'T'00:00:00");
+  const startsAt = format(startOfMonth(previousMonth), "yyyy-MM-dd'T'00:00:00");
+  const endsAt = format(endOfMonth(previousMonth), "yyyy-MM-dd'T'00:00:00");
 
   const { data: pendingPayments, isLoading } = useQuery({
     queryKey: ["pendingPayments"],
@@ -73,6 +77,7 @@ export default function AdminMobile() {
       }),
   });
 
+  const limit = 100;
   const { isLoading: activitiesLoading } = useQuery({
     queryKey: ["activitiesNotAprooved", pageActivities],
     queryFn: async () => {
@@ -80,11 +85,17 @@ export default function AdminMobile() {
         // startsAt,
         // endsAt,
         adminApproved: false,
-        limit: 6,
-        skip: pageActivities * 6 - 6,
+        limit: limit,
+        skip: pageActivities * limit - limit,
+        orderBy: "updatedAt asc",
       });
       setAllActivities(adventures);
-      setActivitiesNotAprovved(adventures);
+      setActivitiesNotAprovved(
+        adventures.filter(
+          (activity) =>
+            !activity.refusalMsg || activity.refusalMsg.trim() === ""
+        )
+      );
       return adventures;
     },
   });
@@ -107,10 +118,6 @@ export default function AdminMobile() {
             activity.refusalMsg && activity.refusalMsg.trim().length > 0
         )
       );
-    }
-
-    if (value === "todos") {
-      setActivitiesNotAprovved(allActivities);
     }
   };
 
@@ -148,7 +155,7 @@ export default function AdminMobile() {
     setLoadingItem({ id });
     const body = {
       adminApproved: true,
-      onSite: false,
+      onSite: true,
       refusalMsg: "",
     };
     try {
@@ -182,6 +189,7 @@ export default function AdminMobile() {
       await adminService.approveOrRejectAdventure(id, body);
       toast.success("Atividade rejeitada com sucesso!");
       queryClient.invalidateQueries({ queryKey: ["activitiesNotAprooved"] });
+      setRefusalMsg("");
     } catch (err: unknown) {
       if (err instanceof AxiosError) {
         const message =
@@ -197,6 +205,24 @@ export default function AdminMobile() {
     }
   };
 
+  const filteredPendingPartners = React.useMemo(() => {
+    if (selectedPayday === "0")
+      return (
+        pendingPayments?.partners && Object.values(pendingPayments?.partners)
+      );
+
+    const allowedPaydays = ["5", "10", "15"];
+
+    if (!allowedPaydays.includes(selectedPayday)) return [];
+
+    return (
+      pendingPayments?.partners &&
+      Object.values(pendingPayments?.partners).filter(
+        (p: any) => String(p?.payday) === selectedPayday
+      )
+    );
+  }, [pendingPayments, selectedPayday]);
+
   return (
     <main className=" space-y-8 mt-6">
       <div className="px-4">
@@ -207,22 +233,53 @@ export default function AdminMobile() {
           {pendingPayments?.total_orders == 0 && !isLoading ? (
             <div className="flex items-center justify-center h-[250px]">
               <MyTypography variant="subtitle4" weight="bold">
-                Não há pagamentos pendentes
+                Não há pagamentos pendentes neste mês
               </MyTypography>
             </div>
           ) : (
-            Object.values(pendingPayments?.partners ?? {}).map(
-              (payment: any) => (
-                <PartnerPaymentCard
-                  key={payment?.ordersSchedules}
-                  name={payment?.partnerFantasyName}
-                  amount={payment?.total_value_pending}
-                  avatar={payment?.partnerLogo}
-                  status={hasTotalValuePaid(payment) ? "paid" : "pending"}
-                  loading={loading}
-                  onPay={() => payPartner(payment?.token_for_pay)}
-                />
-              )
+            !isLoading && (
+              <div className="min-h-[20vh]">
+                <div className="ml-auto w-1/3 md:w-1/6">
+                  <MySelect
+                    value={selectedPayday}
+                    onValueChange={setSelectedPayday}
+                    label="Dia do Pagamento"
+                    className="text-[0.7rem] text-center"
+                  >
+                    <SelectTrigger className="rounded-2xl text-[#848A9C] text-xs">
+                      <SelectValue placeholder="Dia do Pagamento" />
+                    </SelectTrigger>
+                    <SelectContent className="rounded-lg">
+                      <SelectItem value="0">Todos</SelectItem>
+                      <SelectItem value="5">Dia 5</SelectItem>
+                      <SelectItem value="10">Dia 10</SelectItem>
+                      <SelectItem value="15">Dia 15</SelectItem>
+                    </SelectContent>
+                  </MySelect>
+                </div>
+
+                {filteredPendingPartners &&
+                filteredPendingPartners?.length > 0 ? (
+                  filteredPendingPartners.map((payment: any) => (
+                    <PartnerPaymentCard
+                      key={payment?.ordersSchedules}
+                      name={payment?.partnerFantasyName}
+                      amount={payment?.total_value_pending}
+                      avatar={payment?.partnerLogo}
+                      payday={payment?.payday}
+                      status={hasTotalValuePaid(payment) ? "paid" : "pending"}
+                      loading={loading}
+                      onPay={() => payPartner(payment?.token_for_pay)}
+                    />
+                  ))
+                ) : (
+                  <div className="min-h-[20vh] text-center flex items-center justify-center">
+                    <MyTypography variant="body-big" weight="bold">
+                      Não há pagamentos pendentes para o dia selecionado
+                    </MyTypography>
+                  </div>
+                )}
+              </div>
             )
           )}
         </div>
@@ -265,25 +322,34 @@ export default function AdminMobile() {
                   <SelectValue placeholder="Selecione" />
                 </SelectTrigger>
                 <SelectContent className="rounded-lg">
-                  <SelectItem value="todos">Todos</SelectItem>
+                  {/* <SelectItem value="todos">Todos</SelectItem> */}
                   <SelectItem value="pendente">Pendente</SelectItem>
                   <SelectItem value="recusado">Recusado</SelectItem>
                 </SelectContent>
               </MySelect>
             </div>
 
-            {activitiesNotAprovved &&
-              activitiesNotAprovved?.map((activity) => (
-                <ActivityStatusCard
-                  isLoading={loadingItem?.id === activity.id}
-                  key={activity.id}
-                  refusalMsg={refusalMsg}
-                  setRefusalMsg={setRefusalMsg}
-                  activity={activity}
-                  onApprove={() => onApproveActivity(activity?.id)}
-                  onReject={() => onRejectActivity(activity?.id)}
-                />
-              ))}
+            {!activitiesLoading &&
+            activitiesNotAprovved &&
+            activitiesNotAprovved?.length > 0
+              ? activitiesNotAprovved?.map((activity) => (
+                  <ActivityStatusCard
+                    isLoading={loadingItem?.id === activity.id}
+                    key={activity.id}
+                    refusalMsg={refusalMsg}
+                    setRefusalMsg={setRefusalMsg}
+                    activity={activity}
+                    onApprove={() => onApproveActivity(activity?.id)}
+                    onReject={() => onRejectActivity(activity?.id)}
+                  />
+                ))
+              : !activitiesLoading && (
+                  <div className="flex items-center justify-center h-[250px]">
+                    <MyTypography variant="subtitle4" weight="bold">
+                      Não há atividades pendentes
+                    </MyTypography>
+                  </div>
+                )}
 
             <div className="flex w-full justify-center items-center">
               <Pagination

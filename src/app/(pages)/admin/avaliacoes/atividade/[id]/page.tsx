@@ -12,7 +12,11 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   formatAddress,
   formatPrice,
+  getDifficultyDescription,
+  getDifficultyDescriptionResume,
   handleNameActivity,
+  mapLanguages,
+  sortImagesByDefaultFirst,
 } from "@/utils/formatters";
 import PATHS from "@/utils/paths";
 import { toast } from "react-toastify";
@@ -136,7 +140,7 @@ export default function Atividade() {
     setIsLoading(true);
     const body = {
       adminApproved: true,
-      onSite: false,
+      onSite: true,
       refusalMsg: "",
     };
     try {
@@ -164,9 +168,14 @@ export default function Atividade() {
       await adminService.createChat({ userToId: userId });
       router.push(`/chat`);
       toast.success("Chat criado com sucesso!");
-    } catch (error) {
-      console.error("Erro ao criar chat:", error);
-      toast.error("Erro ao criar chat");
+    } catch (err) {
+      console.error("Erro ao criar chat:", err);
+      if (err instanceof AxiosError) {
+        const message = err.response?.data?.error;
+        toast.error(`${message}`);
+      } else {
+        toast.error("Erro ao criar chat");
+      }
     } finally {
       setIsLoadingChat(false);
     }
@@ -182,6 +191,7 @@ export default function Atividade() {
       await adminService.approveOrRejectAdventure(id, body);
       toast.success("Atividade rejeitada com sucesso!");
       queryClient.invalidateQueries({ queryKey: ["activity"] });
+      setRefusalMsg("");
     } catch (err: unknown) {
       if (err instanceof AxiosError) {
         const message =
@@ -326,9 +336,8 @@ export default function Atividade() {
         </div>
         <div className="max-sm:hidden grid grid-cols-4 grid-rows-2 gap-4">
           {activity?.images?.length &&
-            activity.images
+            sortImagesByDefaultFirst(activity.images)
               .slice(0, 5)
-              .sort((a, b) => (b.isDefault ? 1 : 0) - (a.isDefault ? 1 : 0))
               .map((image, index) => (
                 <Image
                   key={index}
@@ -336,7 +345,7 @@ export default function Atividade() {
                   alt="fotos da atividade"
                   width={300}
                   height={300}
-                  className={`h-full w-ful max-h-[27rem] rounded-lg object-cover ${index === 0 ? "col-span-2 row-span-2 w-full h-[27rem]" : "h-[12rem] max-h-[12rem]"}`}
+                  className={`w-full max-h-[25rem] rounded-lg object-cover ${index === 0 ? "col-span-2 row-span-2 h-[25rem]" : "h-[12rem] max-h-[12rem]"}`}
                 />
               ))}
         </div>
@@ -434,7 +443,8 @@ export default function Atividade() {
                 weight="bold"
                 className="text-center"
               >
-                Grau de dificuldade: {activity?.difficult}
+                Grau de dificuldade:{" "}
+                {getDifficultyDescriptionResume(activity?.difficult)}
               </MyTypography>
             </div>
           </div>
@@ -468,6 +478,30 @@ export default function Atividade() {
                   </div>
                 </div>
               )}
+
+            {activity?.languages && (
+              <>
+                <MyTypography variant="body-big" weight="semibold">
+                  Idioma falado pelo parceiro:
+                </MyTypography>
+                <div className="my-4">
+                  {mapLanguages(activity?.languages ?? "").map((lang) => (
+                    <div
+                      className="bg-primary-900 text-center py-2 rounded-md mb-2 md:h-fit"
+                      key={lang}
+                    >
+                      <MyTypography
+                        variant="body-big"
+                        weight="bold"
+                        className="text-[0.8rem] md:text-[0.9rem]"
+                      >
+                        {lang}
+                      </MyTypography>
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
 
             <MyTypography variant="body-big" weight="semibold">
               Ponto de encontro da atividade:

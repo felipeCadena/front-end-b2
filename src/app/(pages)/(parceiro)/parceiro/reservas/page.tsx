@@ -17,22 +17,36 @@ import { partnerService } from "@/services/api/partner";
 import PartnerHistoricMobile from "@/components/organisms/partner-historic-mobile";
 import Image from "next/image";
 import { Pagination } from "@/components/molecules/pagination";
+import { isCancel } from "axios";
+import {
+  MySelect,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/atoms/my-select";
 
 export default function Reservas() {
   const router = useRouter();
-  const [date, setDate] = React.useState<Date>(new Date());
+  const [date, setDate] = React.useState<Date | null>(null);
   const [dates, setDates] = React.useState<Date[]>([]);
   const [page, setPage] = React.useState(1);
+
+  const [params, setParams] = React.useState({
+    isCanceled: false,
+    isAvailable: true,
+  });
 
   const { handleClose, isModalOpen } = useAlert();
 
   const { data: parterSchedules, isLoading } = useQuery({
-    queryKey: ["parterSchedules", date, page],
+    queryKey: ["parterSchedules", date, page, params],
     queryFn: () =>
       partnerService.getMySchedules({
         limit: 50,
         skip: page * 50 - 50,
         qntConfirmedPersons: "> 0",
+        ...params,
       }),
   });
 
@@ -63,7 +77,7 @@ export default function Reservas() {
           <MyIcon
             name="voltar-black"
             className=""
-            onClick={() => router.back()}
+            onClick={() => router.push(PATHS["atividades-cadastradas"])}
           />
 
           <MyTypography variant="subtitle1" weight="semibold">
@@ -82,23 +96,13 @@ export default function Reservas() {
           >
             Nova atividade
           </MyButton>
-
-          {/* <MyButton
-            variant="red"
-            borderRadius="squared"
-            size="md"
-            leftIcon={<Hide iconColor="#FF7272" />}
-            onClick={() => router.push(PATHS["atividades-ocultas"])}
-            className="w-1/4"
-          >
-            Ocultas
-          </MyButton> */}
         </div>
       </div>
       <div className="relative px-2">
         <MyFullCalendarMultiple
           // mode="single"
-          selected={date}
+          preventPastNavigation
+          selected={date ?? new Date()}
           onSelect={setDate}
           markedDates={dates}
           locale={ptBR}
@@ -108,6 +112,20 @@ export default function Reservas() {
       </div>
 
       <div className="h-1 w-1/3 mx-auto bg-gray-200 rounded-xl my-6" />
+
+      {date && (
+        <div className="flex justify-end max-sm:justify-center max-sm:gap-4 max-sm:px-4 mb-2">
+          <MyButton
+            variant="outline-neutral"
+            borderRadius="squared"
+            size="lg"
+            className="max-sm:w-full"
+            onClick={() => setDate(null)}
+          >
+            Mostrar todas as datas
+          </MyButton>
+        </div>
+      )}
 
       <div className="md:hidden w-full flex justify-center gap-4 px-4">
         <MyButton
@@ -120,17 +138,28 @@ export default function Reservas() {
         >
           Nova Atividade
         </MyButton>
+      </div>
 
-        {/* <MyButton
-          variant="red"
-          borderRadius="squared"
-          size="lg"
-          leftIcon={<Hide iconColor="#FF7272" />}
-          onClick={() => router.push(PATHS["atividades-ocultas"])}
-          className="w-1/2"
+      <div className="my-4 mx-4 w-1/3 md:w-1/6 ml-auto">
+        <MySelect
+          className="text-base text-black"
+          value={params.isCanceled ? "cancelado" : "agendado"}
+          onValueChange={(value) =>
+            setParams({
+              ...params,
+              isCanceled: value === "cancelado",
+              isAvailable: value === "agendado",
+            })
+          }
         >
-          Ocultas
-        </MyButton> */}
+          <SelectTrigger className="rounded-2xl text-[#848A9C] text-xs">
+            <SelectValue placeholder="Selecione" />
+          </SelectTrigger>
+          <SelectContent className="rounded-lg">
+            <SelectItem value="agendado">Agendado</SelectItem>
+            <SelectItem value="cancelado">Cancelado</SelectItem>
+          </SelectContent>
+        </MySelect>
       </div>
 
       <ModalAlert

@@ -15,10 +15,16 @@ import MyFormTextarea from "@/components/atoms/my-form-textarea";
 import { sendMessage } from "@/services/api/sendMessage";
 import { toast } from "react-toastify";
 import MySpinner from "@/components/atoms/my-spinner";
+import { useSession } from "next-auth/react";
+import { users } from "@/services/api/users";
+import { useQuery } from "@tanstack/react-query";
 
 const formschema = z.object({
   name: z.string().min(3, { message: "Por favor, informe seu nome." }),
-  phone: z.string().min(9, { message: "Informe o telefone para contato." }),
+  phone: z.string().regex(/^\+\d{1,3} \(\d{2}\) \d{4,5}-\d{4}$/, {
+    message:
+      "Informe um telefone válido com código do país. Ex: +55 (11) 91234-5678",
+  }),
   email: z.string().email({ message: "Informe seu e-mail." }),
   topic: z.enum(["Elogio", "Sugestão", "Reclamação"]),
   message: z
@@ -30,6 +36,24 @@ type FormData = z.infer<typeof formschema>;
 
 export default function FaleConosco() {
   const router = useRouter();
+
+  const { data: loggedUser } = useQuery({
+    queryKey: ["logged_user"],
+    queryFn: () => users.getUserLogged(),
+  });
+
+  React.useEffect(() => {
+    if (loggedUser) {
+      form.reset({
+        name: loggedUser?.name ?? "",
+        phone: loggedUser?.phone ?? "",
+        email: loggedUser?.email ?? "",
+        topic: "Elogio",
+        message: "",
+      });
+    }
+  }, [loggedUser]);
+
   const [isLoading, setIsLoading] = useState(false);
 
   const options = ["Elogio", "Sugestão", "Reclamação"];
@@ -95,7 +119,7 @@ export default function FaleConosco() {
             className="mt-2"
           />
           <MyFormInput
-            label="Telefone"
+            label="Telefone (DDI + DDD + Telefone)"
             name="phone"
             isPhoneNumber
             form={form}
