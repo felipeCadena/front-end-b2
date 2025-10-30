@@ -10,7 +10,6 @@ import MyLogo from "@/components/atoms/my-logo";
 import MyTextInput from "@/components/atoms/my-text-input";
 import MyTypography from "@/components/atoms/my-typography";
 import { adventures } from "@/services/api/adventures";
-import { authService } from "@/services/api/auth";
 import { partnerService } from "@/services/api/partner";
 import { calculateAdventurePrice } from "@/app/helpers/calculateAdventurePrice";
 import { useAdventureStore } from "@/store/useAdventureStore";
@@ -18,9 +17,8 @@ import { useStepperStore } from "@/store/useStepperStore";
 import { cn } from "@/utils/cn";
 import { brlToApiNumberString } from "@/utils/formatters";
 import PATHS from "@/utils/paths";
-import { useQuery } from "@tanstack/react-query";
 import { AxiosError } from "axios";
-import { signIn, useSession } from "next-auth/react";
+import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 import { toast } from "react-toastify";
@@ -105,26 +103,10 @@ export default function InformacoesAtividade({
         addressState: addressStateStepper,
     } = useStepperStore();
 
-    const { data: session } = useSession();
-
     const [isLoading, setIsLoading] = React.useState(false);
 
     const [selectedGroup, setSelectedGroup] = React.useState("");
     const [selectedChildren, setSelectedChildren] = React.useState("");
-
-    const b2Tax = process.env.NEXT_PUBLIC_PERCENTAGE_TAX_B2;
-    const tax = process.env.NEXT_PUBLIC_PERCENTAGE_TAX;
-
-    const { data: partner } = useQuery({
-        queryKey: ["partner-tag"],
-        queryFn: () => partnerService.getPartnerLogged(),
-        enabled: !!session?.user,
-    });
-
-    // Aplicar desconto pra quem criar atividade até 01/06/2025
-    const today = new Date();
-    const cutoffDate = new Date("2025-05-31");
-    const isFreeTaxPeriod = today <= cutoffDate;
 
     const coordinatesString = `${coordinates?.lat}:${coordinates?.lng}`;
 
@@ -727,9 +709,7 @@ export default function InformacoesAtividade({
                         variant="label"
                         weight="regular"
                         className={cn(
-                            "mb-1",
-                            (isFreeTaxPeriod || partner?.tag == "LAUNCH") &&
-                                "line-through"
+                            "mb-1"
                         )}
                     >
                         R$ {pricesAdult.b2Fee ?? "0,00"}
@@ -741,9 +721,7 @@ export default function InformacoesAtividade({
                         variant="label"
                         weight="regular"
                         className={cn(
-                            "mb-1",
-                            (isFreeTaxPeriod || partner?.tag == "LAUNCH") &&
-                                "line-through"
+                            "mb-1"
                         )}
                     >
                         Imposto
@@ -752,9 +730,7 @@ export default function InformacoesAtividade({
                         variant="label"
                         weight="regular"
                         className={cn(
-                            "mb-1",
-                            (isFreeTaxPeriod || partner?.tag == "LAUNCH") &&
-                                "line-through"
+                            "mb-1"
                         )}
                     >
                         R$ {pricesAdult.tax ?? "0,00"}
